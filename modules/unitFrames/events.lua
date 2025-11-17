@@ -376,7 +376,8 @@ function _events.uiFramesInitEvents()
 
         if unit == data.playerID then            
             _internal.buffBar.removeBuff(unit, buffs)
-
+        	_internal.buffBar.UpdateBuffDisplay()
+			
 			uiElements.frames.player:removeBuff(unit, buffs)
 		elseif unit == data.targetID then
 			uiElements.frames.target:removeBuff(unit, buffs)
@@ -384,7 +385,7 @@ function _events.uiFramesInitEvents()
 			uiElements.frames.playerPet:removeBuff(unit, buffs)
         end
 
-        _internal.buffBar.UpdateBuffDisplay()
+
     end
 
 	local function _eventCastBar(_, units) 
@@ -451,6 +452,15 @@ function _events.uiFramesInitEvents()
     
 	end
 
+	local function _fctZoneEvent(_, thisData)
+
+		for k, v in pairs(thisData) do
+			if k == data.playerID then
+				_internal.processBuffs ()
+			end
+		end
+	end
+
 	local function _fctUpdateHandler()
 		
 		-- run always
@@ -475,7 +485,7 @@ function _events.uiFramesInitEvents()
 		if (_lastUpdate1 == nil or _curTime - _lastUpdate1 >= .5) then
 		
 			if _watchDog >= 0.1 and _eventsP1Index == 1 then
-				processBuffs()
+				_internal.processBuffs()
 				_eventsP1Index = 2
 			end
 			
@@ -531,5 +541,7 @@ function _events.uiFramesInitEvents()
     Command.Event.Attach(Event.Unit.Remove, _eventUnitRemove , "nkUI.playerFrame.Unit.Remove")
 
     Command.Event.Attach(Event.System.Update.Begin, _fctUpdateHandler, "nkUI.System.updateHandler")
+
+	Command.Event.Attach(Event.Unit.Detail.Zone, _fctZoneEvent, "nkUI.Unit.Detail.Zone")
 
 end

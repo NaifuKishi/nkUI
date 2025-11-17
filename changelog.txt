@@ -1,4 +1,7 @@
 v0.0.6
+    - quite some code optimization in the unitframe modules
+    - buffs can now be canceled by right click
+    - fixed a nasty bug when changing zone
     - added tooltip support to buffs and debuffs
     - fixed LowerBar faction not changing on reputation change
 

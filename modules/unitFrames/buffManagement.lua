@@ -13,6 +13,7 @@ local _events     = privateVars.events
 local InspectUnitDetail     = Inspect.Unit.Detail
 local InspectBuffDetail     = Inspect.Buff.Detail
 local InspectUnitLookup     = Inspect.Unit.Lookup
+local InspectBuffList       = Inspect.Buff.List
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
@@ -22,7 +23,7 @@ local stringFormat  = string.format
 -- Buff management function
 
 function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
-    
+
     -- Buff management variables
     local unitBuffIcons = frame:GetBuffIcons() or {}
     local unitDebuffIcons = frame:GetDebuffIcons() or {}
@@ -72,8 +73,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                             table.insert(unitDebuffDisplayList, k)
 
                             if unitDebuffIcons[k] == nil then
+                                -- Use the icon manager to get an icon
+                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetScale(), 0, 0)
                                 unitDebuffIcons[k] = {
-                                    icon = uiElements.icon("nkUI." .. frame:GetUnitID() .. ".debuffIcon." .. k, uiElements.context),
+                                    icon = icon,
                                     visible = true,
                                     details = v
                                 }
@@ -103,8 +106,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                             table.insert(unitBuffDisplayList, k)
 
                             if unitBuffIcons[k] == nil then
+                                -- Use the icon manager to get an icon
+                                local icon = _internal.iconManager.get(frame:GetUnitID(), "buffIcon." .. k, .7 * frame:GetScale(), 0, 0)
                                 unitBuffIcons[k] = {
-                                    icon = uiElements.icon("nkUI." .. frame:GetUnitID() .. ".buffIcon." .. k, uiElements.context),
+                                    icon = icon,
                                     visible = true,
                                     details = v
                                 }
@@ -156,7 +161,7 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
         end
 
         updateBuffDisplay()
-    end
+    end    
 
     -- Update frame's buff management data
     frame:SetBuffIcons(unitBuffIcons)
@@ -239,7 +244,7 @@ function _internal.processBuffs ()
 
 	if data.targetID then		
 
-		local thisUnit = InsepctUnitLookup(data.targetID)
+		local thisUnit = InspectUnitLookup(data.targetID)
 		if thisUnit == "player.target" then
 
 			local buffList = InspectBuffList("player.target")			

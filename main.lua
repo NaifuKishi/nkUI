@@ -44,7 +44,7 @@ oFuncs.InspectBuffList				= Inspect.Buff.List
 data.colors = { primary	= { r = 1, g = 1, b = 1, a = 1 }, 
 				accent	= { r = .24, g = .68, b = .91, a = 1 }}
 				
-data.uiScale = 1
+data.uiScaleX, data.uiScaleY = 1, 1
 
 ---------- generate ui context ---------
 

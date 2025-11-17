@@ -278,7 +278,12 @@ function uiElements.icon (name, parent)
 
 	icon.Event.MouseOut =
 		function()
-			icon:HideTooltip(thisBuffID)
+			icon:HideTooltip(thisBuffId)
+		end
+
+	icon.Event.RightClick =
+		function()
+			Command.Buff.Cancel(thisBuffId)
 		end
 
 	function icon:SetBuff(unitType, buffId)
@@ -296,6 +301,7 @@ function uiElements.icon (name, parent)
 		Command.Tooltip(nil)
 	end
 
+	
 	return icon
 	
 end

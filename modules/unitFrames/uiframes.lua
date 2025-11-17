@@ -45,6 +45,60 @@ local frameManager = {
     framePool = {}
 }
 
+--[[
+   _frameManager.get
+    Description:
+        Retrieves or creates a unit frame for a specific unit type. This function manages a pool of reusable frames to optimize performance.
+    Parameters:
+        unitType (string): The type of unit (e.g., "player", "target", "player.pet")
+        scale (number): The scaling factor for the frame size
+        x (number): The x-coordinate position for the frame
+        y (number): The y-coordinate position for the frame
+        reverse (boolean): Whether to position the frame from the right side
+    Returns:
+        frame (table): The configured unit frame with all child elements and functionality
+    Process:
+        1. Checks if a frame already exists for the specified unit type
+        2. If not, checks the frame pool for available frames to reuse
+        3. If no reusable frames are available, creates a new frame
+        4. Configures the frame with the specified parameters
+        5. Sets up the frame's visual elements (health bar, name text, etc.)
+        6. Implements frame-specific functionality (buff management, unit details, etc.)
+        7. Adds the frame to the active frames collection
+    Notes:
+        - The function maintains a pool of reusable frames to optimize performance
+        - Frames are created with secure and non-secure components for proper UI functionality
+        - The frame includes various visual elements like health bar, name text, and energy text
+        - Buff management functionality is implemented for tracking buffs and debuffs
+        - The frame supports unit details like health, energy, and planar values
+        - Positioning can be reversed for right-aligned frames
+        - Each frame is uniquely identified and can be accessed by unit type
+    Available Methods:
+        - SetMacro(newMacro): Sets the macro to be executed when the frame is clicked
+        - ContextMenu(unitID): Sets up the context menu for the frame
+        - SetUnitID(newId): Sets the unit ID associated with the frame
+        - GetUnitID(): Returns the unit ID associated with the frame
+        - GetScale(): Returns the scaling factor of the frame
+        - SetCalling(calling): Sets the calling color for the frame
+        - SetName(name): Sets the unit name text
+        - SetPlanar(planar): Sets the planar value text
+        - SetEnergy(energy): Sets the energy value text
+        - SetHealthMax(newHealthMax): Sets the maximum health value
+        - SetHealth(health): Updates the health bar and text
+        - ProcessUnitDetails(newUnitID): Updates the frame with unit details
+        - GetBuffIcons(): Returns the buff icons collection
+        - GetDebuffIcons(): Returns the debuff icons collection
+        - GetBuffDisplayList(): Returns the buff display list
+        - GetDebuffDisplayList(): Returns the debuff display list
+        - SetBuffIcons(icons): Sets the buff icons collection
+        - SetDebuffIcons(icons): Sets the debuff icons collection
+        - SetBuffDisplayList(list): Sets the buff display list
+        - SetDebuffDisplayList(list): Sets the debuff display list
+        - addBuff(buffUnit, buffs): Adds buffs to the frame
+        - changeBuff(unit, buffs): Changes buffs on the frame
+        - ClearBuffs(): Clears all buffs from the frame
+        - removeBuff(buffUnit, buffs): Removes buffs from the frame
+]]
 function frameManager.get(unitType, scale, x, y, reverse)
     
     -- Check if frame already exists
@@ -294,6 +348,19 @@ function frameManager.get(unitType, scale, x, y, reverse)
     return unitFrame
 end
 
+--[[
+   _frameManager.clearAll
+    Description:
+        Clears all active unit frames and returns them to the pool. This function is used to reset the frame manager.
+    Process:
+        1. Iterates through all active frames
+        2. Hides each frame and adds it to the frame pool
+        3. Clears the active frames collection
+    Notes:
+        - This function is useful for resetting the UI state
+        - All frames are returned to the pool for potential reuse
+        - The active frames collection is emptied after processing
+]]
 function frameManager.release(unitType)
     if frameManager.activeFrames[unitType] then
         frameManager.activeFrames[unitType]:SetVisible(false)
@@ -302,6 +369,20 @@ function frameManager.release(unitType)
     end
 end
 
+
+--[[
+   _frameManager.clearAll
+    Description:
+        Clears all active unit frames and returns them to the pool. This function is used to reset the frame manager.
+    Process:
+        1. Iterates through all active frames
+        2. Hides each frame and adds it to the frame pool
+        3. Clears the active frames collection
+    Notes:
+        - This function is useful for resetting the UI state
+        - All frames are returned to the pool for potential reuse
+        - The active frames collection is emptied after processing
+]]
 function frameManager.clearAll()
     for k, v in pairs(frameManager.activeFrames) do
         v:SetVisible(false)
@@ -310,6 +391,25 @@ function frameManager.clearAll()
     frameManager.activeFrames = {}
 end
 
+--[[
+   _internal.uiFrames
+    Description:
+        Initializes and sets up the unit frames for player, player pet, and target. This function creates and configures the main UI elements.
+    Process:
+        1. Uses the frame manager to get frames for player, player pet, and target
+        2. Configures each frame with appropriate parameters
+        3. Sets up event handlers for each frame
+        4. Creates and configures resource bars and cast bars
+        5. Sets up update functions for each frame
+        6. Stores the frames in the uiElements.frames collection
+        7. Initializes events for the UI frames
+    Notes:
+        - This function sets up the core UI elements for the addon
+        - Each frame is configured with appropriate macros and event handlers
+        - Resource bars and cast bars are created and linked to the frames
+        - The function ensures proper initialization of all UI components
+        - Events are initialized to handle updates and interactions
+]]
 function _internal.uiFrames()
 
         -- Use the frame manager to get frames
@@ -427,6 +527,24 @@ function _internal.uiFrames()
 	
 end
 
+--[[
+   _internal.uiFramesToggle
+    Description:
+        Toggles the visibility of the unit frames. This function controls whether the UI elements are shown or hidden.
+    Parameters:
+        value (boolean): Whether to show or hide the frames
+    Process:
+        1. Checks if the frames need to be initialized
+        2. If initializing, calls _internal.uiFrames() to create the frames
+        3. Updates the player and resource bar with current unit details
+        4. Iterates through all frames and sets their visibility based on the value parameter
+        5. Ensures the player and target frames are always visible when toggled on
+    Notes:
+        - This function provides a simple way to show or hide the UI
+        - Initialization is performed only when needed
+        - The function ensures proper visibility state for all frames
+        - Player and target frames are always shown when toggled on
+]]
 function _internal.uiFramesToggle(value)
 
     if value == true and not uiElements.frames.player then

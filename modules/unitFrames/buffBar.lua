@@ -34,37 +34,29 @@ function _internal.buffBar.GetDebuffIcons ()
     return debuffIcons
 end
 
-function _internal.buffBar.GetBuffDisplayList ()
-    return buffDisplayList
-end
-
-function _internal.buffBar.GetDebuffDisplayList ()
-    return debuffDisplayList
-end
-
 function _internal.buffBar.UpdateBuffDisplay()
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", UIParent, 10, 10
     local lastIcon
     local firstBuffIcon = UIParent
 
-    for idx = 1, #buffDisplayList do
-        local icon = buffIcons[buffDisplayList[idx]].icon
+    local sortedBuffs = {}
+    local sortedDebuffs = {}
+
+    for k, v in pairs (buffDisplayList) do
+        local icon = buffIcons[k].icon
         icon:SetPoint(from, object, to, x, y)
-        lastIcon = icon
-        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5, 0
+        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
 
         if idx == 1 then firstBuffIcon = icon end
     end
 
     from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 10
-    lastIcon = nil
 
-    for idx = 1, #debuffDisplayList do
-        local icon = debuffIcons[debuffDisplayList[idx]].icon
+    for k, v in pairs (debuffDisplayList) do
+        local icon = debuffIcons[k].icon
         icon:SetPoint(from, object, to, x, y)
-        lastIcon = icon
-        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5, 0
+        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
     end
 end
 
@@ -76,47 +68,59 @@ function _internal.buffBar.addBuff(unit, buffs)
 
         if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
             --print ("debuff")
-            table.insert (debuffDisplayList, k)
+            if debuffDisplayList[k] == nil then
 
-            if debuffIcons[k] == nil then 
-                debuffIcons[k] = { icon = uiElements.icon ("nkUI.debuffIcon." .. k, uiElements.context), visible = true, details = v }
-                debuffIcons[k].icon:SetBuff(unit, k)
-                debuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                debuffIcons[k].icon:ShowBorder(true)
-                debuffIcons[k].icon:SetScale(data.uiScaleX)
-            else
-                debuffIcons[k].details = details
-                debuffIcons[k].visible = true
+                if debuffIcons[k] == nil then 
+                    local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, 1 * data.uiScaleX, 0, 0)
+                    debuffIcons[k] = { icon = icon, visible = true, name = v.name }
+                    
+                    debuffIcons[k].icon:SetBuff(unit, k)
+                    debuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
+                    debuffIcons[k].icon:ShowBorder(true)
+                    debuffIcons[k].icon:SetScale(data.uiScaleX)
+                else
+                    --debuffIcons[k].details = details
+                    debuffIcons[k].visible = true
+                end
+
+                if v.poison then
+                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                elseif v.curse then
+                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                elseif v.disease then
+                    debuffIcons[k].icon:SetBorderColor(0.85, 0.85, 0, 1)
+                elseif v.debuff then
+                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                end
+
+                debuffIcons[k].icon:SetTexture("Rift", v.icon)
+                debuffIcons[k].icon:SetVisible(true)		
+                
+                debuffDisplayList[k] = true
             end
-
-            if v.poison then
-                debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
-            elseif v.curse then
-                debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
-            elseif v.disease then
-                debuffIcons[k].icon:SetBorderColor(0.85, 0.85, 0, 1)
-            elseif v.debuff then
-                debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
-            end
-
-            debuffIcons[k].icon:SetTexture("Rift", v.icon)
-            debuffIcons[k].icon:SetVisible(true)					
         else
-            table.insert (buffDisplayList, k)
 
-            if buffIcons[k] == nil then 
-                buffIcons[k] = { icon = uiElements.icon ("nkUI.buffIcon." .. k, uiElements.context), visible = true, details = v }
-                buffIcons[k].icon:SetBuff(unit, k)
-                buffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                buffIcons[k].icon:ShowBorder(true)
-                buffIcons[k].icon:SetScale(data.uiScaleX)
-            else
-                buffIcons[k].details = details
-                buffIcons[k].visible = true
+            if buffDisplayList[k] == nil then
+
+                if buffIcons[k] == nil then 
+                    local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. k, 1 * data.uiScaleX, 0, 0)
+                    buffIcons[k] = { icon = icon, visible = true, name = v.name }
+
+                    --buffIcons[k] = { icon = uiElements.icon ("nkUI.buffIcon." .. k, uiElements.context), visible = true, details = v }
+                    buffIcons[k].icon:SetBuff(unit, k)
+                    buffIcons[k].icon:SetEffect(privateVars.effects.gloss)
+                    buffIcons[k].icon:ShowBorder(true)
+                    buffIcons[k].icon:SetScale(data.uiScaleX)
+                else
+                    --buffIcons[k].details = details
+                    buffIcons[k].visible = true
+                end
+
+                buffIcons[k].icon:SetTexture("Rift", v.icon)
+                buffIcons[k].icon:SetVisible(true)
+
+                buffDisplayList[k] = true
             end
-
-            buffIcons[k].icon:SetTexture("Rift", v.icon)
-            buffIcons[k].icon:SetVisible(true)
         end					
     end
 end
@@ -127,11 +131,34 @@ function _internal.buffBar.removeBuff (unit, buffs)
         if buffIcons[id] then
             buffIcons[id].visible = false
             buffIcons[id].icon:SetVisible(false)
-            EnKai.tools.table.removeValue (buffDisplayList, id)
+            buffDisplayList[id] = nil 
         elseif debuffIcons[id] then
             debuffIcons[id].visible = false
             debuffIcons[id].icon:SetVisible(false)
-            EnKai.tools.table.removeValue (debuffDisplayList, id)
+            debuffDisplayList[id] = nil
         end
     end
+end
+
+--[[
+   _internal.buffBar.clearAllBuffs
+    Description:
+        Clears all active buff icons. This function is used to reset the UI state for all buffs.
+    Process:
+        1. Iterates through all active buff icons
+        2. Hides each buff icon
+        3. Removes each buff icon from the display list
+        4. Clears the buff icons collection
+    Notes:
+        - This function is useful for resetting the UI state for all buffs
+        - All buff icons are hidden and removed from the display list
+        - The buff icons collection is emptied after processing
+]]
+function _internal.buffBar.clearAllBuffs()
+
+    _internal.iconManager.clearAll()
+
+    buffDisplayList = {}
+    debuffDisplayList = {}
+    
 end

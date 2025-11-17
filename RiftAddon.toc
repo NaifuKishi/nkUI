@@ -19,6 +19,7 @@ RunOnStartup = {
 	"modules/unitFrames/events.lua",
 	"modules/unitFrames/buffBar.lua",
 	"modules/unitFrames/buffManagement.lua",
+	"modules/unitFrames/iconManagement.lua",
 	"modules/unitFrames/uiframes.lua",
 	"modules/unitFrames/castbar.lua",
 	"modules/unitFrames/buffIcon.lua",
