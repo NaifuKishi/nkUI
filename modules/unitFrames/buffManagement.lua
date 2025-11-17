@@ -35,8 +35,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
         local lastIcon
         local firstBuffIcon = frame
 
-        for idx = 1, #unitBuffDisplayList do
-            local icon = unitBuffIcons[unitBuffDisplayList[idx]].icon
+        for k, v in pairs (unitBuffDisplayList) do
+        --for idx = 1, #unitBuffDisplayList do
+            --local icon = unitBuffIcons[unitBuffDisplayList[idx]].icon
+            local icon = unitBuffIcons[k].icon
             icon:ClearAll()
             icon:ClearPoint("BOTTOMLEFT")
             icon:SetPoint(from, object, to, x, y)
@@ -50,15 +52,17 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
         from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10
         lastIcon = nil
 
-        for idx = 1, #unitDebuffDisplayList do
-            local icon = unitDebuffIcons[unitDebuffDisplayList[idx]].icon
-            if icon then
+        --for idx = 1, #unitDebuffDisplayList do
+        --    local icon = unitDebuffIcons[unitDebuffDisplayList[idx]].icon
+        for k, v in pairs (unitDebuffDisplayList) do
+            local icon = unitDebuffIcons[k].icon
+            --if icon then
                 icon:ClearAll()
                 icon:SetPoint(from, object, to, x, y)
                 icon:SetScale(.7 * frame:GetScale())
                 lastIcon = icon
                 from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5, 0
-            end
+            --end
         end
     end
 
@@ -69,8 +73,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
             for k, v in pairs(details) do
                 if (v.remaining and v.remaining < 60) then
                     if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                        if EnKai.tools.table.isMember(unitDebuffDisplayList, k) == false then
-                            table.insert(unitDebuffDisplayList, k)
+                        --if EnKai.tools.table.isMember(unitDebuffDisplayList, k) == false then
+                        if unitDebuffDisplayList[k] == nil then
+                            --table.insert(unitDebuffDisplayList, k)
+                            unitDebuffDisplayList[k] = true
 
                             if unitDebuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
@@ -102,8 +108,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                             unitDebuffIcons[k].icon:SetVisible(true)
                         end
                     else
-                        if EnKai.tools.table.isMember(unitBuffDisplayList, k) == false then
-                            table.insert(unitBuffDisplayList, k)
+                        --if EnKai.tools.table.isMember(unitBuffDisplayList, k) == false then
+                        --    table.insert(unitBuffDisplayList, k)
+                        if (unitBuffDisplayList[k] == nil) then
+                           unitBuffDisplayList[k] = true
 
                             if unitBuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
@@ -151,11 +159,13 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                 if unitBuffIcons[id] then
                     unitBuffIcons[id].visible = false
                     unitBuffIcons[id].icon:SetVisible(false)
-                    EnKai.tools.table.removeValue(unitBuffDisplayList, id)
+                    --EnKai.tools.table.removeValue(unitBuffDisplayList, id)
+                    unitBuffDisplayList[id] = nil
                 elseif unitDebuffIcons[id] then
                     unitDebuffIcons[id].visible = false
                     unitDebuffIcons[id].icon:SetVisible(false)
-                    EnKai.tools.table.removeValue(unitDebuffDisplayList, id)
+                    --EnKai.tools.table.removeValue(unitDebuffDisplayList, id)
+                    unitDebuffDisplayList[id] = nil
                 end
             end
         end
