@@ -6,14 +6,27 @@ local data        = privateVars.data
 local uiElements  = privateVars.uiElements
 local _internal   = privateVars.internal
 local _events     = privateVars.events
-local oFuncs	= privateVars.oFuncs
 
 ---------- init local variables ---------
 
-local oInspectSystemSecure = Inspect.System.Secure
-local oInspectTimeServer = Inspect.Time.Server
+local InspectSystemSecure       = Inspect.System.Secure
+local InspectTimeServer         = Inspect.Time.Server
+local InspectTimeFrame          = Inspect.Time.Frame
+local InspectCurrencyDetail     = Inspect.Currency.Detail
+local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
+local InspectUnitDetail         = Inspect.Unit.Detail
+local InspectExperience         = Inspect.Experience
+local InspectFactionList        = Inspect.Faction.List
+local InspectFactionDetail      = Inspect.Faction.Detail
+local InspectGuildRosterDetail  = Inspect.Guild.Roster.Detail
+local InspectGuildRosterList    = Inspect.Guild.Roster.List
+local InspectSocialFriendDetail = Inspect.Social.Friend.Detail
+local InspectSocialFriendList   = Inspect.Social.Friend.List
 
-local oSGSub      = string.gsub
+local stringGSub        = string.gsub
+local stringFormat      = string.format
+local osDate            = os.date
+local mathFloor         = math.floor
 
 local name = "lowerBar"
 local parentWidth = UIParent:GetWidth()
@@ -44,21 +57,21 @@ function _internal.timeDate ()
     datasetDate:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetDate:SetTextFont(addonInfo.id, "Montserrat")    
 
-    local updateClockTime = oFuncs.InspectTimeServer()
+    local updateClockTime = InspectTimeServer()
     local updateDate
 
     local function _updateClock ()
 
-		local now = oFuncs.InspectTimeServer()
+		local now = InspectTimeServer()
 		deltaTime = now - updateClockTime
 
 		if (updateDate == nil or deltaTime > 60) then
-            local temp = os.date("*t", now)
-            datasetTime:SetText(string.format("%02d:%02d", temp.hour, temp.min))
+            local temp = osDate("*t", now)
+            datasetTime:SetText(stringFormat("%02d:%02d", temp.hour, temp.min))
             updateCockTime = now
 
             if updateDate == nil then
-                datasetDate:SetText(string.format("%02d/%02d/%02d", temp.day, temp.month, temp.year))            
+                datasetDate:SetText(stringFormat("%02d/%02d/%02d", temp.day, temp.month, temp.year))            
             end
         end        
     end
@@ -93,14 +106,14 @@ function _internal.currency ()
 	
 		if currency['coin'] == nil then return end
 	
-		local details = oFuncs.InspectCurrencyDetail('coin')
+		local details = InspectCurrencyDetail('coin')
 			
 		if details ~= nil and details.stack ~= nil then
-			local platin = math.floor(details.stack / 10000)
-			local gold = math.floor((details.stack - (platin * 10000)) / 100)
+			local platin = mathFloor(details.stack / 10000)
+			local gold = mathFloor((details.stack - (platin * 10000)) / 100)
 			local silver = details.stack - (platin * 10000) - (gold * 100) 
             
-			datasetCurrency:SetText(string.format(currencyText, platin, gold, silver, freeBagCount), true)
+			datasetCurrency:SetText(stringFormat(currencyText, platin, gold, silver, freeBagCount), true)
 		end
 	end
 
@@ -108,10 +121,11 @@ function _internal.currency ()
         local freeBagSlots = EnKai.inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
 		_updateCoin(_, {coin = true})
-	end, "nkUI.EnKai.InventoryManager.Update")
-	
-    _updateCoin(_, {coin = true})
+	end, "nkUI.EnKai.InventoryManager.Update")	
+
 	Command.Event.Attach(Event.Currency, _updateCoin, "nkUI.lowerbar.Currency.Currency")
+
+    _updateCoin(_, {coin = true})
 
     table.insert(uiElements.lowerBarModules, datasetCurrency)
 
@@ -132,7 +146,7 @@ function _internal.fps()
 		
 	local function _updateFPS()
 
-		local now = oFuncs.InspectTimeFrame()
+		local now = InspectTimeFrame()
 		local lastFrame = fpsUpdateTime or now
 
 		fpsDeltaTime = now - lastFrame
@@ -140,7 +154,7 @@ function _internal.fps()
 		frameCount = frameCount + 1
 
 		if (fpsTimer > 1) then
-			datasetFPS:SetText(string.format("%d fps", frameCount / fpsTimer))
+			datasetFPS:SetText(stringFormat("%d fps", frameCount / fpsTimer))
 			frameCount, fpsTimer = 0, 0
 		end
 
@@ -166,7 +180,7 @@ function _internal.location()
 
     local buttons = {}
     local abilities = {["A3C5AEC64D3793518"] = true}
-    local abilityDetails = oFuncs.InspectAbilityNewDetail(abilities)
+    local abilityDetails = InspectAbilityNewDetail(abilities)
     local parent = datasetLocation
 
     for k, v in pairs (abilityDetails) do
@@ -184,7 +198,7 @@ function _internal.location()
         datasetLocationButtonTexture:SetPoint("TOPLEFT", datasetLocationButton, "TOPLEFT", 1, 1)
         datasetLocationButtonTexture:SetPoint("BOTTOMRIGHT", datasetLocationButton, "BOTTOMRIGHT", -1, -1)
 
-        local macro = "cast " .. oSGSub(v.name, "\n", "")
+        local macro = "cast " .. stringGSub(v.name, "\n", "")
         datasetLocationButtonTexture:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
         datasetLocationButtonTexture:SetVisible(true)
         table.insert (buttons, datasetLocationButton)        
@@ -200,7 +214,7 @@ function _internal.location()
    	local function _updateLocation(_, loc)
 	
 		if playerID == nil then
-			local playerDetails = oFuncs.InspectUnitDetail('player')
+			local playerDetails = InspectUnitDetail('player')
 			if playerDetails == nil then return end
 			playerID = playerDetails.id
 			if playerID == nil then return end
@@ -215,7 +229,7 @@ function _internal.location()
 		for unit, data in pairs(info) do
 			if data == "player" then
 				playerID = unit
-				local details = oFuncs.InspectUnitDetail(unit)
+				local details = InspectUnitDetail(unit)
 				datasetLocation:SetText(details.locationName)
 				return
 			end
@@ -255,21 +269,21 @@ function _internal.experience ()
 
 	local function _updateExperience()
 
-		local now = oFuncs.InspectTimeFrame()
+		local now = InspectTimeFrame()
 
 		if not updateTime or now - updateTime > 1 then
 			updateTime = now
             percent = 0
 
-			local experience = oFuncs.InspectExperience()
+			local experience = InspectExperience()
 
 			if experience == nil then 
-				datasetExp:SetText(string.format("%d%%", 0))
+				datasetExp:SetText(stringFormat("%d%%", 0))
 			elseif experience.accumulated == nil then
-				datasetExp:SetText(string.format("%d%%", 0))
+				datasetExp:SetText(stringFormat("%d%%", 0))
 			else			
                 percent = 100 / experience.needed * experience.accumulated
-				datasetExp:SetText(string.format("%d%%", percent ))
+				datasetExp:SetText(stringFormat("%d%%", percent ))
 			end
 
             datasetExpBar:SetWidth ( data.layout.barWidth * (percent/100))
@@ -277,8 +291,10 @@ function _internal.experience ()
 		end
 	end
 
-    _updateExperience()
+    
     Command.Event.Attach(Event.System.Update.Begin, _updateExperience, "nkui.lowerBar.exp.System.Update.Begin")
+
+    _updateExperience()
 
     table.insert(uiElements.lowerBarModules, datasetExpBarBG)
     table.insert(uiElements.lowerBarModules, datasetExp)
@@ -302,9 +318,9 @@ function _internal.faction ()
             venerated = 90000
     }
 
-    local list = oFuncs.InspectFactionList()
+    local list = InspectFactionList()
 
-    local flag, detailList = pcall (oFuncs.InspectFactionDetail, list)
+    local flag, detailList = pcall (InspectFactionDetail, list)
     if flag and detailList ~= nil then
         for key, details in pairs(detailList) do
             currentFaction = details.id
@@ -346,21 +362,21 @@ function _internal.faction ()
 
         if currentFaction == nil then return end
 
-        local now = oFuncs.InspectTimeFrame()
+        local now = InspectTimeFrame()
 
 		if not updateTime or now - updateTime > 1 then
 			updateTime = now
             percent = 0
             level = ""
             
-			local faction = oFuncs.InspectFactionDetail(currentFaction)
+			local faction = InspectFactionDetail(currentFaction)
 
 			if faction == nil then 
-				datasetFaction:SetText(string.format("%d%%", 0))
+				datasetFaction:SetText(stringFormat("%d%%", 0))
                 datasetFactionName:SetText("")
 			elseif faction.notoriety == nil then
-				datasetFaction:SetText(string.format("%d%%", 0))
-                datasetFactionName:SetText("")datasetExp:SetText(string.format("%d%%", percent ))
+				datasetFaction:SetText(stringFormat("%d%%", 0))
+                datasetFactionName:SetText("")datasetExp:SetText(stringFormat("%d%%", percent ))
             else
                 for k, v in pairs (notorietyLevels) do
                     if faction.notoriety <= v then
@@ -370,8 +386,8 @@ function _internal.faction ()
                     end
                 end
                 
-                datasetFactionName:SetText(string.format("%s (%s)", faction.name, level))
-                datasetFaction:SetText(string.format("%d%%", percent ))
+                datasetFactionName:SetText(stringFormat("%s (%s)", faction.name, level))
+                datasetFaction:SetText(stringFormat("%d%%", percent ))
                 datasetFactionBar:SetWidth ( data.layout.barWidth * (percent/100))
 			end
 		end
@@ -410,7 +426,7 @@ function _internal.social ()
 	
 	local function _processGuildMember (memberName) -- needed
 
-		local details = oFuncs.InspectGuildRosterDetail(memberName)
+		local details = InspectGuildRosterDetail(memberName)
 		
 		if details == nil then return end
 		
@@ -421,7 +437,7 @@ function _internal.social ()
 	
 	local function _loadGuildRoaster() --needed
 
-		local glist = oFuncs.InspectGuildRosterList()
+		local glist = InspectGuildRosterList()
 		
 		if glist ~= nil then
 			for k, v in pairs (glist) do
@@ -429,13 +445,13 @@ function _internal.social ()
 			end
 		end
 		
-		lastGuildUpdate = oFuncs.InspectTimeFrame()
+		lastGuildUpdate = InspectTimeFrame()
 		
 	end
 	
 	local function _processFriend (friendName) -- needed
 
-		local details = oFuncs.InspectSocialFriendDetail(friendName)
+		local details = InspectSocialFriendDetail(friendName)
 		
 		table.insert(_friendlist, { name = details.name, level = details.level, calling = EnKai.unit.getCallingText(details.calling), zone = "" }) 
 	
@@ -444,19 +460,19 @@ function _internal.social ()
 	local function _friendChange () -- needed
 
 		_friendlist = {}
-		local flist = oFuncs.InspectSocialFriendList()
+		local flist = InspectSocialFriendList()
 		
 		for k, v in pairs(flist) do
 			if v == "online" then _processFriend(k) end
 		end
 
-		datasetSocial:SetText(string.format("Friends %d | Guild %d", #_friendlist, #_guildList))
+		datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
 	end
 	
 	
 	local function _guildStatusChange (_, data) --needed
 
-		if lastGuildUpdate == nil or lastGuildUpdate - oFuncs.InspectTimeFrame() > 60 then
+		if lastGuildUpdate == nil or lastGuildUpdate - InspectTimeFrame() > 60 then
 			_loadGuildRoaster()
 		else
 			for k, v in pairs(data) do
@@ -474,13 +490,13 @@ function _internal.social ()
 				end
 			end
 
-			datasetSocial:SetText(string.format("Friends %d | Guild %d", #_friendlist, #_guildList))
+			datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
 		end
 	end
 	
 	local function _guildZoneChange (_, data)
 
-		if lastGuildUpdate == nil or lastGuildUpdate - oFuncs.InspectTimeFrame() > 60 then
+		if lastGuildUpdate == nil or lastGuildUpdate - InspectTimeFrame() > 60 then
 			_loadGuildRoaster()
 		else
 			for k, v in pairs(data) do
@@ -492,7 +508,7 @@ function _internal.social ()
 				_processGuildMember(k)
 			end
 
-			datasetSocial:SetText(string.format("Friends %d | Guild %d", #_friendlist, #_guildList))
+			datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
 		end
 	end
 	
