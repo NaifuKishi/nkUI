@@ -1,0 +1,157 @@
+
+<!-- saved from url=(0058)https://www.seebs.net/rift/pts/inspect_ability_detail.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>API Docs (pts) -- Inspect.Ability.Detail</title></head>
+  <body>
+    <style>
+      table { border-style: solid; border-collapse: collapse; }
+      th { border-bottom-style: solid; padding: 3pt; text-align: left; vertical-align: top; }
+      td { border-bottom-style: solid; padding: 3pt; text-align: left; vertical-align: top; }
+    </style>
+    <h2><a name="Inspect.Ability.Detail">Inspect.Ability.Detail</a> (deprecated)</h2>
+    <p><i></i> Provides detailed information about abilities.</p>
+    <h3>Usage:   </h3>
+    <table>
+      <tbody><tr><td colspan="4"><i>detail</i> = Inspect.Ability.Detail(<i>ability</i>)</td></tr>
+      <tr><td colspan="4"><i>details</i> = Inspect.Ability.Detail(<i>abilities</i>)</td></tr>
+      <tr><th>Parameter</th><th>Type</th><th>Datatype</th><th>Description</th></tr>
+      <tr><td><i>abilities</i></td><td>parameter</td><td><i>table</i></td><td>A table of identifiers of abilities to retrieve detail for.</td></tr>
+      <tr><td><i>ability</i></td><td>parameter</td><td><i>ability</i></td><td>The identifier of the ability to retrieve detail for.</td></tr>
+      <tr><td><i>detail</i></td><td>result</td><td><i>table</i></td><td>Detail table for a single ability.</td></tr>
+      <tr><td><i>details</i></td><td>result</td><td><i>table</i></td><td>Detail tables for all requested abilities. The key is the ability ID, the value is the ability's detail table.</td></tr>
+    </tbody></table>
+    <dl>
+      <dt><b>disabled</b></dt>
+      <dd>true</dd>
+      <dt><b>deprecated</b></dt>
+      <dd>hard</dd>
+      <dt><b>members</b></dt>
+      <dd>
+        <table>
+          <tbody><tr>
+            <th>autoattack</th>
+            <td>Autoattack mode of the ability.
+          </td></tr>
+          <tr>
+            <th>castingTime</th>
+            <td>Casting time of the ability, in seconds.
+          </td></tr>
+          <tr>
+            <th>channeled</th>
+            <td>Signals that the ability is channeled.
+          </td></tr>
+          <tr>
+            <th>continuous</th>
+            <td>Signals that the ability is continuous.
+          </td></tr>
+          <tr>
+            <th>cooldown</th>
+            <td>Cooldown of the ability, in seconds.
+          </td></tr>
+          <tr>
+            <th>costCharge</th>
+            <td>The amount of charge this ability consumes on use.
+          </td></tr>
+          <tr>
+            <th>costEnergy</th>
+            <td>The amount of energy this ability consumes on use.
+          </td></tr>
+          <tr>
+            <th>costMana</th>
+            <td>The amount of mana this ability consumes on use.
+          </td></tr>
+          <tr>
+            <th>costPlanarCharge</th>
+            <td>The amount of planar charges this ability consumes on use.
+          </td></tr>
+          <tr>
+            <th>costPower</th>
+            <td>The amount of power this ability consumes on use.
+          </td></tr>
+          <tr>
+            <th>currentCooldownBegin</th>
+            <td>The time the current cooldown started, in the context of Inspect.Time.Frame.
+          </td></tr>
+          <tr>
+            <th>currentCooldownDuration</th>
+            <td>Duration of the current cooldown the ability is influenced by, in seconds.
+          </td></tr>
+          <tr>
+            <th>currentCooldownExpired</th>
+            <td>Number of seconds the current cooldown is past its expiration time. Generally indicates lag.
+          </td></tr>
+          <tr>
+            <th>currentCooldownPaused</th>
+            <td>Indicates that this ability's cooldown is paused.
+          </td></tr>
+          <tr>
+            <th>currentCooldownRemaining</th>
+            <td>Time remaining in the ability's current cooldown, in seconds.
+          </td></tr>
+          <tr>
+            <th>description</th>
+            <td>Description for the ability.
+          </td></tr>
+          <tr>
+            <th>gainCharge</th>
+            <td>Amount of charge gained by using the ability.
+          </td></tr>
+          <tr>
+            <th>icon</th>
+            <td>Resource filename of the ability's icon.
+          </td></tr>
+          <tr>
+            <th>id</th>
+            <td>The ID of the requested element.
+          </td></tr>
+          <tr>
+            <th>idNew</th>
+            <td>The new ability ID.
+          </td></tr>
+          <tr>
+            <th>name</th>
+            <td>Name of the ability.
+          </td></tr>
+          <tr>
+            <th>outOfRange</th>
+            <td>Signals that the ability is out of range.
+          </td></tr>
+          <tr>
+            <th>passive</th>
+            <td>Signals that the ability is passive.
+          </td></tr>
+          <tr>
+            <th>positioned</th>
+            <td>Signals that the ability's effect is manually positioned by the user.
+          </td></tr>
+          <tr>
+            <th>racial</th>
+            <td>Signals that the ability is a racial ability.
+          </td></tr>
+          <tr>
+            <th>rangeMax</th>
+            <td>The maximum range of the ability.
+          </td></tr>
+          <tr>
+            <th>rangeMin</th>
+            <td>The minimum range of the ability.
+          </td></tr>
+          <tr>
+            <th>stealthRequired</th>
+            <td>Signals that the ability requires the user to be in stealth.
+          </td></tr>
+          <tr>
+            <th>target</th>
+            <td>The Unit ID of the unit that this ability will be used on if triggered at this moment.
+          </td></tr>
+          <tr>
+            <th>unusable</th>
+            <td>Signals that this ability is unusable.
+          </td></tr>
+          <tr>
+            <th>weapon</th>
+            <td>The required equipped weapon for this ability. May be "any", "melee", or "ranged".
+          </td></tr>
+        </tbody></table>
+      </dd>
+    </dl>
+<protonpass-root-59b2 data-protonpass-role="root" data-protonpass-theme="os"><template shadowrootmode="closed"></template></protonpass-root-59b2><protonpass-root-64aa data-protonpass-role="root" data-protonpass-theme="os"><template shadowrootmode="closed"></template></protonpass-root-64aa></body></html>

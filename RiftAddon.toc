@@ -1,0 +1,48 @@
+Identifier = "nkUI"
+Name = "Naifu's UI Suite"
+NameShort ="nkUI"
+Description = "Naifu's user interface"
+
+Author = "Naifu"
+Email = "naifukishi@gmail.com"
+
+Version = "0.0.5"
+Environment = "4.0"
+
+RunOnStartup = {
+	"main.lua",
+	"locales/localizationEN.lua",
+	"locales/localizationDE.lua",
+
+	"modules/lowerbar/lowerbar.lua",
+
+	"modules/unitFrames/events.lua",
+	"modules/unitFrames/buffBar.lua",
+	"modules/unitFrames/buffManagement.lua",
+	"modules/unitFrames/uiframes.lua",
+	"modules/unitFrames/castbar.lua",
+	"modules/unitFrames/buffIcon.lua",
+	"modules/unitFrames/ressourceBar.lua",	
+
+	"modules/tooltip/tooltip.lua",
+
+	"settings/settings.lua",
+
+	--"modules/actionbar/actionbar.lua",
+	--"modules/actionbar/bars.lua",
+	--"modules/actionbar/events.lua",
+}
+
+Embed = {	
+  ["Libs/EnKai"] = true,
+  ["Libs/nkUnit"] = true,
+}
+
+Dependencies = {
+  EnKai = {"required", "before"},
+  nkUnit = {"required", "before"},
+}
+
+SavedVariables = {
+   nkUISetup	 	   = "account"
+}

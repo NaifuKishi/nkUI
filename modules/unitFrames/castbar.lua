@@ -1,0 +1,82 @@
+local addonInfo, privateVars = ...
+
+---------- init namespace ---------
+
+local data			= privateVars.data
+local uiElements	= privateVars.uiElements
+local _internal		= privateVars.internal
+local _events		= privateVars.events
+local _ui			= privateVars.ui
+local oFuncs		= privateVars.oFuncs
+
+---------- init local variables ---------
+
+local _eventHandlers = {}
+
+---------- init variables ---------
+
+local name = "uiCastBars"
+
+---------- local function block ---------
+
+---------- addon internal function block ---------
+
+function _internal.createCastBar (unitType, parent)
+
+	local thisName = name .. "." .. unitType
+
+	local castbar =  EnKai.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.secureContext)
+	castbar:SetVisible(false)
+	castbar:SetWidth(250 * data.uiScaleX)
+	castbar:SetHeight(24 * data.uiScaleY)
+	castbar:SetBackgroundColor(0, 0,0 , 1)
+	
+	if unitType == "player" then
+		castbar:SetPoint("TOPCENTER", parent, "BOTTOMCENTER", 0, 59 * data.uiScaleY)		
+	elseif unitType == "player.target" then
+		castbar:SetPoint("BOTTOMCENTER", parent, "TOPCENTER", 0, -100 * data.uiScaleY)
+	end
+
+	local castbarFill = EnKai.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
+	castbarFill:SetPoint("TOPLEFT", castbar, "TOPLEFT", 1, 1)
+	castbarFill:SetHeight(22 * data.uiScaleY)
+	castbarFill:SetLayer(1)
+	
+	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
+    local path = {  {xProportional = 0, yProportional = 0},
+                  {xProportional = 1, yProportional = 0},
+                  {xProportional = 1, yProportional = 1},
+                  {xProportional = 0, yProportional = 1},
+                  {xProportional = 0, yProportional = 0}
+                  }  
+
+	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 0, g = .40, b = .80, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+	castbarFill:SetShape (path, color, stroke)
+
+	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
+	castBarText:SetPoint("CENTER", castbar, "CENTER")
+	castBarText:SetFontSize(16 * data.uiScaleX)
+	castBarText:SetFontColor (1, 1, 1, 1)
+	castBarText:SetEffectGlow({ strength = 1})
+	castBarText:SetLayer(2)
+
+	local castBarTimer = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Timerr", castbar)
+	castBarTimer:SetPoint("CENTERRIGHT", castbar, "CENTERRIGHT")
+	castBarTimer:SetFontSize(14 * data.uiScaleX)
+	castBarTimer:SetFontColor (1, 1, 1, 1)
+	castBarTimer:SetEffectGlow({ strength = 1})
+	castBarTimer:SetLayer(2)
+	
+	function castbar:SetTimer (remaining, duration)
+		local percent = 1 / duration * (duration - remaining)
+		castbarFill:SetWidth((248 * data.uiScaleX) * percent)		
+		castBarTimer:SetText(string.format("%.1f", remaining))
+	end
+
+	function castbar:SetSpell(spellname)
+		castBarText:SetText(spellname)
+	end
+
+	return castbar
+
+end

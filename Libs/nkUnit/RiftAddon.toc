@@ -1,0 +1,26 @@
+Identifier = "nkUnit"
+Name = "nkUnit"
+Description = "A library handling units."
+
+Author = "Naifu"
+Email = "nkAddons@gmail.com"
+
+Version = "1.0.2"
+Environment = "1.9"
+
+RunOnStartup = {
+  "main.lua",
+  "events.lua"
+}
+
+Embed = {
+  ["LibUnitChange"] = true,
+}
+
+Dependencies = {
+  LibUnitChange = {"required", "before"},
+}
+-- X-Curse-Packaged-Version: V2.0.9
+-- X-Curse-Project-Name: nkThings
+-- X-Curse-Project-ID: nkthings
+-- X-Curse-Repository-ID: rift/nkthings/mainline

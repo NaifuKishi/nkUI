@@ -1,0 +1,23 @@
+v0.0.6
+    - added tooltip support to buffs and debuffs
+    - fixed LowerBar faction not changing on reputation change
+
+v0.0.5
+
+    - added tutorial style settings
+    - fixed tooltip showing when hovering items or abilities
+    - fixed the hiding and showing of player ressource bar (combat / non combat)
+
+v0.0.4
+
+    - added auto scaling for screen sizes
+    - added unit tooltip module
+    - fixed error when changing zone
+    - changed castbar duration to show more precise values
+    - added out of combat alpha
+    - fixed buffs and debuffs out of combat alpha
+
+know bug list
+
+    - buffs go crazy on zone change
+    
