@@ -3,6 +3,7 @@ v0.0.6
     - new: added tooltip support to buffs and debuffs
     - update: quite some code optimization in the unitframe modules
     - update: improved buff handling on unit frames
+    - fixes: buff tooltip display
     - fixes: fixed a nasty bug when changing zone    
     - fixes: fixed LowerBar faction not changing on reputation change
 

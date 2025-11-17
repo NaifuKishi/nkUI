@@ -11,6 +11,7 @@ local oFuncs		= privateVars.oFuncs
 
 ---------- init local variables ---------
 
+-- Cache frequently used functions and values
 local _eventHandlers = {}
 
 ---------- init variables ---------
@@ -273,7 +274,7 @@ function uiElements.icon (name, parent)
 
 	icon.Event.MouseIn =
 		function()		
-			icon:ShowTooltip(thisUnitType, thisBuffId)
+			icon:ShowTooltip()
 		end
 
 	icon.Event.MouseOut =
@@ -290,10 +291,9 @@ function uiElements.icon (name, parent)
 		thisUnitType, thisBuffId = unitType, buffId
 	end
 
-	function icon:ShowTooltip(unitType, buffId)
-		--print (unitType, buffId)
-		if buffId then
-			Command.Tooltip(unitType, buffId)
+	function icon:ShowTooltip()
+		if thisBuffId then
+			Command.Tooltip(thisUnitType, thisBuffId)
 		end
 	end
 
