@@ -1,5 +1,7 @@
 v0.0.7
     - update: Improved castbar handling to improve performance
+    - update: Changed colors of debuff types
+    - fixes: debuff were no longer been displayed on main buff bar
 
 v0.0.6
     - new: buffs can now be canceled by right click

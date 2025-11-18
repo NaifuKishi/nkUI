@@ -192,7 +192,7 @@ function _internal.processBuffs ()
 		local details = InspectBuffDetail("player", buffList)
 
 		local buffIcons = _internal.buffBar:GetBuffIcons()
-		local debuffIcons = _internal.buffBar:GetBuffIcons()
+		local debuffIcons = _internal.buffBar:GetDebuffIcons()
 
 		for k, v in pairs (details) do
 			if v.remaining then
