@@ -3,6 +3,7 @@ v0.0.7
     - update: Changed colors of debuff types
     - fixes: debuff were no longer been displayed on main buff bar
     - fixes: timer not working on debuffs on main buff bar
+    - fixes: player cast bar bug when teleporting
 
 v0.0.6
     - new: buffs can now be canceled by right click

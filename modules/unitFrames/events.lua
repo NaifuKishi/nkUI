@@ -338,7 +338,13 @@ function _events.uiFramesInitEvents()
 
 		if playerCastBar then
 			local thisFrame = uiElements.frames.playerCastbar
-			thisFrame:SetTimer (playerCastBar.duration - (InspectTimeReal() - playerCastBar.start), playerCastBar.duration)
+			local remaining = playerCastBar.duration - (InspectTimeReal() - playerCastBar.start)
+			if remaining <= 0 then				
+				data.playerCastbar = nil
+				thisFrame:SetVisible(false)
+			else				
+				thisFrame:SetTimer (remaining, playerCastBar.duration)
+			end
 		end
 
 		local targetCastBar = data.targetCastbar
