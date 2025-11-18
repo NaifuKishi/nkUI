@@ -10,7 +10,13 @@ local uiFunctions   = privateVars.uiFunctions
 local internal      = privateVars.internal
 local data          = privateVars.data
 local mapData       = privateVars.mapData
-local oFuncs	  	= privateVars.oFuncs
+
+local InspectAddonCurrent	= Inspect.Addon.Current
+local InspectMouse			= Inspect.Mouse
+local stringFormat			= string.format
+local stringLower			= string.lower
+local mathFloor				= math.floor
+local mathAbs				= math.abs
 
 ---------- addon internal function block ---------
 
@@ -101,7 +107,7 @@ local function _uiMap(name, parent)
 	local function _fctRedraw ()
 
 		local debugId  
-		if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:Redraw") end    
+		if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:Redraw") end    
 
 		local thisScale = scale
 		if maximized == true then thisScale = maximizedScale end
@@ -141,7 +147,7 @@ local function _uiMap(name, parent)
 				EnKai.eventHandlers[name]["Zoomed"](thisScale, maximized)
 			end
 
-			if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:Redraw", debugId) end
+			if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:Redraw", debugId) end
 
 		end
 
@@ -150,7 +156,7 @@ local function _uiMap(name, parent)
 		if map:GetWidth() >= mask:GetWidth() and map:GetHeight() >= mask:GetHeight() then
 
 			local debugId  
-			if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ZoomOut") end
+			if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:ZoomOut") end
 
 			local thisScale = scale
 			if maximized == true then thisScale = maximizedScale end
@@ -168,14 +174,14 @@ local function _uiMap(name, parent)
 				EnKai.eventHandlers[name]["Zoomed"](thisScale, maximized)
 			end 
 
-			if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ZoomOut", debugId) end     
+			if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:ZoomOut", debugId) end     
 		end
 	end
 
 	local function _fctZoomIn()
 
 		local debugId
-		if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ZoomIn") end
+		if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:ZoomIn") end
 
 		local thisScale = scale
 		if maximized == true then thisScale = maximizedScale end
@@ -191,7 +197,7 @@ local function _uiMap(name, parent)
 			EnKai.eventHandlers[name]["Zoomed"](thisScale, maximized)
 		end
 
-		if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ZoomIn", debugId) end
+		if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:ZoomIn", debugId) end
 
 	end
 
@@ -203,10 +209,10 @@ local function _uiMap(name, parent)
 		local xP = 1 / map:GetWidth() * diffX
 		local yP = 1 / map:GetHeight() * diffY
 
-		cursorCoordX = math.floor(((mapInfo.x2 - mapInfo.x1) * xP) + mapInfo.x1)
-		cursorCoordY = math.floor(((mapInfo.y2 - mapInfo.y1) * yP) + mapInfo.y1) 
+		cursorCoordX = mathFloor(((mapInfo.x2 - mapInfo.x1) * xP) + mapInfo.x1)
+		cursorCoordY = mathFloor(((mapInfo.y2 - mapInfo.y1) * yP) + mapInfo.y1) 
 
-		coordLabel:SetText(string.format("%d / %d", cursorCoordX, cursorCoordY))
+		coordLabel:SetText(stringFormat("%d / %d", cursorCoordX, cursorCoordY))
 
 	end
 
@@ -344,7 +350,7 @@ local function _uiMap(name, parent)
 		if coordX < mapInfo.x1 then coordX = mapInfo.x1 end
 		if coordY < mapInfo.y1 then coordY = mapInfo.y1 end
 
-		coordLabel:SetText(string.format("%d / %d", coordX, coordY))
+		coordLabel:SetText(stringFormat("%d / %d", coordX, coordY))
 		
 		local pX = 1 / (mapInfo.x2 - mapInfo.x1) * (coordX - mapInfo.x1)
 		local pY = 1 / (mapInfo.y2 - mapInfo.y1) * (coordY - mapInfo.y1)
@@ -352,13 +358,13 @@ local function _uiMap(name, parent)
 		local newX = (mask:GetWidth() / 2) - (map:GetWidth() * pX)
 		local newY = (mask:GetHeight() / 2) - (map:GetHeight() * pY)
 
-		if smoothScroll == false then newX, newY = math.floor(newX), math.floor(newY) end
+		if smoothScroll == false then newX, newY = mathFloor(newX), mathFloor(newY) end
 
 		if newX == x and newY == y then return end
 
 		_fctPosition(newX, newY)
 
-		if x == math.floor(newX) and y == math.floor(newY) then return end -- only do computation of radius for significant x / y change
+		if x == mathFloor(newX) and y == mathFloor(newY) then return end -- only do computation of radius for significant x / y change
 
 		--print (mask:GetLeft(), map:GetLeft())
 		
@@ -423,11 +429,11 @@ local function _uiMap(name, parent)
 		-- der check auf duplicates funktioniert ist aber nicht ideal. Er versteckt nur statt überhaupt nicht zu bauen. Immerhin ...
 		
 		local debugId  
-		if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:AddElement") end
+		if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:AddElement") end
 				
 		if mapData.mapElements[newElement.type] == nil then
 			if nkDebug then print ("unknown map element type: " .. newElement.type) end 
-			if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:AddElement", debugId) end
+			if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:AddElement", debugId) end
 			return 
 		end
 		
@@ -457,10 +463,10 @@ local function _uiMap(name, parent)
 
 		if mapInfo.anim ~= nil then
 			thisElement = EnKai.uiCreateFrame("nkMapElementCanvas", newElement.type .. "." .. EnKai.tools.uuid(), mask)
-		elseif mapInfo.gfxType == nil or string.lower(mapInfo.gfxType) == 'texture' then
+		elseif mapInfo.gfxType == nil or stringLower(mapInfo.gfxType) == 'texture' then
 			thisElement = EnKai.uiCreateFrame("nkMapElementTexture", newElement.type .. "." .. EnKai.tools.uuid(), mask)
 			if mapInfo.layer ~= nil then thisElement:SetLayer(mapInfo.layer) end
-		elseif string.lower(mapInfo.gfxType) == "canvas" then
+		elseif stringLower(mapInfo.gfxType) == "canvas" then
 			thisElement = EnKai.uiCreateFrame("nkMapElementCanvas", newElement.type .. "." .. EnKai.tools.uuid(), mask)
 		end
 
@@ -491,7 +497,7 @@ local function _uiMap(name, parent)
 		if (thisY == nil or newElement.coordX == nil) then
 			if nkDebug then
 				EnKai.tools.error.display ("EnKai", "map entry without coordinates", 2)
-				nkDebug.logEntry (oFuncs.oInspectAddonCurrent(), "_uiMap", "ui:AddElement error", "map entry without coordinates" .. newElement.id .. "\n\n" .. EnKai.tools.table.serialize(newElement))
+				nkDebug.logEntry (InspectAddonCurrent(), "_uiMap", "ui:AddElement error", "map entry without coordinates" .. newElement.id .. "\n\n" .. EnKai.tools.table.serialize(newElement))
 				--dump (newElement)
 			end
 		else
@@ -507,18 +513,18 @@ local function _uiMap(name, parent)
 
 		elements[newElement.id] = thisElement
 
-		if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:AddElement", debugId) end
+		if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:AddElement", debugId) end
 
 	end
 
 	function ui:ChangeElement (updateElement)
 
 		local debugId  
-		if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ChangeElement") end
+		if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:ChangeElement") end
 
 		if nkDebug then 
 			if elements[updateElement.id] == nil then 
-				nkDebug.logEntry (oFuncs.oInspectAddonCurrent(), "_uiMap", "ui:ChangeElement error", "unknown element with id " .. updateElement.id)				
+				nkDebug.logEntry (InspectAddonCurrent(), "_uiMap", "ui:ChangeElement error", "unknown element with id " .. updateElement.id)				
 				--print ("unknown element with id " .. updateElement.id) 
 			end
 		end
@@ -526,7 +532,7 @@ local function _uiMap(name, parent)
 		local thisElement = elements[updateElement.id]
 		
 		if thisElement == nil then 
-			if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ChangeElement", debugId) end
+			if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:ChangeElement", debugId) end
 			return false 
 		end -- potential overlap in shard hopping
 
@@ -537,7 +543,7 @@ local function _uiMap(name, parent)
 
 		if updateElement.angle ~= nil and thisElement.SetAngle ~= nil then thisElement:SetAngle(updateElement.angle) end
 
-		if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:ChangeElement", debugId) end
+		if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:ChangeElement", debugId) end
 
 		return true
 
@@ -558,7 +564,7 @@ local function _uiMap(name, parent)
 		if elements[removeElement] == nil then return end
 
 		local debugId  
-		if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:RemoveElement") end
+		if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai _uiMap:RemoveElement") end
 
 		--print ('remove', removeElement)
 		
@@ -590,7 +596,7 @@ local function _uiMap(name, parent)
 		thisElement:destroy()
 		elements[removeElement] = nil
 
-		if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai _uiMap:RemoveElement", debugId) end
+		if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai _uiMap:RemoveElement", debugId) end
 
 	end
 
@@ -673,7 +679,7 @@ local function _uiMap(name, parent)
 	ui:GetContent():EventAttach(Event.UI.Input.Mouse.Left.Down.Bubble, function ()
 
 		drag = true
-		mouseData = Inspect.Mouse()
+		mouseData = InspectMouse()
 
 	end, ui:GetName() .. ".Mouse.Left.Down.Bubble")
 
@@ -686,8 +692,8 @@ local function _uiMap(name, parent)
 
 		local diffX, diffY = posX - mouseData.x, posY - mouseData.y
 
-		local xP = 1 / map:GetWidth() * math.abs(diffX)
-		local yP = 1 / map:GetHeight() * math.abs(diffY)
+		local xP = 1 / map:GetWidth() * mathAbs(diffX)
+		local yP = 1 / map:GetHeight() * mathAbs(diffY)
 
 		if diffX < 0 then
 			coordX = coordX + ((mapInfo.x2 - mapInfo.x1) * xP)
@@ -702,7 +708,7 @@ local function _uiMap(name, parent)
 		end
 
 		ui:SetCoord ()
-		mouseData = Inspect.Mouse()
+		mouseData = InspectMouse()
 
 	end, ui:GetName() .. ".Cursor.Move.Bubble")
 

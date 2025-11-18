@@ -17,13 +17,21 @@ local internal   		= privateVars.internal
 local uiFunctions		= privateVars.uiFunctions
 local uiNames    		= privateVars.uiNames
 local uiElements		= privateVars.uiElements
-local oFuncs	  		= privateVars.oFuncs
 
 local uiContext   		= privateVars.uiContext
 local uiTooltipContext	= nil
 
 if not uiElements.messageDialog then uiElements.messageDialog = {} end
 if not uiElements.confirmDialog then uiElements.confirmDialog = {} end
+
+local InspectSystemSecure 		= Inspect.System.Secure
+local InspectAddonCurrent 		= Inspect.Addon.Current
+local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+local InspectAbilityDetail		= Inspect.Ability.Detail
+local stringUpper				= string.upper
+local stringFormat				= string.format
+local stringLower				= string.lower
+local stringGSub				= string.gsub
 
 ---------- init variables --------- 
 
@@ -159,14 +167,14 @@ end
 ]]
 function internal.uiAddToGarbageCollector (frameType, element)
 
-  local checkFrameType = string.upper(frameType) 
+  local checkFrameType = stringUpper(frameType) 
 
   if _gc[checkFrameType] == nil then _gc[checkFrameType] = {} end
   if _gc[checkFrameType].normal == nil then _gc[checkFrameType].normal = {} end
   if _gc[checkFrameType].restricted == nil then _gc[checkFrameType].restricted = {} end
   
   table.insert(_gc[checkFrameType][element:GetSecureMode()], element) 
-  if oFuncs.oInspectSystemSecure() == false or element:GetSecureMode() == 'normal' then element:SetVisible(false) end
+  if InspectSystemSecure() == false or element:GetSecureMode() == 'normal' then element:SetVisible(false) end
   
   EnKai.eventHandlers["EnKai.internal"]["gcChanged"]()
   
@@ -207,9 +215,9 @@ end
 ]]
 function internal.uiGarbageCollector ()
 	local debugId  
-    if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.uiGarbageCollector") end
+    if nkDebug then debugId = nkDebug.traceStart (inspectAddonCurrent(), "EnKai internal.uiGarbageCollector") end
 
-	local secure = oFuncs.oInspectSystemSecure()
+	local secure = InspectSystemSecure()
 	local flag = false
 	local restrictedFailed = false
 
@@ -256,7 +264,7 @@ function internal.uiGarbageCollector ()
 
 	if flag == true then EnKai.eventHandlers["EnKai.internal"]["gcChanged"]() end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.uiGarbageCollector", debugId) end	
+	if nkDebug then nkDebug.traceEnd (inspectAddonCurrent(), "EnKai internal.uiGarbageCollector", debugId) end	
 end
 
 --[[
@@ -418,13 +426,13 @@ end
 function EnKai.uiCreateFrame (frameType, name, parent)
 
 	if frameType == nil or name == nil or parent == nil then
-		EnKai.tools.error.display (addonInfo.identifier, string.format("EnKai.uiCreateFrame - invalid number of parameters\nexpecting: type of frame (string), name of frame (string), parent of frame (object)\nreceived: %s, %s, %s", frameType, name, parent))
+		EnKai.tools.error.display (addonInfo.identifier, stringFormat("EnKai.uiCreateFrame - invalid number of parameters\nexpecting: type of frame (string), name of frame (string), parent of frame (object)\nreceived: %s, %s, %s", frameType, name, parent))
 		return
 	end
 
 	local uiObject = nil
 
-	local checkFrameType = string.upper(frameType) 
+	local checkFrameType = stringUpper(frameType) 
 
 	if _freeElements[checkFrameType] ~= nil and #_freeElements[checkFrameType] > 0 then
 
@@ -446,7 +454,7 @@ function EnKai.uiCreateFrame (frameType, name, parent)
 	else
 		local func = uiFunctions[checkFrameType]
 		if func == nil then
-			EnKai.tools.error.display (addonInfo.identifier, string.format("EnKai.uiCreateFrame - unknown frame type [%s]", frameType))
+			EnKai.tools.error.display (addonInfo.identifier, stringFormat("EnKai.uiCreateFrame - unknown frame type [%s]", frameType))
 		else
 			uiObject = func(name, parent)
 		end
@@ -636,9 +644,9 @@ function EnKai.ui.attachAbilityTooltip (target, abilityId)
 		target:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
 			uiElements.abilityTooltip:ClearAll()
 			
-			local err, abilityDetails = pcall (Inspect.Ability.New.Detail, abilityId)
+			local err, abilityDetails = pcall (InspectAbilityNewDetail, abilityId)
 			if err == false or abilityDetails == nil then
-				err, abilityDetails = pcall (Inspect.Ability.Detail, abilityId)
+				err, abilityDetails = pcall (InspectAbilityDetail, abilityId)
 				if err == false or abilityDetails == nil then
 					EnKai.tools.error.display (addonInfo.identifier, "EnKai.ui.attachAbilityTooltip: unable to get details of ability with id " .. abilityId)	
 					EnKai.ui.attachAbilityTooltip (target, nil)
@@ -647,7 +655,7 @@ function EnKai.ui.attachAbilityTooltip (target, abilityId)
 			end
 			
 			uiElements.abilityTooltip:SetWidth(200)
-			uiElements.abilityTooltip:SetTitle(string.gsub(abilityDetails.name, "\n", ""))
+			uiElements.abilityTooltip:SetTitle(stringGsub(abilityDetails.name, "\n", ""))
 			uiElements.abilityTooltip:SetLines({{ text = abilityDetails.description, wordwrap = true, minWidth = 200  }})
 						
 			uiElements.abilityTooltip:SetPoint("TOPLEFT", target, "BOTTOMRIGHT", 5, 5)
@@ -684,7 +692,7 @@ function EnKai.ui.attachGenericTooltip (target, title, text)
 			
 			uiElements.genericTooltip:SetWidth(200)
 			if title ~= nil then 
-				uiElements.genericTooltip:SetTitle(string.gsub(title, "\n", ""))
+				uiElements.genericTooltip:SetTitle(stringGsub(title, "\n", ""))
 			else
 				uiElements.genericTooltip:SetTitle("")
 			end

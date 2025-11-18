@@ -18,7 +18,20 @@ local internal    = privateVars.internal
 
 ---------- init local variables ---------
 
-local _curLanguage = Inspect.System.Language()
+local InspectSytemLanguage 	= Inspect.System.Language
+local InspectSystemWatchdog	= Inspect.System.Watchdog
+
+local mathModf		= math.modf
+local mathFloor		= math.floor
+local osDate		= os.date
+local osTime		= os.time
+local stringLower	= string.lower
+local stringFind	= string.find
+local stringLen		= string.len
+local stringFormat	= string.format
+local tableInsert	= table.insert
+local tableRemove	= table.remove
+local tableSort		= table.sort
 
 -- ========== DATE HANDLING ==========
 
@@ -30,9 +43,9 @@ function EnKai.tools.getDaysInMonth(month, year)
 	-- check for leap year
 	
 	if (month == 2) then
-		if (math.modf(year,4) == 0) then
-			if (math.modf(year,100) == 0) then                
-				if (math.modf(year,400) == 0) then                    
+		if (mathModf(year,4) == 0) then
+			if (mathModf(year,100) == 0) then                
+				if (mathModf(year,400) == 0) then                    
 					d = 29
 				end
 			else                
@@ -48,9 +61,9 @@ end
 function EnKai.tools.adjustDate(inDate, adjustBy, value)
 
 	local newDate
-	local day, month, year = tonumber(os.date("%d", inDate)), tonumber(os.date("%m", inDate)), tonumber(os.date("%Y", inDate))
+	local day, month, year = tonumber(osDate("%d", inDate)), tonumber(osDate("%m", inDate)), tonumber(osDate("%Y", inDate))
 	
-	if string.lower(adjustBy) == 'day' then
+	if stringLower(adjustBy) == 'day' then
 		
 		day = day + value
 		
@@ -71,9 +84,9 @@ function EnKai.tools.adjustDate(inDate, adjustBy, value)
 			end
 		end
 	
-		newDate = os.time{year = year, month = month, day = day }
+		newDate = osTime{year = year, month = month, day = day }
 		
-	elseif string.lower(adjustBy) == 'month' then
+	elseif stringLower(adjustBy) == 'month' then
 	
 		month = month + value
 		if month > 12 then
@@ -84,7 +97,7 @@ function EnKai.tools.adjustDate(inDate, adjustBy, value)
 			month = 12
 		end
 
-		newDate = os.time{year = year, month = month, day = day }
+		newDate = osTime{year = year, month = month, day = day }
 	
 	end
 	
@@ -94,10 +107,10 @@ end
 
 function EnKai.tools.adjustTime(inTime, adjustBy, value)
 
-	local day, month, year = tonumber(os.date("%d", inTime)), tonumber(os.date("%m", inTime)), tonumber(os.date("%Y", inTime))
-	local hour, minute, second = tonumber(os.date("%H", inTime)), tonumber(os.date("%M", inTime)), tonumber(os.date("%S", inTime))
+	local day, month, year = tonumber(osDate("%d", inTime)), tonumber(osDate("%m", inTime)), tonumber(osDate("%Y", inTime))
+	local hour, minute, second = tonumber(osDate("%H", inTime)), tonumber(osDate("%M", inTime)), tonumber(osDate("%S", inTime))
 	
-	if string.lower(adjustBy) == 'min' then
+	if stringLower(adjustBy) == 'min' then
 		
 		minute = minute + value
 		if minute > 60 then
@@ -105,7 +118,7 @@ function EnKai.tools.adjustTime(inTime, adjustBy, value)
 			hour = hour + 1
 			if hour > 23 then
 				hour = 0
-				local tempDate = os.time{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
+				local tempDate = osTime{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
 				return EnKai.tools.adjustDate(tempDate, "day", 1)
 			end
 		elseif minute < 0 then
@@ -113,12 +126,12 @@ function EnKai.tools.adjustTime(inTime, adjustBy, value)
 			hour = hour - 1
 			if hour < 0 then
 				hour = 23
-				local tempDate = os.time{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
+				local tempDate = osTime{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
 				return EnKai.tools.adjustDate(tempDate, "day", -1)
 			end
 		end
 		
-		return os.time{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
+		return osTime{year = year, month = month, day = day, hour = hour, min = minute, sec = second}
 				
 	end
 	
@@ -137,7 +150,7 @@ function EnKai.tools.isDatePast(inDate)
 end
 
 function EnKai.tools.today()
-	return os.time{year = os.date("%Y"), month = os.date("%m"), day = os.date("%d")}
+	return osTime{year = osDate("%Y"), month = osDate("%m"), day = osDate("%d")}
 end
 
 function EnKai.tools.secondsToText (seconds)
@@ -149,12 +162,12 @@ function EnKai.tools.seoncdsToText (seconds)
 	if seconds < 0 then
 		return ""
 	elseif seconds > 3600 then
-		return tostring(math.floor(seconds / 3600)).."h"
+		return tostring(mathFloor(seconds / 3600)).."h"
 	elseif seconds > 60 then
-		return tostring(math.floor(seconds / 60)).."m"
+		return tostring(mathFloor(seconds / 60)).."m"
 	end
 	
-	return tostring(math.floor(seconds).."s")
+	return tostring(mathFloor(seconds).."s")
 
 end
 
@@ -185,15 +198,15 @@ end
 function EnKai.tools.table.addValue (checkTable, element)
 
 	if not EnKai.tools.table.isMember (checkTable, element) then
-		table.insert(checkTable, element)
+		tableInsert(checkTable, element)
 	end
 
 end
 
-function EnKai.tools.table.removeValue (checkTable, element)
+function EnKai.tools.tableRemoveValue (checkTable, element)
 
 	local pos = EnKai.tools.table.getTablePos (checkTable, element)
-	if pos ~= -1 then table.remove(checkTable, pos) end
+	if pos ~= -1 then tableRemove(checkTable, pos) end
 	
 	return checkTable
 
@@ -203,16 +216,16 @@ function EnKai.tools.table.getSortedKeys (tableData)
 
 	local tempTable = {}
     
-  for k, data in pairs(tableData) do table.insert(tempTable, k) end
-	
-	table.sort(tempTable, function (a, b) return string.lower(a) < string.lower(b) end)
+	for k, data in pairs(tableData) do tableInsert(tempTable, k) end
+
+	tableSort(tempTable, function (a, b) return stringLower(a) < stringLower(b) end)
 	return tempTable
 	
 end
 
 function EnKai.tools.table.merge (table1, table2)
 
-	for k, v in pairs (table2) do table.insert (table1, v) end
+	for k, v in pairs (table2) do tableInsert (table1, v) end
 
 end
 
@@ -269,13 +282,11 @@ function EnKai.tools.table.serialize (inTable)
 	local retValue = ""
 	local isFirst = true
 
-  local find = string.find
-
 	for k, v in pairs (inTable) do
 		if isFirst == false then retValue = retValue .. ',' end
 	
 		if type(k) == 'string' then
-			if find(k, " ") or find(k, "-") or find (k, ".", 1, true) then
+			if stringFind(k, " ") or stringFind(k, "-") or stringFind (k, ".", 1, true) then
 				retValue = retValue .. '["' .. k .. '"]='
 			else
 				retValue = retValue .. k .. '='
@@ -333,7 +344,7 @@ function EnKai.tools.math.round (num, idp)
 	if num == nil then return nil end
 
 	local mult = 10^(idp or 0)
-	return math.floor(tonumber(num) * mult + 0.5) / mult
+	return mathFloor(tonumber(num) * mult + 0.5) / mult
 	
 end
 
@@ -342,17 +353,17 @@ end
 function EnKai.tools.perf.addToQueue(func)
 
 	if data.perfQueue == nil then data.perfQueue = {} end
-	table.insert(data.perfQueue, func)
+	tableInsert(data.perfQueue, func)
 
 end
 
 function internal.processPerformanceQueue()
 
 	if data.perfQueue == nil or #data.perfQueue == 0 then return end
-	if Inspect.System.Watchdog() < 0.1 then return end
+	if InspectSystemWatchdog() < 0.1 then return end
 		
 	data.perfQueue[1]()
-	table.remove(data.perfQueue, 1, 1)
+	tableRemove(data.perfQueue, 1, 1)
 	
 	
 end
@@ -362,9 +373,9 @@ end
 function EnKai.tools.lang.getLanguage ()
 
 	if EnKaiSetup == nil then
-		return _curLanguage
+		return InspectSytemLanguage()
 	elseif EnKaiSetup.language == nil then 
-		return _curLanguage
+		return InspectSytemLanguage()
 	else
 		return EnKaiSetup.language
 	end
@@ -389,7 +400,7 @@ function EnKai.tools.lang.setLanguage (language)
 
 	if EnKaiSetup == nil then EnKaiSetup = {} end
 	EnKaiSetup.language = language
-	_curLanguage = language 
+	InspectSytemLanguage = language -- this is probably a bug
 
 end
 
@@ -419,7 +430,7 @@ function EnKai.tools.error.display (addon, message, level)
 		type = "INFO"
 	end
 
-	Command.Console.Display("general", true, string.format('<font color="%s">%s in %s: %s</font>', color, type, addon, message), true)
+	Command.Console.Display("general", true, stringFormat('<font color="%s">%s in %s: %s</font>', color, type, addon, message), true)
 
 end
 
@@ -437,7 +448,7 @@ function EnKai.tools.color.HSV2RGB(h, s, v)
 		if hue == 1.0 then hue = 0.0 end
 		hue = hue * 6.0
 		
-		i = math.floor(hue)
+		i = mathFloor(hue)
 		f = hue - i
 		w = v * (1.0 - s)
 		q = v * (1.0 - (s * f))
@@ -462,15 +473,15 @@ end
 
 function EnKai.tools.color.RGBToHex(red, green, blue)
 
-	local redHex = string.format("%X", red) 	
-	local greenHex = string.format("%X", green) 
-	local blueHex = string.format("%X", blue) 
+	local redHex = stringFormat("%X", red) 	
+	local greenHex = stringFormat("%X", green) 
+	local blueHex = stringFormat("%X", blue) 
 	
 	local retValue = ''
 	
 	if red == 0 then
 		retValue = '00'
-	elseif string.len(redHex) == 1 then
+	elseif stringLen(redHex) == 1 then
 		retValue = '0' .. redHex
 	else
 		retValue = redHex
@@ -478,7 +489,7 @@ function EnKai.tools.color.RGBToHex(red, green, blue)
 
 	if green == 0 then
 		retValue = retValue .. '00'
-	elseif string.len(greenHex) == 1 then
+	elseif stringLen(greenHex) == 1 then
 		retValue = retValue .. '0' .. greenHex
 	else
 		retValue = retValue .. greenHex
@@ -486,7 +497,7 @@ function EnKai.tools.color.RGBToHex(red, green, blue)
 	
 	if blue == 0 then
 		retValue = retValue .. '00'
-	elseif string.len(blueHex) == 1 then
+	elseif stringLen(blueHex) == 1 then
 		retValue = retValue .. '0' .. blueHex
 	else
 		retValue = retValue .. blueHex

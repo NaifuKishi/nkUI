@@ -8,6 +8,9 @@ if not EnKai.coroutines then EnKai.coroutines = {} end
 local internal   = privateVars.internal
 local oFuncs	  = privateVars.oFuncs
 
+local InspectAddonCurrent	= Inspect.Addon.Current
+local InspectTimeReal		= Inspect.Time.Real
+
 ---------- init local variables ---------
 
 local _coRoutines = {}
@@ -21,11 +24,9 @@ function EnKai.coroutines.add ( info ) table.insert(_coRoutines, info ) end
 function internal.coroutinesProcess ()
 
 	local debugId  
-    if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.coroutinesProcess") end
+    if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.coroutinesProcess") end
 
 	if #_coRoutines == 0 then return end
-	
-	local timeReal = oFuncs.oInspectTimeReal
 	
 	for idx = 1, #_coRoutines, 1 do
 		if _coRoutines[idx].active == true then
@@ -33,9 +34,9 @@ function internal.coroutinesProcess ()
 			local go = true
 			if _coRoutines[idx].delay ~= nil then
 				
-				if _coRoutines[idx].timeStamp == nil then _coRoutines[idx].timeStamp = timeReal() end
+				if _coRoutines[idx].timeStamp == nil then _coRoutines[idx].timeStamp = InspectTimeReal() end
 				
-				if EnKai.tools.math.round((timeReal() - _coRoutines[idx].timeStamp), 1) < _coRoutines[idx].delay then 
+				if EnKai.tools.math.round((InspectTimeReal() - _coRoutines[idx].timeStamp), 1) < _coRoutines[idx].delay then 
 					go = false
 				else
 					_coRoutines[idx].delay = nil						
@@ -60,6 +61,6 @@ function internal.coroutinesProcess ()
 		end
 	end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.coroutinesProcess", debugId) end	
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.coroutinesProcess", debugId) end	
 
 end

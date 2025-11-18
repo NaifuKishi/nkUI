@@ -10,6 +10,9 @@ local uiFunctions   = privateVars.uiFunctions
 local internal      = privateVars.internal
 local mapData       = privateVars.mapData
 
+local mathFloor     = math.floor
+local mathAbs       = math.abs
+
 ---------- addon internal function block ---------
 
 local function _uiMapElementTexture(name, parent)
@@ -96,10 +99,10 @@ local function _uiMapElementTexture(name, parent)
 	-- print ('---- texture ' .. mapElement:GetName() .. ' sectcoord ----')
 	-- print (x, y)
 
-	if smoothCoords == false and x ~= nil and math.floor(math.abs(coordX - x)) < 1 and y ~= nil and math.floor(math.abs(coordY - y)) < 1 then return end
+	if smoothCoords == false and x ~= nil and mathFloor(mathAbs(coordX - x)) < 1 and y ~= nil and mathFloor(mathAbs(coordY - y)) < 1 then return end
 		    
-	-- if x ~= nil then print (mapElement:GetName() .. "-x " .. math.floor(math.abs(coordX - x))) end
-	-- if y ~= nil then print (mapElement:GetName() .. "-y " .. math.floor(math.abs(coordY - y))) end	
+	-- if x ~= nil then print (mapElement:GetName() .. "-x " .. mathFloor(mathAbs(coordX - x))) end
+	-- if y ~= nil then print (mapElement:GetName() .. "-y " .. mathFloor(mathAbs(coordY - y))) end	
 			
     if x ~= nil then coordX = x end
     if y ~= nil then coordY = y end

@@ -7,7 +7,15 @@ if not EnKai.unit then EnKai.unit = {} end
 
 local lang        = privateVars.langTexts
 local data        = privateVars.data
-local oFuncs	  = privateVars.oFuncs
+
+local InspectTimeReal		= Inspect.Time.Real
+local InspectAddonCurrent 	= Inspect.Addon.Current
+local InspectUnitLookup		= Inspect.Unit.Lookup
+local InspectUnitDetail		= Inspect.Unit.Detail
+
+local stringFind	= string.find
+local stringFormat	= string.format
+local stringSub		= string.sub
 
 ---------- init local variables ---------
 
@@ -25,7 +33,7 @@ local debugUI
 
 local _watchUnits = {'player', 'player.pet', 'player.target', 'player.target.target', 'focus', 'focus.target'}
 
-local oInspectUnitLookup = Inspect.Unit.Lookup
+
 
 ---------- local function block ---------
 
@@ -68,9 +76,9 @@ local function _fctSetIDCache(key, value, flag, source)
 	if key == value then return end
 
 	-- if flag then
-		-- print (string.format('adding %s to %s (%s)', (value or 'nil'), key, source))
+		-- print (stringFormat('adding %s to %s (%s)', (value or 'nil'), key, source))
 	-- else
-		-- print (string.format('removing %s from %s (%s)', (value or 'nil'), key, source))
+		-- print (stringFormat('removing %s from %s (%s)', (value or 'nil'), key, source))
 	-- end
 	
 	if flag == false then
@@ -92,14 +100,14 @@ end
 local function _fctCombatDamage(_, info)
 
 	if info.caster ~= nil and _unitCache[info.caster] == nil then 
-		local temp = oFuncs.oInspectUnitDetail(info.caster)
+		local temp = InspectUnitDetail(info.caster)
 	
 		if temp ~= nil and temp.player ~= true then
 			_unitCache[info.caster] = temp
 			
 			_fctSetIDCache(_unitCache[info.caster].type, info.caster, true, "_fctCombatDamage")
 			
-			_unitCache[info.caster].lastUpdate = oFuncs.oInspectTimeReal()
+			_unitCache[info.caster].lastUpdate = InspectTimeReal()
 			EnKai.eventHandlers["EnKai.Unit"]["Available"]({[info.caster] = "combatlog"})
 			
 			--print ('found caster unit', info.caster)
@@ -109,14 +117,14 @@ local function _fctCombatDamage(_, info)
 	end
 	
 	if info.target ~= nil and _unitCache[info.target] == nil then
-		local temp = oFuncs.oInspectUnitDetail(info.caster)
+		local temp = InspectUnitDetail(info.caster)
 	
 		if temp ~= nil and temp.player ~= true then
 			_unitCache[info.target] = temp
 			
 			_fctSetIDCache(_unitCache[info.target].type, info.target, true, "_fctCombatDamage")
 			
-			_unitCache[info.target].lastUpdate = oFuncs.oInspectTimeReal()
+			_unitCache[info.target].lastUpdate = InspectTimeReal()
 			EnKai.eventHandlers["EnKai.Unit"]["Available"]({[info.target] = "combatlog"})
 			
 			--print ('found target unit', info.target, _unitCache[info.target].name)
@@ -153,28 +161,28 @@ local function _fctUnitAvailableHandler (_, unitInfo)
 	local tempUnitInfo = {}
 
 	for unitId, unitType in pairs (unitInfo) do
-		if unitType ~= false and string.find(unitType, 'mouseover') == nil then
-			if string.find (unitType, 'group..%.target') ~= nil and unitId == _idCache.player then
-				tempUnitInfo[oInspectUnitLookup(unitType)] = unitType
+		if unitType ~= false and stringFind(unitType, 'mouseover') == nil then
+			if stringFind (unitType, 'group..%.target') ~= nil and unitId == _idCache.player then
+				tempUnitInfo[InspectUnitLookup(unitType)] = unitType
 			else
 				tempUnitInfo[unitId] = unitType
-				_unitCache[unitId] = oFuncs.oInspectUnitDetail(unitId)
-				_unitCache[unitId].lastUpdate = oFuncs.oInspectTimeReal()
+				_unitCache[unitId] = InspectUnitDetail(unitId)
+				_unitCache[unitId].lastUpdate = InspectTimeReal()
 			end
 		
-			if string.find(unitType, 'group') == 1 and string.find(unitType, 'group..%.') == nil then
+			if stringFind(unitType, 'group') == 1 and stringFind(unitType, 'group..%.') == nil then
 
 			for idx = 1, 5, 1 do
-					local tempUnitType = string.format('group%02d', idx)
-					local tempUnitId = oInspectUnitLookup(tempUnitType)
+					local tempUnitType = stringFormat('group%02d', idx)
+					local tempUnitId = InspectUnitLookup(tempUnitType)
 					_internalFunc.processUnitChange (tempUnitType, tempUnitId)
 					
-					local tempUnitType = string.format('group%02d.target', idx)
-					local tempUnitId = oInspectUnitLookup(tempUnitType)
+					local tempUnitType = stringFormat('group%02d.target', idx)
+					local tempUnitId = InspectUnitLookup(tempUnitType)
 					_internalFunc.processUnitChange (tempUnitType, tempUnitId)
 					
-					local tempUnitType = string.format('group%02d.pet', idx)
-					local tempUnitId = oInspectUnitLookup(tempUnitType)
+					local tempUnitType = stringFormat('group%02d.pet', idx)
+					local tempUnitId = InspectUnitLookup(tempUnitType)
 					_internalFunc.processUnitChange (tempUnitType, tempUnitId)
 				end
 			end
@@ -232,8 +240,8 @@ end
 
 local function _fctUnitChange (unitId, unitType)
 
-	-- if string.find(unitType, 'mouseover') ~= nil then 
-		-- local details = Inspect.Unit.Detail(unitType)
+	-- if stringFind(unitType, 'mouseover') ~= nil then 
+		-- local details = InspectUnitDetail(unitType)
 
 	-- end
 
@@ -251,12 +259,12 @@ local function _fctUnitChange (unitId, unitType)
 		--print ('_fctUnitChange', unitType, unitId)
 		_fctSetIDCache(unitType, unitId, true, '_fctUnitChange')
 		
-		local details = oFuncs.oInspectUnitDetail(unitType)
+		local details = InspectUnitDetail(unitType)
 		if details ~= nil and details.player ~= true then
 			_fctSetIDCache(details.type, unitId, true, '_fctUnitChange')
 		
 			_unitCache[unitId] = details
-			_unitCache[unitId].lastUpdate = oFuncs.oInspectTimeReal()
+			_unitCache[unitId].lastUpdate = InspectTimeReal()
 		end
 		
 		_internalFunc.processUnitChange(unitType, unitId)
@@ -282,10 +290,10 @@ function _internalFunc.processUnitChange (unitType, unitId)
 		-- _fctSetIDCache(unitType, unitId, '_internalFunc.processUnitChange')
 	-- end
 
-	if string.find(unitType, 'group') == 1 and string.find (unitType, 'group..%.') == nil then
+	if stringFind(unitType, 'group') == 1 and stringFind (unitType, 'group..%.') == nil then
 		local indicateGroupChange = false
 	
-		local groupId = string.sub(unitType, 6, 7)
+		local groupId = stringSub(unitType, 6, 7)
 
 		if tonumber(groupId) > 5 then
 			if _isRaid == false then 
@@ -307,13 +315,13 @@ function _internalFunc.processUnitChange (unitType, unitId)
 		end
 		
 		if unitId == false then
-			local unitTypeList = _idCache[string.format('raid%s', groupId)]
+			local unitTypeList = _idCache[stringFormat('raid%s', groupId)]
 		
 			for id, value in pairs(unitTypeList) do
-				_fctSetIDCache(string.format('raid%s', groupId), value, false, '_fctUnitChange')
+				_fctSetIDCache(stringFormat('raid%s', groupId), value, false, '_fctUnitChange')
 			end
 		else
-			_fctSetIDCache(string.format('raid%s', groupId), unitId, true, '_internalFunc.processUnitChange')
+			_fctSetIDCache(stringFormat('raid%s', groupId), unitId, true, '_internalFunc.processUnitChange')
 		end
 		
 		local backupGroupCount, backupRaidCount = _groupMembers, _raidMembers
@@ -323,7 +331,7 @@ function _internalFunc.processUnitChange (unitType, unitId)
 			_raidMembers = 0
 			
 			for idx = 1, 20, 1 do
-				if _idCache[string.format('raid%02d', idx)] ~= nil then _raidMembers = _raidMembers + 1 end
+				if _idCache[stringFormat('raid%02d', idx)] ~= nil then _raidMembers = _raidMembers + 1 end
 			end
 			
 			if _raidMembers == 0 then _isRaid = false end
@@ -333,7 +341,7 @@ function _internalFunc.processUnitChange (unitType, unitId)
 			_groupMembers = 0
 			
 			for idx = 1, 5, 1 do
-				if _idCache[string.format('group%02d', idx)] ~= nil then _groupMembers = _groupMembers + 1 end
+				if _idCache[stringFormat('group%02d', idx)] ~= nil then _groupMembers = _groupMembers + 1 end
 			end
 			
 			if _groupMembers == 0 then _isGroup = false end
@@ -342,36 +350,36 @@ function _internalFunc.processUnitChange (unitType, unitId)
 		
 		if indicateGroupChange == true or backupGroupCount ~= _groupMembers or backupRaidCount ~= _raidMembers then	_fctGroupStatus() end
 		
-	elseif string.find(unitType, 'group..%.') == 1 then
-		local groupId = string.sub(unitType, 6, 7)
-		if _idCache[string.format('group%s', groupId)] == nil then
-			local luID = oInspectUnitLookup(string.format('group%s', groupId))
+	elseif stringFind(unitType, 'group..%.') == 1 then
+		local groupId = stringSub(unitType, 6, 7)
+		if _idCache[stringFormat('group%s', groupId)] == nil then
+			local luID = InspectUnitLookup(stringFormat('group%s', groupId))
 			if luID ~= nil then 
 				local unitInfoTable = {}
-				unitInfoTable[luID] = string.format('group%s', groupId)
+				unitInfoTable[luID] = stringFormat('group%s', groupId)
 				_fctProcessUnitInfo (unitInfoTable)
 			end
 		end
-	elseif string.find(unitType, 'player') == 1 then
+	elseif stringFind(unitType, 'player') == 1 then
 		
-		local playerId = oInspectUnitLookup('player')
+		local playerId = InspectUnitLookup('player')
 		local suffix = ''
 		
-		if string.find(unitType, 'player.pet') == 1 then
+		if stringFind(unitType, 'player.pet') == 1 then
 			suffix = '.pet'
-		elseif string.find(unitType, 'player.target') == 1 then
+		elseif stringFind(unitType, 'player.target') == 1 then
 			suffix = '.target'
 		end
 	
 		for idx = 1, 20, 1 do
-			local luID = oInspectUnitLookup(string.format('group%02d', idx, suffix))
+			local luID = InspectUnitLookup(stringFormat('group%02d', idx, suffix))
 			
 			if luID == playerId then
 				local unitInfoTable = {}
 				if unitId == nil then
-					unitInfoTable[false] = string.format('group%02d%s', idx, suffix)
+					unitInfoTable[false] = stringFormat('group%02d%s', idx, suffix)
 				else
-					unitInfoTable[luID] = string.format('group%02d%s', idx, suffix)
+					unitInfoTable[luID] = stringFormat('group%02d%s', idx, suffix)
 				end
 				_fctProcessUnitInfo (unitInfoTable)
 				break
@@ -386,12 +394,12 @@ end
 function EnKai.unit.getPlayerDetails()
   
 	if _idCache.player == nil or _unitCache[_idCache.player[1]] == nil then 
-		local temp = oFuncs.oInspectUnitDetail('player') 
+		local temp = InspectUnitDetail('player') 
 		
 		if temp.id ~= 'player' then
 			_fctSetIDCache('player', temp.id, true, 'EnKai.unit.getPlayerDetails')
 			_unitCache[_idCache.player[1]] = temp
-			_unitCache[_idCache.player[1]].lastUpdate = oFuncs.oInspectTimeReal()
+			_unitCache[_idCache.player[1]].lastUpdate = InspectTimeReal()
 		end
 		
 		return temp
@@ -405,7 +413,7 @@ function EnKai.unit.getCallingText (calling) return lang.callings[calling] end
 
 function EnKai.unit.init()
 
-	_subscriptions[oFuncs.oInspectAddonCurrent()] = {}
+	_subscriptions[InspectAddonCurrent()] = {}
 
 	if _unitManager == true then return end
 
@@ -428,15 +436,15 @@ function EnKai.unit.init()
 	end
 
 	for idx = 1, 20, 1 do
-		local unitEvent = Library.LibUnitChange.Register(string.format('group%02d', idx))
-		Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, string.format('group%02d', idx)) end, "EnKai.Unit.unitChange." .. string.format('group%02d', idx))
+		local unitEvent = Library.LibUnitChange.Register(stringFormat('group%02d', idx))
+		Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, stringFormat('group%02d', idx)) end, "EnKai.Unit.unitChange." .. stringFormat('group%02d', idx))
 
 		if idx <= 5 then
-			local unitEvent = Library.LibUnitChange.Register(string.format('group%02d', idx) .. '.target')
-			Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, string.format('group%02d', idx) .. '.target') end, "EnKai.Unit.unitChange." .. string.format('group%02d', idx) .. ".target")
+			local unitEvent = Library.LibUnitChange.Register(stringFormat('group%02d', idx) .. '.target')
+			Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, stringFormat('group%02d', idx) .. '.target') end, "EnKai.Unit.unitChange." .. stringFormat('group%02d', idx) .. ".target")
 			
-			local unitEvent = Library.LibUnitChange.Register(string.format('group%02d', idx) .. '.pet')
-			Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, string.format('group%02d', idx) .. '.pet') end, "EnKai.Unit.unitChange." .. string.format('group%02d', idx) .. ".pet")
+			local unitEvent = Library.LibUnitChange.Register(stringFormat('group%02d', idx) .. '.pet')
+			Command.Event.Attach(unitEvent, function (_, unitData) _fctUnitChange(unitData, stringFormat('group%02d', idx) .. '.pet') end, "EnKai.Unit.unitChange." .. stringFormat('group%02d', idx) .. ".pet")
 		end
 	end
 
@@ -453,13 +461,13 @@ function EnKai.unit.subscribe(sType)
 	if _subscriptions == nil then _subscriptions = {} end
 	if _subscriptions[sType] == nil then _subscriptions[sType] = {} end
 
-	_subscriptions[sType][oFuncs.oInspectAddonCurrent()] = true
+	_subscriptions[sType][InspectAddonCurrent()] = true
 	
 	if sType == 'player.target' then
-		local targetID = oInspectUnitLookup('player.target')
+		local targetID = InspectUnitLookup('player.target')
 		if targetID ~= nil then _internalFunc.processUnitChange ('player.target', targetID) end
 	elseif sType == 'focus' then
-		local focusID = oInspectUnitLookup('focus')
+		local focusID = InspectUnitLookup('focus')
 		if focusID ~= nil then _internalFunc.processUnitChange ('focus', focusID) end
 	end
 
@@ -468,7 +476,7 @@ end
 function EnKai.unit.unsubscribe(sType)
 
 	if _subscriptions[sType] ~= nil then
-		subscriptions[sType][oFuncs.oInspectAddonCurrent()] = nil
+		subscriptions[sType][InspectAddonCurrent()] = nil
 	end
 
 end
@@ -488,13 +496,13 @@ end
 function EnKai.unit.getUnitIDByType (unitType) 
 
 	if _idCache[unitType] == nil then
-		local flag, details = pcall (Inspect.Unit.Detail, unitType)		
+		local flag, details = pcall (InspectUnitDetail, unitType)		
 		if flag and details ~= nil then
 			--print ('EnKai.unit.getUnitIDByType', unitType, details.id)
 			if details.type == unitType then 
 				_fctSetIDCache(details.type, details.id, true, 'EnKai.unit.getUnitIDByType')
 				_unitCache[details.id] = details
-				_unitCache[details.id].lastUpdate = oFuncs.oInspectTimeReal()
+				_unitCache[details.id].lastUpdate = InspectTimeReal()
 			end
 		end
 	end
@@ -522,12 +530,12 @@ function EnKai.unit.GetUnitDetail (unitID)
 		unitID = _idCache[unitID][1]
 	end
 	
-	--if _unitCache[unitID] == nil or oFuncs.oInspectTimeReal() - _unitCache[unitID].lastUpdate > 60 then -- change check time > 60 secs for performance
+	--if _unitCache[unitID] == nil or InspectTimeReal() - _unitCache[unitID].lastUpdate > 60 then -- change check time > 60 secs for performance
 	if _unitCache[unitID] == nil then
-		local temp = oFuncs.oInspectUnitDetail(unitID)
+		local temp = InspectUnitDetail(unitID)
 		if temp ~= nil then
 			_unitCache[temp.id] = temp
-			_unitCache[temp.id].lastUpdate = oFuncs.oInspectTimeReal()
+			_unitCache[temp.id].lastUpdate = InspectTimeReal()
 		end
 	end
 	

@@ -17,8 +17,16 @@ internal.mapEvent = {}
 
 ---------- make global functions local ---------
 
-local _sMatch  = string.match
-local _sFind   = string.find
+local InspectMapDetail		= Inspect.Map.Detail
+local InspectMapList		= Inspect.Map.List
+local InspectTimeReal		= Inspect.Time.Real
+local InspectUnitDetail		= Inspect.Unit.Detail
+local InspectAddonCurrent	= Inspect.Addon.Current
+local InspectMapWaypointGet	= Inspect.Map.Waypoint.Get
+
+local stringMath  		= string.match
+local stringFind   		= string.find
+local stringGSub		= string.gsub
 
 ---------- init local variables ---------
 
@@ -31,8 +39,7 @@ local _mapNPC = {}
 local _mapEvents = false
 local _playerDeath = false
 
-local _InspectMapDetail = Inspect.Map.Detail
-local _InspectMapList = Inspect.Map.List
+
   
 ---------- local function block ---------
 
@@ -56,7 +63,7 @@ local function _fctCheckForColossus (values)
     local name = v[EnKai.tools.lang.getLanguageShort()]
     
     if values.name == name then
-      local plane = _sMatch (values.type, "RIFT.INVASION.(.+)")
+      local plane = stringMath (values.type, "RIFT.INVASION.(.+)")
       return "RIFT.COLOSSUS." .. plane
     end
   end
@@ -93,7 +100,7 @@ end
 
 local function _fctCheckPattern (value)
 
-	local checkValue = string.gsub(value, "\n", "")
+	local checkValue = stringGSub(value, "\n", "")
 
 	for idx = 1, #lang.mapIdentifiers, 1 do
 
@@ -101,16 +108,16 @@ local function _fctCheckPattern (value)
 		local pattern = details.pattern
 
 		if details.regExCompute ~= nil then
-			local value1, _ = _sMatch(checkValue, pattern)			
+			local value1, _ = stringMath(checkValue, pattern)			
 			if value1 ~= nil then return idx, details, details.type end             
 		elseif details.regExValues ~= nil then
-			local subValue = _sMatch(checkValue, pattern)
+			local subValue = stringMath(checkValue, pattern)
 			
 			if subValue ~= nil then
-				--if string.find(value, "Bolidium") ~= nil then print (subValue, checkValue, pattern) end
+				--if stringFind(value, "Bolidium") ~= nil then print (subValue, checkValue, pattern) end
 				--print (value, pattern, subValue)
 				for k, v in pairs(details.regExValues) do
-					if _sMatch(subValue, k) then return idx, details, details.type .. "." .. v end
+					if stringMath(subValue, k) then return idx, details, details.type .. "." .. v end
 				end
 
 				--EnKai.tools.error.display ("EnKai", subValue .. " not found in " .. EnKai.tools.table.serialize(details.regExValues), 2)
@@ -118,18 +125,18 @@ local function _fctCheckPattern (value)
 
 			end          
 		elseif details.exact == false then
-			if _sFind(checkValue, pattern) ~= nil then return idx, details, details.type end 
+			if stringFind(checkValue, pattern) ~= nil then return idx, details, details.type end 
 		else
-			if _sFind(checkValue, pattern, 1, true) ~= nil then return idx, details, details.type end
+			if stringFind(checkValue, pattern, 1, true) ~= nil then return idx, details, details.type end
 		end
 	end
 
 	for idx = 1, #lang.mapIdentifiersVendors, 1 do
-		if _sFind(checkValue, lang.mapIdentifiersVendors[idx]) ~= nil then return 9999, lang.mapIdentifiersGeneric["VENDORGENERIC"], "VENDOR.OTHER" end
+		if stringFind(checkValue, lang.mapIdentifiersVendors[idx]) ~= nil then return 9999, lang.mapIdentifiersGeneric["VENDORGENERIC"], "VENDOR.OTHER" end
 	end
 
 	for k, v in pairs (lang.factionNames) do
-		if _sFind(checkValue, v) ~= nil then return 9999, lang.mapIdentifiersGeneric["FACTION"], "VARIA.NPC" end
+		if stringFind(checkValue, v) ~= nil then return 9999, lang.mapIdentifiersGeneric["FACTION"], "VARIA.NPC" end
 	end
 
 	return 0
@@ -140,8 +147,8 @@ local function _fctGetSubValue (values, pattern)
   
   if values == nil then return nil end
 
-  if _sFind(pattern, "DESC") ~= nil then
-    local index = _sMatch(pattern, "DESC(%d)")
+  if stringFind(pattern, "DESC") ~= nil then
+    local index = stringMath(pattern, "DESC(%d)")
     return values[tonumber(index)]
   end
   
@@ -161,13 +168,13 @@ local function _fctIdentify(values)
 
 	if values.title ~= nil then 
 
-		--if values.title ~= nil then print ("titel: " .. string.gsub(values.title, "\n", "@@")) end
+		--if values.title ~= nil then print ("titel: " .. stringGSub(values.title, "\n", "@@")) end
 
 		values.titleList = EnKai.strings.split(values.title, "\n")
 
 		for idx = 1, #values.titleList, 1 do
 			local thisTitle = values.titleList[idx]
-			if _sFind(thisTitle, lang.mapIdentifiersExcludeLevel, 1, true) == nil then -- exclude level info
+			if stringFind(thisTitle, lang.mapIdentifiersExcludeLevel, 1, true) == nil then -- exclude level info
 				--mapIdentifier, values.type = _fctCheckPattern (thisTitle)        
 				--if mapIdentifier ~= nil then break end
 				titleIndex, titleIdentifier, titleType = _fctCheckPattern (thisTitle)
@@ -183,12 +190,12 @@ local function _fctIdentify(values)
 
 		if mapIdentifier == nil then 
 
-			--print ("desc: " .. string.gsub(values.description, "\n", "@@"))
+			--print ("desc: " .. stringGSub(values.description, "\n", "@@"))
 			--dump (values.descList)
 
 			for idx = 1, #values.descList, 1 do
 				local thisDesc = values.descList[idx]
-				if _sFind(thisDesc, lang.mapIdentifiersExcludeLevel, 1, true) == nil then -- exclude level info
+				if stringFind(thisDesc, lang.mapIdentifiersExcludeLevel, 1, true) == nil then -- exclude level info
 					--mapIdentifier, values.type = _fctCheckPattern (thisDesc)
 					--if mapIdentifier ~= nil then break end
 					descIndex, descIdentifier, descType = _fctCheckPattern (thisDesc)
@@ -214,7 +221,7 @@ local function _fctIdentify(values)
 	if titleIndex == 0 and descIndex == 0 then
 		if nkDebug then
 			EnKai.tools.error.display ("EnKai", "Could not identify map entry", 2)
-			nkDebug.logEntry (Inspect.Addon.Current(), "_fctIdentify", "Unidentified map entry", values)
+			nkDebug.logEntry (InspectAddonCurrent(), "_fctIdentify", "Unidentified map entry", values)
 			--dump (values)
 		end
 		mapIdentifier = lang.mapIdentifiersGeneric["UNKNOWN"]
@@ -238,7 +245,7 @@ local function _fctIdentify(values)
 
 	if mapIdentifier.regExCompute ~= nil and values.descList ~= nil then
 		for idx = 1, #values.descList, 1 do
-			local value1, value2, value3 = string.match(values.descList[idx], mapIdentifier.pattern)
+			local value1, value2, value3 = stringMatch(values.descList[idx], mapIdentifier.pattern)
 
 			if value1 ~= nil then
 				if  #mapIdentifier.regExCompute >= 1 then values[mapIdentifier.regExCompute[1]] = value1 end
@@ -265,10 +272,10 @@ local function _fctIdentify(values)
 		values.info = _fctGetSubValue (values.descList, mapIdentifier.info)
 	end
 
-	if _sFind(values.type, "RIFT.INVASION") ~= nil then
+	if stringFind(values.type, "RIFT.INVASION") ~= nil then
 		if values.name ~= nil then
 			values.type = _fctCheckForColossus (values)
-			if (_sFind(values.type, "RIFT.COLOSSUS")) ~= nil then
+			if (stringFind(values.type, "RIFT.COLOSSUS")) ~= nil then
 				local tempName = values.name
 				values.name = values.descList[1]
 				values.descList[1] = values.name
@@ -317,7 +324,7 @@ local function _fctMapEventChange (_, info)
     for k, v in pairs(addList) do info[k] = nil end    
   end
   
-  local thisMapData = _InspectMapDetail(info)
+  local thisMapData = InspectMapDetail(info)
   
   local changeList, removeList = {}, {}
   local descTitleChange, hasChange = false, false
@@ -393,15 +400,15 @@ local function _fctMapEventUnitCoordChange (_, x, y, z)
     if _mapUnits[unit] == nil then
       addUnit[unit] = {id = unit, type = "UNKNOWN", coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
       _mapUnits[unit] = addUnit[unit]
-	  _mapUnits[unit].lastUpdate = oFuncs.oInspectTimeReal()
+	  _mapUnits[unit].lastUpdate = InspectTimeReal()
       hasAdd = true
     else
-      if string.find(_mapUnits[unit].type, "group..%.target") == nil then
+      if stringFind(_mapUnits[unit].type, "group..%.target") == nil then
         changeUnit[unit] = {id = unit, type = _mapUnits[unit].type, coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
         _mapUnits[unit].coordX = x[unit]
         _mapUnits[unit].coordY = y[unit]
         _mapUnits[unit].coordZ = z[unit]
-		_mapUnits[unit].lastUpdate = oFuncs.oInspectTimeReal()
+		_mapUnits[unit].lastUpdate = InspectTimeReal()
         hasChange = true
       end
     end
@@ -437,10 +444,10 @@ local function _fctMapEventUnitAvailable (_, info)
   
   for unit, unitType in pairs (info) do
     if _mapUnits[unit] == nil then
-      local details = oFuncs.oInspectUnitDetail(unit)
+      local details = InspectUnitDetail(unit)
       addUnit[unit] = {id = unit, type = unitType, coordX = details.coordX, coordY = details.coordY, coordZ = details.coordZ}
       _mapUnits[unit] = addUnit[unit]
-	  _mapUnits[unit].lastUpdate = oFuncs.oInspectTimeReal()
+	  _mapUnits[unit].lastUpdate = InspectTimeReal()
       hasAdds = true
     end
   end 
@@ -455,7 +462,7 @@ local function _fctMapEventCombatDeath (_, info)
   
   if info.target == data.playerDetails.id then
     _playerDeath = true
-    local details = oFuncs.oInspectUnitDetail('player')
+    local details = InspectUnitDetail('player')
     local addInfo = {}
     addInfo["pb" .. data.playerDetails.id] = {id = "pb" .. data.playerDetails.id, type = "UNIT.BODY", coordX = details.coordX, coordY = details.coordY, coordZ = details.coordZ}
     EnKai.eventHandlers["EnKai.map"]["add"](addInfo)
@@ -487,7 +494,7 @@ function EnKai.map.GetMapElementbyType (typeString)
 	local retTable = {}
 
 	for key, details in pairs(mapData.mapElements) do
-		if string.find(key, typeString) == 1 then
+		if stringFind(key, typeString) == 1 then
 			retTable[key] = details
 		end
 	end
@@ -504,7 +511,7 @@ end
 function EnKai.map.refresh()
   
   EnKai.map.clearAll()
-  internal.mapEvent.add (_, _InspectMapList())
+  internal.mapEvent.add (_, InspectMapList())
 
 end
 
@@ -539,7 +546,7 @@ function EnKai.map.init(flag)
   Command.Map.Monitor(flag)
   _mapEvents = flag
   
-  if flag == true then internal.mapEvent.add (_, _InspectMapList()) end
+  if flag == true then internal.mapEvent.add (_, InspectMapList()) end
 
 end
 
@@ -548,7 +555,7 @@ end
 function internal.processMap()
 
 	local debugId  
-	if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.processMap") end
+	if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.processMap") end
 
 	if _mapEvents == false then return end
 
@@ -556,9 +563,9 @@ function internal.processMap()
 		internal.MapEventWaypoint (_, {[data.playerDetails.id] = true})
 	end
 
-	local curTime = oFuncs.oInspectTimeReal()
+	local curTime = InspectTimeReal()
 
-	local list = _InspectMapList()
+	local list = InspectMapList()
 
 	local hasAdds, hasRemoves = false, false
 	local addList, removeList = {}, {}
@@ -581,15 +588,15 @@ function internal.processMap()
 	if hasAdds then internal.mapEvent.add (_, addList) end
 
 	for k, v in pairs(_mapUnits) do
-		if curTime - v.lastUpdate > 1 and string.find(v.type, "UNIT.PLAYER") == nil then
-			local details = oFuncs.oInspectUnitDetail(k)
+		if curTime - v.lastUpdate > 1 and stringFind(v.type, "UNIT.PLAYER") == nil then
+			local details = InspectUnitDetail(k)
 			if details ~= nil then
 				_fctMapEventUnitCoordChange(_, {[k] = details.coordX}, {[k] = details.coordY}, {[k] = details.coordZ} )
 			end
 		end
 	end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.processMap", debugId) end
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.processMap", debugId) end
 
 end
 
@@ -598,10 +605,8 @@ function internal.MapEventWaypoint (_, info)
 	local add, removes, change = {}, {}, {}
 	local hasAdd, hasRemove, hasChange = false, false, false
 
-	local _wayPointGet = Inspect.Map.Waypoint.Get
-
 	for unit, _ in pairs (info) do
-		local flag, x, z = pcall(_wayPointGet, unit)
+		local flag, x, z = pcall(InspectMapWaypointGet, unit)
 
 		if flag == false or x == nil then
 
@@ -634,7 +639,7 @@ end
 
 function internal.mapEvent.add (_, info)
 
-  local thisMapData = _InspectMapDetail(info)
+  local thisMapData = InspectMapDetail(info)
 
   local changeList = {}
   local addList = {}

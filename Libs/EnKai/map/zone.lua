@@ -6,7 +6,15 @@ if not EnKai then EnKai = {} end
 if not EnKai.map then EnKai.map = {} end
 
 local internal   = privateVars.internal
-local oFuncs	  = privateVars.oFuncs
+
+local InspectUnitDetail     = Inspect.Unit.Detail
+local InspectAddonCurrent   = Inspect.Addon.Current
+local InspectZoneDetail     = Inspect.Zone.Detail
+local InspectConsoleList    = Inspect.Console.List
+local InspectConsoleDetail  = Inspect.Console.Detail
+local InspectShard          = Inspect.Shard
+local InspectUnitList       = Inspect.Unit.List
+local InspectMapList        = Inspect.Map.List
 
 ---------- init local variables ---------
 
@@ -749,7 +757,7 @@ end
 local function _fctZoneCheckUnit (_, info, raiseEvent)
 
   local eventData = {}
-  local data = oFuncs.oInspectUnitDetail(info)
+  local data = InspectUnitDetail(info)
   
   for unitId, details in pairs (data) do
     if _zoneData[unitId] == nil or _zoneData[unitId] ~= details.zone then
@@ -767,30 +775,30 @@ end
 function internal.checkShard()
 
 	local debugId  
-    if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.checkShard") end
+    if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.checkShard") end
 
   -- local now = oFuncs.oInspectTimeFrame()
   -- if updateTime == nil or now - updateTime > 1 then
     -- updateTime = now
 
-    local player = oFuncs.oInspectUnitDetail("player")
+    local player = InspectUnitDetail("player")
     if player.zone == nil then return end
     
-    local zone = Inspect.Zone.Detail(player.zone)
+    local zone = InspectZoneDetail(player.zone)
     if zone.name == nil then return end
     
-    local consoleList = Inspect.Console.List()
+    local consoleList = InspectConsoleList()
     if consoleList == nil then return end
     
-    local consoleDetails = Inspect.Console.Detail(consoleList)
+    local consoleDetails = InspectConsoleDetail(consoleList)
     if consoleDetails == nil then return end
     
     for id, consoleData in pairs(consoleDetails) do
       if consoleData.channel then
         for name, _ in pairs(consoleData.channel) do
           if name == zone.name then
-            if _shardName ~= Inspect.Shard().name then
-              _shardName = Inspect.Shard().name
+            if _shardName ~= InspectShard().name then
+              _shardName = InspectShard().name
               EnKai.eventHandlers["EnKai.map"]["shard"](_shardName)
             end
             return
@@ -806,7 +814,7 @@ function internal.checkShard()
     end -- for consoleDetails
   --end
 
-  if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.checkShard", debugId) end	
+  if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.checkShard", debugId) end	
   
 end
 
@@ -818,7 +826,7 @@ function EnKai.map.calcZoneList()
   
   for world, zones in pairs(_zoneMapping) do
     for idx = 1, #zones, 1 do
-      local detail = Inspect.Zone.Detail(zones[idx])
+      local detail = InspectZoneDetail(zones[idx])
       EnKaiSetup.zoneList[zones[idx]] = { world = world, zone = detail.name, type = detail.type }
     end
   end
@@ -830,12 +838,12 @@ function EnKai.map.zoneInit(flag)
   if flag == true and _zoneEvents == false then
     _zoneData = {}
     
-    _shardName = Inspect.Shard().name
+    _shardName = InspectShard().name
   
     Command.Event.Attach(Event.Unit.Detail.Zone, _fctZoneEvent, "EnKai.Zone.Unit.Detail.Zone")
     Command.Event.Attach(Event.Unit.Availability.Full, _fctZoneCheckUnit, "EnKai.Zone.Unit.Availability.Full")
     
-    _fctZoneCheckUnit (_, Inspect.Unit.List(), false)
+    _fctZoneCheckUnit (_, InspectUnitList(), false)
   elseif flag == false and _zoneEvents == true then
     Command.Event.Detach(Event.Unit.Detail.Zone, nil, "EnKai.Zone.Unit.Detail.Zone")
     Command.Event.Detach(Event.Unit.Availability.Full, nil, "EnKai.Zone.Unit.Availability.Full")
@@ -843,7 +851,7 @@ function EnKai.map.zoneInit(flag)
   
   _zoneEvents = flag
   
-  if flag == true then internal.mapEvent.add (_, Inspect.Map.List()) end
+  if flag == true then internal.mapEvent.add (_, InspectMapList()) end
 
 end
 

@@ -10,6 +10,10 @@ local uiFunctions   = privateVars.uiFunctions
 local internal      = privateVars.internal
 local mapData       = privateVars.mapData
 
+local mathFloor		= math.floor
+local mathRad		= math.rad
+local mathAbs		= math.abs
+
 ---------- addon internal function block ---------
 
 local function _uiMapElementCanvas(name, parent)
@@ -123,17 +127,19 @@ local function _uiMapElementCanvas(name, parent)
 
 		local thisX, thisY
 
-		thisX = (parentMap:GetMap():GetWidth() * xP) - (mapElement:GetWidth() / 2)
-		thisY = (parentMap:GetMap():GetHeight() * yP) - (mapElement:GetWidth() / 2)
+		local thisMap = parentMap:GetMap()
 
-		--print (math.floor(thisX), math.floor(thisY), lastX, lastY)
+		thisX = (thisMap:GetWidth() * xP) - (mapElement:GetWidth() / 2)
+		thisY = (thisMap:GetHeight() * yP) - (mapElement:GetWidth() / 2)
 
-		if math.floor(thisX) ~= lastX or math.floor(thisY) ~= lastY then
+		--print (mathFloor(thisX), mathFloor(thisY), lastX, lastY)
 
-			lastX = math.floor(thisX)
-			lastY = math.floor(thisY)
+		if mathFloor(thisX) ~= lastX or mathFloor(thisY) ~= lastY then
 
-			mapElement:SetPoint("TOPLEFT", parentMap:GetMap(), "TOPLEFT", thisX, thisY)
+			lastX = mathFloor(thisX)
+			lastY = mathFloor(thisY)
+
+			mapElement:SetPoint("TOPLEFT", thisMap, "TOPLEFT", thisX, thisY)
 		end
 
 	end
@@ -174,23 +180,23 @@ local function _uiMapElementCanvas(name, parent)
 
 		if lastAngle == nil then lastAngle = 0 end
 
-		local newAngle = math.floor(angle / 30) * 30  -- make angling less twitchy
+		local newAngle = mathFloor(angle / 30) * 30  -- make angling less twitchy
 
 		if newAngle == lastAngle then return end
 
-		-- local diff = math.abs(angle - lastAngle)
+		-- local diff = mathAbs(angle - lastAngle)
 
 		--if diff < 15 then return end
 		
 		local newRadian
 
 		if thisMapData.angleCorr ~= nil then
-			newRadian = math.rad(angle + thisMapData.angleCorr)
+			newRadian = mathRad(angle + thisMapData.angleCorr)
 		else
-			newRadian = math.rad(angle)
+			newRadian = mathRad(angle)
 		end
 
-		if radian == nil or math.abs(newRadian - radian) > .1 then
+		if radian == nil or mathAbs(newRadian - radian) > .1 then
 			radian = newRadian
 			mapElement:ReDraw()
 		end
@@ -287,24 +293,29 @@ local function _uiMapElementCanvas(name, parent)
 	mapElement:EventAttach(Event.UI.Input.Mouse.Cursor.In, function ()
 	
 		if tooltipTitle == nil then return end
-		parentMap:GetTooltip():SetTitle(tooltipTitle)
-		parentMap:GetTooltip():SetLines(tooltipLines)
-		parentMap:GetTooltip():ClearPoint("TOPRIGHT")
-		parentMap:GetTooltip():SetPoint("TOPLEFT", mapElement, "CENTER", 10, 0)
 
-		if parentMap:GetTooltip():GetLeft() + parentMap:GetTooltip():GetWidth() > parentMap:GetLeft() + parentMap:GetWidth() or parentMap:GetTooltip():GetLeft() + parentMap:GetTooltip():GetWidth() > UIParent:GetLeft() + UIParent:GetWidth() then
-			parentMap:GetTooltip():ClearPoint("TOPLEFT")
-			parentMap:GetTooltip():SetPoint("TOPRIGHT", mapElement, "CENTER", -10, 0)
+		local thisTooltip = parentMap:GetTooltip()
+
+		thisTooltip:SetTitle(tooltipTitle)
+		thisTooltip:SetLines(tooltipLines)
+		thisTooltip:ClearPoint("TOPRIGHT")
+		thisTooltip:SetPoint("TOPLEFT", mapElement, "CENTER", 10, 0)
+
+		if thisTooltip:GetLeft() + thisTooltip:GetWidth() > parentMap:GetLeft() + parentMap:GetWidth() or thisTooltip:GetLeft() + thisTooltip:GetWidth() > UIParent:GetLeft() + UIParent:GetWidth() then
+			thisTooltip:ClearPoint("TOPLEFT")
+			thisTooltip:SetPoint("TOPRIGHT", mapElement, "CENTER", -10, 0)
 		end
 
-		parentMap:GetTooltip():SetVisible(true)
+		thisTooltip:SetVisible(true)
 		tooltip = true
 		
 	end, mapElement:GetName() .. ".Cursor.In")
 
 	mapElement:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function ()
+
+		local thisTooltip = parentMap:GetTooltip()
 	
-		parentMap:GetTooltip():SetVisible(false)
+		thisTooltip:SetVisible(false)
 		tooltip = false
 		
 	end, mapElement:GetName() .. ".Cursor.Out")

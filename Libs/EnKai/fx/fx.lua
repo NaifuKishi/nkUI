@@ -6,7 +6,9 @@ if not EnKai then EnKai = {} end
 if not EnKai.fx then EnKai.fx = {} end
 
 local internal   = privateVars.internal
-local oFuncs	  = privateVars.oFuncs
+
+local InspectTimeReal 		= Inspect.Time.Real
+local InspectAddonCurrent	= Inspect.Addon.Current
 
 ---------- init local variables ---------
 
@@ -19,7 +21,7 @@ function EnKai.fx.register (id, frame, effect)
 	--print ("register fx", id)
 
 	_fxStore[id] = { frame = frame, effect = effect }
-	_fxStore[id].lastUpdate = oFuncs.oInspectTimeReal()
+	_fxStore[id].lastUpdate = InspectTimeReal()
 
 end
 
@@ -42,7 +44,7 @@ end
 
 function EnKai.fx.updateTime (id)
   if _fxStore[id] ~= nil then
-    _fxStore[id].lastUpdate = oFuncs.oInspectTimeReal()
+    _fxStore[id].lastUpdate = InspectTimeReal()
     _fxStore[id].lastRun = nil
   end
 end
@@ -58,13 +60,11 @@ end
 function internal.processFX()
 
 	local debugId  
-	if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.processFX") end
-
-	local timeReal = oFuncs.oInspectTimeReal
+	if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.processFX") end
 
 	for id, details in pairs (_fxStore) do
 
-		local now = timeReal()
+		local now = InspectTimeReal()
 
 		if details.effect.id == 'timedhide' then
 			if _fxStore[id].lastUpdate ~= nil then
@@ -110,9 +110,9 @@ function internal.processFX()
 			end
 		elseif details.effect.id == "pulseCanvas" then
 		--		  if _fxStore[id].lastUpdate ~= nil then
-		--        if oFuncs.oInspectTimeReal() - _fxStore[id].lastUpdate > details.effect.speed and details.frame:GetVisible() == true then
+		--        if InspectTimeReal() - _fxStore[id].lastUpdate > details.effect.speed and details.frame:GetVisible() == true then
 		--          
-		--          _fxStore[id].lastUpdate = oFuncs.oInspectTimeReal()
+		--          _fxStore[id].lastUpdate = InspectTimeReal()
 		--        
 		--          if details.scale == nil then details.scale = details.effect.maxScale end
 		--          if details.direction == nil then details.direction = 1 end
@@ -146,6 +146,6 @@ function internal.processFX()
 		end
 	end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.processFX", debugId) end	
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.processFX", debugId) end	
 
 end

@@ -47,32 +47,32 @@ local function _uiText(name, parent)
 
 	function text:SetTextFont(addonInfo, fontName) EnKai.ui.setFont(text, addonInfo, fontName) end
   
-  local oEventMacroSet = text.EventMacroSet
+	local oEventMacroSet = text.EventMacroSet
   
-  function text:EventMacroSet(handle, macro)
+	function text:EventMacroSet(handle, macro)
     
-     if macro == nil then
-      macros[handle] = true
-      oEventMacroSet(self, handle, nil)
-      local count = 0
-      for k, v in pairs(macros) do
-        count = count + 1
-      end
-      if count > 0 then text:SetSecureMode("normal") end
-    else
-      macros[handle] = nil
-      text:SetSecureMode("restricted")
-      oEventMacroSet(self, handle, macro)      
-    end
+    	if macro == nil then
+      		macros[handle] = true
+      		oEventMacroSet(self, handle, nil)
+      		local count = 0
+      		for k, v in pairs(macros) do
+        		count = count + 1
+      		end
+      		if count > 0 then text:SetSecureMode("normal") end
+    	else
+      		macros[handle] = nil
+      		text:SetSecureMode("restricted")
+      		oEventMacroSet(self, handle, macro)      
+    	end
     
-  end
+  	end
 
-  function text:_recycle()
-    internal.deRegisterEvents (name)
-    for k, v in pairs (macros) do
-       text:EventMacroSet(k, nil)
-    end
-  end
+	function text:_recycle()
+		internal.deRegisterEvents (name)
+		for k, v in pairs (macros) do
+			text:EventMacroSet(k, nil)
+		end
+	end
 
 	function text:destroy()
 		internal.uiAddToGarbageCollector ('nkText', text)  

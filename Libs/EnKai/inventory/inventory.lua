@@ -6,13 +6,18 @@ if not EnKai then EnKai = {} end
 if not EnKai.inventory then EnKai.inventory = {} end
 
 local data		= privateVars.data
-local oFuncs	= privateVars.oFuncs
 
 ---------- make global functions local ---------
 
-local _iInspectItemList           = Inspect.Item.List
-local _iUtilityItemSlotInventory  = Utility.Item.Slot.Inventory
-local _iUtilityItemSlotQuest      = Utility.Item.Slot.Quest
+local InspectItemList           	= Inspect.Item.List
+local UtilityItemSlotInventory  	= Utility.Item.Slot.Inventory
+local UtilityItemSlotQuest      	= Utility.Item.Slot.Quest
+local InspectItemDetail				= Inspect.Item.Detail
+local InspectSystemSecure			= Inspect.System.Secure
+local InspectTimeFrame				= Inspect.Time.Frame
+local CommandSystemWatchdogQuiet	= Command.System.Watchdog.Quiet
+
+local stringFind	= string.find
 
 ---------- init local variables ---------
 
@@ -57,7 +62,7 @@ local function _removeItem (slot)
 	local cacheDetails = itemCache[slotDetails.id]
 	
 	if cacheDetails == nil then -- wie auch immer das passieren kann
-		local details = oFuncs.oInspectItemDetail(slotDetails.id)
+		local details = InspectItemDetail(slotDetails.id)
 		if not details then details = { id = slotDetails.id } end
 				
 		if not details.type then details.type = "t" .. details.id end
@@ -81,7 +86,7 @@ end
 
 local function _processItems (list)
 
-	local itemList = oFuncs.oInspectItemDetail(list)
+	local itemList = InspectItemDetail(list)
 	
 	for slot, v in pairs(itemList) do
 		if v.id ~= nil then
@@ -93,7 +98,7 @@ end
 
 local function _fctGetInventory ()
 
-	if oFuncs.oInspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
+	if InspectSystemSecure() == false then CommandSystemWatchdogQuiet() end
 
 	if (not EnKaiInv[EnKai.unit.getPlayerDetails().name]) or (not EnKaiInv[EnKai.unit.getPlayerDetails().name].inventory) then
 		EnKaiInv[EnKai.unit.getPlayerDetails().name] = {}
@@ -102,11 +107,11 @@ local function _fctGetInventory ()
 	EnKaiInv[EnKai.unit.getPlayerDetails().name].inventory = { byID = {}, byType = {}, bySlot = {} }
 	EnKaiInv[EnKai.unit.getPlayerDetails().name].itemCache = {}
 
-	local slots = { _iInspectItemList(_iUtilityItemSlotInventory()), 
-					_iInspectItemList(Utility.Item.Slot.Equipment()), 
-					_iInspectItemList(Utility.Item.Slot.Bank()), 
-					_iInspectItemList(Utility.Item.Slot.Vault()), 
-					_iInspectItemList(_iUtilityItemSlotQuest()) }
+	local slots = { InspectItemList(UtilityItemSlotInventory()), 
+					InspectItemList(Utility.Item.Slot.Equipment()), 
+					InspectItemList(Utility.Item.Slot.Bank()), 
+					InspectItemList(Utility.Item.Slot.Vault()), 
+					InspectItemList(UtilityItemSlotQuest()) }
 
 	for idx = 1, #slots, 1 do
 	
@@ -159,7 +164,7 @@ local function _fctProcessUpdate (_, updates)
 			end
 
 			if key ~= false then
-				local updateDetails = oFuncs.oInspectItemDetail(key)
+				local updateDetails = InspectItemDetail(key)
 				
 				if updateDetails ~= nil then
 					--print (updateDetails.category)
@@ -226,7 +231,7 @@ function EnKai.inventory.init (updateFlag)
 		
 	end
 		
-	if updateFlag then EnKai.events.addInsecure(_fctGetInventory, oFuncs.oInspectTimeFrame(), 20) end
+	if updateFlag then EnKai.events.addInsecure(_fctGetInventory, InspectTimeFrame(), 20) end
 
 end
 
@@ -246,10 +251,10 @@ function EnKai.inventory.findFreeBagSlot(bag)
 	if bag then startBag, endBag = bag, bag end
 
 	for idx = startBag, endBag, 1 do
-		local bagSlot = _iUtilityItemSlotInventory(idx)
+		local bagSlot = UtilityItemSlotInventory(idx)
 		
 		if bagSlot then
-			local bagInfo = _iInspectItemList(bagSlot)
+			local bagInfo = InspectItemList(bagSlot)
 
 			for slot, details in pairs (bagInfo) do
 				if details == false then return slot end    
@@ -321,7 +326,7 @@ function EnKai.inventory.queryQtyById (key)
 	
 	if (not EnKaiInv[EnKai.unit.getPlayerDetails().name]) or (not EnKaiInv[EnKai.unit.getPlayerDetails().name].inventory) then _fctGetInventory() end
 	
-	if not string.find(key, ',') then
+	if not stringFind(key, ',') then
 		-- key is an id, get type			
 		key = inventory.byID[key]
 	end
@@ -351,7 +356,7 @@ function EnKai.inventory.queryByCategory (category)
 	
 	for id, details in pairs(itemCache) do
 		if details.category == category then
-			local err, details = pcall(oFuncs.oInspectItemDetail, id)
+			local err, details = pcall(InspectItemDetail, id)
 			if err and details then
 				retValues[id] = details
 			else
@@ -370,7 +375,7 @@ function EnKai.inventory.getAvailableSlots()
 	local availSlots = {}
 	local allSlots = nil
 	
-	local slots = _iInspectItemList(_iUtilityItemSlotInventory())
+	local slots = InspectItemList(UtilityItemSlotInventory())
 	local initOk = false
 	
 	for slot, details in pairs (slots) do
@@ -386,14 +391,14 @@ end
 
 function EnKai.inventory.getQuestItems ()
 
-	local slots = _iInspectItemList(_iUtilityItemSlotQuest())
+	local slots = InspectItemList(UtilityItemSlotQuest())
 	local lu = {}
 	
 	for slot, key in pairs(slots) do
 		if key ~= nil then lu[slot] = true end
 	end
 	
-	return oFuncs.oInspectItemDetail(lu)		
+	return InspectItemDetail(lu)		
 
 end
 
