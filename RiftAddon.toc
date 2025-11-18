@@ -6,7 +6,7 @@ Description = "Naifu's user interface"
 Author = "Naifu"
 Email = "naifukishi@gmail.com"
 
-Version = "0.0.6"
+Version = "0.0.7"
 Environment = "4.0"
 
 RunOnStartup = {
@@ -23,7 +23,7 @@ RunOnStartup = {
 	"modules/unitFrames/uiframes.lua",
 	"modules/unitFrames/castbar.lua",
 	"modules/unitFrames/buffIcon.lua",
-	"modules/unitFrames/ressourceBar.lua",	
+	"modules/unitFrames/ressourceBar.lua",
 
 	"modules/tooltip/tooltip.lua",
 

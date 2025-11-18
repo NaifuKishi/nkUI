@@ -74,8 +74,8 @@ local function _setupDefaults ()
     nkUISetup.uiFrames = { activate = true }
     nkUISetup.lowerBar = { activate = true }
     nkUISetup.tooltip = { activate = true }
-	nkUISetup.buffFrame = { activate = true }
-    nkUISetup.tutorial = 0
+	nkUISetup.buffFrame = { activate = true }	
+    nkUISetup.tutorial = 0	
 end
 
 local function _main(_, addon)
@@ -136,8 +136,6 @@ local function _main(_, addon)
 			end
 
 			if nkUISetup == nil then _setupDefaults() end
-
-			--_internal.actionbars()
 
 			Command.Event.Detach(Event.Unit.Availability.Full, nil,  "nkUI.Unit.Availability.Full")
 
