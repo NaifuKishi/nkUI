@@ -26,7 +26,7 @@ local processBuffs	= _internal.processBuffs
 
 ---------- init local variables ---------
 
-local _lastUpdate1, _lastUpdate2
+local _lastUpdate1, _lastUpdate2, _lastUpdate3
 local _eventsP1Index = 1
 local _eventsS1Index = 1
 local _eventsRemIndex = 1
@@ -481,10 +481,10 @@ function _events.uiFramesInitEvents()
 		
 		-- run every 1 second
 		
-		if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= 1) then
-			
-			_lastUpdate3 = _curTime
-		end
+		--if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= 1) then
+		--	
+		--	_lastUpdate3 = _curTime
+		--end
 		
 		-- run every 0.5 seconds
 		
