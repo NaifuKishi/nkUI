@@ -345,7 +345,14 @@ function _events.uiFramesInitEvents()
 
 		if targetCastBar then
 			local thisFrame = uiElements.frames.targetCastbar
-			thisFrame:SetTimer (targetCastBar.duration - (InspectTimeReal() - targetCastBar.start), targetCastBar.duration)
+
+			local remaining = targetCastBar.duration - (InspectTimeReal() - targetCastBar.start)
+			if remaining <= 0 then				
+				data.targetCastbar = nil
+				thisFrame:SetVisible(false)
+			else				
+				thisFrame:SetTimer (remaining, targetCastBar.duration)
+			end
 		end
 	end
 
@@ -397,9 +404,9 @@ function _events.uiFramesInitEvents()
 			_lastUpdate2 = _curTime
 		end
 		
-		-- run every 0.1 seconds
+		-- run every 0.05 seconds
 		
-		if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= .1) then		
+		if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= .05) then		
 			_processCastBars() 
 			_lastUpdate3 = _curTime
 		end

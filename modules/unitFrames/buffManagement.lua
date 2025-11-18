@@ -95,13 +95,13 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                             end
 
                             if v.poison then
-                                unitDebuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                                unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
                             elseif v.curse then
-                                unitDebuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
                             elseif v.disease then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.85, 0.85, 0, 1)
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
                             elseif v.debuff then
-                                unitDebuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
                             end
 
                             unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)

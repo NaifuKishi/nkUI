@@ -38,7 +38,7 @@ function _internal.buffBar.UpdateBuffDisplay()
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", UIParent, 10, 10
     local lastIcon
-    local firstBuffIcon = UIParent
+    local firstBuffIcon = nil
 
     local sortedBuffs = {}
     local sortedDebuffs = {}
@@ -48,7 +48,7 @@ function _internal.buffBar.UpdateBuffDisplay()
         icon:SetPoint(from, object, to, x, y)
         from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
 
-        if idx == 1 then firstBuffIcon = icon end
+        if firstBuffIcon == nil then firstBuffIcon = icon end
     end
 
     from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 10
@@ -66,10 +66,9 @@ function _internal.buffBar.addBuff(unit, buffs)
 
     for k, v in pairs(details) do
 
-        if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-            --print ("debuff")
-            if debuffDisplayList[k] == nil then
 
+        if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
+            if debuffDisplayList[k] == nil then
                 if debuffIcons[k] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, 1 * data.uiScaleX, 0, 0)
                     debuffIcons[k] = { icon = icon, visible = true, name = v.name }
@@ -84,13 +83,13 @@ function _internal.buffBar.addBuff(unit, buffs)
                 end
 
                 if v.poison then
-                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                    debuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
                 elseif v.curse then
-                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                    debuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
                 elseif v.disease then
-                    debuffIcons[k].icon:SetBorderColor(0.85, 0.85, 0, 1)
+                    debuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
                 elseif v.debuff then
-                    debuffIcons[k].icon:SetBorderColor(0, 1, 0, 1)
+                    debuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
                 end
 
                 debuffIcons[k].icon:SetTexture("Rift", v.icon)
