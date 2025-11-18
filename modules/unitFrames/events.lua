@@ -33,8 +33,8 @@ local _eventsRemIndex = 1
 
 ---------- init variables ---------
 
-data.playerCastbar = false
-data.targetCastbar = false
+data.playerCastbar = nil
+data.targetCastbar = nil
 
 ---------- local function block ---------
 
@@ -392,19 +392,37 @@ function _events.uiFramesInitEvents()
 		for k, v in pairs (units) do			
 			if k == data.playerID then
 				if v then
-					uiElements.frames.playerCastbar:SetVisible(true)
-					data.playerCastbar = true
+					local details = InspectUnitCastbar(data.playerID)
+
+					local thisFrame = uiElements.frames.playerCastbar
+					thisFrame:SetSpell (details.abilityName)
+					thisFrame:SetVisible(true)
+
+					data.playerCastbar = {
+						abilityName = details.abilityName,
+						duration = details.duration,
+						start = InspectTimeReal()
+					}
 				else
 					uiElements.frames.playerCastbar:SetVisible(false)
-					data.playerCastbar = false
+					data.playerCastbar = nil
 				end
 			elseif k == data.targetID then
 				if v then
-					uiElements.frames.targetCastbar:SetVisible(true)
-					data.targetCastbar = true
+					local details = InspectUnitCastbar(data.targetID)
+
+					local thisFrame = uiElements.frames.targetCastbar
+					thisFrame:SetSpell (details.abilityName)
+					thisFrame:SetVisible(true)
+
+					data.targetCastbar = {
+						abilityName = details.abilityName,
+						duration = details.duration,
+						start = InspectTimeReal()
+					}
 				else
 					uiElements.frames.targetCastbar:SetVisible(false)
-					data.targetCastbar = false
+					data.targetCastbar = nil
 				end
 			end
 		end
@@ -412,26 +430,19 @@ function _events.uiFramesInitEvents()
 
 	local function _processCastBars () 
 
-		if data.playerCastbar then
-			local details = InspectUnitCastbar(data.playerID)
+		local playerCastBar = data.playerCastbar
 
-			if details then
-				local thisFrame = uiElements.frames.playerCastbar
-				thisFrame:SetSpell (details.abilityName)
-				thisFrame:SetTimer (details.remaining, details.duration)
-			end
+		if playerCastBar then
+			local thisFrame = uiElements.frames.playerCastbar
+			thisFrame:SetTimer (playerCastBar.duration - (InspectTimeReal() - playerCastBar.start), playerCastBar.duration)
 		end
 
-		if data.targetCastbar then
-			local details = InspectUnitCastbar(data.targetID)
+		local targetCastBar = data.targetCastbar
 
-			if details then
-				local thisFrame = uiElements.frames.targetCastbar
-				thisFrame:SetSpell (details.abilityName)
-				thisFrame:SetTimer (details.remaining, details.duration)
-			end
+		if targetCastBar then
+			local thisFrame = uiElements.frames.targetCastbar
+			thisFrame:SetTimer (targetCastBar.duration - (InspectTimeReal() - targetCastBar.start), targetCastBar.duration)
 		end
-
 	end
 
 	local function _fctSecureEnter()
@@ -465,40 +476,29 @@ function _events.uiFramesInitEvents()
 		
 		-- run always
 
-		_processCastBars() -- this is updated quite fast on purpose to have a smooth scroll bar
-		
 		local _curTime = InspectTimeReal()
 		local _watchDog = InspectSystemWatchdog()
 		
 		-- run every 1 second
 		
-		if (_lastUpdate2 == nil or _curTime - _lastUpdate2 >= 1) then
-			if _watchDog >= 0.1 and _eventsS1Index == 1 then _eventsS1Index = 2 end			
-			if _watchDog >= 0.1 and _eventsS1Index == 2 then  _eventsS1Index = 3 end			
-			if _watchDog >= 0.1 and _eventsS1Index == 3 then _eventsS1Index = 1 end
+		if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= 1) then
 			
-			_lastUpdate2 = _curTime
+			_lastUpdate3 = _curTime
 		end
 		
 		-- run every 0.5 seconds
 		
-		if (_lastUpdate1 == nil or _curTime - _lastUpdate1 >= .5) then
-		
-			if _watchDog >= 0.1 and _eventsP1Index == 1 then
-				_internal.processBuffs()
-				_eventsP1Index = 2
-			end
-			
-			if _watchDog >= 0.1 and _eventsP1Index == 2 then _eventsP1Index = 3 end			
-			if _watchDog >= 0.1 and _eventsP1Index == 3 then _eventsP1Index = 1 end
-		
-			_lastUpdate1 = _curTime
+		if (_lastUpdate2 == nil or _curTime - _lastUpdate2 >= .5) then		
+			_internal.processBuffs()	
+			_lastUpdate2 = _curTime
 		end
 		
-		-- run if there's processor time remaining
+		-- run every 0.1 seconds
 		
-		if _watchDog >= 0.1 and _eventsRemIndex == 1 then _eventsRemIndex = 2 end		
-		if _watchDog >= 0.1 and _eventsRemIndex == 2 then _eventsRemIndex = 1 end
+		if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= .1) then		
+			_processCastBars() 
+			_lastUpdate3 = _curTime
+		end
 		
 	end
 

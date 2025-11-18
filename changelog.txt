@@ -1,3 +1,8 @@
+v0.0.7
+    - update: Improved castbar handling to improve performance
+
+
+
 v0.0.6
     - new: buffs can now be canceled by right click
     - new: added tooltip support to buffs and debuffs
