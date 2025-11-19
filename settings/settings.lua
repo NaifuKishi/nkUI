@@ -154,6 +154,7 @@ local function _subTutorialLowerBar(parent)
     activateCheckbox:SetChecked(nkUISetup.lowerBar.activate)
     activateCheckbox:SetLabelWidth(200)
     activateCheckbox:SetFontSize(16)
+    activateCheckbox:SetColor (1,1,1,1)
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.lowerBar.activate = newValue
@@ -179,6 +180,7 @@ local function _subTutorialTooltip(parent)
     activateCheckbox:SetChecked(nkUISetup.tooltip.activate)
     activateCheckbox:SetLabelWidth(200)
     activateCheckbox:SetFontSize(16)
+    activateCheckbox:SetColor (1,1,1,1)
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.tooltip.activate = newValue
