@@ -320,6 +320,7 @@ function frameManager.get(unitType, scale, x, y, reverse)
     end
 
     function unitFrame:SetHealth (health) 
+        if health == nil then return end
         local playerHealthPercent = health / healthMax
         healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
         healthFrame:SetWidth(248 * scale * playerHealthPercent)
@@ -411,7 +412,40 @@ end
         - The function ensures proper initialization of all UI components
         - Events are initialized to handle updates and interactions
 ]]
+
+function _internal.updateUnit (frame, unitID)
+
+    local details = EnKai.unit.GetUnitDetail(unitID)
+
+    frame:SetName(details.name)
+    if details.heatlthMax then 
+        frame:SetHealthMax(details.healthMax) 
+    else
+        frame:SetHealthMax(details.health) 
+    end
+    
+    frame:SetHealth(details.health)
+
+    if details.calling then frame:SetCalling(details.calling) end
+    
+    
+    if (details.energy) then
+        frame:SetEnergy(details.energy)
+        --if (details.energyMax) then frame:SetEnergyMax(details.energy) end
+    elseif (details.power) then
+        frame:SetEnergy(details.power)
+    elseif (details.mana) then
+        frame:SetEnergy(details.mana)
+    elseif (details.focus) then
+        frame:SetEnergy(details.focus - 100)
+    end
+
+    if details.planar then frame:SetPlanar(details.planar) end
+end
+
 function _internal.uiFrames()
+
+    uiElements.frames = {}
 
         -- Use the frame manager to get frames
     local player = frameManager.get("player", data.uiScaleX, 1320 * data.uiScaleX, 1000 * data.uiScaleY, false)
@@ -419,14 +453,45 @@ function _internal.uiFrames()
     player:SetVisible(true)
     player:SetMacro("/target @self")
 
+    uiElements.frames["player"] = player
+
     local playerRessourceBar = _internal.ressourcBar("player", data.uiScaleX, 1620 * data.uiScaleX, 1020 * data.uiScaleY)
     local playerCastbar = _internal.createCastBar("player", playerRessourceBar)
+
+    uiElements.frames["player.castbar"] = playerCastbar
+    uiElements.frames["player.ressourcebar"]  = playerRessourceBar  
 
     local playerPet = frameManager.get("player.pet", .75 * data.uiScaleX, 1000 * data.uiScaleX, 1050 * data.uiScaleY, false)
     playerPet:SetMacro("/target @pet")
 
+    uiElements.frames["player.pet"] = playerPet
+
     local target = frameManager.get("target", data.uiScaleX, (2120 - 250) * data.uiScaleX, 1000 * data.uiScaleY, true)
     local targetCastbar = _internal.createCastBar("player.target", playerRessourceBar)
+
+    uiElements.frames["target.castbar"] = targetCastbar
+    uiElements.frames["target"] = target
+
+    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 500, 500
+
+    for idx = 1, 5, 1 do
+        local group = frameManager.get(stringFormat("group%02d", idx), data.uiScaleX, 0, 0, false)
+        group:SetPoint(from, object, to, x, y)
+        group:SetMacro(stringFormat("/target @group%02d", idx))
+        uiElements.frames[stringFormat("group%02d", idx)] = group
+
+        to, object, x, y = "BOTTOMLEFT", group, 0, 20
+    end
+
+    for idx = 1, 5, 1 do        
+        local groupPet = frameManager.get(stringFormat("group%02d.pet", idx), (data.uiScaleX-.2), 0, 0, false)
+        local group = uiElements.frames[stringFormat("group%02d", idx)]
+
+        groupPet:SetPoint("TOPLEFT", group, "TOPRIGHT", 20, 0)
+        groupPet:SetMacro(string.format("/target @group%02d.pet", idx))
+
+        uiElements.frames[stringFormat("group%02d.pet", idx)] = group
+    end
 
     function playerRessourceBar:update (unitID)
         if (unitID == data.playerID) then
@@ -458,71 +523,11 @@ function _internal.uiFrames()
                 playerRessourceBar:SetRessource(details.mana)
             end
         end
-    end
+    end    
 
-    function player:update (unitID)
-        local details = EnKai.unit.GetUnitDetail(unitID)
-
-        player:SetCalling(details.calling)
-        player:SetHealthMax(details.healthMax)
-        player:SetName(details.name)
-        player:SetHealth(details.health)
-
-        if (details.energy) then
-            player:SetEnergy(details.energy)
-        elseif (details.power) then
-            player:SetEnergy(details.power)
-        elseif (details.mana) then
-            player:SetEnergy(details.mana)
-        elseif (details.focus) then
-            player:SetEnergy(details.focus - 100)
-        end
-
-        player:SetPlanar(details.planar)
-    end
-
-    function target:update (frame, unitID)
-        local details = EnKai.unit.GetUnitDetail(unitID)
-
-        target:SetCalling(details.calling)
-        target:SetHealthMax(details.healthMax)
-        target:SetName(details.name)
-        target:SetHealth(details.health)
-        target:SetEnergy(details.energy)
-        target:SetPlanar(details.planar)
-
-        if (details.energy) then
-            player:SetEnergy(details.energy)
-        elseif (details.power) then
-            player:SetEnergy(details.power)
-        elseif (details.mana) then
-            player:SetEnergy(details.mana)
-        elseif (details.focus) then
-            player:SetEnergy(details.focus - 100)
-        end
-    end
-
-    function playerPet:update (unitID)
-        local details = InspectUnitDetail(unitID)
-
-        playerPet:SetCalling(details.calling)
-        playerPet:SetHealthMax(details.healthMax)
-        playerPet:SetName(details.name)
-        playerPet:SetHealth(details.health)
-    end
-
-    uiElements.frames = {
-        player = player,
-        playerCastbar = playerCastbar,
-        playerPet = playerPet,
-        target = target,
-        targetCastbar = targetCastbar,
-        playerRessourceBar = playerRessourceBar
-    }
-
-    uiElements.frames.player:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames.playerPet:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames.target:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 
     _events.uiFramesInitEvents()
 	
@@ -548,10 +553,10 @@ end
 ]]
 function _internal.uiFramesToggle(value)
 
-    if value == true and not uiElements.frames.player then
+    if value == true and not uiElements.frames["player"] then
         _internal.uiFrames ()
-        uiElements.frames.player:update(EnKai.unit.getPlayerDetails().id)
-        uiElements.frames.playerRessourceBar:update (EnKai.unit.getPlayerDetails().id)
+        _internal.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id)
+        uiElements.frames["player.ressourcebar"]:update (EnKai.unit.getPlayerDetails().id)
     end
 
     if uiElements.frames then        
@@ -560,24 +565,24 @@ function _internal.uiFramesToggle(value)
         end
     end
 
-    uiElements.frames.player:SetVisible(value)
-    uiElements.frames.target:SetVisible(value)
+    uiElements.frames["player"]:SetVisible(value)
+    uiElements.frames["target"]:SetVisible(value)
 
 end
 
 function _internal.uiFramesRemoveBuffs()
 
     local buffs = InspectBuffList(data.playerID)
-    if (buffs) then uiElements.frames.player:removeBuff(data.playerID, buffs) end
+    if (buffs) then uiElements.frames["player"]:removeBuff(data.playerID, buffs) end
 
-    local targetFrame = uiElements.frames.target
+    local targetFrame = uiElements.frames["target"]
 
     if targetFrame:GetVisible() and data.targetID ~= nil then        
         local buffs = InspectBuffList(data.targetID)
         if (buffs) then targetFrame:removeBuff(data.targetID, buffss) end
     end
 
-    local playerPetFrame = uiElements.frames.playerPet
+    local playerPetFrame = uiElements.frames["player.pet"]
 
     if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
         local buffs = InspectBuffList(data.playerPetID)
@@ -589,22 +594,19 @@ end
 function _internal.uiFramesLoadAllBuffs()
 
     local buffs = InspectBuffList(data.playerID)
-    if (buffs) then uiElements.frames.player:addBuff(data.playerID, buffs) end
+    if (buffs) then uiElements.frames["player"]:addBuff(data.playerID, buffs) end
 
-    local targetFrame = uiElements.frames.target
+    local targetFrame = uiElements.frames["target"]
 
     if targetFrame:GetVisible() and data.targetID ~= nil then        
         local buffs = InspectBuffList(data.targetID)
         if (buffs) then targetFrame:addBuff(data.targetID, buffss) end
     end
 
-    local playerPetFrame = uiElements.frames.playerPet
+    local playerPetFrame = uiElements.frames["player.pet"]
 
     if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
         local buffs = InspectBuffList(data.playerPetID)
         if (buffs) then playerPetFrame:addBuff(data.playerPetID, buffss) end
     end
-
-
-
 end

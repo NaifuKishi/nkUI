@@ -40,7 +40,7 @@ function _internal.buffBar.UpdateBuffDisplay()
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", UIParent, 10, 10
     local lastIcon
-    local firstBuffIcon = nil
+    local firstBuffIcon = UIParent
 
     local sortedBuffs = {}
     local sortedDebuffs = {}

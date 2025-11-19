@@ -210,8 +210,9 @@ function _internal.processBuffs ()
 
     --- process player
 
-    local playerBuffIcons = uiElements.frames.player:GetBuffIcons()
-    local playerDebuffIcons = uiElements.frames.player:GetDebuffIcons()
+    local playerFrame = uiElements.frames["player"]
+    local playerBuffIcons = playerFrame:GetBuffIcons()
+    local playerDebuffIcons = playerFrame:GetDebuffIcons()
 
     for k, thisIcon in pairs (playerBuffIcons) do
         if thisIcon.remaining then
@@ -229,8 +230,10 @@ function _internal.processBuffs ()
 
 	if data.playerPetID then
 
-        local playerPetBuffIcons = uiElements.frames.playerPet:GetBuffIcons()
-        local playerPetDebuffIcons = uiElements.frames.playerPet:GetDebuffIcons()
+        local playerPetFrame = uiElements.frames["player.pet"]
+
+        local playerPetBuffIcons = playerPetFrame:GetBuffIcons()
+        local playerPetDebuffIcons = playerPetFrame:GetDebuffIcons()
 
         for k, thisIcon in pairs (playerPetBuffIcons) do
             if thisIcon.remaining then
@@ -252,8 +255,10 @@ function _internal.processBuffs ()
 		local thisUnit = InspectUnitLookup(data.targetID)
 		if thisUnit == "player.target" then
 
-			local targetBuffIcons = uiElements.frames.target:GetBuffIcons()
-			local targetDebuffIcons = uiElements.frames.target:GetDebuffIcons()
+            local targetFrame = uiElements.frames["target"]
+
+			local targetBuffIcons = targetFrame:GetBuffIcons()
+			local targetDebuffIcons = targetFrame:GetDebuffIcons()
 
 			for k, thisIcon in pairs (targetBuffIcons) do
                 if thisIcon.remaining then
