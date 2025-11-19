@@ -102,6 +102,8 @@ local frameManager = {
 ]]
 function frameManager.get(unitType, scale, x, y, reverse)
     
+    local unitFrameWidth
+
     -- Check if frame already exists
 
     if frameManager.activeFrames[unitType] then
@@ -198,9 +200,9 @@ function frameManager.get(unitType, scale, x, y, reverse)
     local nameText = EnKai.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
     if reverse then
-        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
+        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 0)
     else
-        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
+        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2* scale, 0)
     end
 
     nameText:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -211,9 +213,9 @@ function frameManager.get(unitType, scale, x, y, reverse)
     local healthText = EnKai.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
 
     if reverse then
-        healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 15)
+        healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2* scale, 15* scale)
     else
-        healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 15)
+        healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 15* scale)
     end
 
     healthText:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -224,9 +226,9 @@ function frameManager.get(unitType, scale, x, y, reverse)
     local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
     if reverse then
-        energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -12)
+        energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2 * scale, -12 * scale)
     else
-        energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2, -12)
+        energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2 * scale, -12 * scale)
     end
 
     energyText:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -237,9 +239,9 @@ function frameManager.get(unitType, scale, x, y, reverse)
     local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
     if reverse then
-        planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4, 0)
+        planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4* scale, 0)
     else
-        planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 4, 0)
+        planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 4* scale, 0)
     end
 
    
@@ -321,9 +323,13 @@ function frameManager.get(unitType, scale, x, y, reverse)
 
     function unitFrame:SetHealth (health) 
         if health == nil then return end
+
+        if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
+
         local playerHealthPercent = health / healthMax
         healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
-        healthFrame:SetWidth(248 * scale * playerHealthPercent)
+        
+        healthFrame:SetWidth(unitFrameWidth * playerHealthPercent)
     end
 
     function unitFrame:ProcessUnitDetails (newUnitID)
@@ -472,23 +478,28 @@ function _internal.uiFrames()
     uiElements.frames["target.castbar"] = targetCastbar
     uiElements.frames["target"] = target
 
-    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 500, 500
+    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
     for idx = 1, 5, 1 do
-        local group = frameManager.get(stringFormat("group%02d", idx), data.uiScaleX, 0, 0, false)
+        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false)
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
+        group:SetVisible(true)
+        _internal.updateUnit (group, data.playerID)
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
-        to, object, x, y = "BOTTOMLEFT", group, 0, 20
+        to, object, x, y = "BOTTOMLEFT", group, 0, 60 * data.uiScaleY
     end
 
     for idx = 1, 5, 1 do        
-        local groupPet = frameManager.get(stringFormat("group%02d.pet", idx), (data.uiScaleX-.2), 0, 0, false)
+        local groupPet = frameManager.get(stringFormat("group%02d.pet", idx), (data.uiScaleX-.3), 0, 0, false)
         local group = uiElements.frames[stringFormat("group%02d", idx)]
-
-        groupPet:SetPoint("TOPLEFT", group, "TOPRIGHT", 20, 0)
+        groupPet:ClearPoint("TOPLEFT")
+        groupPet:SetPoint("BOTTOMLEFT", group, "BOTTOMRIGHT", 20, 0)
         groupPet:SetMacro(string.format("/target @group%02d.pet", idx))
+        groupPet:SetWidth (148 * data.uiScaleX)
+        groupPet:SetVisible(true)        
+        _internal.updateUnit (groupPet, data.playerID)
 
         uiElements.frames[stringFormat("group%02d.pet", idx)] = group
     end
