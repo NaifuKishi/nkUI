@@ -2,6 +2,7 @@ V0.0.8
     - new: separate setting to activate buffbar and buffs on unit frames
     - new: enabling / disabling unitframe will affect buffs as well
     - new: Added combat / non combat alpha setting
+    - new: created nkUI Theme for Tutorial windows
     - update: changed tutorial and settings update handling
     - udpate: changed tutorial to activate / deactive settings on module setup
     - update: change buff timer handling to improve performance

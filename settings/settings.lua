@@ -36,12 +36,12 @@ local function _subTutorialUnitframes(parent)
     frame:SetVisible(false)
 
     local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, 5)
+    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
     activateCheckbox:SetText("Activate this module")
     activateCheckbox:SetChecked(nkUISetup.uiFrames.activate)
     activateCheckbox:SetLabelWidth(250)
     activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetColor (1,1,1,1)
+    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.uiFrames.activate = newValue
@@ -68,7 +68,7 @@ local function _subTutorialUnitframes(parent)
     buffsCheckbox:SetChecked(nkUISetup.buffFrame.activate)
     buffsCheckbox:SetLabelWidth(250)
     buffsCheckbox:SetFontSize(16)
-    buffsCheckbox:SetColor (1,1,1,1)
+    buffsCheckbox:SetTextFont(addonInfo.id, "Montserrat")
     buffsCheckbox:SetActive(nkUISetup.uiFrames.activate)
 
     Command.Event.Attach(EnKai.events[name .. '.buffsCheckbox'].CheckboxChanged, function (_, newValue)		
@@ -86,7 +86,7 @@ local function _subTutorialUnitframes(parent)
     buffsUnitBarCheckbox:SetChecked(nkUISetup.buffUnitFrame.activate)
     buffsUnitBarCheckbox:SetLabelWidth(250)
     buffsUnitBarCheckbox:SetFontSize(16)
-    buffsUnitBarCheckbox:SetColor (1,1,1,1)
+    buffsUnitBarCheckbox:SetTextFont(addonInfo.id, "Montserrat")
     buffsUnitBarCheckbox:SetActive(nkUISetup.uiFrames.activate)
 
     Command.Event.Attach(EnKai.events[name .. '.buffsUnitBarCheckbox'].CheckboxChanged, function (_, newValue)		
@@ -108,8 +108,9 @@ local function _subTutorialUnitframes(parent)
     combatAlphaSlider:SetLabelWidth(250)
     combatAlphaSlider:SetFontSize(16)
     combatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
-    combatAlphaSlider:SetColor (1,1,1,1)
-    combatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    --combatAlphaSlider:SetColor (1,1,1,1)
+    --combatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    combatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
     combatAlphaSlider:AdjustValue(nkUISetup.combatAlpha * 100)
     
     Command.Event.Attach(EnKai.events[name .. '.combatAlphaSlider'].SliderChanged, function (_, newValue)
@@ -126,8 +127,9 @@ local function _subTutorialUnitframes(parent)
     nonCombatAlphaSlider:SetLabelWidth(250)
     nonCombatAlphaSlider:SetFontSize(16)
     nonCombatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
-    nonCombatAlphaSlider:SetColor (1,1,1,1)
-    nonCombatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    --nonCombatAlphaSlider:SetColor (1,1,1,1)
+    --nonCombatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    nonCombatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
     nonCombatAlphaSlider:AdjustValue(nkUISetup.nonCombatAlpha * 100)
     
     Command.Event.Attach(EnKai.events[name .. '.nonCombatAlphaSlider'].SliderChanged, function (_, newValue)
@@ -149,12 +151,12 @@ local function _subTutorialLowerBar(parent)
     frame:SetVisible(false)
 
     local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, 5)
+    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
     activateCheckbox:SetText("Activate this module")
     activateCheckbox:SetChecked(nkUISetup.lowerBar.activate)
     activateCheckbox:SetLabelWidth(200)
     activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetColor (1,1,1,1)
+    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.lowerBar.activate = newValue
@@ -175,12 +177,12 @@ local function _subTutorialTooltip(parent)
     frame:SetVisible(false)
 
     local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, 5)
+    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
     activateCheckbox:SetText("Activate this module")
     activateCheckbox:SetChecked(nkUISetup.tooltip.activate)
     activateCheckbox:SetLabelWidth(200)
     activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetColor (1,1,1,1)
+    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.tooltip.activate = newValue
@@ -197,13 +199,12 @@ local function _createTutorialWindow()
 
     -- Create the main tutorial window
     local tutorialWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextTop)
-    tutorialWindow:SetTitle("nkUI Setup")
+    tutorialWindow:SetTitle("nkUI Tutorial and setup")
+    tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)
     tutorialWindow:SetHeight(600)
     tutorialWindow:SetPoint("CENTER", UIParent, "CENTER")
     tutorialWindow:SetShadow(true)
-    tutorialWindow:SetWindowColor(0, 0, 0, .6)
-
 
     -- Create content frame
     local content = tutorialWindow:GetContent()
@@ -215,14 +216,14 @@ local function _createTutorialWindow()
     local titleText = EnKai.uiCreateFrame("nkText", "tutorialTitle", content)
     titleText:SetPoint("TOPLEFT", content, "TOPLEFT", 20, 20)
     titleText:SetFontSize(20)
-    titleText:SetFontColor(1, 1, 1, 1)
+    titleText:SetTextFont(addonInfo.id, "MontserratSemiBold")
 
     local descriptionText = EnKai.uiCreateFrame("nkText", "tutorialDescription", content)
     descriptionText:SetPoint("TOPLEFT", titleText, "BOTTOMLEFT", 0, 20)
     descriptionText:SetWordwrap(true)
     descriptionText:SetWidth(560)
     descriptionText:SetFontSize(16)
-    descriptionText:SetFontColor(0.8, 0.8, 0.8, 1)
+    descriptionText:SetTextFont(addonInfo.id, "Montserrat")
 
     -- Create a frame for displaying subframes
     local subFrameContainer = EnKai.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
@@ -238,11 +239,13 @@ local function _createTutorialWindow()
     local prevButton = EnKai.uiCreateFrame("nkButtonMetro", "prevButton", content)
     prevButton:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 20, -20)
     prevButton:SetText("Previous")
+    prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
     prevButton:SetWidth(100)
 
     local nextButton = EnKai.uiCreateFrame("nkButtonMetro", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
     nextButton:SetText("Next")
+    nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
     nextButton:SetWidth(100)
 
 -- Create tutorial steps
@@ -287,7 +290,7 @@ local function _createTutorialWindow()
             image = "gfx/tutorialTooltip.png",
             width = 182,
             height = 103,
-            position = "right",
+            position = "bottom",
             settings = _subTutorialTooltip(subFrameContainer)
         },
                 {

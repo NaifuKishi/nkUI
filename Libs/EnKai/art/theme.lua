@@ -38,6 +38,35 @@ local _themes = { default = { logo              = {'EnKai', 'gfx/EnKaiLogo.png'}
                                     elementSubColor2  = { r = 0.078, g = 0.188, b = 0.306, a = 1},
                                     highlightColor    = { r = 1, g = 1, b = 1, a = 1}
                   },
+                  nkUI = { logo = {'EnKai', 'gfx/EnKaiLogo.png'},
+                  labelColor = {r = 0.9, g = 0.9, b = 0.9, a = 1},
+    windowColor = {
+      { r = 0.08, g = 0.08, b = 0.08, a = 0.9},
+      { r = 0.08, g = 0.08, b = 0.08, a = 0.9},
+      { r = 1, g = 1, b = 1, a = 1}
+    },
+    tabPaneColor = {
+      { r = 0.12, g = 0.12, b = 0.12, a = 1},
+      { r = 0.08, g = 0.08, b = 0.08, a = 1},
+      { r = 1, g = 1, b = 1, a = 1},
+      {r = 1, g = 1, b = 1, a = 1},
+      {r = 1, g = 1, b = 1, a = 1}
+    },
+    gridColor = {
+      { r = 0.12, g = 0.12, b = 0.12, a = 1},
+      {r = 0.18, g = 0.18, b = 0.18, a = 1},
+      { r = 1, g = 1, b = 1, a = 1},
+      { r = 1, g = 1, b = 1, a = 1},
+      { r = 0, g = 0, b = 0, a = 1},
+      { r = 1, g = 1, b = 1, a = 1},
+      { r = 1, g = 1, b = 1, a = 1},
+      { r = 0.08, g = 0.08, b = 0.08, a = 1}
+    },
+    elementMainColor = {r = 0.2, g = 0.6, b = 1, a = 1}, -- Bright blue for borders and checkboxes
+    elementSubColor = {r = 0.12, g = 0.12, b = 0.12, a = 1}, -- Darker color for button bodies and slider positions
+    elementSubColor2 = { r = 0.12, g = 0.12, b = 0.12, a = 1},
+    highlightColor = { r = 0.6, g = 0.8, b = 0.9, a = 1} -- Light blue color for slider positions
+  }
 }
 
 ---------- addon public function block ---------

@@ -231,6 +231,8 @@ local function _uiCheckbox(name, parent)
 
 	function checkBox:SetFont(addonId, font) EnKai.ui.setFont(label, addonId, font) end
 	function checkBox:SetText(text) label:SetText(text) end	
+	function checkBox:SetTextFont(addonInfo, fontName) EnKai.ui.setFont(label, addonInfo, fontName) end
+
 	function checkBox:GetText() return label:GetText() end
 	
 	function checkBox:SetLabelWidth(width)

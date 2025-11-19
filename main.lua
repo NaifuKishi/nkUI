@@ -106,6 +106,8 @@ local function _main(_, addon)
 		EnKai.ui.registerFont (addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
 		EnKai.ui.registerFont (addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
+		EnKai.art.SetTheme("nkUI")
+
 		local parentWidth = UIParent:GetWidth()
 		local parentHeight = UIParent:GetHeight()
 		data.uiScaleX = parentWidth / 3440
@@ -153,7 +155,7 @@ local function _main(_, addon)
 
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
 				_setupDefaults()
-				
+
     			nkUISetup.tutorialVersion = thisTutorialVersion
 
 				print  (nkUISetup.tutorialVersion, thisTutorialVersion)

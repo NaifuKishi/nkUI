@@ -233,7 +233,7 @@ local function _uiSlider(name, parent)
 		end
 		sliderLabel:SetFontColor(labelColor.r, labelColor.g, labelColor.b, labelColor.a)
 	end
-	
+		
 	function slider:SetActive(flag)
 		if flag == true then
 			slider:SetAlpha(1)
