@@ -484,8 +484,8 @@ function _internal.uiFrames()
         local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false)
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
-        group:SetVisible(true)
-        _internal.updateUnit (group, data.playerID)
+        --group:SetVisible(true)
+        --_internal.updateUnit (group, data.playerID)
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
         to, object, x, y = "BOTTOMLEFT", group, 0, 60 * data.uiScaleY
@@ -498,8 +498,8 @@ function _internal.uiFrames()
         groupPet:SetPoint("BOTTOMLEFT", group, "BOTTOMRIGHT", 20, 0)
         groupPet:SetMacro(string.format("/target @group%02d.pet", idx))
         groupPet:SetWidth (148 * data.uiScaleX)
-        groupPet:SetVisible(true)        
-        _internal.updateUnit (groupPet, data.playerID)
+        --groupPet:SetVisible(true)        
+        --_internal.updateUnit (groupPet, data.playerID)
 
         uiElements.frames[stringFormat("group%02d.pet", idx)] = group
     end
