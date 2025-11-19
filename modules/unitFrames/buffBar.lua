@@ -11,6 +11,7 @@ local _events     = privateVars.events
 
 -- Cache frequently used functions and values
 local InspectBuffDetail     = Inspect.Buff.Detail
+local InspectBuffList       = Inspect.Buff.List
 local InspectTimeReal       = Inspect.Time.Real
 
 local mathFloor     = math.floor
@@ -155,9 +156,16 @@ end
 ]]
 function _internal.buffBar.clearAllBuffs()
 
-    _internal.iconManager.clearAll()
-
-    buffDisplayList = {}
-    debuffDisplayList = {}
+    local buffs = InspectBuffList(data.playerID)
+   _internal.buffBar.removeBuff(data.playerID, buffs)
     
+end
+
+
+function _internal.buffBar.loadAllBuffs()
+
+   local buffs = InspectBuffList(data.playerID)
+   _internal.buffBar.addBuff(data.playerID, buffs)
+   _internal.buffBar.UpdateBuffDisplay() 
+
 end

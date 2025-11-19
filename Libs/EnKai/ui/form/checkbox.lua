@@ -11,6 +11,56 @@ local internal      = privateVars.internal
 
 ---------- addon internal function block ---------
 
+--[[
+   _uiCheckbox
+    Description:
+        Creates and configures a customizable checkbox UI element with label, box, and mark components.
+        This function provides a framework for creating interactive checkboxes with various customization options.
+    Parameters:
+        name (string): Unique identifier for the checkbox element
+        parent (frame): Parent frame to which this checkbox will be attached
+    Returns:
+        checkBox (frame): The configured checkbox frame with all child elements and functionality
+    Process:
+        1. Creates the main checkbox frame and its components (label, outer box, inner box, mark)
+        2. Sets up default styling and positioning
+        3. Configures event handlers for mouse interactions (clicking the checkbox)
+        4. Implements various checkbox behaviors (checking/unchecking, styling changes)
+        5. Provides getter and setter methods for checkbox properties
+        6. Sets up event system for checkbox state changes
+    Notes:
+        - The checkbox can be made round or square
+        - Supports customization of colors for different states
+        - Provides methods for setting and getting the checked state
+        - Implements label positioning options
+        - Includes event system for tracking checkbox state changes
+        - Supports font customization for the label text
+    Available Methods:
+    **Checkbox Behavior Methods:**
+        - toggle(): Toggles the checked state of the checkbox
+        - SetChecked(flag, silent): Sets the checked state of the checkbox
+        - GetChecked(): Returns the current checked state of the checkbox
+        - SetLabelInFront(flag): Sets whether the label appears before or after the checkbox
+        - SetActive(flag): Sets whether the checkbox is active and interactive
+        - SetRound(flag): Sets whether the checkbox has rounded corners
+        - AutoSizeLabel(): Automatically sizes the label based on its content
+    **Checkbox Appearance Methods:**
+        - SetLabelColor(r, g, b, a): Sets the color of the label text
+        - SetColor(r, g, b, a): Sets the color of the checkbox elements
+        - SetColorInner(newColor): Sets the color of the inner checkbox element
+        - SetFont(addonId, font): Sets the font for the label text
+        - SetText(text): Sets the text of the label
+        - GetText(): Returns the text of the label
+        - SetLabelWidth(width): Sets the width of the label
+        - SetBoxWidth(newBoxWidth): Sets the width of the checkbox box
+        - SetBoxHeight(newBoxHeight): Sets the height of the checkbox box
+        - SetFontSize(newFontSize): Sets the font size of the label text
+    **Checkbox State Methods:**
+        - SetValue(property, value): Sets a property value for the checkbox
+        - GetValue(property): Gets a property value for the checkbox
+    **UI Element Accessor Methods:**
+        - destroy(): Cleans up and destroys the checkbox and its components
+]]
 local function _uiCheckbox(name, parent) 
 
 	----if EnKai.internal.checkEvents (name, true) == false then return nil end

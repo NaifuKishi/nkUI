@@ -145,12 +145,14 @@ end
         - The active icons collection is emptied after processing
 ]]
 function iconManager.clearAll()
+
     for unitType, icons in pairs(iconManager.activeIcons) do
         for iconType, icon in pairs(icons) do
             icon:SetVisible(false)
             table.insert(iconManager.iconPool, icon)
         end
     end
+    
     iconManager.activeIcons = {}
 end
 

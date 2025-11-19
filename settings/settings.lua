@@ -18,6 +18,8 @@ local name = "settings"
 
 local function _subTutorialUnitframes(parent)
 
+    local buffsCheckbox, buffsUnitBarCheckbox
+
     local name = "nkUI.tutorialWindow.unitframes"
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
@@ -31,23 +33,60 @@ local function _subTutorialUnitframes(parent)
     activateCheckbox:SetChecked(nkUISetup.uiFrames.activate)
     activateCheckbox:SetLabelWidth(250)
     activateCheckbox:SetFontSize(16)
+    activateCheckbox:SetColor (1,1,1,1)
 
     Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.uiFrames.activate = newValue
+        buffsCheckbox:SetActive(newValue)
+        buffsUnitBarCheckbox:SetActive(newValue)
+
         _internal.uiFramesToggle(newValue)
+
+        if newValue == false then 
+            _internal.buffBar.clearAllBuffs() 
+            _internal.uiFramesRemoveBuffs()
+        else
+            _internal.uiFramesLoadAllBuffs()
+            _internal.buffBar.loadAllBuffs()
+        end
+
     end, name .. '.activateCheckbox.CheckboxChanged')
 
-    local buffsCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".buffsCheckbox", frame)
-    buffsCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 5)
-    buffsCheckbox:SetText("Activate the buff/debuff frame")
+    buffsCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".buffsCheckbox", frame)
+    buffsCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 20)
+    buffsCheckbox:SetText("Main buff/debuff bar")
     buffsCheckbox:SetChecked(nkUISetup.buffFrame.activate)
     buffsCheckbox:SetLabelWidth(250)
     buffsCheckbox:SetFontSize(16)
+    buffsCheckbox:SetColor (1,1,1,1)
+    buffsCheckbox:SetActive(nkUISetup.uiFrames.activate)
 
     Command.Event.Attach(EnKai.events[name .. '.buffsCheckbox'].CheckboxChanged, function (_, newValue)		
         nkUISetup.buffFrame.activate = newValue
-        if newValue == false then _internal.BuffsReset () end
+        if newValue == false then 
+            _internal.buffBar.clearAllBuffs()             
+        else
+            _internal.buffBar.loadAllBuffs()
+        end
     end, name .. '.buffsCheckbox.CheckboxChanged')
+
+    buffsUnitBarCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".buffsUnitBarCheckbox", frame)
+    buffsUnitBarCheckbox:SetPoint("TOPLEFT", buffsCheckbox, "BOTTOMLEFT", 0, 5)
+    buffsUnitBarCheckbox:SetText("Buffs/debuffs on unit frames")
+    buffsUnitBarCheckbox:SetChecked(nkUISetup.buffUnitFrame.activate)
+    buffsUnitBarCheckbox:SetLabelWidth(250)
+    buffsUnitBarCheckbox:SetFontSize(16)
+    buffsUnitBarCheckbox:SetColor (1,1,1,1)
+    buffsUnitBarCheckbox:SetActive(nkUISetup.uiFrames.activate)
+
+    Command.Event.Attach(EnKai.events[name .. '.buffsUnitBarCheckbox'].CheckboxChanged, function (_, newValue)		
+        nkUISetup.buffUnitFrame.activate = newValue
+        if newValue == false then 
+            _internal.uiFramesRemoveBuffs()
+        else
+            _internal.uiFramesLoadAllBuffs()
+        end
+    end, name .. '.buffsUnitBarCheckbox.CheckboxChanged')
 
     return frame
 
@@ -111,7 +150,7 @@ local function _createTutorialWindow()
     local tutorialWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextTop)
     tutorialWindow:SetTitle("nkUI Setup")
     tutorialWindow:SetWidth(600)
-    tutorialWindow:SetHeight(400)
+    tutorialWindow:SetHeight(600)
     tutorialWindow:SetPoint("CENTER", UIParent, "CENTER")
     tutorialWindow:SetShadow(true)
     tutorialWindow:SetWindowColor(0, 0, 0, .6)

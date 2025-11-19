@@ -14,7 +14,7 @@ local data        = privateVars.data
 local uiElements  = privateVars.uiElements
 local _internal   = privateVars.internal
 local _events     = privateVars.events
-local oFuncs		= privateVars.oFuncs
+local oFuncs	  = privateVars.oFuncs
 
 ---------- init local variables ---------
 
@@ -45,6 +45,7 @@ data.colors = { primary	= { r = 1, g = 1, b = 1, a = 1 },
 				accent	= { r = .24, g = .68, b = .91, a = 1 }}
 				
 data.uiScaleX, data.uiScaleY = 1, 1
+local thisTutorialVersion = 008
 
 ---------- generate ui context ---------
 
@@ -70,12 +71,22 @@ uiElements.contextLowest:SetSecureMode("restricted")
 ---------- local function block ---------
 
 local function _setupDefaults ()
-    nkUISetup = {}
-    nkUISetup.uiFrames = { activate = true }
-    nkUISetup.lowerBar = { activate = true }
-    nkUISetup.tooltip = { activate = true }
-	nkUISetup.buffFrame = { activate = true }	
-    nkUISetup.tutorial = 0	
+
+	if nkUISetup == nil then 		
+		nkUISetup = {}
+		nkUISetup.uiFrames = { activate = true }
+		nkUISetup.lowerBar = { activate = true }
+		nkUISetup.tooltip = { activate = true }
+		nkUISetup.buffFrame = { activate = true }
+		nkUISetup.buffUnitFrame = { activate = true }
+		nkUISetup.tutorialVersion = 0
+	else
+		nkUISetup.tutorialVersion = 0 -- v0.0.8 change
+		nkUISetup.tutorial = nil -- V0.0.8 change
+		nkUISetup.buffUnitFrame = { activate = true } -- V0.0.8 change
+	end
+
+
 end
 
 local function _main(_, addon)
@@ -135,12 +146,12 @@ local function _main(_, addon)
 				_internal.uiFrames ()
 			end
 
-			if nkUISetup == nil then _setupDefaults() end
+			_setupDefaults()
 
 			Command.Event.Detach(Event.Unit.Availability.Full, nil,  "nkUI.Unit.Availability.Full")
 
-			if nkUISetup.tutorial < 1 then 
-    			nkUISetup.tutorial = 1
+			if nkUISetup.tutorialVersion < thisTutorialVersion then 
+    			nkUISetup.tutorialVersion = thisTutorialVersion
 				_internal.tutorial()
 			end
 

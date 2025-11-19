@@ -230,7 +230,7 @@ function _events.uiFramesInitEvents()
         dunp(info)
     end
     
-    local function _eventUnitRemove (_, info)
+    local function _eventUnitRemove (_, info)		
 
         for unit, thisData in pairs(info) do
             if unit == data.targetID and thisData == false then
@@ -254,19 +254,22 @@ function _events.uiFramesInitEvents()
 
     local function _eventBuffAdd (_, unit, buffs)
 
-		if nkUISetup.buffFrame.activate == false then return end
-
-        if unit == data.playerID then
-            _internal.buffBar.addBuff(unit, buffs)
+		if nkUISetup.uiFrames.activate == false then return end
+		
+		if unit == data.playerID and nkUISetup.buffFrame.activate then 
+			_internal.buffBar.addBuff(unit, buffs) 
 			_internal.buffBar.UpdateBuffDisplay()
+		end
 
-			uiElements.frames.player:addBuff(unit, buffs)
-		elseif unit == data.targetID then
-			uiElements.frames.target:addBuff(unit, buffs)
-		elseif unit == data.playerPetID then
-			uiElements.frames.playerPet:addBuff(unit, buffs)
-        end
-
+		if nkUISetup.buffUnitFrame.activate then
+			if unit == data.playerID then			
+				uiElements.frames.player:addBuff(unit, buffs)
+			elseif unit == data.targetID then
+				uiElements.frames.target:addBuff(unit, buffs)
+			elseif unit == data.playerPetID then
+				uiElements.frames.playerPet:addBuff(unit, buffs)
+			end
+		end
         
     end
 
@@ -276,20 +279,22 @@ function _events.uiFramesInitEvents()
 
     local function _eventBuffRemove (_, unit, buffs)
 
-		if nkUISetup.buffFrame.activate == false then return end
+		if nkUISetup.uiFrames.activate == false then return end
 
-        if unit == data.playerID then            
-            _internal.buffBar.removeBuff(unit, buffs)
-        	_internal.buffBar.UpdateBuffDisplay()
-			
-			uiElements.frames.player:removeBuff(unit, buffs)
-		elseif unit == data.targetID then
-			uiElements.frames.target:removeBuff(unit, buffs)
-		elseif unit == data.playerPetID then
-			uiElements.frames.playerPet:removeBuff(unit, buffs)
-        end
+		if unit == data.playerID and nkUISetup.buffFrame.activate then 
+			_internal.buffBar.removeBuff(unit, buffs) 
+			_internal.buffBar.UpdateBuffDisplay()
+		end
 
-
+		if nkUISetup.buffUnitFrame.activate then
+			if unit == data.playerID then            				
+				uiElements.frames.player:removeBuff(unit, buffs)
+			elseif unit == data.targetID then
+				uiElements.frames.target:removeBuff(unit, buffs)
+			elseif unit == data.playerPetID then
+				uiElements.frames.playerPet:removeBuff(unit, buffs)
+			end
+		end
     end
 
 	local function _eventCastBar(_, units) 

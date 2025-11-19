@@ -12,6 +12,7 @@ local _events     = privateVars.events
 -- Cache frequently used functions and values
 local InspectUnitDetail     = Inspect.Unit.Detail
 local InspectBuffDetail     = Inspect.Buff.Detail
+local InspectBuffList       = Inspect.Buff.List
 local InspectUnitLookup     = Inspect.Unit.Lookup
 
 local mathFloor     = math.floor
@@ -561,5 +562,49 @@ function _internal.uiFramesToggle(value)
 
     uiElements.frames.player:SetVisible(value)
     uiElements.frames.target:SetVisible(value)
+
+end
+
+function _internal.uiFramesRemoveBuffs()
+
+    local buffs = InspectBuffList(data.playerID)
+    if (buffs) then uiElements.frames.player:removeBuff(data.playerID, buffs) end
+
+    local targetFrame = uiElements.frames.target
+
+    if targetFrame:GetVisible() and data.targetID ~= nil then        
+        local buffs = InspectBuffList(data.targetID)
+        if (buffs) then targetFrame:removeBuff(data.targetID, buffss) end
+    end
+
+    local playerPetFrame = uiElements.frames.playerPet
+
+    if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
+        local buffs = InspectBuffList(data.playerPetID)
+        if (buffs) then playerPetFrame:removeBuff(data.playerPetID, buffss) end
+    end
+
+end
+
+function _internal.uiFramesLoadAllBuffs()
+
+    local buffs = InspectBuffList(data.playerID)
+    if (buffs) then uiElements.frames.player:addBuff(data.playerID, buffs) end
+
+    local targetFrame = uiElements.frames.target
+
+    if targetFrame:GetVisible() and data.targetID ~= nil then        
+        local buffs = InspectBuffList(data.targetID)
+        if (buffs) then targetFrame:addBuff(data.targetID, buffss) end
+    end
+
+    local playerPetFrame = uiElements.frames.playerPet
+
+    if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
+        local buffs = InspectBuffList(data.playerPetID)
+        if (buffs) then playerPetFrame:addBuff(data.playerPetID, buffss) end
+    end
+
+
 
 end

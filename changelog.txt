@@ -1,5 +1,6 @@
 V0.0.8
-
+    - new: separate setting to activate buffbar and buffs on unit frames
+    - new: enabling / disabling unitframe will affect buffs as well
     - update: change buff timer handling to improve performance
 
 v0.0.7
@@ -36,7 +37,8 @@ v0.0.4
 know bug list
 
 
+
 ToDo
 
-    - change buff timer logic in _internal.processBuffs () so that only buffs with remaining are process and no calls to the API are needed for timers
+    
     
