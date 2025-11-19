@@ -14,6 +14,7 @@ local InspectUnitDetail     = Inspect.Unit.Detail
 local InspectBuffDetail     = Inspect.Buff.Detail
 local InspectUnitLookup     = Inspect.Unit.Lookup
 local InspectBuffList       = Inspect.Buff.List
+local InspectTimeReal       = Inspect.Time.Real
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
@@ -84,7 +85,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                                 unitDebuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
-                                    details = v
+                                    details = v, 
+                                    duration = v.duration,
+                                    remaining = v.remaining,
+                                    start = InspectTimeReal()
                                 }
                                 unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
                                 unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
@@ -119,7 +123,10 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                                 unitBuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
-                                    details = v
+                                    details = v, 
+                                    duration = v.duration,
+                                    remaining = v.remaining,
+                                    start = InspectTimeReal()
                                 }
                                 unitBuffIcons[k].icon:SetBuff(buffUnit, k)
                                 unitBuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
@@ -186,69 +193,57 @@ function _internal.processBuffs ()
 
 	--- process buffs and debuffs
 
-	local buffList = InspectBuffList("player")
+    local buffIcons = _internal.buffBar:GetBuffIcons()
+    local debuffIcons = _internal.buffBar:GetDebuffIcons()
 
-	if buffList then 
-		local details = InspectBuffDetail("player", buffList)
+    for k, thisIcon in pairs (buffIcons) do
+        if thisIcon.remaining then
+            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+        end
+    end
 
-		local buffIcons = _internal.buffBar:GetBuffIcons()
-		local debuffIcons = _internal.buffBar:GetDebuffIcons()
+    for k, thisIcon in pairs (debuffIcons) do
+        if thisIcon.remaining then
+            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+        end
+    end
 
-		for k, v in pairs (details) do
-			if v.remaining then
-				if buffIcons[k] then
-					buffIcons[k].icon:SetTimer(v.remaining)
-					if buffIcons[k] then buffIcons[k].icon:SetTimer(v.remaining) end
-				elseif debuffIcons[k] then
-					debuffIcons[k].icon:SetTimer(v.remaining)
-					if debuffIcons[k].icon then debuffIcons[k].icon:SetTimer(v.remaining) end
-				end
-			end
-		end
-	
+    --- process player
 
-		--- process player
+    local playerBuffIcons = uiElements.frames.player:GetBuffIcons()
+    local playerDebuffIcons = uiElements.frames.player:GetDebuffIcons()
 
-		local playerBuffIcons = uiElements.frames.player:GetBuffIcons()
-		local playerDebuffIcons = uiElements.frames.player:GetDebuffIcons()
+    for k, thisIcon in pairs (playerBuffIcons) do
+        if thisIcon.remaining then
+            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+        end
+    end
 
-		for k, v in pairs (details) do
-			if v.remaining then
-				if playerBuffIcons[k] then
-					playerBuffIcons[k].icon:SetTimer(v.remaining)
-					if playerBuffIcons[k] then playerBuffIcons[k].icon:SetTimer(v.remaining) end
-				elseif playerDebuffIcons[k] then
-					playerDebuffIcons[k].icon:SetTimer(v.remaining)
-					if playerDebuffIcons[k].icon then playerDebuffIcons[k].icon:SetTimer(v.remaining) end
-				end
-			end
-		end
-	end
+    for k, thisIcon in pairs (playerDebuffIcons) do
+        if thisIcon.remaining then
+            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+        end
+    end
 
 	--- process pet
 
 	if data.playerPetID then
 
-		local buffList = InspectBuffList("player.pet")
-		if (buffList) then
-			local details = InspectBuffDetail("player.pet", buffList)
+        local playerPetBuffIcons = uiElements.frames.playerPet:GetBuffIcons()
+        local playerPetDebuffIcons = uiElements.frames.playerPet:GetDebuffIcons()
 
-			local playerPetBuffIcons = uiElements.frames.playerPet:GetBuffIcons()
-			local playerPetDebuffIcons = uiElements.frames.playerPet:GetDebuffIcons()
+        for k, thisIcon in pairs (playerPetBuffIcons) do
+            if thisIcon.remaining then
+                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+            end
+        end
 
-			for k, v in pairs (details) do
-				if v.remaining then
-					if playerPetBuffIcons[k] then
-						playerPetBuffIcons[k].icon:SetTimer(v.remaining)
-						if playerPetBuffIcons[k] then playerPetBuffIcons[k].icon:SetTimer(v.remaining) end
-					elseif playerPetDebuffIcons[k] then
-						playerPetDebuffIcons[k].icon:SetTimer(v.remaining)
-						if playerPetDebuffIcons[k].icon then playerPetDebuffIcons[k].icon:SetTimer(v.remaining) end
-					end
-				end
-			end
-		end
-	end
+        for k, thisIcon in pairs (playerPetDebuffIcons) do
+            if thisIcon.remaining then
+                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+            end
+        end
+    end
 
 	--- process target
 
@@ -257,23 +252,20 @@ function _internal.processBuffs ()
 		local thisUnit = InspectUnitLookup(data.targetID)
 		if thisUnit == "player.target" then
 
-			local buffList = InspectBuffList("player.target")			
-			local details = InspectBuffDetail("player.target", buffList)
-
 			local targetBuffIcons = uiElements.frames.target:GetBuffIcons()
 			local targetDebuffIcons = uiElements.frames.target:GetDebuffIcons()
 
-			for k, v in pairs (details) do
-				if v.remaining then
-					if targetBuffIcons[k] then
-						targetBuffIcons[k].icon:SetTimer(v.remaining)
-						if targetBuffIcons[k] then targetBuffIcons[k].icon:SetTimer(v.remaining) end
-					elseif targetDebuffIcons[k] then
-						targetDebuffIcons[k].icon:SetTimer(v.remaining)
-						if targetDebuffIcons[k].icon then targetDebuffIcons[k].icon:SetTimer(v.remaining) end
-					end
-				end
-			end
+			for k, thisIcon in pairs (targetBuffIcons) do
+                if thisIcon.remaining then
+                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                end
+            end
+
+            for k, thisIcon in pairs (targetDebuffIcons) do
+                if thisIcon.remaining then
+                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                end
+            end
 		end
 	end
 end

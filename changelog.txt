@@ -1,3 +1,7 @@
+V0.0.8
+
+    - update: change buff timer handling to improve performance
+
 v0.0.7
     - update: Improved castbar handling to improve performance
     - update: Changed colors of debuff types

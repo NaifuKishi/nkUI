@@ -11,6 +11,7 @@ local _events     = privateVars.events
 
 -- Cache frequently used functions and values
 local InspectBuffDetail     = Inspect.Buff.Detail
+local InspectTimeReal       = Inspect.Time.Real
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
@@ -66,12 +67,11 @@ function _internal.buffBar.addBuff(unit, buffs)
 
     for k, v in pairs(details) do
 
-
         if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
             if debuffDisplayList[k] == nil then
                 if debuffIcons[k] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, 1 * data.uiScaleX, 0, 0)
-                    debuffIcons[k] = { icon = icon, visible = true, name = v.name }
+                    debuffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
                     
                     debuffIcons[k].icon:SetBuff(unit, k)
                     debuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
@@ -103,7 +103,7 @@ function _internal.buffBar.addBuff(unit, buffs)
 
                 if buffIcons[k] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. k, 1 * data.uiScaleX, 0, 0)
-                    buffIcons[k] = { icon = icon, visible = true, name = v.name }
+                    buffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
 
                     --buffIcons[k] = { icon = uiElements.icon ("nkUI.buffIcon." .. k, uiElements.context), visible = true, details = v }
                     buffIcons[k].icon:SetBuff(unit, k)
