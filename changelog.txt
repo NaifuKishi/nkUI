@@ -7,6 +7,7 @@ V0.0.8
     - update: changed tutorial and settings update handling
     - udpate: changed tutorial to activate / deactive settings on module setup
     - update: change buff timer handling to improve performance
+    - fix: errors on buff tooltip display after coming out of combat
 
 v0.0.7
     - update: Improved castbar handling to improve performance

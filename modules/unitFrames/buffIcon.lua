@@ -11,6 +11,11 @@ local oFuncs		= privateVars.oFuncs
 
 ---------- init local variables ---------
 
+local InspectBuffDetail = Inspect.Buff.Detail
+
+local stringFormat	= string.format
+local mathFloor		= math.floor
+
 -- Cache frequently used functions and values
 local _eventHandlers = {}
 
@@ -163,17 +168,17 @@ function uiElements.icon (name, parent)
 		border:SetWidth( 50 * newScale)
 		border:SetHeight( 50 * newScale)
 		
-		local fontSize = math.floor(labelFontSize * newScale)
+		local fontSize = mathFloor(labelFontSize * newScale)
 		
 		label:SetFontSize(fontSize)
 		label:SetHeight(fontSize + 4)
 		
-		local fontSize = math.floor(timerFontSize * newScale)
+		local fontSize = mathFloor(timerFontSize * newScale)
 		
 		timer:SetFontSize(fontSize)
 		timer:SetHeight(fontSize + 4)
 		
-		local fontSize = math.floor(stackFontSize * newScale)
+		local fontSize = mathFloor(stackFontSize * newScale)
 		
 		stack:SetFontSize(fontSize )
 	end
@@ -185,7 +190,7 @@ function uiElements.icon (name, parent)
 	function icon:SetTimer (newTimer)
 		if newTimer then 
 
-			if math.floor(newTimer) <= 10 then
+			if mathFloor(newTimer) <= 10 then
 				timer:SetFontColor(1, 0, 0, 0)				
 			else
 				timer:SetFontColor(1, 1, 1, 0)
@@ -193,11 +198,11 @@ function uiElements.icon (name, parent)
 
 			local unit = "s"
 			if newTimer > 60 then
-				newTimer = math.floor(newTimer / 60)
+				newTimer = mathFloor(newTimer / 60)
 				unit = "m"
 			end			
 
-			timer:SetText(string.format("%d%s", newTimer, unit))
+			timer:SetText(stringFormat("%d%s", newTimer, unit))
 			timer:SetVisible(true)
 		else
 			timer:SetVisible(false)
@@ -252,8 +257,8 @@ function uiElements.icon (name, parent)
 				local width, height = icon:GetWidth(), icon:GetHeight()
 			
 				if newEffect.border ~= nil then
-					width = math.floor(width - (newEffect.border * 2 * (50 / width)))
-					height = math.floor(height - (newEffect.border * 2 * (50 / height)))
+					width = mathFloor(width - (newEffect.border * 2 * (50 / width)))
+					height = mathFloor(height - (newEffect.border * 2 * (50 / height)))
 					
 				end
 				
@@ -293,7 +298,8 @@ function uiElements.icon (name, parent)
 
 	function icon:ShowTooltip()
 		if thisBuffId then
-			Command.Tooltip(thisUnitType, thisBuffId)
+			local details = InspectBuffDetail(thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
+			if details then Command.Tooltip(thisUnitType, thisBuffId) end
 		end
 	end
 
