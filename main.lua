@@ -81,7 +81,7 @@ local function _setupDefaults ()
 		nkUISetup.buffUnitFrame = { activate = true }
 		nkUISetup.combatAlpha = 1
 		nkUISetup.nonCombatAlpha = .2
-		nkUISetup.tutorialVersion = 0
+		nkUISetup.tutorialVersion = thisTutorialVersion
 	else
 		nkUISetup.tutorial = nil -- V0.0.8 change
 		nkUISetup.buffUnitFrame = { activate = true } -- V0.0.8 change		

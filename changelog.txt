@@ -3,6 +3,7 @@ V0.0.8
     - new: enabling / disabling unitframe will affect buffs as well
     - new: Added combat / non combat alpha setting
     - new: created nkUI Theme for Tutorial windows
+    - new: tutorial window should now only show on first load after relevant changes
     - update: changed tutorial and settings update handling
     - udpate: changed tutorial to activate / deactive settings on module setup
     - update: change buff timer handling to improve performance
