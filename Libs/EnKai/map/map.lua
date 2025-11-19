@@ -24,7 +24,7 @@ local InspectUnitDetail		= Inspect.Unit.Detail
 local InspectAddonCurrent	= Inspect.Addon.Current
 local InspectMapWaypointGet	= Inspect.Map.Waypoint.Get
 
-local stringMath  		= string.match
+local stringMatch  		= string.match
 local stringFind   		= string.find
 local stringGSub		= string.gsub
 
@@ -63,7 +63,7 @@ local function _fctCheckForColossus (values)
     local name = v[EnKai.tools.lang.getLanguageShort()]
     
     if values.name == name then
-      local plane = stringMath (values.type, "RIFT.INVASION.(.+)")
+      local plane = stringMatch (values.type, "RIFT.INVASION.(.+)")
       return "RIFT.COLOSSUS." .. plane
     end
   end
@@ -108,16 +108,16 @@ local function _fctCheckPattern (value)
 		local pattern = details.pattern
 
 		if details.regExCompute ~= nil then
-			local value1, _ = stringMath(checkValue, pattern)			
+			local value1, _ = stringMatch(checkValue, pattern)			
 			if value1 ~= nil then return idx, details, details.type end             
 		elseif details.regExValues ~= nil then
-			local subValue = stringMath(checkValue, pattern)
+			local subValue = stringMatch(checkValue, pattern)
 			
 			if subValue ~= nil then
 				--if stringFind(value, "Bolidium") ~= nil then print (subValue, checkValue, pattern) end
 				--print (value, pattern, subValue)
 				for k, v in pairs(details.regExValues) do
-					if stringMath(subValue, k) then return idx, details, details.type .. "." .. v end
+					if stringMatch(subValue, k) then return idx, details, details.type .. "." .. v end
 				end
 
 				--EnKai.tools.error.display ("EnKai", subValue .. " not found in " .. EnKai.tools.table.serialize(details.regExValues), 2)
@@ -148,7 +148,7 @@ local function _fctGetSubValue (values, pattern)
   if values == nil then return nil end
 
   if stringFind(pattern, "DESC") ~= nil then
-    local index = stringMath(pattern, "DESC(%d)")
+    local index = stringMatch(pattern, "DESC(%d)")
     return values[tonumber(index)]
   end
   
