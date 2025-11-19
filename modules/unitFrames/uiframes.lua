@@ -520,9 +520,9 @@ function _internal.uiFrames()
         playerRessourceBar = playerRessourceBar
     }
 
-    uiElements.frames.player:SetAlpha(0.2)
-    uiElements.frames.playerPet:SetAlpha(0.2)
-    uiElements.frames.target:SetAlpha(0.2)
+    uiElements.frames.player:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames.playerPet:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames.target:SetAlpha(nkUISetup.nonCombatAlpha)
 
     _events.uiFramesInitEvents()
 	

@@ -13,6 +13,54 @@ local _InspectMouse	= Inspect.Mouse
 
 ---------- addon internal function block ---------
 
+--[[
+   _uiSlider
+    Description:
+        Creates and configures a customizable slider UI element with label, lane, and position marker components.
+        This function provides a framework for creating interactive sliders with various customization options.
+    Parameters:
+        name (string): Unique identifier for the slider element
+        parent (frame): Parent frame to which this slider will be attached
+    Returns:
+        slider (frame): The configured slider frame with all child elements and functionality
+    Process:
+        1. Creates the main slider frame and its components (label, lane, inner lane, position marker)
+        2. Sets up default styling and positioning
+        3. Configures event handlers for mouse interactions (dragging the slider)
+        4. Implements various slider behaviors (value adjustment, styling changes)
+        5. Provides getter and setter methods for slider properties
+        6. Sets up event system for slider value changes
+    Notes:
+        - The slider supports custom value ranges and precision
+        - Provides methods for setting and adjusting the slider value
+        - Implements label positioning options
+        - Includes event system for tracking slider value changes
+        - Supports font customization for the label text
+        - Allows customization of colors for different states
+    Available Methods:
+    **Slider Behavior Methods:**
+        - ProcessMove(): Processes slider movement and updates the value
+        - SetRange(from, to): Sets the value range for the slider
+        - SetMidValue(newMidValue): Sets the midpoint value for the slider
+        - AdjustValue(newValue): Adjusts the slider to a specific value
+        - SetActive(flag): Sets whether the slider is active and interactive
+        - SetPrecision(newPrecision): Sets the precision of the slider values
+    **Slider Appearance Methods:**
+        - SetColor(r, g, b, a): Sets the color of the slider elements
+        - SetColorHighlight(newColor): Sets the color of the highlight element
+        - SetColorInner(newColor): Sets the color of the inner slider element
+        - SetLabelColor(r, g, b, a): Sets the color of the label text
+        - SetText(text): Sets the text of the label
+        - SetFont(addonId, font): Sets the font for the label text
+		- SetFontSize(fontsize): Sets the font size for the label text
+        - SetLabelWidth(newLabelWidth): Sets the width of the label
+        - SetWidth(newWidth): Sets the width of the slider
+    **Slider State Methods:**
+        - SetValue(property, value): Sets a property value for the slider
+        - GetValue(property): Gets a property value for the slider
+    **UI Element Accessor Methods:**
+        - destroy(): Cleans up and destroys the slider and its components
+]]
 local function _uiSlider(name, parent) 
 
 	--if EnKai.internal.checkEvents (name, true) == false then return nil end
@@ -206,6 +254,10 @@ local function _uiSlider(name, parent)
 		EnKai.ui.setFont(sliderLabel, addonId, font)
 	end
 	
+	function slider:SetFontSize(fontSize)
+		sliderLabel:SetFontSize(fontSize)
+	end
+
 	function slider:SetLabelWidth(newLabelWidth)		
 		sliderLabel:SetWidth(newLabelWidth)
 		sliderLane:SetWidth(slider:GetWidth() - newLabelWidth)

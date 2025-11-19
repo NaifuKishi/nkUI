@@ -16,9 +16,17 @@ local name = "settings"
 
 ---------- init local function ---------
 
+local function toggleAlpha()
+    
+    uiElements.frames.player:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames.playerPet:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames.target:SetAlpha(nkUISetup.nonCombatAlpha)
+
+end
+
 local function _subTutorialUnitframes(parent)
 
-    local buffsCheckbox, buffsUnitBarCheckbox
+    local buffsCheckbox, buffsUnitBarCheckbox, combatAlphaSlider
 
     local name = "nkUI.tutorialWindow.unitframes"
 
@@ -39,6 +47,8 @@ local function _subTutorialUnitframes(parent)
         nkUISetup.uiFrames.activate = newValue
         buffsCheckbox:SetActive(newValue)
         buffsUnitBarCheckbox:SetActive(newValue)
+        combatAlphaSlider:SetActive(newValue)
+        nonCombatAlphaSlider:SetActive(newValue)
 
         _internal.uiFramesToggle(newValue)
 
@@ -87,6 +97,43 @@ local function _subTutorialUnitframes(parent)
             _internal.uiFramesLoadAllBuffs()
         end
     end, name .. '.buffsUnitBarCheckbox.CheckboxChanged')
+
+    combatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".combatAlphaSlider", frame)
+    combatAlphaSlider:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 5)
+    combatAlphaSlider:SetText("Combat alpha %d%%" )
+    combatAlphaSlider:SetWidth(400)
+    combatAlphaSlider:SetRange(0, 100)
+    combatAlphaSlider:SetMidValue(50)
+    combatAlphaSlider:SetPrecision(5)
+    combatAlphaSlider:SetLabelWidth(250)
+    combatAlphaSlider:SetFontSize(16)
+    combatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
+    combatAlphaSlider:SetColor (1,1,1,1)
+    combatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    combatAlphaSlider:AdjustValue(nkUISetup.combatAlpha * 100)
+    
+    Command.Event.Attach(EnKai.events[name .. '.combatAlphaSlider'].SliderChanged, function (_, newValue)
+        nkUISetup.combatAlpha = newValue / 100
+    end, name .. ".combatAlphaSlider.SliderChanged")
+
+    nonCombatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".nonCombatAlphaSlider", frame)
+    nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
+    nonCombatAlphaSlider:SetText("Combat alpha %d%%" )
+    nonCombatAlphaSlider:SetWidth(400)
+    nonCombatAlphaSlider:SetRange(0, 100)
+    nonCombatAlphaSlider:SetMidValue(50)
+    nonCombatAlphaSlider:SetPrecision(5)    
+    nonCombatAlphaSlider:SetLabelWidth(250)
+    nonCombatAlphaSlider:SetFontSize(16)
+    nonCombatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
+    nonCombatAlphaSlider:SetColor (1,1,1,1)
+    nonCombatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
+    nonCombatAlphaSlider:AdjustValue(nkUISetup.nonCombatAlpha * 100)
+    
+    Command.Event.Attach(EnKai.events[name .. '.nonCombatAlphaSlider'].SliderChanged, function (_, newValue)
+        nkUISetup.nonCombatAlpha = newValue / 100
+        toggleAlpha()
+    end, name .. ".nonCombatAlphaSlider.SliderChanged")
 
     return frame
 

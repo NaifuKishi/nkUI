@@ -79,11 +79,14 @@ local function _setupDefaults ()
 		nkUISetup.tooltip = { activate = true }
 		nkUISetup.buffFrame = { activate = true }
 		nkUISetup.buffUnitFrame = { activate = true }
+		nkUISetup.combatAlpha = 1
+		nkUISetup.nonCombatAlpha = .2
 		nkUISetup.tutorialVersion = 0
 	else
-		nkUISetup.tutorialVersion = 0 -- v0.0.8 change
 		nkUISetup.tutorial = nil -- V0.0.8 change
-		nkUISetup.buffUnitFrame = { activate = true } -- V0.0.8 change
+		nkUISetup.buffUnitFrame = { activate = true } -- V0.0.8 change		
+		nkUISetup.combatAlpha = 1 -- V0.0.8 change		
+		nkUISetup.nonCombatAlpha = .2 -- V0.0.8 change		
 	end
 
 
@@ -144,14 +147,16 @@ local function _main(_, addon)
 
 			if nkUISetup and nkUISetup.uiFrames and nkUISetup.uiFrames.activate then
 				_internal.uiFrames ()
-			end
-
-			_setupDefaults()
+			end			
 
 			Command.Event.Detach(Event.Unit.Availability.Full, nil,  "nkUI.Unit.Availability.Full")
 
-			if nkUISetup.tutorialVersion < thisTutorialVersion then 
+			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
+				_setupDefaults()
+				
     			nkUISetup.tutorialVersion = thisTutorialVersion
+
+				print  (nkUISetup.tutorialVersion, thisTutorialVersion)
 				_internal.tutorial()
 			end
 

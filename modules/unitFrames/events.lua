@@ -369,18 +369,18 @@ function _events.uiFramesInitEvents()
 
 	local function _fctSecureEnter()
 
-		uiElements.frames.player:SetAlpha(1)
-		uiElements.frames.playerPet:SetAlpha(1)
-		uiElements.frames.target:SetAlpha(1)
+		uiElements.frames.player:SetAlpha(nkUISetup.combatAlpha)
+		uiElements.frames.playerPet:SetAlpha(nkUISetup.combatAlpha)
+		uiElements.frames.target:SetAlpha(nkUISetup.combatAlpha)
 		uiElements.frames.playerRessourceBar:SetVisible(true)
     
 	end
 
 	local function _fctSecureLeave()
-
-		uiElements.frames.player:SetAlpha(0.2)
-		uiElements.frames.playerPet:SetAlpha(0.2)
-		uiElements.frames.target:SetAlpha(0.2)
+		
+		uiElements.frames.player:SetAlpha(nkUISetup.nonCombatAlpha)
+		uiElements.frames.playerPet:SetAlpha(nkUISetup.nonCombatAlpha)
+		uiElements.frames.target:SetAlpha(nkUISetup.nonCombatAlpha)
 		uiElements.frames.playerRessourceBar:SetVisible(false)
     
 	end
