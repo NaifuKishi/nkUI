@@ -180,9 +180,9 @@ local function _unitAvailable (_, info)
 			if frame then
 				_internal.updateUnit (frame, unit)
 				if thisData == "player" then uiElements.frames["player.ressourcebar"]:update(unit) end
-			end
+			end			
 		else
-			--_eventUnitAdd (_, {[unit] = thisData})
+			_eventUnitAdd (_, {[unit] = thisData})
 		end		    
 	end
 end
@@ -461,6 +461,14 @@ function _events.uiFramesInitEvents()
 	Command.Event.Attach(Library.LibUnitChange.Register("player"), function (_, unitData) _fctUnitChange(unitData, "player") end, "nkUI.Unit.unitChange.player")
 	Command.Event.Attach(Library.LibUnitChange.Register("player.target"), function (_, unitData) _fctUnitChange(unitData, "player.target") end, "nkUI.Unit.unitChange.player")
 	Command.Event.Attach(Library.LibUnitChange.Register("player.pet"), function (_, unitData) _fctUnitChange(unitData, "player.pet") end, "nkUI.Unit.unitChange.player")
+
+	for idx = 1, 5, 1 do
+		local groupText = stringFormat ("group%02d", idx)
+		local groupPetText = stringFormat ("group%02d.pet", idx)
+
+		Command.Event.Attach(Library.LibUnitChange.Register(groupText), function (_, unitData) _fctUnitChange(unitData, groupText) end, "nkUI.Unit.unitChange." .. groupText)
+		Command.Event.Attach(Library.LibUnitChange.Register(groupPetText), function (_, unitData) _fctUnitChange(unitData, groupPetText) end, "nkUI.Unit.unitChange." .. groupPetText)
+	end
 
 	Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkUI.Ssytem.Secure.Enter")
 	Command.Event.Attach(Event.System.Secure.Leave, _fctSecureLeave, "nkUI.Ssytem.Secure.Leave")

@@ -323,6 +323,7 @@ function frameManager.get(unitType, scale, x, y, reverse)
 
     function unitFrame:SetHealth (health) 
         if health == nil then return end
+        if healthMax == nil then healthMax = health end
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
 

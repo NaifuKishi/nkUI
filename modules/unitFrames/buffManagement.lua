@@ -261,7 +261,7 @@ function _internal.processBuffs ()
 			local targetDebuffIcons = targetFrame:GetDebuffIcons()
 
 			for k, thisIcon in pairs (targetBuffIcons) do
-                if thisIcon.remaining then
+                if thisIcon.remaining then             
                     thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
                 end
             end
