@@ -476,7 +476,7 @@ function _internal.uiFrames()
     local targetCastbar = _internal.createCastBar("player.target", playerRessourceBar)
 
     uiElements.frames["target.castbar"] = targetCastbar
-    uiElements.frames["target"] = target
+    uiElements.frames["player.target"] = target
 
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
@@ -538,7 +538,7 @@ function _internal.uiFrames()
 
     uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
     uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames["target"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 
     _events.uiFramesInitEvents()
 	
@@ -577,7 +577,7 @@ function _internal.uiFramesToggle(value)
     end
 
     uiElements.frames["player"]:SetVisible(value)
-    uiElements.frames["target"]:SetVisible(value)
+    uiElements.frames["player.target"]:SetVisible(value)
 
 end
 
@@ -586,7 +586,7 @@ function _internal.uiFramesRemoveBuffs()
     local buffs = InspectBuffList(data.playerID)
     if (buffs) then uiElements.frames["player"]:removeBuff(data.playerID, buffs) end
 
-    local targetFrame = uiElements.frames["target"]
+    local targetFrame = uiElements.frames["player.target"]
 
     if targetFrame:GetVisible() and data.targetID ~= nil then        
         local buffs = InspectBuffList(data.targetID)
@@ -607,7 +607,7 @@ function _internal.uiFramesLoadAllBuffs()
     local buffs = InspectBuffList(data.playerID)
     if (buffs) then uiElements.frames["player"]:addBuff(data.playerID, buffs) end
 
-    local targetFrame = uiElements.frames["target"]
+    local targetFrame = uiElements.frames["player.target"]
 
     if targetFrame:GetVisible() and data.targetID ~= nil then        
         local buffs = InspectBuffList(data.targetID)

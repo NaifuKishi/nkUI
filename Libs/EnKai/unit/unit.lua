@@ -1,3 +1,35 @@
+--[[
+   _EnKai.unit
+    Description:
+        Provides a comprehensive unit management system for RIFT addons.
+        Handles unit tracking, caching, and event management for various unit types.
+        Supports player, group, raid, and target tracking with efficient caching mechanisms.
+    Parameters:
+        None (library initialization)
+    Returns:
+        EnKai.unit: The initialized unit management library
+    Process:
+        1. Initializes internal data structures for unit tracking
+        2. Sets up event handlers for unit availability and changes
+        3. Implements caching mechanisms for unit information
+        4. Provides functions for unit information retrieval and management
+    Notes:
+        - Uses LibUnitChange for simplified unit change tracking
+        - Implements efficient caching to minimize API calls
+        - Provides events for unit availability, changes, and group status
+        - Supports both individual units and group/raid units
+    Available Methods:
+        - init(): Initializes the unit management system
+        - subscribe(sType): Subscribes to unit change events for a specific unit type
+        - unsubscribe(sType): Unsubscribes from unit change events
+        - getGroupStatus(): Returns the current group status (single, group, raid)
+        - getUnitIDByType(unitType): Gets unit IDs by unit type
+        - getUnitTypes(unitID): Gets all unit types for a specific unit ID
+        - GetUnitDetail(unitID): Gets detailed information about a unit
+        - getPlayerDetails(): Gets detailed information about the player
+        - getCallingText(calling): Gets localized text for a calling
+]]
+		
 local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
@@ -37,39 +69,7 @@ local _watchUnits = {'player', 'player.pet', 'player.target', 'player.target.tar
 
 ---------- local function block ---------
 
--- local function _fctDebugUI()
 
-	-- local name = "EnKai.unit.debugUI"
-
-	-- debugUI = EnKai.uiCreateFrame("nkFrame", name, privateVars.uiContext)
-	-- debugUI.unitCache = EnKai.uiCreateFrame("nkText", name .. "._unitCache", debugUI)
-	-- debugUI.idCache = EnKai.uiCreateFrame("nkText", name .. ".idCache", debugUI)
-	
-	-- debugUI.unitCache:SetPoint("TOPLEFT", debugUI, "TOPLEFT")
-	-- debugUI.unitCache:SetWordwrap(true)
-	-- debugUI.unitCache:SetWidth(300)
-	-- --debugUI.unitCache:SetFontColor(0, 0, 0, 1)
-	-- debugUI.idCache:SetPoint("TOPLEFT", debugUI.unitCache, "TOPRIGHT", 0, 10)
-	-- debugUI.idCache:SetWordwrap(true)
-	-- debugUI.idCache:SetWidth(300)
-	-- --debugUI.idCache:SetFontColor(0, 0, 0, 1)
-	
-	-- debugUI:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 600)
-	
-	-- function debugUI:Update()
-		-- local temp = {}
-		-- for k, v in pairs(_unitCache) do
-			-- table.insert(temp, k)
-		-- end
-	
-		-- debugUI.unitCache:SetText("_unitCache\n\n" .. EnKai.tools.table.serialize(temp))
-		
-		-- debugUI.idCache:SetText("_idCache\n\n" .. EnKai.tools.table.serialize(_idCache):gsub(",", "\n"))
-	-- end
-	
-	-- return debugUI
-
--- end
 
 local function _fctSetIDCache(key, value, flag, source)
 
@@ -391,6 +391,19 @@ end
 
 ---------- library public function block ---------
 
+--[[
+   _getPlayerDetails
+    Description:
+        Gets detailed information about the player.
+        Returns a table with detailed information about the player unit.
+    Parameters:
+        None
+    Returns:
+        playerDetails (table): A table with detailed information about the player
+    Notes:
+        - This is a convenience function for getting player unit details
+        - The returned table contains various player properties
+]]
 function EnKai.unit.getPlayerDetails()
   
 	if _idCache.player == nil or _unitCache[_idCache.player[1]] == nil then 
@@ -409,8 +422,42 @@ function EnKai.unit.getPlayerDetails()
    
 end
 
+--[[
+   _getCallingText
+    Description:
+        Gets localized text for a calling.
+        Returns the localized text for the specified calling.
+    Parameters:
+        calling (string): The calling to get text for
+    Returns:
+        callingText (string): The localized text for the calling
+    Notes:
+        - Returns nil if the calling is not found
+        - Uses the addon's language settings for localization
+]]
 function EnKai.unit.getCallingText (calling) return lang.callings[calling] end
 
+--[[
+   _init
+    Description:
+        Initializes the unit management system.
+        Sets up event handlers and subscriptions for unit tracking.
+    Parameters:
+        None
+    Returns:
+        None
+    Process:
+        1. Checks if the unit manager is already initialized
+        2. Sets up event handlers for unit availability and changes
+        3. Creates necessary events for unit management
+        4. Subscribes to combat events for unit tracking
+        5. Registers watch units for tracking
+        6. Sets up group and raid tracking
+    Notes:
+        - This function should be called once at addon initialization
+        - Sets up the foundation for all unit tracking functionality
+        - Creates events that other parts of the addon can subscribe to
+]]
 function EnKai.unit.init()
 
 	_subscriptions[InspectAddonCurrent()] = {}
@@ -456,6 +503,22 @@ function EnKai.unit.init()
 
 end
 
+--[[
+   _subscribe
+    Description:
+        Subscribes to unit change events for a specific unit type.
+        This allows addons to receive notifications when the specified unit changes.
+    Parameters:
+        sType (string): The unit type to subscribe to (e.g., "player.target")
+    Returns:
+        None
+    Process:
+        1. Adds the current addon to the subscriptions list for the unit type
+        2. Immediately processes the current state of the unit
+    Notes:
+        - Use this to receive notifications when a specific unit changes
+        - The addon will receive Change events for the specified unit type
+]]
 function EnKai.unit.subscribe(sType)
 
 	if _subscriptions == nil then _subscriptions = {} end
@@ -473,6 +536,21 @@ function EnKai.unit.subscribe(sType)
 
 end
 
+--[[
+   _unsubscribe
+    Description:
+        Unsubscribes from unit change events for a specific unit type.
+        Stops receiving notifications for the specified unit type.
+    Parameters:
+        sType (string): The unit type to unsubscribe from
+    Returns:
+        None
+    Process:
+        1. Removes the current addon from the subscriptions list for the unit type
+    Notes:
+        - Use this to stop receiving notifications for a specific unit type
+]]
+
 function EnKai.unit.unsubscribe(sType)
 
 	if _subscriptions[sType] ~= nil then
@@ -481,6 +559,21 @@ function EnKai.unit.unsubscribe(sType)
 
 end
 
+
+--[[
+   _getGroupStatus
+    Description:
+        Returns the current group status.
+        Indicates whether the player is in a group, raid, or acting alone.
+    Parameters:
+        None
+    Returns:
+        status (string): The current group status ("single", "group", or "raid")
+        count (number): The number of group/raid members (nil for single)
+    Notes:
+        - Useful for determining the player's current group situation
+        - The count parameter is nil when status is "single"
+]]
 function EnKai.unit.getGroupStatus ()
 
 	if _isRaid == true then
@@ -493,6 +586,19 @@ function EnKai.unit.getGroupStatus ()
 
 end
 
+--[[
+   _getUnitIDByType
+    Description:
+        Gets unit IDs by unit type.
+        Returns all unit IDs that match the specified unit type.
+    Parameters:
+        unitType (string): The unit type to look up (e.g., "player.target")
+    Returns:
+        unitIDs (table): A table of unit IDs that match the unit type
+    Notes:
+        - Returns nil if no units match the specified type
+        - The table may contain multiple unit IDs for the same type
+]]
 function EnKai.unit.getUnitIDByType (unitType) 
 
 	if _idCache[unitType] == nil then
@@ -510,6 +616,20 @@ function EnKai.unit.getUnitIDByType (unitType)
 	return _idCache[unitType] 
 end
 
+--[[
+   _getUnitTypes
+    Description:
+        Gets all unit types for a specific unit ID.
+        Returns all unit types that the specified unit ID belongs to.
+    Parameters:
+        unitID (string): The unit ID to look up
+    Returns:
+        unitTypes (table): A table of unit types that the unit ID belongs to
+    Notes:
+        - Returns an empty table if the unit ID is not found
+        - A unit can belong to multiple types (e.g., "player" and "group01")
+]]
+
 function EnKai.unit.getUnitTypes (unitID) 
 
 	local retValues = {}
@@ -524,6 +644,20 @@ function EnKai.unit.getUnitTypes (unitID)
 
 end
 
+--[[
+   _GetUnitDetail
+    Description:
+        Gets detailed information about a unit.
+        Returns a table with detailed information about the specified unit.
+    Parameters:
+        unitID (string): The unit ID to get details for
+    Returns:
+        unitDetails (table): A table with detailed information about the unit
+    Notes:
+        - Returns nil if the unit ID is not found
+        - The returned table contains various unit properties
+        - Information is cached to minimize API calls
+]]
 function EnKai.unit.GetUnitDetail (unitID)
 
 	if _idCache[unitID] ~= nil and #_idCache[unitID] > 0 then

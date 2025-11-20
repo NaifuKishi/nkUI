@@ -255,7 +255,7 @@ function _internal.processBuffs ()
 		local thisUnit = InspectUnitLookup(data.targetID)
 		if thisUnit == "player.target" then
 
-            local targetFrame = uiElements.frames["target"]
+            local targetFrame = uiElements.frames["player.target"]
 
 			local targetBuffIcons = targetFrame:GetBuffIcons()
 			local targetDebuffIcons = targetFrame:GetDebuffIcons()
