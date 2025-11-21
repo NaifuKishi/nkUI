@@ -153,7 +153,7 @@ local function _main(_, addon)
 
 			Command.Event.Detach(Event.Unit.Availability.Full, nil,  "nkUI.Unit.Availability.Full")
 
-			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
+			if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
 				_setupDefaults()
 
     			nkUISetup.tutorialVersion = thisTutorialVersion

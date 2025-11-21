@@ -479,6 +479,7 @@ function _internal.uiFrames()
     uiElements.frames["target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
 
+    --[[
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
     for idx = 1, 5, 1 do
@@ -504,6 +505,7 @@ function _internal.uiFrames()
 
         uiElements.frames[stringFormat("group%02d.pet", idx)] = group
     end
+]]
 
     function playerRessourceBar:update (unitID)
         if (unitID == data.playerID) then
