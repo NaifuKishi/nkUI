@@ -1,3 +1,8 @@
+V0.0.9
+    - update: reworked the unit handling to prepare for group and raid frames
+    - fix: fixed a typo in the EnKai map module
+    - fix: fixed some scaling on unit frames
+    - fix: first setup error
 V0.0.8
     - new: separate setting to activate buffbar and buffs on unit frames
     - new: enabling / disabling unitframe will affect buffs as well
