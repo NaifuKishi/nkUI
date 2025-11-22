@@ -16,10 +16,10 @@ local InspectUnitCastbar	= Inspect.Unit.Castbar
 local InspectTimeReal		= Inspect.Time.Real
 local InspectSystemWatchdog = Inspect.System.Watchdog
 
-local stringFind  	= string.find
-local stringSub		= string.sub
 local stringFormat	= string.format
 local stringMatch	= string.match
+local stringFind	= string.find
+local stringSub		= string.sub
 
 local processBuffs	= _internal.processBuffs
 
@@ -30,6 +30,11 @@ local _eventsP1Index = 1
 local _eventsS1Index = 1
 local _eventsRemIndex = 1
 
+local _isRaid = false
+local _isGroup = false
+local _groupMembers = 0
+local _raidMembers = 0
+
 ---------- init variables ---------
 
 data.playerCastbar = nil
@@ -37,26 +42,41 @@ data.targetCastbar = nil
 data.groupIDs = {}
 data.groupPetIDs = {}
 
-data.unitToIdentifier = {}
-data.identiferToUnit = {}
+data.identifierToUnit = {}
 data.mouseoverID = nil
 
 ---------- local function block ---------
 
-local function _trackUnit (identifer, unit)	
+local function _getIdentifier (unit)
+	local returnValue = {}
 
-	local frame = uiElements.frames[identifer]
+	for identifier, thisUnit in pairs (data.identifierToUnit) do
+		if thisUnit == unit then
+			table.insert(returnValue, identifier)
+		end
+	end
+
+	return returnValue
+end
+
+local function _trackUnit (identifier, unit)	
+
+	if stringMatch(identifier, "^group%d%d%.pet$") then return end
+
+	if stringFind(identifier, 'group') and isRaid then
+		local groupId = stringSub(identifier, 6, 7)
+		identifier = stringFormat("raid%02d", groupId)
+	end
+
+	--print ("track unit " .. identifier)
+	local frame = uiElements.frames[identifier]
 
 	if frame then
-		data.identiferToUnit[identifer] = unit
 
-		local playerUnit = data.identiferToUnit["player"]
-		local petUnit = data.identiferToUnit["player.pet"]
-		if identifer ~= "player.target" or (unit ~= playerUnit and unit ~= petUnit) then
-			data.unitToIdentifier[unit] = identifer
-		end
+		data.identifierToUnit[identifier] = unit
 
-		--dump (data.unitToIdentifier)
+		local playerUnit = data.identifierToUnit["player"]
+		local petUnit = data.identifierToUnit["player.pet"]
 
 		frame:SetUnitID (unit)
 		frame:ProcessUnitDetails(unit)
@@ -64,34 +84,38 @@ local function _trackUnit (identifer, unit)
 		frame:ContextMenu(unit)
 	else
 		--print ("_trackUnit: frame not found")
-		--print (identifer)
+		--print (identifier)
 	end
 end
 
-local function _untrackUnit (identifer, unit)
+local function _untrackUnit (identifier, unit)
 
 	--print ("untrackUnit")
-	--print (identifer)
+	--print (identifier)
 
-	local frame = uiElements.frames[identifer]
+	if stringMatch(identifier, "^group%d%d%.pet$") then return end
 
-	if frame then
+	if stringFind(identifier, 'group') and isRaid then
+		local groupId = stringSub(identifier, 6, 7)
+		identifier = stringFormat("raid%02d", groupId)
+	end
+
+	local frame = uiElements.frames[identifier]
+
+	if frame then		
+
 		frame:SetUnitID (nil)
 		frame:SetVisible(false)
 		frame:ContextMenu(nil)
 		frame:ClearBuffs()
 
-		local playerUnit = data.identiferToUnit["player"]
-		local petUnit = data.identiferToUnit["player.pet"]
-		if identifer ~= "player.target" or (unit ~= playerUnit and unit ~= petUnit) then
-			data.unitToIdentifier[unit] = nil
-		end
+		local playerUnit = data.identifierToUnit["player"]
+		local petUnit = data.identifierToUnit["player.pet"]
 
-		data.identiferToUnit[identifer] = nil
-		--data.unitToIdentifier[unit] = nil
+		data.identifierToUnit[identifier] = nil
 	else
 		--print ("_untrackUnit: frame not found")
-		--print (identifer)
+		--print (identifier)
 	end
 end
 
@@ -111,9 +135,9 @@ local function _eventUnitAdd(_, info)
 	end
 end
 
-local function _getUnitFrame(identifer)
-	--print ("_getUntiFrame", identifer)
-	return uiElements.frames[identifer]
+local function _getUnitFrame(identifier)
+	--print ("_getUntiFrame", identifier)
+	return uiElements.frames[identifier]
 end
 
 local function _eventUnitRemove(_, info)
@@ -123,14 +147,14 @@ local function _eventUnitRemove(_, info)
 	
 	for unit, thisData in pairs(info) do		
 		if thisData == false then
-			local identifer = data.unitToIdentifier[unit]
-			if identifer then
-				--print (identifer, unit)
-				_untrackUnit (identifer, unit)
+			local identifiers = _getIdentifier (unit)
+			if #identifiers > 0 then
+				for idx = 1, #identifiers, 1 do
+					_untrackUnit (identifiers[idx], unit)
+				end
 			end
 		else			
-			--local identifer = data.unitToIdentifier[unit]
-			if identifer and identifer == "player.target" then
+			if identifier and identifier == "player.target" then
 				--print "player.target"
 				_untrackUnit (thisData, unit)
 			end
@@ -146,7 +170,7 @@ local function _eventUnitChange (_, unit, unitType)
 	--print (unit, unitType)
 
 	if unit == false then
-		local unitID = data.identiferToUnit[unitType]
+		local unitID = data.identifierToUnit[unitType]
 		--print (unitID)
 		if unitID then _eventUnitRemove(_, {[unitID] = "player.target"}) end
 	else
@@ -154,13 +178,70 @@ local function _eventUnitChange (_, unit, unitType)
 	end
 end
 
+local function checkGroupSize (unitType)
+
+	if stringFind(unitType, 'group') == 1 and stringFind (unitType, 'group..%.') == nil then
+		local indicateGroupChange = false
+	
+		local groupId = stringSub(unitType, 6, 7)
+
+		if tonumber(groupId) > 5 then
+			if _isRaid == false then 
+				indicateGroupChange = true
+				_groupMembers = 0
+				_raidMembers = 0
+			end
+			
+			_isRaid = true
+			_isGroup = false
+		elseif _isRaid == false then
+			if _isGroup == false then 
+				_groupMembers = 0
+				_raidMembers = 0
+				indicateGroupChange = true 
+			end
+			
+			_isGroup = true
+		end
+				
+		local backupGroupCount, backupRaidCount = _groupMembers, _raidMembers
+		
+		if _isRaid == true then
+		
+			_raidMembers = 0
+			
+			for idx = 1, 20, 1 do
+				if data.identifierToUnit[stringFormat('raid%02d', idx)] ~= nil then _raidMembers = _raidMembers + 1 end
+			end
+			
+			if _raidMembers == 0 then _isRaid = false end
+			
+		elseif _isGroup == true then
+		
+			_groupMembers = 0
+			
+			for idx = 1, 5, 1 do
+				if data.identifierToUnit[stringFormat('group%02d', idx)] ~= nil then _groupMembers = _groupMembers + 1 end
+			end
+			
+			if _groupMembers == 0 then _isGroup = false end
+			
+		end
+		
+		--if indicateGroupChange == true or backupGroupCount ~= _groupMembers or backupRaidCount ~= _raidMembers then	_fctGroupStatus() end
+	end
+
+end
+
 local function _fctUnitChange (unitID, unitType)
 
+	checkGroupSize (unitType)
+
 	if unitID == false then
-		data.targetID = nil
+		if unitType == "player.target" then data.targetID = nil end
 		_untrackUnit(unitType, unitID)
 	else
-		data.targetID = unitID
+		if unitType == "player.target" then data.targetID = unitID end
 		_trackUnit (unitType, unitID)
 	end
 
@@ -168,19 +249,29 @@ end
 
 local function _unitAvailable (_, info)        
 	
+	--print ("_unitAvailable")
+
 	--dump (info)
 
 	for unit, thisData in pairs(info) do
+
+		--print (thisData)
 
 		if thisData == "player" or thisData == "player.pet" then
 			if thisData == "player.pet" then data.playerPetID = unit end
 			_trackUnit (thisData, unit)
 			--print ("_unitAvailable")
-			local frame = _getUnitFrame(data.unitToIdentifier[unit])
-			if frame then
-				_internal.updateUnit (frame, unit)
-				if thisData == "player" then uiElements.frames["player.ressourcebar"]:update(unit) end
-			end			
+
+			local identifiers = _getIdentifier (unit)
+			if #identifiers > 0 then
+				for idx = 1, #identifiers, 1 do
+					local frame = _getUnitFrame(identifiers[idx])			
+					if frame then
+						_internal.updateUnit (frame, unit)
+						if thisData == "player" then uiElements.frames["player.ressourcebar"]:update(unit) end
+					end			
+				end
+			end
 		else
 			_eventUnitAdd (_, {[unit] = thisData})
 		end		    
@@ -189,12 +280,18 @@ end
 
 local function _eventHealth (_, info)
 	for unit, thisData in pairs(info) do
-	-- Handle player and pet units
 		--print ("_eventHealth")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
+		--print (unit, thisData)
 
-		if frame then
-			frame:SetHealth(thisData)
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
+
+				if frame then
+					frame:SetHealth(thisData)
+				end
+			end
 		end
 	end
 end
@@ -205,27 +302,50 @@ end
 local function _eventHealthMax (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventHealthMax")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetHealthMax(thisData) end
+
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
+
+				if frame then frame:SetHealthMax(thisData) end
+			end
+		end
 	end
 end
 
 local function _eventEnergy (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventEnergy")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetEnergy(thisData) end
-		
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
+
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
+
+				if frame then frame:SetEnergy(thisData) end
+
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
+				end
+			end
 		end
 	end
 end
 
 local function _eventEnergyMax (_, info)
 	for unit, thisData in pairs(info) do
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetRessourceMax(thisData)
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
+
+				if frame then frame:SetEnergyMax(thisData) end
+
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetRessourceMax(thisData)
+				end
+			end
 		end
 	end
 end
@@ -233,11 +353,17 @@ end
 local function _eventMana (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventMana")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetEnergy(thisData) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
 
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
+				if frame then frame:SetEnergy(thisData) end
+
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
+				end
+			end
 		end
 	end
 end
@@ -245,40 +371,64 @@ end
 local function _eventCharge (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventCharge")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetCharge(thisData) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
 
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetCharge(thisData)
-		end
+				if frame then frame:SetCharge(thisData) end
+
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetCharge(thisData)
+				end
+			end
+		end		
 	end
 end
 
 local function _eventPower (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventPower")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetEnergy(thisData) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
 
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
-		end
+				if frame then frame:SetEnergy(thisData) end
+
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetRessource(thisData)
+				end
+			end
+		end	
 	end
 end
 
 local function _eventPlanar (_, info)
 	for unit, thisData in pairs(info) do
 		--print ("_eventPlanar")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:SetPlanar(thisData) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				local frame = _getUnitFrame(identifiers[idx])		
+
+				if frame then frame:SetPlanar(thisData) end
+			end
+		end	
 	end
 end
 
 local function _eventCombo (_, info)
 	for unit, thisData in pairs(info) do        
-		if data.unitToIdentifier[unit] == "player" then
-			uiElements.frames["player.ressourcebar"]:SetCombo(thisData)
-		end
+
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				if identifiers[idx] == "player" then
+					uiElements.frames["player.ressourcebar"]:SetCombo(thisData)
+				end
+			end
+		end	
 	end
 end
 
@@ -296,10 +446,17 @@ local function _eventBuffAdd(_, unit, buffs)
 	if nkUISetup.buffUnitFrame.activate then
 		--print ("_eventBuffAdd")
 		--print (unit)
-		--dump(data.unitToIdentifier)
-		--print (data.unitToIdentifier[unit])
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:addBuff(unit, buffs) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				if identifiers[idx] and stringFind(identifiers[idx], "raid") == false then
+					local frame = _getUnitFrame(identifiers[idx])
+					if frame then frame:addBuff(unit, buffs) end
+				end
+			end
+		end	
+
+		
 	end
 end
 
@@ -318,8 +475,15 @@ local function _eventBuffRemove (_, unit, buffs)
 
 	if nkUISetup.buffUnitFrame.activate then
 		--print ("_eventBuffRemove")
-		local frame = _getUnitFrame(data.unitToIdentifier[unit])
-		if frame then frame:removeBuff(unit, buffs) end
+		local identifiers = _getIdentifier (unit)
+		if #identifiers > 0 then
+			for idx = 1, #identifiers, 1 do
+				if identifiers[idx] and stringFind(identifiers[idx], "raid") == false then
+					local frame = _getUnitFrame(identifiers[idx])
+					if frame then frame:removeBuff(unit, buffs) end
+				end
+			end
+		end	
 	end
 end
 
@@ -462,19 +626,27 @@ function _events.uiFramesInitEvents()
 	Command.Event.Attach(Library.LibUnitChange.Register("player.target"), function (_, unitData) _fctUnitChange(unitData, "player.target") end, "nkUI.Unit.unitChange.player")
 	Command.Event.Attach(Library.LibUnitChange.Register("player.pet"), function (_, unitData) _fctUnitChange(unitData, "player.pet") end, "nkUI.Unit.unitChange.player")
 
-	--for idx = 1, 5, 1 do
-	--	local groupText = stringFormat ("group%02d", idx)
-	--	local groupPetText = stringFormat ("group%02d.pet", idx)
+	for idx = 1, 20, 1 do
+		local groupText = stringFormat ("group%02d", idx)		
 
-	--	Command.Event.Attach(Library.LibUnitChange.Register(groupText), function (_, unitData) _fctUnitChange(unitData, groupText) end, "nkUI.Unit.unitChange." .. groupText)
-	--	Command.Event.Attach(Library.LibUnitChange.Register(groupPetText), function (_, unitData) _fctUnitChange(unitData, groupPetText) end, "nkUI.Unit.unitChange." .. groupPetText)
-	--end
+		Command.Event.Attach(Library.LibUnitChange.Register(groupText), function (_, unitData) _fctUnitChange(unitData, groupText) end, "nkUI.Unit.unitChange." .. groupText)		
+
+		if idx <= 5 then
+			-- here we need to add group.pet
+
+			--local groupPetText = stringFormat ("group%02d.pet", idx)
+			--Command.Event.Attach(Library.LibUnitChange.Register(groupPetText), function (_, unitData) _fctUnitChange(unitData, groupPetText) end, "nkUI.Unit.unitChange." .. groupPetText)
+		end
+		
+	end
 
 	Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkUI.Ssytem.Secure.Enter")
 	Command.Event.Attach(Event.System.Secure.Leave, _fctSecureLeave, "nkUI.Ssytem.Secure.Leave")
 
     Command.Event.Attach(Event.Unit.Availability.Full, _unitAvailable, "nkUI.playerFrame.Unit.Availability.Full")    
+	Command.Event.Attach(Event.Unit.Availability.Partial, _unitAvailable, "nkUI.playerFrame.Unit.Availability.Partial") 
 	--Command.Event.Attach(Event.Unit.Availability.None, _eventUnitRemove, "nkUI.playerFrame.Unit.Availability.None")    
+	
 
     Command.Event.Attach(Event.Unit.Detail.Health, _eventHealth, "nkUI.playerFrame.Unit.Detail.Health")
     Command.Event.Attach(Event.Unit.Detail.HealthCap, _eventHealthCap, "nkUI.playerFrame.Unit.Detail.HealthCap")

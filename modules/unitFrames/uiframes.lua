@@ -17,6 +17,8 @@ local InspectUnitLookup     = Inspect.Unit.Lookup
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
+local stringLen     = string.len
+local stringSub     = string.sub
 
 ---------- init global variables ---------
 
@@ -100,9 +102,14 @@ local frameManager = {
         - ClearBuffs(): Clears all buffs from the frame
         - removeBuff(buffUnit, buffs): Removes buffs from the frame
 ]]
-function frameManager.get(unitType, scale, x, y, reverse)
+function frameManager.get(unitType, scale, x, y, reverse, raid)
     
     local unitFrameWidth
+    local frameWidth, frameHeight = 250 * scale, 35 * scale
+
+    if raid then
+        frameWidth, frameHeight = 100 * scale, 45 * scale
+    end
 
     -- Check if frame already exists
 
@@ -116,8 +123,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
         frame:SetVisible(true)
         frame:ClearAll()
         frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-        frame:SetWidth(250 * scale)
-        frame:SetHeight(35 * scale)
+        frame:SetWidth(frameWidth)
+        frame:SetHeight(frameHeight)
         frame:SetBackgroundColor(0, 0, 0, .5)
 
         -- Reset other frame properties as needed
@@ -128,7 +135,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     end
 
     -- Create new frame if none available
-    local healthMax = 0
+    local healthMax
+    local energyMax
     local thisName = EnKai.tools.uuid()
     local thisUnitID = nil
 
@@ -140,10 +148,15 @@ function frameManager.get(unitType, scale, x, y, reverse)
 
     local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.context)
     unitFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    unitFrame:SetWidth(250 * scale)
-    unitFrame:SetHeight(35 * scale)
-    unitFrame:SetBackgroundColor(0, 0, 0, .5)
+    unitFrame:SetWidth(frameWidth)
+    unitFrame:SetHeight(frameHeight)    
     unitFrame:SetVisible(false)
+
+    if raid then
+        unitFrame:SetBackgroundColor(0.4, 0.4, 0.4, .5)
+    else
+        unitFrame:SetBackgroundColor(0, 0, 0, .5)
+    end
 
     local oSetAlpha = unitFrame.SetAlpha
     function unitFrame:SetAlpha(newAlpha)
@@ -160,8 +173,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     
     local secureFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
     secureFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    secureFrame:SetWidth(250 * scale)
-    secureFrame:SetHeight(35 * scale)
+    secureFrame:SetWidth(frameWidth)
+    secureFrame:SetHeight(frameHeight)
     secureFrame:SetBackgroundColor(0, 0, 0, 0)
 
     function unitFrame:SetMacro (newMacro)
@@ -186,8 +199,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
         healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 1, 1)
     end
 
-    healthFrame:SetWidth(248 * scale)
-    healthFrame:SetHeight(33 * scale)  
+    healthFrame:SetWidth((frameWidth -2))
+    healthFrame:SetHeight((frameHeight -2))  
 
     local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     local path = {  {xProportional = 0, yProportional = 0},
@@ -199,7 +212,9 @@ function frameManager.get(unitType, scale, x, y, reverse)
   
     local nameText = EnKai.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
-    if reverse then
+    if raid then
+        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2 * scale, 0)
+    elseif reverse then
         nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 0)
     else
         nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2* scale, 0)
@@ -223,6 +238,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     healthText:SetFontColor(1, 1, 1, 1)
     healthText:SetEffectGlow({ offsetX = 1, offsetY = 1})
 
+    if raid then healthText:SetVisible(false) end
+
     local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
     if reverse then
@@ -235,6 +252,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     energyText:SetFontSize(14 * scale)
     energyText:SetFontColor(1, 1, 1, 1)
     energyText:SetEffectGlow({ offsetX = 1, offsetY = 1})
+
+    if raid then energyText:SetVisible(false) end
 
     local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
@@ -249,6 +268,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     planarText:SetFontSize(12 * scale)
     planarText:SetFontColor(1, 1, 1, 1)
     planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
+
+    if raid then planarText:SetVisible(false) end
 
     -- buff management
 
@@ -277,7 +298,10 @@ function frameManager.get(unitType, scale, x, y, reverse)
     end
 
     function unitFrame:SetName (name) 
-        if string.len (name) > 10 then
+        local maxLen = 10
+        if raid then maxLen = 5 end
+
+        if stringLen (name) > maxLen then
             local splitName = EnKai.strings.split(name, " ")
 
             if #splitName == 1 then
@@ -285,12 +309,15 @@ function frameManager.get(unitType, scale, x, y, reverse)
             end
 
             if #splitName == 1 then
-                thisName = string.sub(name, 1, 10)
+                thisName = stringSub(name, 1, maxLen)
             else
                 thisName = ""
                 for idx = 1, #splitName -1, 1 do                    
-                    local tempName = string.sub(splitName[idx], 1, 1)                    
-                    thisName = thisName .. tempName .. ". "                    
+                    local tempName = stringSub(splitName[idx], 1, 1)                    
+                    
+                    if raid == false then
+                        thisName = thisName .. tempName .. ". "                    
+                    end
                 end
 
                 thisName = thisName .. splitName[#splitName]
@@ -303,7 +330,7 @@ function frameManager.get(unitType, scale, x, y, reverse)
     end
 
     function unitFrame:SetPlanar (planar) 
-        if planar then
+        if planar and unitFrame:IsRaid() == false then
             planarText:SetText(stringFormat("%d", planar)) 
             planarText:SetVisible(true)
         else
@@ -311,10 +338,18 @@ function frameManager.get(unitType, scale, x, y, reverse)
         end
     end    
 
+    function unitFrame:SetEnergyMax (newEnergyMax) 
+        energyMax = newEnergyMax
+    end
+
     function unitFrame:SetEnergy (energy)
-        if energy then
-            energyText:SetText(stringFormat("%d", energy))
-        end
+        if energy == nil then return end
+        if energyMax == nil then energyMax = energy end
+
+        if energy > energyMax then energy = energyMax end -- if this works we need to add some code for it
+
+        local energyPercent = energy / energyMax
+        energyText:SetText(stringFormat("%d", mathFloor(energyPercent*100)))
     end
 
     function unitFrame:SetHealthMax (newHealthMax) 
@@ -324,6 +359,8 @@ function frameManager.get(unitType, scale, x, y, reverse)
     function unitFrame:SetHealth (health) 
         if health == nil then return end
         if healthMax == nil then healthMax = health end
+
+        if health > healthMax then health = healthMax end -- if this works we need to add some code for it
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
 
@@ -351,6 +388,10 @@ function frameManager.get(unitType, scale, x, y, reverse)
             unitFrame:SetPlanar(details.planar)        
             unitFrame:SetName(details.name)
         end
+    end
+
+    function unitFrame:IsRaid()
+        return raid
     end
 
     frameManager.activeFrames[unitType] = unitFrame
@@ -455,7 +496,7 @@ function _internal.uiFrames()
     uiElements.frames = {}
 
         -- Use the frame manager to get frames
-    local player = frameManager.get("player", data.uiScaleX, 1320 * data.uiScaleX, 1000 * data.uiScaleY, false)
+    local player = frameManager.get("player", data.uiScaleX, 1320 * data.uiScaleX, 1000 * data.uiScaleY, false, false)
     player:SetUnitID(Inspect.Unit.Lookup('player'))
     player:SetVisible(true)
     player:SetMacro("/target @self")
@@ -468,22 +509,21 @@ function _internal.uiFrames()
     uiElements.frames["player.castbar"] = playerCastbar
     uiElements.frames["player.ressourcebar"]  = playerRessourceBar  
 
-    local playerPet = frameManager.get("player.pet", .75 * data.uiScaleX, 1000 * data.uiScaleX, 1050 * data.uiScaleY, false)
+    local playerPet = frameManager.get("player.pet", .75 * data.uiScaleX, 1000 * data.uiScaleX, 1050 * data.uiScaleY, false, false)
     playerPet:SetMacro("/target @pet")
 
     uiElements.frames["player.pet"] = playerPet
 
-    local target = frameManager.get("target", data.uiScaleX, (2120 - 250) * data.uiScaleX, 1000 * data.uiScaleY, true)
+    local target = frameManager.get("target", data.uiScaleX, (2120 - 250) * data.uiScaleX, 1000 * data.uiScaleY, true, false)
     local targetCastbar = _internal.createCastBar("player.target", playerRessourceBar)
 
     uiElements.frames["target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
 
-    --[[
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
     for idx = 1, 5, 1 do
-        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false)
+        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false, false)
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
@@ -493,19 +533,42 @@ function _internal.uiFrames()
         to, object, x, y = "BOTTOMLEFT", group, 0, 60 * data.uiScaleY
     end
 
+    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 100 * data.uiScaleX, 500 * data.uiScaleY
+    local firstRaid
+
+    for idx1 = 0, 3, 1 do
+        for idx2 = 1, 5, 1 do
+            local index = idx1 * 5 + idx2
+
+            local raid = frameManager.get(stringFormat("raid%02d", index), (data.uiScaleX - .1), 0, 0, false, true)
+            raid:SetPoint(from, object, to, x, y)
+            raid:SetMacro(stringFormat("/target @group%02d", index))
+            --raid:SetVisible(true)
+            --_internal.updateUnit (raid, data.playerID)
+            uiElements.frames[stringFormat("group%02d", index)] = raid
+
+            to, object, x, y = "TOPRIGHT", raid, 2, 0
+
+            if idx2 == 1 then firstRaid = raid end
+        end
+
+        to, object, x, y = "BOTTOMLEFT", firstRaid, 0, 2
+    end
+
+    --[[
     for idx = 1, 5, 1 do        
         local groupPet = frameManager.get(stringFormat("group%02d.pet", idx), (data.uiScaleX-.3), 0, 0, false)
         local group = uiElements.frames[stringFormat("group%02d", idx)]
         groupPet:ClearPoint("TOPLEFT")
         groupPet:SetPoint("BOTTOMLEFT", group, "BOTTOMRIGHT", 20, 0)
-        groupPet:SetMacro(string.format("/target @group%02d.pet", idx))
+        groupPet:SetMacro(stringFormat("/target @group%02d.pet", idx))
         groupPet:SetWidth (148 * data.uiScaleX)
         --groupPet:SetVisible(true)        
         --_internal.updateUnit (groupPet, data.playerID)
 
         uiElements.frames[stringFormat("group%02d.pet", idx)] = group
     end
-]]
+    ]]
 
     function playerRessourceBar:update (unitID)
         if (unitID == data.playerID) then
