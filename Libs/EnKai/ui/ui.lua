@@ -215,7 +215,7 @@ end
 ]]
 function internal.uiGarbageCollector ()
 	local debugId  
-    if nkDebug then debugId = nkDebug.traceStart (inspectAddonCurrent(), "EnKai internal.uiGarbageCollector") end
+    if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.uiGarbageCollector") end
 
 	local secure = InspectSystemSecure()
 	local flag = false
@@ -264,7 +264,7 @@ function internal.uiGarbageCollector ()
 
 	if flag == true then EnKai.eventHandlers["EnKai.internal"]["gcChanged"]() end
 
-	if nkDebug then nkDebug.traceEnd (inspectAddonCurrent(), "EnKai internal.uiGarbageCollector", debugId) end	
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.uiGarbageCollector", debugId) end	
 end
 
 --[[

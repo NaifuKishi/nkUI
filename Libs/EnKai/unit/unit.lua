@@ -18,6 +18,8 @@
         - Implements efficient caching to minimize API calls
         - Provides events for unit availability, changes, and group status
         - Supports both individual units and group/raid units
+        - Enhanced group and raid detection logic
+        - Improved unit change handling and caching
     Available Methods:
         - init(): Initializes the unit management system
         - subscribe(sType): Subscribes to unit change events for a specific unit type
@@ -28,6 +30,7 @@
         - GetUnitDetail(unitID): Gets detailed information about a unit
         - getPlayerDetails(): Gets detailed information about the player
         - getCallingText(calling): Gets localized text for a calling
+        - GetUnitByIdentifier(identifier): Gets a unit ID by its identifier
 ]]
 		
 local addonInfo, privateVars = ...
@@ -44,6 +47,7 @@ local InspectTimeReal		= Inspect.Time.Real
 local InspectAddonCurrent 	= Inspect.Addon.Current
 local InspectUnitLookup		= Inspect.Unit.Lookup
 local InspectUnitDetail		= Inspect.Unit.Detail
+local InspectUnitList		= Inspect.Unit.List
 
 local stringFind	= string.find
 local stringFormat	= string.format
@@ -65,11 +69,43 @@ local debugUI
 
 local _watchUnits = {'player', 'player.pet', 'player.target', 'player.target.target', 'focus', 'focus.target'}
 
-
-
 ---------- local function block ---------
 
+local function _buildDebugUI ()
 
+	local context = UI.CreateContext("nkUI") 
+	context:SetStrata ('dialog')
+
+	local frame = EnKai.uiCreateFrame("nkFrame", "EnKai.unit.testFrame", context)
+	frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 500, 0)
+	frame:SetHeight(300)
+	frame:SetWidth(300)
+	frame:SetBackgroundColor(0,0,0,1)
+
+	local text = EnKai.uiCreateFrame("nkText", "EnKai.unit.testFrame.text", frame)
+	text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+	text:SetWidth(298)
+	text:SetHeight(298)
+	text:SetFontColor(1,1, 1, 1)
+	text:SetWordwrap(true)
+	text:SetFontSize(12)
+
+	function frame:Update()
+		local thisText = ""
+
+		local sortedKeys = EnKai.tools.table.getSortedKeys (_idCache)
+		
+		for _, key in pairs(sortedKeys) do
+			local units = _idCache[key]
+			thisText = stringFormat("%s%s: %s\n", thisText, key, EnKai.tools.table.serialize(units))
+		end		
+		
+		text:SetText(thisText)
+	end
+
+	return frame
+
+end
 
 local function _fctSetIDCache(key, value, flag, source)
 
@@ -112,7 +148,7 @@ local function _fctCombatDamage(_, info)
 			
 			--print ('found caster unit', info.caster)
 			
-			--if debugUI then debugUI:Update() end
+			if debugUI then debugUI:Update() end
 		end
 	end
 	
@@ -129,12 +165,13 @@ local function _fctCombatDamage(_, info)
 			
 			--print ('found target unit', info.target, _unitCache[info.target].name)
 			
-			--if debugUI then debugUI:Update() end
+			if debugUI then debugUI:Update() end
 		end
 	end
 
 end
 
+--[[
 local function _fctCombatDeath(_, info)
 
 	if info.target ~= nil then
@@ -150,17 +187,19 @@ local function _fctCombatDeath(_, info)
 			
 			--print ('remove unit', info.target)
 		
-			--if debugUI then debugUI:Update() end
+			if debugUI then debugUI:Update() end
 		end
 	end
 
 end
+]]
 
 local function _fctUnitAvailableHandler (_, unitInfo)
 
 	local tempUnitInfo = {}
 
 	for unitId, unitType in pairs (unitInfo) do
+
 		if unitType ~= false and stringFind(unitType, 'mouseover') == nil then
 			if stringFind (unitType, 'group..%.target') ~= nil and unitId == _idCache.player then
 				tempUnitInfo[InspectUnitLookup(unitType)] = unitType
@@ -168,11 +207,13 @@ local function _fctUnitAvailableHandler (_, unitInfo)
 				tempUnitInfo[unitId] = unitType
 				_unitCache[unitId] = InspectUnitDetail(unitId)
 				_unitCache[unitId].lastUpdate = InspectTimeReal()
+				
+				_fctSetIDCache(unitType, unitId)
 			end
 		
 			if stringFind(unitType, 'group') == 1 and stringFind(unitType, 'group..%.') == nil then
 
-			for idx = 1, 5, 1 do
+				for idx = 1, 5, 1 do
 					local tempUnitType = stringFormat('group%02d', idx)
 					local tempUnitId = InspectUnitLookup(tempUnitType)
 					_internalFunc.processUnitChange (tempUnitType, tempUnitId)
@@ -197,7 +238,7 @@ local function _fctUnitAvailableHandler (_, unitInfo)
 	
 	EnKai.eventHandlers["EnKai.Unit"]["Available"](tempUnitInfo)
 	
-	--if debugUI then debugUI:Update() end
+	if debugUI then debugUI:Update() end
 
 end
 
@@ -214,7 +255,7 @@ local function _fctUnitUnAvailableHandler (_, unitInfo)
 	
 	EnKai.eventHandlers["EnKai.Unit"]["Unavailable"](unitInfo)
 
-	--if debugUI then debugUI:Update() end
+	if debugUI then debugUI:Update() end
 	
 end
 
@@ -245,11 +286,7 @@ local function _fctUnitChange (unitId, unitType)
 
 	-- end
 
-	_idCache[unitType] = {}
-		
-	-- for id, value in pairs(unitTypeList) do
-		-- _fctSetIDCache(unitType, value, false, '_fctUnitChange')
-	-- end
+	_idCache[unitType] = {}		
 	
 	if unitId == false then
 		--print ('_fctUnitChange', unitType, false)
@@ -275,7 +312,7 @@ local function _fctUnitChange (unitId, unitType)
 	for addon, _ in pairs(_subscriptions[unitType]) do
 		EnKai.eventHandlers["EnKai.Unit"]["Change"](unitId, unitType)
 		
-		--if debugUI then debugUI:Update() end
+		if debugUI then debugUI:Update() end
 		break
 	end
 
@@ -283,12 +320,12 @@ end
 
 function _internalFunc.processUnitChange (unitType, unitId)
 
-	-- if unitId == false then
-		-- _fctSetIDCache(unitType, nil, '_internalFunc.processUnitChange')
-	-- else
-		-- --print ('_internalFunc.processUnitChange', unitType, unitId)
-		-- _fctSetIDCache(unitType, unitId, '_internalFunc.processUnitChange')
-	-- end
+	if unitId == false then
+		 _fctSetIDCache(unitType, nil, '_internalFunc.processUnitChange')
+	else
+		--print ('_internalFunc.processUnitChange', unitType, unitId)
+		 _fctSetIDCache(unitType, unitId, '_internalFunc.processUnitChange')
+	end
 
 	if stringFind(unitType, 'group') == 1 and stringFind (unitType, 'group..%.') == nil then
 		local indicateGroupChange = false
@@ -460,7 +497,7 @@ function EnKai.unit.getCallingText (calling) return lang.callings[calling] end
 ]]
 function EnKai.unit.init()
 
-	_subscriptions[InspectAddonCurrent()] = {}
+	_subscriptions[InspectAddonCurrent()] = {} -- probably useless
 
 	if _unitManager == true then return end
 
@@ -495,9 +532,7 @@ function EnKai.unit.init()
 		end
 	end
 
-	-- if nkDebug then
-		-- debugUI = _fctDebugUI()
-	-- end
+	 debugUI = _buildDebugUI()
 	
 	_unitManager = true
 
@@ -592,7 +627,7 @@ end
         Gets unit IDs by unit type.
         Returns all unit IDs that match the specified unit type.
     Parameters:
-        unitType (string): The unit type to look up (e.g., "player.target")
+        unitType (string): The unit type to look up
     Returns:
         unitIDs (table): A table of unit IDs that match the unit type
     Notes:
@@ -602,8 +637,9 @@ end
 function EnKai.unit.getUnitIDByType (unitType) 
 
 	if _idCache[unitType] == nil then
-		local flag, details = pcall (InspectUnitDetail, unitType)		
+		local flag, details = pcall (InspectUnitDetail, unitType)
 		if flag and details ~= nil then
+			dump (details)
 			--print ('EnKai.unit.getUnitIDByType', unitType, details.id)
 			if details.type == unitType then 
 				_fctSetIDCache(details.type, details.id, true, 'EnKai.unit.getUnitIDByType')
@@ -674,6 +710,17 @@ function EnKai.unit.GetUnitDetail (unitID)
 	end
 	
 	return _unitCache[unitID]
+
+end
+
+function EnKai.unit.GetUnitByIdentifier (identifier)
+
+	local units = InspectUnitList()
+	for unitId, thisIdentifier in pairs(units) do
+		if thisIdentifier == identifier then return unitId end
+	end
+
+	return nil
 
 end
 

@@ -17,6 +17,7 @@ RunOnStartup = {
 	"modules/lowerbar/lowerbar.lua",
 
 	"modules/unitFrames/events.lua",
+	"modules/unitFrames/statevents.lua",
 	"modules/unitFrames/buffBar.lua",
 	"modules/unitFrames/buffManagement.lua",
 	"modules/unitFrames/iconManagement.lua",
@@ -36,14 +37,13 @@ RunOnStartup = {
 
 Embed = {	
   ["Libs/EnKai"] = true,
-  ["Libs/nkUnit"] = true,
 }
 
 Dependencies = {
   EnKai = {"required", "before"},
-  nkUnit = {"required", "before"},
 }
 
 SavedVariables = {
    nkUISetup	 	   = "account"
 }
+

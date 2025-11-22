@@ -363,10 +363,9 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
         if health > healthMax then health = healthMax end -- if this works we need to add some code for it
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
-
+        
         local playerHealthPercent = health / healthMax
         healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
-        
         healthFrame:SetWidth(unitFrameWidth * playerHealthPercent)
     end
 
@@ -441,6 +440,41 @@ function frameManager.clearAll()
     frameManager.activeFrames = {}
 end
 
+
+function _internal.updateUnit (frame, unitID)
+
+    local details = EnKai.unit.GetUnitDetail(unitID)
+
+    if details == nil then return end
+
+    --dump (details)
+
+    frame:SetUnitID(unitID)
+    frame:SetName(details.name)
+    frame:SetCalling(details.calling)
+
+    if details.heatlthMax then 
+        frame:SetHealthMax(details.healthMax) 
+    else
+        frame:SetHealthMax(details.health) 
+    end
+    
+    frame:SetHealth(details.health)
+
+    if (details.energy) then
+        frame:SetEnergyMax(details.energyMax or details.energy)
+        frame:SetEnergy(details.energy)        
+    elseif (details.power) then
+        frame:SetEnergy(details.power)
+    elseif (details.mana) then
+        frame:SetEnergy(details.mana)
+    elseif (details.focus) then
+        frame:SetEnergy(details.focus - 100)
+    end
+
+    if details.planar then frame:SetPlanar(details.planar) end
+end
+
 --[[
    _internal.uiFrames
     Description:
@@ -460,37 +494,6 @@ end
         - The function ensures proper initialization of all UI components
         - Events are initialized to handle updates and interactions
 ]]
-
-function _internal.updateUnit (frame, unitID)
-
-    local details = EnKai.unit.GetUnitDetail(unitID)
-
-    frame:SetName(details.name)
-    if details.heatlthMax then 
-        frame:SetHealthMax(details.healthMax) 
-    else
-        frame:SetHealthMax(details.health) 
-    end
-    
-    frame:SetHealth(details.health)
-
-    if details.calling then frame:SetCalling(details.calling) end
-    
-    
-    if (details.energy) then
-        frame:SetEnergy(details.energy)
-        --if (details.energyMax) then frame:SetEnergyMax(details.energy) end
-    elseif (details.power) then
-        frame:SetEnergy(details.power)
-    elseif (details.mana) then
-        frame:SetEnergy(details.mana)
-    elseif (details.focus) then
-        frame:SetEnergy(details.focus - 100)
-    end
-
-    if details.planar then frame:SetPlanar(details.planar) end
-end
-
 function _internal.uiFrames()
 
     uiElements.frames = {}
@@ -606,7 +609,7 @@ function _internal.uiFrames()
     uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
     uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 
-    _events.uiFramesInitEvents()
+   _events.uiFramesInitEvents()
 	
 end
 
@@ -687,3 +690,8 @@ function _internal.uiFramesLoadAllBuffs()
         if (buffs) then playerPetFrame:addBuff(data.playerPetID, buffss) end
     end
 end
+
+function _internal.getFrameByIdentifier(identifier)
+    return uiElements.frames[identifier]
+end
+

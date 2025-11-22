@@ -132,6 +132,7 @@ local function _main(_, addon)
 			--EnKai.manager.init('nkUI', items, nil)
 
 			EnKai.unit.init()
+			
 			local id = EnKai.unit.getPlayerDetails().id
 			data.playerID = id
 

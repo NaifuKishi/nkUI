@@ -72,6 +72,7 @@ RunOnStartup = {
   "ui/window/windowMetro.lua",
   "ui/wizard/wizardInfo.lua",
   "unit/unit.lua",
+  --"unit/unitstats.lua",
   "manager/manager.lua",
   "version/version.lua",
   "zip/encdec.lua",

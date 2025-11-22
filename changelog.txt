@@ -1,3 +1,11 @@
+v0.0.10
+    - new: added raid frame handling
+    - update: reworked unit handling with EnKai.unit
+    - update: completely reworked event handling
+    - update: removed nkUnit library
+    - fixes: fixed typo in EnKai library
+    - fixes: some smaller issues fixed
+
 V0.0.9
     - update: reworked the unit handling to prepare for group and raid frames
     - fix: fixed a typo in the EnKai map module
