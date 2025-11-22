@@ -1,6 +1,19 @@
+--[[
+   main.lua
+    Author: NaifuKishi
+    Date Created: 22.11.2025
+    Date Modified: 22.11.2025
+    Description: Main entry point for the nkUI addon. Initializes the addon namespace, variables, and UI contexts. Handles addon startup and configuration.
+    Public Functions:
+        - _setupDefaults: Initializes default configuration values
+        - _main: Main initialization function for the addon
+    Version History:
+        -
+]]
+
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
+---------- init namespace ----------
 
 if not nkUI then nkUI = {} else return end
 
@@ -16,7 +29,7 @@ local _internal   = privateVars.internal
 local _events     = privateVars.events
 local oFuncs	  = privateVars.oFuncs
 
----------- init local variables ---------
+---------- init local variables ----------
 
 oFuncs.InspectTimeFrame				= Inspect.Time.Frame
 oFuncs.InspectUnitDetail			= Inspect.Unit.Detail
@@ -39,39 +52,53 @@ oFuncs.InspectAbilityNewDetail		= Inspect.Ability.New.Detail
 oFuncs.InspectBuffDetail			= Inspect.Buff.Detail
 oFuncs.InspectBuffList				= Inspect.Buff.List
 
----------- init variables ---------
+---------- init variables ----------
 
-data.colors = { primary	= { r = 1, g = 1, b = 1, a = 1 }, 
-				accent	= { r = .24, g = .68, b = .91, a = 1 }}
+data.colors = {
+    primary	= { r = 1, g = 1, b = 1, a = 1 },
+    accent	= { r = .24, g = .68, b = .91, a = 1 }
+}
 				
 data.uiScaleX, data.uiScaleY = 1, 1
 local thisTutorialVersion = 008
 
----------- generate ui context ---------
+---------- generate ui context ----------
 
 -- hud, notify, dialog, tutorial, menu, layout, topmost, loading, modal
 
 uiElements.context = UI.CreateContext("nkUI") 
-uiElements.context:SetStrata ('dialog')
+uiElements.context:SetStrata('dialog')
 
 uiElements.secureContext = UI.CreateContext("nkUI.secure")
-uiElements.secureContext:SetStrata ('tutorial')
+uiElements.secureContext:SetStrata('tutorial')
 uiElements.secureContext:SetSecureMode("restricted")
 
 uiElements.tooltipContext = UI.CreateContext("nkUI.Tooltip")
-uiElements.tooltipContext:SetStrata ('tooltip')
+uiElements.tooltipContext:SetStrata('tooltip')
 
 uiElements.contextTop = UI.CreateContext("nkUI.Dialog")
-uiElements.contextTop:SetStrata ('topmost')
+uiElements.contextTop:SetStrata('topmost')
 
 uiElements.contextLowest = UI.CreateContext("nkUI.lowest")
-uiElements.contextLowest:SetStrata ('hud')
+uiElements.contextLowest:SetStrata('hud')
 uiElements.contextLowest:SetSecureMode("restricted")
 
----------- local function block ---------
+---------- local function block ----------
 
-local function _setupDefaults ()
-
+--[[
+   _setupDefaults
+    Description:
+        Initializes default configuration values for the nkUI addon if they don't exist.
+    Parameters:
+        None
+    Returns:
+        None
+    Notes:
+        - Creates default configuration table if it doesn't exist
+        - Updates tutorial version and adds new configuration options
+        - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
+]]
+local function _setupDefaults()
 	if nkUISetup == nil then 		
 		nkUISetup = {}
 		nkUISetup.uiFrames = { activate = true }
@@ -88,23 +115,32 @@ local function _setupDefaults ()
 		nkUISetup.combatAlpha = 1 -- V0.0.8 change		
 		nkUISetup.nonCombatAlpha = .2 -- V0.0.8 change		
 	end
-
-
 end
 
+--[[
+   _main
+    Description:
+        Main initialization function for the nkUI addon.
+        Sets up slash commands, registers fonts, initializes UI elements,
+        and handles addon startup events.
+    Parameters:
+        _ (any): Unused parameter
+        addon (string): The addon identifier
+    Returns:
+        None
+    Notes:
+]]
 local function _main(_, addon)
-
 	if addon == addonInfo.identifier then
-
 		table.insert(Command.Slash.Register("nkui"), {_internal.tutorial, "nkUI", "commandHandler"})
 
 		local items = { { label = privateVars.langTexts.configuration, callBack = _internal.tutorial} }
 
-		EnKai.ui.registerFont (addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
-		EnKai.ui.registerFont (addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
-		EnKai.ui.registerFont (addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
-		EnKai.ui.registerFont (addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
-		EnKai.ui.registerFont (addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
+        EnKai.ui.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
+        EnKai.ui.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
+        EnKai.ui.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
+        EnKai.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
+        EnKai.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
 		EnKai.art.SetTheme("nkUI")
 
@@ -112,8 +148,6 @@ local function _main(_, addon)
 		local parentHeight = UIParent:GetHeight()
 		data.uiScaleX = parentWidth / 3440
 		data.uiScaleY = parentHeight / 1440
-		--local scale = 1
-
 		data.layout = {
 			fontSize = 15,
 			barHeight = 17,
@@ -123,23 +157,15 @@ local function _main(_, addon)
 			dateSize = 15
 		}
 
-		--local frame = EnKai.uiCreateFrame("nkFrame", "test", uiElements.context)
-		--frame:SetPoint("TOPLEFT", UI.Native.BarBottom1, "TOPLEFT")
-		--frame:SetPoint("BOTTOMRIGHT", UI.Native.BarBottom1, "BOTTOMRIGHT")
-		--frame:SetBackgroundColor(1,1,1,1)
-
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
-			--EnKai.manager.init('nkUI', items, nil)
-
 			EnKai.unit.init()
 			
 			local id = EnKai.unit.getPlayerDetails().id
 			data.playerID = id
 
 			EnKai.BuffManager.init() -- Initialize the BuffManager if not already done
-			EnKai.inventory.init (false)
+            EnKai.inventory.init(false)
 
-			
 			if nkUISetup and nkUISetup.tooltip and nkUISetup.tooltip.activate then
 				_internal.tooltip()
 			end
@@ -149,28 +175,22 @@ local function _main(_, addon)
 			end
 
 			if nkUISetup and nkUISetup.uiFrames and nkUISetup.uiFrames.activate then
-				_internal.uiFrames ()
+                _internal.uiFrames()
 			end			
 
-			Command.Event.Detach(Event.Unit.Availability.Full, nil,  "nkUI.Unit.Availability.Full")
+            Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
 			if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
 				_setupDefaults()
-
     			nkUISetup.tutorialVersion = thisTutorialVersion
-
-				print  (nkUISetup.tutorialVersion, thisTutorialVersion)
+                print(nkUISetup.tutorialVersion, thisTutorialVersion)
 				_internal.tutorial()
 			end
-
 		end, "nkUI.Unit.Availability.Full")
 		
-		
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
-
 		EnKai.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
 	end  
-  
 end
 
 -------------------- STARTUP EVENTS --------------------

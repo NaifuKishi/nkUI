@@ -1,3 +1,15 @@
+--[[
+    settings/settings.lua
+    Author: NaifuKishi
+    Date of Creation: 22.11.2025
+    Date of Last Modification: 22.11.2025
+    Description: This file contains the settings module for the nkUI addon, which handles various UI configurations and tutorial functionality.
+    Public Functions:
+        - _internal.tutorial(): Creates and displays the tutorial window for nkUI settings
+    Version History:
+        - [Version 1.0] - Initial release
+]]
+        
 local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
@@ -12,10 +24,22 @@ local oFuncs    = privateVars.oFuncs
 
 local name = "settings"
 
----------- init variables ---------
-
 ---------- init local function ---------
 
+--[[
+    toggleAlpha
+    Description:
+        Adjusts the alpha (transparency) of player-related UI elements based on combat status.
+    Parameters:
+        None
+    Returns:
+        None
+    Notes:
+        - This function is called when the non-combat alpha setting is changed
+        - It affects the transparency of player, pet, and target frames
+    Available Methods:
+        - None (local function)
+]]
 local function toggleAlpha()
     
     uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
@@ -24,6 +48,21 @@ local function toggleAlpha()
 
 end
 
+--[[
+    _subTutorialUnitframes
+    Description:
+        Creates and configures the unit frames tutorial sub-section.
+    Parameters:
+        parent (table): The parent frame to which this sub-section will be attached
+    Returns:
+        table: The created frame containing unit frames configuration options
+    Notes:
+        - This function creates checkboxes and sliders for unit frames configuration
+        - It includes options for activating the module, buff/debuff bars, and alpha settings
+        - The function handles event attachments for configuration changes
+    Available Methods:
+        - None (local function)
+]]
 local function _subTutorialUnitframes(parent)
 
     local buffsCheckbox, buffsUnitBarCheckbox, combatAlphaSlider
@@ -108,8 +147,6 @@ local function _subTutorialUnitframes(parent)
     combatAlphaSlider:SetLabelWidth(250)
     combatAlphaSlider:SetFontSize(16)
     combatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
-    --combatAlphaSlider:SetColor (1,1,1,1)
-    --combatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
     combatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
     combatAlphaSlider:AdjustValue(nkUISetup.combatAlpha * 100)
     
@@ -127,8 +164,6 @@ local function _subTutorialUnitframes(parent)
     nonCombatAlphaSlider:SetLabelWidth(250)
     nonCombatAlphaSlider:SetFontSize(16)
     nonCombatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
-    --nonCombatAlphaSlider:SetColor (1,1,1,1)
-    --nonCombatAlphaSlider:SetColorInner({r = 0, g = 0, b = 0, a = 1})    
     nonCombatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
     nonCombatAlphaSlider:AdjustValue(nkUISetup.nonCombatAlpha * 100)
     
@@ -141,6 +176,20 @@ local function _subTutorialUnitframes(parent)
 
 end
 
+--[[
+    _subTutorialLowerBar
+    Description:
+        Creates and configures the lower bar tutorial sub-section.
+    Parameters:
+        parent (table): The parent frame to which this sub-section will be attached
+    Returns:
+        table: The created frame containing lower bar configuration options
+    Notes:
+        - This function creates a checkbox for activating the lower bar module
+        - It handles the event attachment for configuration changes
+    Available Methods:
+        - None (local function)
+]]
 local function _subTutorialLowerBar(parent)
 
     local name = "nkUI.tutorialWindow.lowerBar"
@@ -167,6 +216,20 @@ local function _subTutorialLowerBar(parent)
 
 end
 
+--[[
+    _subTutorialTooltip
+    Description:
+        Creates and configures the tooltip tutorial sub-section.
+    Parameters:
+        parent (table): The parent frame to which this sub-section will be attached
+    Returns:
+        table: The created frame containing tooltip configuration options
+    Notes:
+        - This function creates a checkbox for activating the tooltip module
+        - It handles the event attachment for configuration changes
+    Available Methods:
+        - None (local function)
+]]
 local function _subTutorialTooltip(parent)
 
     local name = "nkUI.tutorialWindow.tooltip"
@@ -190,9 +253,23 @@ local function _subTutorialTooltip(parent)
     end, name .. '.activateCheckbox.CheckboxChanged')
 
     return frame
-
 end
 
+--[[
+    _createTutorialWindow
+    Description:
+        Creates the main tutorial window for nkUI settings.
+    Parameters:
+        None
+    Returns:
+        table: The created tutorial window frame
+    Notes:
+        - This function creates the main tutorial window with navigation buttons
+        - It initializes all tutorial steps and their content
+        - The function handles navigation between different tutorial steps
+    Available Methods:
+        - reset(): Resets the tutorial to the first step and makes the window visible
+]]
 local function _createTutorialWindow()
 
     local name = "nkUI.tutorialWindow"
@@ -228,12 +305,11 @@ local function _createTutorialWindow()
     -- Create a frame for displaying subframes
     local subFrameContainer = EnKai.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
     subFrameContainer:SetPoint("TOPLEFT", descriptionText, "BOTTOMLEFT", 0, 10)
-    subFrameContainer:SetHeight(560)
+    subFrameContainer:SetWidth(560)
     subFrameContainer:SetHeight(500)
     subFrameContainer:SetVisible(false)
 
     local imageFrame = EnKai.uiCreateFrame("nkTexture", "tutorialImage", content)
-    --imageFrame:SetPoint("BOTTOMCENTER", content, "BOTTOMCENTER", 0, -75)
 
     -- Navigation buttons
     local prevButton = EnKai.uiCreateFrame("nkButtonMetro", "prevButton", content)
@@ -248,7 +324,7 @@ local function _createTutorialWindow()
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
     nextButton:SetWidth(100)
 
--- Create tutorial steps
+    -- Create tutorial steps
     local steps = {
         {
             title = "Welcome to nkUI",
@@ -377,19 +453,35 @@ local function _createTutorialWindow()
         end
     end, "nextButtonClick")
 
-    -- Initialize the tutorial
     updateTutorial()
 
     return tutorialWindow
 end
 
+--[[
+    _internal.tutorial
+    Description:
+        Creates and displays the tutorial window for nkUI settings. This function initializes the tutorial interface
+        and handles navigation between different tutorial steps.
+    Parameters:
+        None
+    Returns:
+        None
+    Notes:
+        - This function creates a comprehensive tutorial window that guides users through nkUI's features
+        - The tutorial includes steps for unit frames, lower bar, and tooltip modules
+        - Each step provides descriptions and configuration options for the respective modules
+    Available Methods:
+        - None (standalone function)
+]]
 function _internal.tutorial()
 
-    -- Add the tutorial to the UI elements
-    if uiElements.tutorialWindow == nil then
+   if uiElements.tutorialWindow == nil then
         uiElements.tutorialWindow = _createTutorialWindow()
     else
         uiElements.tutorialWindow:reset()
     end
     
 end
+
+
