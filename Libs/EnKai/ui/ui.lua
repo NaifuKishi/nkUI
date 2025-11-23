@@ -655,7 +655,7 @@ function EnKai.ui.attachAbilityTooltip (target, abilityId)
 			end
 			
 			uiElements.abilityTooltip:SetWidth(200)
-			uiElements.abilityTooltip:SetTitle(stringGsub(abilityDetails.name, "\n", ""))
+			uiElements.abilityTooltip:SetTitle(stringGSub(abilityDetails.name, "\n", ""))
 			uiElements.abilityTooltip:SetLines({{ text = abilityDetails.description, wordwrap = true, minWidth = 200  }})
 						
 			uiElements.abilityTooltip:SetPoint("TOPLEFT", target, "BOTTOMRIGHT", 5, 5)
@@ -692,7 +692,7 @@ function EnKai.ui.attachGenericTooltip (target, title, text)
 			
 			uiElements.genericTooltip:SetWidth(200)
 			if title ~= nil then 
-				uiElements.genericTooltip:SetTitle(stringGsub(title, "\n", ""))
+				uiElements.genericTooltip:SetTitle(stringGSub(title, "\n", ""))
 			else
 				uiElements.genericTooltip:SetTitle("")
 			end
