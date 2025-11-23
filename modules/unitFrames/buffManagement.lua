@@ -72,7 +72,9 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
             for k, v in pairs(details) do
                 if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
 
-                    if unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == data.playerID then
+                    local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
+
+                    if unitId ~= targetID or (unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == data.playerID) then
                         if unitDebuffDisplayList[k] == nil then
                             unitDebuffDisplayList[k] = true
 
