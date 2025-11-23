@@ -28,6 +28,8 @@ local processBuffs	= _internal.processBuffs
 local function _fctSecureEnter()
 
 	uiElements.frames["player"]:SetAlpha(nkUISetup.combatAlpha)
+	uiElements.frames["player"]:SetCombat(true)
+
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.combatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.combatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(true)
@@ -37,6 +39,8 @@ end
 local function _fctSecureLeave()
 	
 	uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
+	uiElements.frames["player"]:SetCombat(false)
+
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(false)

@@ -190,7 +190,8 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     end
 
     local healthFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
-    
+    healthFrame:SetLayer(1)
+
     if reverse then
         healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -1, 1)
     else
@@ -222,6 +223,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     nameText:SetFontSize(16 * scale)
     nameText:SetFontColor(1, 1, 1, 1)
     nameText:SetEffectGlow({ strength = 1})
+    nameText:SetLayer(2)
 
     local healthText = EnKai.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
 
@@ -235,6 +237,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     healthText:SetFontSize(28 * scale)
     healthText:SetFontColor(1, 1, 1, 1)
     healthText:SetEffectGlow({ offsetX = 1, offsetY = 1})
+    
 
     if unitFrameType == "raid" then healthText:SetVisible(false) end
 
@@ -250,6 +253,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     energyText:SetFontSize(14 * scale)
     energyText:SetFontColor(1, 1, 1, 1)
     energyText:SetEffectGlow({ offsetX = 1, offsetY = 1})
+    energyText:SetLayer(2)
 
     if unitFrameType == "raid" then energyText:SetVisible(false) end
 
@@ -261,13 +265,21 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
         planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 4* scale, 0)
     end
 
-   
     planarText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     planarText:SetFontSize(12 * scale)
     planarText:SetFontColor(1, 1, 1, 1)
     planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
+    planarText:SetLayer(2)
 
     if unitFrameType == "raid" then planarText:SetVisible(false) end
+
+    local combatIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
+    combatIcon:SetLayer(99)
+    combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -5 * scale, 0)
+    combatIcon:SetHeight(30 * scale)
+    combatIcon:SetWidth(30 * scale)
+    combatIcon:SetVisible(false)
+    combatIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconCombat.png")
 
     -- buff management
 
@@ -295,6 +307,10 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
         else
             return scale
         end
+    end
+
+    function unitFrame:SetCombat(state)
+        combatIcon:SetVisible(state)
     end
 
     function unitFrame:SetCalling (calling)
