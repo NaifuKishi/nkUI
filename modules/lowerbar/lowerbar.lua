@@ -48,14 +48,16 @@ function _internal.timeDate ()
     datasetTime:SetText("00:00:00")
     datasetTime:SetFontSize(data.layout.timeSize)
     datasetTime:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetTime:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetTime:SetTextFont(addonInfo.id, "Montserrat")
+    datasetTime:SetEffectGlow({ strength = 1})
 
     local datasetDate = EnKai.uiCreateFrame("nkText", name .. ".datasetdate", uiElements.contextLowest)
     datasetDate:SetPoint("BOTTOMCENTER", datasetTime, "TOPCENTER",0, 7)
     datasetDate:SetText("00/00/0000")
     datasetDate:SetFontSize(data.layout.dateSize)
     datasetDate:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
-    datasetDate:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetDate:SetTextFont(addonInfo.id, "Montserrat")
+    datasetDate:SetEffectGlow({ strength = 1})
 
     local updateClockTime = InspectTimeServer()
     local updateDate
@@ -101,6 +103,7 @@ function _internal.currency ()
     datasetCurrency:SetFontSize(data.layout.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetCurrency:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetCurrency:SetEffectGlow({ strength = 1})
 
     local function _updateCoin(_, currency)
 	
@@ -140,6 +143,7 @@ function _internal.fps()
     datasetFPS:SetFontSize(data.layout.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetFPS:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetFPS:SetEffectGlow({ strength = 1})
 
     local fpsUpdateTime, fpsDeltaTime = nil, nil
 	local frameCount, fpsTimer = 0, 0
@@ -177,6 +181,7 @@ function _internal.location()
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetLocation:SetTextFont(addonInfo.id, "Montserrat")
     datasetLocation:SetSecureMode('restricted')
+    datasetLocation:SetEffectGlow({ strength = 1})
 
     local buttons = {}
     local abilities = {["A3C5AEC64D3793518"] = true}
@@ -265,7 +270,8 @@ function _internal.experience ()
     datasetExp:SetPoint("BOTTOMCENTER", datasetExpBarBG, "TOPCENTER", 0, 0)
     datasetExp:SetFontSize(data.layout.fontSize)
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
-    datasetExp:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetExp:SetTextFont(addonInfo.id, "Montserrat")
+    datasetExp:SetEffectGlow({ strength = 1})
 
 	local function _updateExperience()
 
@@ -345,13 +351,14 @@ function _internal.faction ()
     datasetFaction:SetFontSize(data.layout.fontSize)
     datasetFaction:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetFaction:SetTextFont(addonInfo.id, "Montserrat")
+    datasetFaction:SetEffectGlow({ strength = 1})
     
     local datasetFactionName = EnKai.uiCreateFrame('nkText', name .. ".factionName", datasetFactionBar)
     datasetFactionName:SetPoint("CENTER", datasetFactionBarBG, "CENTER")
     datasetFactionName:SetFontSize(data.layout.barText)
     datasetFactionName:SetFontColor(0, 0, 0, 1)
     datasetFactionName:SetTextFont(addonInfo.id, "Montserrat")
-
+    
     local function _updateFaction(_, factionData)
 
         if factionData ~= nil then
@@ -413,6 +420,7 @@ function _internal.social ()
     datasetSocial:SetFontSize(data.layout.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")    
+    datasetSocial:SetEffectGlow({ strength = 1})
 	
 	local function _findGuildEntry (name) -- needed
 

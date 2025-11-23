@@ -61,7 +61,8 @@ local function _eventCastBar(_, units)
 					local details = InspectUnitCastbar(unitID)
 
 					thisFrame:SetSpell (details.abilityName)
-					thisFrame:SetVisible(true)
+					thisFrame:SetTimer (details.duration, details.duration)
+					thisFrame:SetVisible(true)					
 
 					data[castBarName] = {
 						abilityName = details.abilityName,

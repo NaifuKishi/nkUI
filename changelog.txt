@@ -1,3 +1,7 @@
+V0.1.0
+    - updated: change the lowerbar font slightly for readability
+    - fixes: fixed display issue on new castbars
+
 v0.0.10
     - new: added raid frame handling
     - update: moved all debug code to nkDebug
