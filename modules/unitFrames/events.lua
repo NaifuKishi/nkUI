@@ -46,68 +46,61 @@ end
 ------------------------------ cast bar functions ------------------------------
 
 local function _eventCastBar(_, units) 
-	for k, v in pairs (units) do			
-		if k == data.playerID then
-			if v then
-				local details = InspectUnitCastbar(data.playerID)
 
-				local thisFrame = uiElements.frames["player.castbar"]
-				thisFrame:SetSpell (details.abilityName)
-				thisFrame:SetVisible(true)
+	for unitID, state in pairs (units) do			
 
-				data.playerCastbar = {
-					abilityName = details.abilityName,
-					duration = details.duration,
-					start = InspectTimeReal()
-				}
-			else
-				uiElements.frames["player.castbar"]:SetVisible(false)
-				data.playerCastbar = nil
-			end
-		elseif k == data.targetID then
-			if v then
-				local details = InspectUnitCastbar(data.targetID)
+		local unitTypes = EnKai.unit.getUnitTypes(unitID)
 
-				local thisFrame = uiElements.frames["target.castbar"]
-				thisFrame:SetSpell (details.abilityName)
-				thisFrame:SetVisible(true)
+		for _, identifier in pairs (unitTypes) do
 
-				data.targetCastbar = {
-					abilityName = details.abilityName,
-					duration = details.duration,
-					start = InspectTimeReal()
-				}
-			else
-				uiElements.frames["target.castbar"]:SetVisible(false)
-				data.targetCastbar = nil
+			local castBarName = stringFormat("%s.castbar", identifier)
+			local thisFrame = uiElements.frames[castBarName]
+
+			if thisFrame then
+				if state == true then
+					local details = InspectUnitCastbar(unitID)
+
+					thisFrame:SetSpell (details.abilityName)
+					thisFrame:SetVisible(true)
+
+					data[castBarName] = {
+						abilityName = details.abilityName,
+						duration = details.duration,
+						start = InspectTimeReal()
+					}
+				else
+					thisFrame:SetVisible(false)
+					data[castBarName] = nil
+				end
 			end
 		end
 	end
+
 end
 
 local function _processCastBars () 
 
-	local playerCastBar = data.playerCastbar
+	local playerCastBar = data["player.castbar"]
 
 	if playerCastBar then
 		local thisFrame = uiElements.frames["player.castbar"]
 		local remaining = playerCastBar.duration - (InspectTimeReal() - playerCastBar.start)
 		if remaining <= 0 then				
-			data.playerCastbar = nil
+			data["player.castbar"] = nil
 			thisFrame:SetVisible(false)
 		else				
 			thisFrame:SetTimer (remaining, playerCastBar.duration)
 		end
 	end
 
-	local targetCastBar = data.targetCastbar
+	local targetCastBar = data["player.target.castbar"]
 
 	if targetCastBar then
-		local thisFrame = uiElements.frames["target.castbar"]
+		local thisFrame = uiElements.frames["player.target.castbar"]
 
 		local remaining = targetCastBar.duration - (InspectTimeReal() - targetCastBar.start)
 		if remaining <= 0 then				
-			data.targetCastbar = nil
+			data["player.target.castbar"] = nil
 			thisFrame:SetVisible(false)
 		else				
 			thisFrame:SetTimer (remaining, targetCastBar.duration)
@@ -119,7 +112,7 @@ end
 
 local function _eventBuffAdd(_, unit, buffs)
 
-	print ("eventBuffAdd")
+	--print ("eventBuffAdd")
 
 	if nkUISetup.uiFrames.activate == false then return end
 
@@ -179,6 +172,7 @@ local function _fctZoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
 		if k == data.playerID then
+			_internal.updateUnit (playerFrame, playerID)
 			_internal.processBuffs ()
 		end
 	end
@@ -200,7 +194,7 @@ local function _fctUpdateHandler()
 		_lastUpdate3 = _curTime
 	end
 	
-	-- run every 0.5 seconds
+	-- run every 0.5 seconds	
 	
 	if (_lastUpdate2 == nil or _curTime - _lastUpdate2 >= .5) then		
 		_internal.processBuffs()	
@@ -225,6 +219,10 @@ function _events.uiFramesInitEvents()
 	EnKai.unit.subscribe("player")
 	EnKai.unit.subscribe("player.target")
 	EnKai.unit.subscribe("player.pet")
+
+	for idx = 1, 5, 1 do
+		EnKai.unit.subscribe(stringFormat("group%02d", idx))
+	end
 
 	Command.Event.Attach(EnKai.events["EnKai.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.EnKai.Unit.PlayerAvailable")
 	Command.Event.Attach(EnKai.events["EnKai.Unit"].GroupStatus, _events.groupStatus, "nkUI.EnKai.Unit.GroupStatus")
@@ -281,40 +279,51 @@ function _events.uiFramesInitEvents()
 		frame:SetVisible(true)
 	end
 
+	EnKai.unit.UpdateGroupUnit()
+
 end
 
 function _events.playerAvailable (a, b, c)
-	print ("_events.playerAvailable")
-	dump (a)
-	dump (b)
-	dump (c)
+	--print ("_events.playerAvailable")
+	--dump (a)
+	--dump (b)
+	--dump (c)
 end
 
 function _events.groupStatus (a, b, c)
-	print ("_events.groupStatus")
-	dump (a)
-	dump (b)
-	dump (c)
+	--print ("_events.groupStatus")
+	--dump (a)
+	--dump (b)
+	-- (c)
 end
 
-function _events.available (a, b, c)
+function _events.available (_, units)	
+	if units == nil then return end
+
 	print ("_events.available")
-	dump (a)
-	dump (b)
-	dump (c)
+
+	for identifier, unitID in pairs (units) do
+		local frame = uiElements.frames[identifier]
+
+		if frame then
+			_internal.updateUnit (frame, unitID) 
+			frame:SetVisible(true)
+		end
+	end
+	
 end
 
 function _events.unavailable (a, b, c)
-	print ("_events.unavailable")
-	dump (a)
-	dump (b)
-	dump (c)
+	--print ("_events.unavailable")
+	--dump (a)
+	--dump (b)
+	--dump (c)
 end
 
 function _events.change (_, unitID, identifier)
 	
 	print ("ok => _events.change")
-	--print (unitID, identifier)
+	print (unitID, identifier)
 
 	local frame = uiElements.frames[identifier]
 

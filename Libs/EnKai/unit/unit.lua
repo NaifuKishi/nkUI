@@ -79,7 +79,7 @@ local function _buildDebugUI ()
 	local frame = EnKai.uiCreateFrame("nkFrame", "EnKai.unit.testFrame", context)
 	frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 500, 0)
 	frame:SetHeight(300)
-	frame:SetWidth(300)
+	frame:SetWidth(600)
 	frame:SetBackgroundColor(0,0,0,1)
 
 	local text = EnKai.uiCreateFrame("nkText", "EnKai.unit.testFrame.text", frame)
@@ -90,17 +90,36 @@ local function _buildDebugUI ()
 	text:SetWordwrap(true)
 	text:SetFontSize(12)
 
+	local text2 = EnKai.uiCreateFrame("nkText", "EnKai.unit.testFrame.text2", frame)
+	text2:SetPoint("TOPLEFT", text, "TOPRIGHT", 2, 2)
+	text2:SetWidth(298)
+	text2:SetHeight(298)
+	text2:SetFontColor(1,1, 1, 1)
+	text2:SetWordwrap(true)
+	text2:SetFontSize(12)
+
 	function frame:Update()
-		local thisText = ""
+		local thisText, thisText2 = "", ""
 
 		local sortedKeys = EnKai.tools.table.getSortedKeys (_idCache)
+		local raidKeys = {}
 		
 		for _, key in pairs(sortedKeys) do
+			if stringFind (key, "raid") then
+				table.insert(raidKeys, key)
+			else
+				local units = _idCache[key]
+				thisText = stringFormat("%s%s: %s\n", thisText, key, EnKai.tools.table.serialize(units))
+			end
+		end
+
+		for _, key in pairs(raidKeys) do
 			local units = _idCache[key]
-			thisText = stringFormat("%s%s: %s\n", thisText, key, EnKai.tools.table.serialize(units))
+			thisText2 = stringFormat("%s%s: %s\n", thisText2, key, EnKai.tools.table.serialize(units))
 		end		
 		
 		text:SetText(thisText)
+		text2:SetText(thisText2)
 	end
 
 	return frame
@@ -639,7 +658,7 @@ function EnKai.unit.getUnitIDByType (unitType)
 	if _idCache[unitType] == nil then
 		local flag, details = pcall (InspectUnitDetail, unitType)
 		if flag and details ~= nil then
-			dump (details)
+			--dump (details)
 			--print ('EnKai.unit.getUnitIDByType', unitType, details.id)
 			if details.type == unitType then 
 				_fctSetIDCache(details.type, details.id, true, 'EnKai.unit.getUnitIDByType')
@@ -721,6 +740,33 @@ function EnKai.unit.GetUnitByIdentifier (identifier)
 	end
 
 	return nil
+
+end
+
+function EnKai.unit.UpdateGroupUnit()
+
+	local addon = InspectAddonCurrent()
+	local unitInfo = {}
+	local callEvent = false
+
+	for unitType, value in pairs (_subscriptions) do
+		if value[addon] == true then
+			if stringFind(unitType, "group") then			
+				local unitID = EnKai.unit.getUnitIDByType (unitType) 				
+				if unitID then
+					for key, thisUnit in pairs(unitID) do
+						unitInfo[unitType] = thisUnit
+						callEvent = true
+					end
+				end					
+			end
+		end
+	end
+
+	if callEvent then 
+		dump (unitInfo)
+		_fctUnitAvailableHandler (_, unitInfo)
+	end
 
 end
 

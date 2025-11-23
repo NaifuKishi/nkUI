@@ -32,38 +32,32 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
     local unitDebuffDisplayList = frame:GetDebuffDisplayList() or {}
 
     local function updateBuffDisplay()
-        local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -25
+        local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -22 * data.uiScaleY
         local lastIcon
         local firstBuffIcon = frame
 
         for k, v in pairs (unitBuffDisplayList) do
-        --for idx = 1, #unitBuffDisplayList do
-            --local icon = unitBuffIcons[unitBuffDisplayList[idx]].icon
             local icon = unitBuffIcons[k].icon
             icon:ClearAll()
             icon:ClearPoint("BOTTOMLEFT")
             icon:SetPoint(from, object, to, x, y)
-            icon:SetScale(.7 * frame:GetScale())
+            icon:SetScale(.7 * frame:GetBuffScale())
             lastIcon = icon
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 2, 0
 
             if idx == 1 then firstBuffIcon = icon end
         end
 
-        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10
+        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10 * data.uiScaleY
         lastIcon = nil
 
-        --for idx = 1, #unitDebuffDisplayList do
-        --    local icon = unitDebuffIcons[unitDebuffDisplayList[idx]].icon
         for k, v in pairs (unitDebuffDisplayList) do
             local icon = unitDebuffIcons[k].icon
-            --if icon then
-                icon:ClearAll()
-                icon:SetPoint(from, object, to, x, y)
-                icon:SetScale(.7 * frame:GetScale())
-                lastIcon = icon
-                from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5, 0
-            --end
+            icon:ClearAll()
+            icon:SetPoint(from, object, to, x, y)
+            icon:SetScale(.7 * frame:GetBuffScale())
+            lastIcon = icon
+            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5 * data.uiScaleX, 0
         end
     end
 
@@ -74,14 +68,12 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
             for k, v in pairs(details) do
                 if (v.remaining and v.remaining < 60) then
                     if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                        --if EnKai.tools.table.isMember(unitDebuffDisplayList, k) == false then
                         if unitDebuffDisplayList[k] == nil then
-                            --table.insert(unitDebuffDisplayList, k)
                             unitDebuffDisplayList[k] = true
 
                             if unitDebuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetScale(), 0, 0)
+                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
                                 unitDebuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
@@ -119,7 +111,7 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
                             if unitBuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(frame:GetUnitID(), "buffIcon." .. k, .7 * frame:GetScale(), 0, 0)
+                                local icon = _internal.iconManager.get(frame:GetUnitID(), "buffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
                                 unitBuffIcons[k] = {
                                     icon = icon,
                                     visible = true,

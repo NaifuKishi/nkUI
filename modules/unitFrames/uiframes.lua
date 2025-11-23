@@ -102,12 +102,12 @@ local frameManager = {
         - ClearBuffs(): Clears all buffs from the frame
         - removeBuff(buffUnit, buffs): Removes buffs from the frame
 ]]
-function frameManager.get(unitType, scale, x, y, reverse, raid)
+function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     
     local unitFrameWidth
     local frameWidth, frameHeight = 250 * scale, 35 * scale
 
-    if raid then
+    if unitFrameType == "raid" then
         frameWidth, frameHeight = 100 * scale, 45 * scale
     end
 
@@ -152,7 +152,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     unitFrame:SetHeight(frameHeight)    
     unitFrame:SetVisible(false)
 
-    if raid then
+    if unitFrameType == "raid" then
         unitFrame:SetBackgroundColor(0.4, 0.4, 0.4, .5)
     else
         unitFrame:SetBackgroundColor(0, 0, 0, .5)
@@ -189,8 +189,6 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
         	end
     end
 
-    --data.unitFramesBuild = true
-
     local healthFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
     
     if reverse then
@@ -212,7 +210,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
   
     local nameText = EnKai.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
-    if raid then
+    if unitFrameType == "raid" then
         nameText:SetPoint("CENTER", unitFrame, "CENTER", 2 * scale, 0)
     elseif reverse then
         nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 0)
@@ -238,7 +236,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     healthText:SetFontColor(1, 1, 1, 1)
     healthText:SetEffectGlow({ offsetX = 1, offsetY = 1})
 
-    if raid then healthText:SetVisible(false) end
+    if unitFrameType == "raid" then healthText:SetVisible(false) end
 
     local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
@@ -253,7 +251,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     energyText:SetFontColor(1, 1, 1, 1)
     energyText:SetEffectGlow({ offsetX = 1, offsetY = 1})
 
-    if raid then energyText:SetVisible(false) end
+    if unitFrameType == "raid" then energyText:SetVisible(false) end
 
     local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
@@ -269,7 +267,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     planarText:SetFontColor(1, 1, 1, 1)
     planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
 
-    if raid then planarText:SetVisible(false) end
+    if unitFrameType == "raid" then planarText:SetVisible(false) end
 
     -- buff management
 
@@ -291,6 +289,13 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
+    function unitFrame:GetBuffScale() 
+        if unitFrameType == "group" then
+            return scale *.7
+        else
+            return scale
+        end
+    end
 
     function unitFrame:SetCalling (calling)
         local fill = callingColor[calling or "default"]
@@ -299,7 +304,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
 
     function unitFrame:SetName (name) 
         local maxLen = 10
-        if raid then maxLen = 5 end
+        if unitFrameType == "raid" then maxLen = 5 end
 
         if stringLen (name) > maxLen then
             local splitName = EnKai.strings.split(name, " ")
@@ -315,7 +320,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
                 for idx = 1, #splitName -1, 1 do                    
                     local tempName = stringSub(splitName[idx], 1, 1)                    
                     
-                    if raid == false then
+                    if unitFrameType ~= "raid" then
                         thisName = thisName .. tempName .. ". "                    
                     end
                 end
@@ -330,7 +335,7 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
     end
 
     function unitFrame:SetPlanar (planar) 
-        if planar and unitFrame:IsRaid() == false then
+        if planar and unitFrame:GetUnitFrameType() ~= "raid" then
             planarText:SetText(stringFormat("%d", planar)) 
             planarText:SetVisible(true)
         else
@@ -389,8 +394,8 @@ function frameManager.get(unitType, scale, x, y, reverse, raid)
         end
     end
 
-    function unitFrame:IsRaid()
-        return raid
+    function unitFrame:GetUnitFrameType()
+        return unitFrameType or "standard"
     end
 
     frameManager.activeFrames[unitType] = unitFrame
@@ -442,6 +447,10 @@ end
 
 
 function _internal.updateUnit (frame, unitID)
+
+    --print ("updateUnit")
+    --print (unitID)
+    if frame == nil then return end
 
     local details = EnKai.unit.GetUnitDetail(unitID)
 
@@ -520,20 +529,20 @@ function _internal.uiFrames()
     local target = frameManager.get("target", data.uiScaleX, (2120 - 250) * data.uiScaleX, 1000 * data.uiScaleY, true, false)
     local targetCastbar = _internal.createCastBar("player.target", playerRessourceBar)
 
-    uiElements.frames["target.castbar"] = targetCastbar
+    uiElements.frames["player.target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
 
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
     for idx = 1, 5, 1 do
-        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false, false)
+        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false, "group")
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
         --_internal.updateUnit (group, data.playerID)
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
-        to, object, x, y = "BOTTOMLEFT", group, 0, 60 * data.uiScaleY
+        to, object, x, y = "BOTTOMLEFT", group, 0, 80 * data.uiScaleY
     end
 
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 100 * data.uiScaleX, 500 * data.uiScaleY
@@ -543,12 +552,12 @@ function _internal.uiFrames()
         for idx2 = 1, 5, 1 do
             local index = idx1 * 5 + idx2
 
-            local raid = frameManager.get(stringFormat("raid%02d", index), (data.uiScaleX - .1), 0, 0, false, true)
+            local raid = frameManager.get(stringFormat("raid%02d", index), (data.uiScaleX - .1), 0, 0, false, "raid")
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
             --_internal.updateUnit (raid, data.playerID)
-            uiElements.frames[stringFormat("group%02d", index)] = raid
+            uiElements.frames[stringFormat("raid%02d", index)] = raid
 
             to, object, x, y = "TOPRIGHT", raid, 2, 0
 

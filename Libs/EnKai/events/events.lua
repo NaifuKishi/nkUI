@@ -14,7 +14,9 @@ local InspectAddonCurrent	= Inspect.Addon.Current
 local InspectSystemWatchdog	= Inspect.System.Watchdog
 local InspectTimeFrame		= Inspect.Time.Frame
 local InspectSystemSecure	= Inspect.System.Secure
-local InspectTimeReal	= Inspect.Time.Real
+local InspectTimeReal		= Inspect.Time.Real
+
+local stringFormat			= string.format
 
 ---------- init local variables ---------
 
