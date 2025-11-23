@@ -369,9 +369,16 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
-        local playerHealthPercent = health / healthMax
-        healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
-        healthFrame:SetWidth(unitFrameWidth * playerHealthPercent)
+        --print (health, healthMax, unitFrameWidth)
+
+        if health == 0 then
+            healthText:SetText("0")
+            healthFrame:SetWidth(1)
+        else
+            local playerHealthPercent = health / healthMax
+            healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
+            healthFrame:SetWidth(unitFrameWidth * playerHealthPercent)
+        end
     end
 
     function unitFrame:ProcessUnitDetails (newUnitID)
@@ -448,15 +455,13 @@ end
 
 function _internal.updateUnit (frame, unitID)
 
-    --print ("updateUnit")
-    --print (unitID)
     if frame == nil then return end
 
     local details = EnKai.unit.GetUnitDetail(unitID)
 
     if details == nil then return end
 
-    --dump (details)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
 
     frame:SetUnitID(unitID)
     frame:SetName(details.name)

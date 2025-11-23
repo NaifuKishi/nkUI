@@ -203,7 +203,7 @@ function EnKai.tools.table.addValue (checkTable, element)
 
 end
 
-function EnKai.tools.tableRemoveValue (checkTable, element)
+function EnKai.tools.table.removeValue (checkTable, element)
 
 	local pos = EnKai.tools.table.getTablePos (checkTable, element)
 	if pos ~= -1 then tableRemove(checkTable, pos) end

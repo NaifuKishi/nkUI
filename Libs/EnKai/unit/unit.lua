@@ -52,6 +52,7 @@ local InspectUnitList		= Inspect.Unit.List
 local stringFind	= string.find
 local stringFormat	= string.format
 local stringSub		= string.sub
+local stringMatch	= string.match
 
 ---------- init local variables ---------
 
@@ -84,42 +85,23 @@ local function _buildDebugUI ()
 
 	local text = EnKai.uiCreateFrame("nkText", "EnKai.unit.testFrame.text", frame)
 	text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
-	text:SetWidth(298)
+	text:SetWidth(598)
 	text:SetHeight(298)
 	text:SetFontColor(1,1, 1, 1)
 	text:SetWordwrap(true)
 	text:SetFontSize(12)
 
-	local text2 = EnKai.uiCreateFrame("nkText", "EnKai.unit.testFrame.text2", frame)
-	text2:SetPoint("TOPLEFT", text, "TOPRIGHT", 2, 2)
-	text2:SetWidth(298)
-	text2:SetHeight(298)
-	text2:SetFontColor(1,1, 1, 1)
-	text2:SetWordwrap(true)
-	text2:SetFontSize(12)
-
 	function frame:Update()
 		local thisText, thisText2 = "", ""
 
 		local sortedKeys = EnKai.tools.table.getSortedKeys (_idCache)
-		local raidKeys = {}
 		
 		for _, key in pairs(sortedKeys) do
-			if stringFind (key, "raid") then
-				table.insert(raidKeys, key)
-			else
-				local units = _idCache[key]
-				thisText = stringFormat("%s%s: %s\n", thisText, key, EnKai.tools.table.serialize(units))
-			end
+			local units = _idCache[key]
+			thisText = stringFormat("%s%s: %s\n", thisText, key, EnKai.tools.table.serialize(units))
 		end
 
-		for _, key in pairs(raidKeys) do
-			local units = _idCache[key]
-			thisText2 = stringFormat("%s%s: %s\n", thisText2, key, EnKai.tools.table.serialize(units))
-		end		
-		
 		text:SetText(thisText)
-		text2:SetText(thisText2)
 	end
 
 	return frame
@@ -127,6 +109,8 @@ local function _buildDebugUI ()
 end
 
 local function _fctSetIDCache(key, value, flag, source)
+
+	if nkDebug and value then nkDebug.logEntry (addonInfo.identifier, "_fctSetIDCache", key, {source = source, value = value, flag = flag}) end
 
 	if key == value then return end
 
@@ -165,8 +149,6 @@ local function _fctCombatDamage(_, info)
 			_unitCache[info.caster].lastUpdate = InspectTimeReal()
 			EnKai.eventHandlers["EnKai.Unit"]["Available"]({[info.caster] = "combatlog"})
 			
-			--print ('found caster unit', info.caster)
-			
 			if debugUI then debugUI:Update() end
 		end
 	end
@@ -181,8 +163,6 @@ local function _fctCombatDamage(_, info)
 			
 			_unitCache[info.target].lastUpdate = InspectTimeReal()
 			EnKai.eventHandlers["EnKai.Unit"]["Available"]({[info.target] = "combatlog"})
-			
-			--print ('found target unit', info.target, _unitCache[info.target].name)
 			
 			if debugUI then debugUI:Update() end
 		end
@@ -215,7 +195,10 @@ end
 
 local function _fctUnitAvailableHandler (_, unitInfo)
 
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_fctUnitAvailableHandler", "Startup", unitInfo) end
+
 	local tempUnitInfo = {}
+	local fireEvent = false
 
 	for unitId, unitType in pairs (unitInfo) do
 
@@ -223,16 +206,18 @@ local function _fctUnitAvailableHandler (_, unitInfo)
 			if stringFind (unitType, 'group..%.target') ~= nil and unitId == _idCache.player then
 				tempUnitInfo[InspectUnitLookup(unitType)] = unitType
 			else
-				tempUnitInfo[unitId] = unitType
+				tempUnitInfo[unitId] = unitType				
 				_unitCache[unitId] = InspectUnitDetail(unitId)
 				_unitCache[unitId].lastUpdate = InspectTimeReal()
 				
-				_fctSetIDCache(unitType, unitId)
+				_fctSetIDCache(unitType, unitId, true, "_fctUnitAvailableHandler")
 			end
+
+			fireEvent = true
 		
 			if stringFind(unitType, 'group') == 1 and stringFind(unitType, 'group..%.') == nil then
 
-				for idx = 1, 5, 1 do
+				for idx = 1, 20, 1 do
 					local tempUnitType = stringFormat('group%02d', idx)
 					local tempUnitId = InspectUnitLookup(tempUnitType)
 					_internalFunc.processUnitChange (tempUnitType, tempUnitId)
@@ -250,12 +235,32 @@ local function _fctUnitAvailableHandler (_, unitInfo)
 			_internalFunc.processUnitChange (unitType, unitId)
 			
 			if unitType == 'player' then
+				-- gotta check if player is in a group as Rift API is just stupid
+
+				local lookupTable = {}
+
+				for idx = 1, 20, 1 do
+					local tempUnitType = stringFormat('group%02d', idx)
+					lookupTable[tempUnitType] = true
+				end
+
+				local tempUnitIList= InspectUnitLookup(lookupTable)
+				for identifier, thisUnitID in pairs ( tempUnitIList ) do
+					if unitId == thisUnitID then
+						_internalFunc.processUnitChange (identifier, thisUnitID)
+					end
+				end
+
+				if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_fctUnitAvailableHandler", "player group lookup", tempUnitIList) end
+
 				EnKai.eventHandlers["EnKai.Unit"]["PlayerAvailable"](_unitCache[unitId])
 			end
 		end	
 	end
-	
-	EnKai.eventHandlers["EnKai.Unit"]["Available"](tempUnitInfo)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_fctUnitAvailableHandler", "unit info", tempUnitInfo) end
+
+	if fireEvent then EnKai.eventHandlers["EnKai.Unit"]["Available"](tempUnitInfo) end
 	
 	if debugUI then debugUI:Update() end
 
@@ -300,19 +305,11 @@ end
 
 local function _fctUnitChange (unitId, unitType)
 
-	-- if stringFind(unitType, 'mouseover') ~= nil then 
-		-- local details = InspectUnitDetail(unitType)
-
-	-- end
-
-	_idCache[unitType] = {}		
+	_idCache[unitType] = {}
 	
 	if unitId == false then
-		--print ('_fctUnitChange', unitType, false)
-	
 		_internalFunc.processUnitChange(unitType, nil)
 	else
-		--print ('_fctUnitChange', unitType, unitId)
 		_fctSetIDCache(unitType, unitId, true, '_fctUnitChange')
 		
 		local details = InspectUnitDetail(unitType)
@@ -339,85 +336,56 @@ end
 
 function _internalFunc.processUnitChange (unitType, unitId)
 
-	if unitId == false then
-		 _fctSetIDCache(unitType, nil, '_internalFunc.processUnitChange')
+	if unitId == false or unitId == nil then
+		 _fctSetIDCache(unitType, nil, false, '_internalFunc.processUnitChange')
 	else
-		--print ('_internalFunc.processUnitChange', unitType, unitId)
-		 _fctSetIDCache(unitType, unitId, '_internalFunc.processUnitChange')
+		 _fctSetIDCache(unitType, unitId, true, '_internalFunc.processUnitChange')
 	end
 
 	if stringFind(unitType, 'group') == 1 and stringFind (unitType, 'group..%.') == nil then
-		local indicateGroupChange = false
-	
-		local groupId = stringSub(unitType, 6, 7)
 
-		if tonumber(groupId) > 5 then
-			if _isRaid == false then 
-				indicateGroupChange = true
-				_groupMembers = 0
-				_raidMembers = 0
+		-- process groups and check for group size change
+
+		local newStatus = nil
+		_groupMembers, _raidMembers = 0, 0
+
+		local thisIsGroup, thisIsRaid = false, false
+
+		for idx = 1, 20, 1 do
+			local thisGroupTable = _idCache[stringFormat('group%02d', idx)]
+
+			if thisGroupTable and next(thisGroupTable) ~= nil then 				
+				if idx > 5 then 
+					thisIsRaid = true 
+					thisIsGroup = false
+					_groupMembers = 0
+					_raidMembers = _raidMembers + 1
+				else
+					thisIsGroup = true
+					_groupMembers = _groupMembers + 1 
+				end
 			end
-			
+		end
+
+		if thisIsRaid == true and _isRaid == false then
 			_isRaid = true
-			_isGroup = false
-		elseif _isRaid == false then
-			if _isGroup == false then 
-				_groupMembers = 0
-				_raidMembers = 0
-				indicateGroupChange = true 
-			end
-			
+			_fctGroupStatus()
+		elseif thisIsGroup == true and _isGroup == false then
 			_isGroup = true
+			_fctGroupStatus()
 		end
 		
-		if unitId == false then
-			local unitTypeList = _idCache[stringFormat('raid%s', groupId)]
-		
-			for id, value in pairs(unitTypeList) do
-				_fctSetIDCache(stringFormat('raid%s', groupId), value, false, '_fctUnitChange')
-			end
-		else
-			_fctSetIDCache(stringFormat('raid%s', groupId), unitId, true, '_internalFunc.processUnitChange')
-		end
-		
-		local backupGroupCount, backupRaidCount = _groupMembers, _raidMembers
-		
-		if _isRaid == true then
-		
-			_raidMembers = 0
-			
-			for idx = 1, 20, 1 do
-				if _idCache[stringFormat('raid%02d', idx)] ~= nil then _raidMembers = _raidMembers + 1 end
-			end
-			
-			if _raidMembers == 0 then _isRaid = false end
-			
-		elseif _isGroup == true then
-		
-			_groupMembers = 0
-			
-			for idx = 1, 5, 1 do
-				if _idCache[stringFormat('group%02d', idx)] ~= nil then _groupMembers = _groupMembers + 1 end
-			end
-			
-			if _groupMembers == 0 then _isGroup = false end
-			
-		end
-		
-		if indicateGroupChange == true or backupGroupCount ~= _groupMembers or backupRaidCount ~= _raidMembers then	_fctGroupStatus() end
-		
-	elseif stringFind(unitType, 'group..%.') == 1 then
-		local groupId = stringSub(unitType, 6, 7)
-		if _idCache[stringFormat('group%s', groupId)] == nil then
-			local luID = InspectUnitLookup(stringFormat('group%s', groupId))
+	elseif stringFind(unitType, 'group..%.pet') == 1 or stringFind(unitType, 'group..%.target') == 1 then
+		if _idCache[unitType] == nil then
+			local luID = InspectUnitLookup(unitType)
 			if luID ~= nil then 
 				local unitInfoTable = {}
-				unitInfoTable[luID] = stringFormat('group%s', groupId)
+				unitInfoTable[luID] = unitType
 				_fctProcessUnitInfo (unitInfoTable)
 			end
 		end
 	elseif stringFind(unitType, 'player') == 1 then
-		
+		--[[
 		local playerId = InspectUnitLookup('player')
 		local suffix = ''
 		
@@ -441,6 +409,7 @@ function _internalFunc.processUnitChange (unitType, unitId)
 				break
 			end
 		end
+		]]
 	end
 
 end
@@ -551,7 +520,7 @@ function EnKai.unit.init()
 		end
 	end
 
-	 debugUI = _buildDebugUI()
+	if nkDebug then  debugUI = _buildDebugUI() end
 	
 	_unitManager = true
 
@@ -631,7 +600,7 @@ end
 function EnKai.unit.getGroupStatus ()
 
 	if _isRaid == true then
-		return 'raid', _aidMembers
+		return 'raid', _raidMembers
 	elseif _isGroup == true then
 		return 'group', _groupMembers
 	else
@@ -658,8 +627,6 @@ function EnKai.unit.getUnitIDByType (unitType)
 	if _idCache[unitType] == nil then
 		local flag, details = pcall (InspectUnitDetail, unitType)
 		if flag and details ~= nil then
-			--dump (details)
-			--print ('EnKai.unit.getUnitIDByType', unitType, details.id)
 			if details.type == unitType then 
 				_fctSetIDCache(details.type, details.id, true, 'EnKai.unit.getUnitIDByType')
 				_unitCache[details.id] = details
@@ -755,16 +722,16 @@ function EnKai.unit.UpdateGroupUnit()
 				local unitID = EnKai.unit.getUnitIDByType (unitType) 				
 				if unitID then
 					for key, thisUnit in pairs(unitID) do
-						unitInfo[unitType] = thisUnit
+						unitInfo[thisUnit] = unitType
 						callEvent = true
 					end
-				end					
+				end	
 			end
 		end
 	end
 
 	if callEvent then 
-		dump (unitInfo)
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "EnKai.unit.UpdateGroupUnit", "", unitInfo) end
 		_fctUnitAvailableHandler (_, unitInfo)
 	end
 

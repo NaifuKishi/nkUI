@@ -1,8 +1,14 @@
 v0.0.10
     - new: added raid frame handling
+    - update: moved all debug code to nkDebug
     - update: reworked unit handling with EnKai.unit
     - update: completely reworked event handling
     - update: removed nkUnit library
+    - update: castbar working when player is targeting itself
+    - update: fixed some buff sizes on group frames
+    - fixes: tons of fixes in EnKai.unit. Did that shit ever work properly?
+    - fixes: fixed an error in EnKai.unit not clearing raid groups on leave
+    - fixes: fixed error when targeting dead body
     - fixes: fixed typo in EnKai library
     - fixes: some smaller issues fixed
 

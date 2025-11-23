@@ -113,6 +113,7 @@ end
 local function _eventBuffAdd(_, unit, buffs)
 
 	--print ("eventBuffAdd")
+	local groupStatus, groupSize = EnKai.unit.getGroupStatus()
 
 	if nkUISetup.uiFrames.activate == false then return end
 
@@ -130,7 +131,7 @@ local function _eventBuffAdd(_, unit, buffs)
 
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
-				if not stringFind(value, "raid") then
+				if not stringFind(value, "group") or groupStatus ~= "raid" then
 					local frame = _internal.getFrameByIdentifier(value)
 					if frame then frame:addBuff(unit, buffs) end
 				end
@@ -157,7 +158,7 @@ local function _eventBuffRemove (_, unit, buffs)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
-				if not stringFind(value, "raid") then
+				if not stringFind(value, "group") or groupStatus ~= "raid" then
 					local frame = _internal.getFrameByIdentifier(value)
 					if frame then frame:removeBuff(unit, buffs) end
 				end
@@ -214,13 +215,13 @@ end
 
 function _events.uiFramesInitEvents()	
 
-	print ('_events.uiFramesInitEvents')
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitEvents", "Startup", nil) end
 
 	EnKai.unit.subscribe("player")
 	EnKai.unit.subscribe("player.target")
 	EnKai.unit.subscribe("player.pet")
 
-	for idx = 1, 5, 1 do
+	for idx = 1, 20, 1 do
 		EnKai.unit.subscribe(stringFormat("group%02d", idx))
 	end
 
@@ -283,27 +284,51 @@ function _events.uiFramesInitEvents()
 
 end
 
-function _events.playerAvailable (a, b, c)
+function _events.playerAvailable (_, thisInfo, plusInfo)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", thisInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", plusInfo) end
+
 	--print ("_events.playerAvailable")
 	--dump (a)
 	--dump (b)
 	--dump (c)
 end
 
-function _events.groupStatus (a, b, c)
+function _events.groupStatus (_, thisInfo, plusInfo)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", "", thisInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", "", plusInfo) end
+
 	--print ("_events.groupStatus")
 	--dump (a)
 	--dump (b)
 	-- (c)
 end
 
-function _events.available (_, units)	
+function _events.available (_, units)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.available", "", units) end
+
 	if units == nil then return end
 
-	print ("_events.available")
+	for unitID, identifier in pairs (units) do
+		local frame
+		
+		if stringMatch(identifier, "^group(%d+)$") then
+			local groupStatus, groupSize = EnKai.unit.getGroupStatus()
 
-	for identifier, unitID in pairs (units) do
-		local frame = uiElements.frames[identifier]
+			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.available", stringFormat("%s %d", groupStatus, groupSize), units) end
+
+			if groupStatus == 'group' then 
+				frame = uiElements.frames[identifier] 
+			else
+				local groupIndex = stringMatch(identifier, "^group(%d+)$")
+				frame = uiElements.frames[string.format("raid%s", groupIndex )] 
+			end
+		else
+			frame = uiElements.frames[identifier]
+		end		
 
 		if frame then
 			_internal.updateUnit (frame, unitID) 
@@ -313,29 +338,57 @@ function _events.available (_, units)
 	
 end
 
-function _events.unavailable (a, b, c)
-	--print ("_events.unavailable")
-	--dump (a)
-	--dump (b)
-	--dump (c)
+function _events.unavailable (_, units)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.unavailable", "units", units) end
+
+	for unitId, _ in pairs (units) do
+	
+		local unitTypes = EnKai.unit.getUnitTypes (unitId)
+		for _, thisType in pairs (unitTypes) do
+			local frame = _internal.getFrameByIdentifier(thisType)
+			if frame then frame:SetVisible(false) end
+		end
+	end
+
 end
 
 function _events.change (_, unitID, identifier)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("%s %s", unitID, identifier), nil) end
 	
-	print ("ok => _events.change")
-	print (unitID, identifier)
+	local frame
 
-	local frame = uiElements.frames[identifier]
+	if stringMatch(identifier, "^group(%d+)$") then
+		-- only process group if group status matches
 
-	if unitID == false then
-		frame:SetVisible(false)
-		frame:SetUnitID(nil)
-		frame:ClearBuffs()
-	else		
-		if frame then
-			_internal.updateUnit (frame, unitID) 
-			frame:SetVisible(true)
+		local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("%s %d", groupStatus, groupSize), {}) end
+
+		if groupStatus == 'group' then 
+			frame = uiElements.frames[identifier] 
+		else
+			local groupIndex = stringMatch(identifier, "^group(%d+)$")
+			frame = uiElements.frames[string.format("raid%s", groupIndex)] 
 		end
+	else
+		frame = uiElements.frames[identifier]
+	end
+
+	if frame then
+		if unitID == false then
+			frame:SetVisible(false)
+			frame:SetUnitID(nil)
+			frame:ClearBuffs()
+		else		
+			if frame then
+				_internal.updateUnit (frame, unitID) 
+				frame:SetVisible(true)
+			end
+		end
+	else
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("no frame %s", identifier), nil) end
 	end
 	
 end

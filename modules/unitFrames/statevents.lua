@@ -180,7 +180,7 @@ end
 
 function _events.uiFramesInitStatEvents()	
 
-	print ('_events.uiFramesInitStatEvents')
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitStatEvents", "", nil) end
 
 	--- stats changes
 
