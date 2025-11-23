@@ -71,40 +71,43 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
             for k, v in pairs(details) do
                 if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                    if unitDebuffDisplayList[k] == nil then
-                        unitDebuffDisplayList[k] = true
 
-                        if unitDebuffIcons[k] == nil then
-                            -- Use the icon manager to get an icon
-                            local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
-                            unitDebuffIcons[k] = {
-                                icon = icon,
-                                visible = true,
-                                details = v, 
-                                duration = v.duration,
-                                remaining = v.remaining,
-                                start = InspectTimeReal()
-                            }
-                            unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
-                            unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                            unitDebuffIcons[k].icon:ShowBorder(true)
-                        else
-                            unitDebuffIcons[k].details = details
-                            unitDebuffIcons[k].visible = true
+                    if unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == data.playerID then
+                        if unitDebuffDisplayList[k] == nil then
+                            unitDebuffDisplayList[k] = true
+
+                            if unitDebuffIcons[k] == nil then
+                                -- Use the icon manager to get an icon
+                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                                unitDebuffIcons[k] = {
+                                    icon = icon,
+                                    visible = true,
+                                    details = v, 
+                                    duration = v.duration,
+                                    remaining = v.remaining,
+                                    start = InspectTimeReal()
+                                }
+                                unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
+                                unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
+                                unitDebuffIcons[k].icon:ShowBorder(true)
+                            else
+                                unitDebuffIcons[k].details = details
+                                unitDebuffIcons[k].visible = true
+                            end
+
+                            if v.poison then
+                                unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
+                            elseif v.curse then
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
+                            elseif v.disease then
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
+                            elseif v.debuff then
+                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
+                            end
+
+                            unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)
+                            unitDebuffIcons[k].icon:SetVisible(true)
                         end
-
-                        if v.poison then
-                            unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
-                        elseif v.curse then
-                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
-                        elseif v.disease then
-                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
-                        elseif v.debuff then
-                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
-                        end
-
-                        unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)
-                        unitDebuffIcons[k].icon:SetVisible(true)
                     end
                 else
                     if (v.remaining and v.remaining < 60) then

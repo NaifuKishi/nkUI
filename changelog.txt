@@ -1,6 +1,7 @@
 V0.1.0
     - new: combat icon on player frame
-    - updated: changed the lowerbar font slightly for readability
+    - update: debuffs on target frame a limited to once cause by placer
+    - update: changed the lowerbar font slightly for readability
     - fixes: fixed display issue on new castbars
 
 v0.0.10
@@ -71,5 +72,5 @@ know bug list
 ToDo
 
     - message module (buffs, abilities, important stuff)
-    
+
     
