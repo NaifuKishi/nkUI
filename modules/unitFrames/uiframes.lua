@@ -670,17 +670,19 @@ function _internal.uiFramesRemoveBuffs()
     if (buffs) then uiElements.frames["player"]:removeBuff(data.playerID, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
+    local targetID = EnKai.unit.GetUnitByIdentifier("player.target")
 
-    if targetFrame:GetVisible() and data.targetID ~= nil then        
-        local buffs = InspectBuffList(data.targetID)
-        if (buffs) then targetFrame:removeBuff(data.targetID, buffss) end
+    if targetFrame:GetVisible() and targetID ~= nil then        
+        local buffs = InspectBuffList(targetID)
+        if (buffs) then targetFrame:removeBuff(targetID, buffss) end
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
+    local playerPetID = EnKai.unit.GetUnitByIdentifier("player.pet")
 
-    if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
-        local buffs = InspectBuffList(data.playerPetID)
-        if (buffs) then playerPetFrame:removeBuff(data.playerPetID, buffss) end
+    if playerPetFrame:GetVisible() and playerPetID ~= nil then        
+        local buffs = InspectBuffList(playerPetID)
+        if (buffs) then playerPetFrame:removeBuff(playerPetID, buffss) end
     end
 
 end
@@ -692,16 +694,19 @@ function _internal.uiFramesLoadAllBuffs()
 
     local targetFrame = uiElements.frames["player.target"]
 
-    if targetFrame:GetVisible() and data.targetID ~= nil then        
-        local buffs = InspectBuffList(data.targetID)
-        if (buffs) then targetFrame:addBuff(data.targetID, buffss) end
+    local targetID = EnKai.unit.GetUnitByIdentifier("player.target")
+
+    if targetFrame:GetVisible() and targetID ~= nil then        
+        local buffs = InspectBuffList(targetID)
+        if (buffs) then targetFrame:addBuff(targetID, buffss) end
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
+    local playerPetID = EnKai.unit.GetUnitByIdentifier("player.pet")
 
-    if playerPetFrame:GetVisible() and data.playerPetID ~= nil then        
-        local buffs = InspectBuffList(data.playerPetID)
-        if (buffs) then playerPetFrame:addBuff(data.playerPetID, buffss) end
+    if playerPetFrame:GetVisible() and playerPetID ~= nil then        
+        local buffs = InspectBuffList(playerPetID)
+        if (buffs) then playerPetFrame:addBuff(playerPetID, buffss) end
     end
 end
 

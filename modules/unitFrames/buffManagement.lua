@@ -25,6 +25,8 @@ local stringFormat  = string.format
 
 function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.manageBuffs", frame:GetName(), { unitId = unitId, buffUnit = buffUnit, buffs = buffs, action = action}) end
+
     -- Buff management variables
     local unitBuffIcons = frame:GetBuffIcons() or {}
     local unitDebuffIcons = frame:GetDebuffIcons() or {}
@@ -65,47 +67,47 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
         if buffUnit == unitId then
             local details = InspectBuffDetail(buffUnit, buffs)
 
+            if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.manageBuffs", "details", details) end
+
             for k, v in pairs(details) do
-                if (v.remaining and v.remaining < 60) then
-                    if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                        if unitDebuffDisplayList[k] == nil then
-                            unitDebuffDisplayList[k] = true
+                if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
+                    if unitDebuffDisplayList[k] == nil then
+                        unitDebuffDisplayList[k] = true
 
-                            if unitDebuffIcons[k] == nil then
-                                -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
-                                unitDebuffIcons[k] = {
-                                    icon = icon,
-                                    visible = true,
-                                    details = v, 
-                                    duration = v.duration,
-                                    remaining = v.remaining,
-                                    start = InspectTimeReal()
-                                }
-                                unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
-                                unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                                unitDebuffIcons[k].icon:ShowBorder(true)
-                            else
-                                unitDebuffIcons[k].details = details
-                                unitDebuffIcons[k].visible = true
-                            end
-
-                            if v.poison then
-                                unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
-                            elseif v.curse then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
-                            elseif v.disease then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
-                            elseif v.debuff then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
-                            end
-
-                            unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)
-                            unitDebuffIcons[k].icon:SetVisible(true)
+                        if unitDebuffIcons[k] == nil then
+                            -- Use the icon manager to get an icon
+                            local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                            unitDebuffIcons[k] = {
+                                icon = icon,
+                                visible = true,
+                                details = v, 
+                                duration = v.duration,
+                                remaining = v.remaining,
+                                start = InspectTimeReal()
+                            }
+                            unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
+                            unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
+                            unitDebuffIcons[k].icon:ShowBorder(true)
+                        else
+                            unitDebuffIcons[k].details = details
+                            unitDebuffIcons[k].visible = true
                         end
-                    else
-                        --if EnKai.tools.table.isMember(unitBuffDisplayList, k) == false then
-                        --    table.insert(unitBuffDisplayList, k)
+
+                        if v.poison then
+                            unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
+                        elseif v.curse then
+                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
+                        elseif v.disease then
+                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
+                        elseif v.debuff then
+                            unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
+                        end
+
+                        unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)
+                        unitDebuffIcons[k].icon:SetVisible(true)
+                    end
+                else
+                    if (v.remaining and v.remaining < 60) then
                         if (unitBuffDisplayList[k] == nil) then
                            unitBuffDisplayList[k] = true
 
@@ -242,27 +244,23 @@ function _internal.processBuffs ()
 
 	--- process target
 
-	if data.targetID then		
+	if  EnKai.unit.GetUnitByIdentifier("player.target") then
 
-		local thisUnit = InspectUnitLookup(data.targetID)
-		if thisUnit == "player.target" then
+        local targetFrame = uiElements.frames["player.target"]
 
-            local targetFrame = uiElements.frames["player.target"]
+        local targetBuffIcons = targetFrame:GetBuffIcons()
+        local targetDebuffIcons = targetFrame:GetDebuffIcons()
 
-			local targetBuffIcons = targetFrame:GetBuffIcons()
-			local targetDebuffIcons = targetFrame:GetDebuffIcons()
-
-			for k, thisIcon in pairs (targetBuffIcons) do
-                if thisIcon.remaining then             
-                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-                end
+        for k, thisIcon in pairs (targetBuffIcons) do
+            if thisIcon.remaining then             
+                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
             end
+        end
 
-            for k, thisIcon in pairs (targetDebuffIcons) do
-                if thisIcon.remaining then
-                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-                end
+        for k, thisIcon in pairs (targetDebuffIcons) do
+            if thisIcon.remaining then
+                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
             end
-		end
+        end
 	end
 end

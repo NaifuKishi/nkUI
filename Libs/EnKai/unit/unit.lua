@@ -520,7 +520,7 @@ function EnKai.unit.init()
 		end
 	end
 
-	if nkDebug then  debugUI = _buildDebugUI() end
+	--if nkDebug then  debugUI = _buildDebugUI() end
 	
 	_unitManager = true
 

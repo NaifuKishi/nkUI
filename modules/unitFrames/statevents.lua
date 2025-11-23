@@ -176,8 +176,6 @@ local function _eventCombo (_, info)
 	end
 end
 
-
-
 function _events.uiFramesInitStatEvents()	
 
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitStatEvents", "", nil) end

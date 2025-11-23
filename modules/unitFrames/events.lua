@@ -111,8 +111,8 @@ end
 ------------------------------ buff functions ------------------------------
 
 local function _eventBuffAdd(_, unit, buffs)
+	
 
-	--print ("eventBuffAdd")
 	local groupStatus, groupSize = EnKai.unit.getGroupStatus()
 
 	if nkUISetup.uiFrames.activate == false then return end
