@@ -99,9 +99,11 @@ uiElements.contextLowest:SetSecureMode("restricted")
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
 local function _setupDefaults()
+
 	if nkUISetup == nil then 		
 		nkUISetup = {}
 		nkUISetup.uiFrames = { activate = true }
+		nkUISetup.actionBars = { activate = true }
 		nkUISetup.lowerBar = { activate = true }
 		nkUISetup.tooltip = { activate = true }
 		nkUISetup.buffFrame = { activate = true }
@@ -109,11 +111,18 @@ local function _setupDefaults()
 		nkUISetup.combatAlpha = 1
 		nkUISetup.nonCombatAlpha = .2
 		nkUISetup.tutorialVersion = thisTutorialVersion
-	else
+		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
+	else		
 		nkUISetup.tutorial = nil -- V0.0.8 change
-		nkUISetup.buffUnitFrame = { activate = true } -- V0.0.8 change		
-		nkUISetup.combatAlpha = 1 -- V0.0.8 change		
-		nkUISetup.nonCombatAlpha = .2 -- V0.0.8 change		
+		if nkUISetup.buffUnitFrame == nil  then nkUISetup.buffUnitFrame = { activate = true } end
+		if nkUISetup.combatAlpha == nil  then nkUISetup.combatAlpha = 1 end  -- V0.0.8 change		
+		if nkUISetup.nonCombatAlpha == nil  then nkUISetup.nonCombatAlpha = .2 end -- V0.0.8 change		
+		if nkUISetup.actionBars == nil  then nkUISetup.actionBars = { activate = true } end -- V0.1.0 change		
+
+		if nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] == nil then
+			nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
+		end
+
 	end
 end
 
@@ -165,6 +174,14 @@ local function _main(_, addon)
 
 			EnKai.BuffManager.init() -- Initialize the BuffManager if not already done
             EnKai.inventory.init(false)
+			
+			_setupDefaults()
+
+			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
+    			nkUISetup.tutorialVersion = thisTutorialVersion
+                print(nkUISetup.tutorialVersion, thisTutorialVersion)
+				_internal.tutorial()
+			end
 
 			if nkUISetup and nkUISetup.tooltip and nkUISetup.tooltip.activate then
 				_internal.tooltip()
@@ -176,16 +193,14 @@ local function _main(_, addon)
 
 			if nkUISetup and nkUISetup.uiFrames and nkUISetup.uiFrames.activate then
                 _internal.uiFrames()
-			end			
+			end
+
+			if nkUISetup and nkUISetup.actionBars and nkUISetup.actionBars.activate then
+                _internal.uiActionBars()
+			end
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
-			if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 
-				_setupDefaults()
-    			nkUISetup.tutorialVersion = thisTutorialVersion
-                print(nkUISetup.tutorialVersion, thisTutorialVersion)
-				_internal.tutorial()
-			end
 		end, "nkUI.Unit.Availability.Full")
 		
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)

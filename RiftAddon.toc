@@ -30,9 +30,9 @@ RunOnStartup = {
 
 	"settings/settings.lua",
 
-	--"modules/actionbar/actionbar.lua",
-	--"modules/actionbar/bars.lua",
-	--"modules/actionbar/events.lua",
+	"modules/actionbar/actionbar.lua",
+	"modules/actionbar/actionicon.lua",
+	"modules/actionbar/events.lua",
 }
 
 Embed = {	
