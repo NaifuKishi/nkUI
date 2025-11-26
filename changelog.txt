@@ -4,6 +4,7 @@ V0.1.0
     - new: middle click allows to edit macros on bar
     - new: combat icon on player frame
     - new: added role icons
+    - update: update tutorial with action bar module
     - update: debuffs on target frame a limited to once cause by placer
     - update: changed the lowerbar font slightly for readability
     - fixes: properly identify group status change (raid / group)
