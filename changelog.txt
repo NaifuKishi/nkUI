@@ -67,7 +67,7 @@ v0.0.4
 
 know bug list
 
-
+    - health not updating on raid frames
 
 ToDo
 

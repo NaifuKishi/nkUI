@@ -300,15 +300,31 @@ function _events.playerAvailable (_, thisInfo, plusInfo)
 	--dump (c)
 end
 
-function _events.groupStatus (_, thisInfo, plusInfo)
+function _events.groupStatus (_, groupType)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", "", thisInfo) end
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", "", plusInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", thisInfo, {}) end
+	
+	if groupType == "group" then
+		for idx = 1, 20, 1 do
+			local frame = uiElements.frames[stringFormat("raid%02d", idx)]
+			frame:SetVisible(false)
+		end
+	elseif groupType == "raid" then
+		for idx = 1, 5, 1 do
+			local frame = uiElements.frames[stringFormat("group%02d", idx)]
+			frame:SetVisible(false)
+		end
+	else
+		for idx = 1, 20, 1 do
+			local frame = uiElements.frames[stringFormat("raid%02d", idx)]
+			frame:SetVisible(false)
 
-	--print ("_events.groupStatus")
-	--dump (a)
-	--dump (b)
-	-- (c)
+			if idx <= 5 then
+				local frame = uiElements.frames[stringFormat("group%02d", idx)]
+				frame:SetVisible(false)
+			end
+		end
+	end
 end
 
 function _events.available (_, units)

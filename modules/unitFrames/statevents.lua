@@ -22,10 +22,7 @@ local stringFind	= string.find
 local stringSub		= string.sub
 
 local function _eventHealth (_, info)
-	for unit, thisData in pairs(info) do
-		--print ("_eventHealth")
-		--print (unit, thisData)
-
+	for unit, thisData in pairs(info) do		
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
