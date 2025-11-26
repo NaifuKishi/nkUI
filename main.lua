@@ -119,6 +119,8 @@ local function _setupDefaults()
 		if nkUISetup.nonCombatAlpha == nil  then nkUISetup.nonCombatAlpha = .2 end -- V0.0.8 change		
 		if nkUISetup.moduleActionBars == nil  then nkUISetup.moduleActionBars = { activate = true } end -- V0.1.0 change		
 
+		if nkUISetup.actionBars == nil then nkUISetup.actionBars = {} end
+
 		if nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] == nil then
 			nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 		end

@@ -1,8 +1,11 @@
 
+V0.1.2
+    - fixes: hotfix for missing bar initialization
+
 V0.1.1
     - updated: increased cooldown font
     - update: cooldowns < 10 secs are now red
-    - fixed: cooldowns not working
+    - fixes: cooldowns not working
 
 V0.1.0
     - new: action bar module
@@ -85,7 +88,7 @@ know bug list
 ToDo
 
     - message module (buffs, abilities, important stuff)
-    - titel font of windowElement (macro Edit Dialog)
+    - removing ability does not clear cooldown timer
 
 
     
