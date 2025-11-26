@@ -110,7 +110,7 @@ local function _setupDefaults()
 		nkUISetup.buffUnitFrame = { activate = true }
 		nkUISetup.combatAlpha = 1
 		nkUISetup.nonCombatAlpha = .2
-		nkUISetup.tutorialVersion = thisTutorialVersion
+		nkUISetup.tutorialVersion = nil
 		nkUISetup.actionBars = {}
 		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 	else		
@@ -180,9 +180,11 @@ local function _main(_, addon)
 			
 			_setupDefaults()
 
+			--print(nkUISetup.tutorialVersion, thisTutorialVersion) 
+
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
     			nkUISetup.tutorialVersion = thisTutorialVersion
-                print(nkUISetup.tutorialVersion, thisTutorialVersion)
+                --print(nkUISetup.tutorialVersion, thisTutorialVersion)
 				_internal.tutorial()
 			end
 
@@ -198,7 +200,7 @@ local function _main(_, addon)
                 _internal.uiFrames()
 			end
 
-			if nkUISetup and nkUISetup.actionBars and nkUISetup.actionBars.activate then
+			if nkUISetup and nkUISetup.moduleActionBars and nkUISetup.moduleActionBars.activate then
                 _internal.uiActionBars()
 			end
 
