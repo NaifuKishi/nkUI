@@ -38,8 +38,8 @@ function _internal.createCastBar (unitType, parent)
 	end
 
 	local castbarFill = EnKai.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
-	castbarFill:SetPoint("TOPLEFT", castbar, "TOPLEFT", 1, 1)
-	castbarFill:SetHeight(22 * data.uiScaleY)
+	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 1, 0)
+	castbarFill:SetHeight(castbar:GetHeight()-2)
 	castbarFill:SetLayer(1)
 	
 	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }

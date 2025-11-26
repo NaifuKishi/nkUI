@@ -7,9 +7,16 @@ if not EnKai.cdManager then EnKai.cdManager = {} end
 
 local internal    = privateVars.internal
 local data        = privateVars.data
-local oFuncs	  = privateVars.oFuncs
 
-local oInspectAbilityNewDetail = Inspect.Ability.New.Detail
+local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+local InspectAbilityNewList		= Inspect.Ability.New.List
+local InspectAddonCurrent		= Inspect.Addon.Current
+local InspectTimeFrame			= Inspect.Time.Frame
+local InspectTimeReal			= Inspect.Time.Real
+local InspectItemDetail	= Inspect.Item.Detail
+
+
+local stringUpper				= string.upper
 
 ---------- init local variables ---------
 
@@ -17,6 +24,7 @@ local _cdManager		= false
 local _cdSubscriptions	= {}
 local _cdStore			= { ABILITY = {} , ITEM = {} }
 local _gcd				= 1.5
+
 --local _lastUpdate = nil
 
 ---------- local function block ---------
@@ -70,7 +78,7 @@ local function _fctProcessAbilityCooldown (_, info)
 		--else
 			--print ('new cooldown', key)
 
-			_cdStore.ABILITY[key] = { type = "ABILITY", duration = data, begin = oFuncs.oInspectTimeFrame(), remaining = data }
+			_cdStore.ABILITY[key] = { type = "ABILITY", duration = data, begin = InspectTimeFrame(), remaining = data }
 			
 			local flag, addonList = _fctIsSubscribed("ABILITY", key)
 			if flag then
@@ -109,7 +117,7 @@ end
 
 function EnKai.cdManager.init()
 
-  _cdSubscriptions[oFuncs.oInspectAddonCurrent()] = { ITEM = {}, ABILITY = {} }
+  _cdSubscriptions[InspectAddonCurrent()] = { ITEM = {}, ABILITY = {} }
 
   if _cdManager == true then return end
   
@@ -130,30 +138,30 @@ function EnKai.cdManager.subscribe(sType, id)
 
 	--print (sType, id)
 
-	sType = string.upper(sType)
+	sType = stringUpper(sType)
 
-	if _cdSubscriptions[oFuncs.oInspectAddonCurrent()] == nil then
-		_cdSubscriptions[oFuncs.oInspectAddonCurrent()] = { ITEM = {}, ABILITY = {} }
+	if _cdSubscriptions[InspectAddonCurrent()] == nil then
+		_cdSubscriptions[InspectAddonCurrent()] = { ITEM = {}, ABILITY = {} }
 	end
 
-	if _cdSubscriptions[oFuncs.oInspectAddonCurrent()][sType] == nil then
-		_cdSubscriptions[oFuncs.oInspectAddonCurrent()][sType] = {}
+	if _cdSubscriptions[InspectAddonCurrent()][sType] == nil then
+		_cdSubscriptions[InspectAddonCurrent()][sType] = {}
 	end
 
-	_cdSubscriptions[oFuncs.oInspectAddonCurrent()][sType][id] = true
+	_cdSubscriptions[InspectAddonCurrent()][sType][id] = true
 	
-	--dump(_cdSubscriptions[oFuncs.oInspectAddonCurrent()])
+	--dump(_cdSubscriptions[InspectAddonCurrent()])
 	
 	if sType == 'ABILITY' then
 		local list
 	
 		if id == "*" then
-			list = Inspect.Ability.New.List()
+			list = InspectAbilityNewList()
 		else
 			list = { [id] = true }
 		end
 		
-		local flag, detailList = pcall (Inspect.Ability.New.Detail, list)
+		local flag, detailList = pcall (InspectAbilityNewDetail, list)
 		if flag and detailList ~= nil then
 			for key, details in pairs(detailList) do
 				if details.currentCooldownRemaining ~= nil then
@@ -167,19 +175,19 @@ end
 
 function EnKai.cdManager.unsubscribe(type, id)
 
-	if _cdSubscriptions[oFuncs.oInspectAddonCurrent()] ~= nil and _cdSubscriptions[oFuncs.oInspectAddonCurrent()][type] ~= nil and _cdSubscriptions[oFuncs.oInspectAddonCurrent()][type][id] ~= nil then
-		_cdSubscriptions[oFuncs.oInspectAddonCurrent()][type][id] = nil
+	if _cdSubscriptions[InspectAddonCurrent()] ~= nil and _cdSubscriptions[InspectAddonCurrent()][type] ~= nil and _cdSubscriptions[InspectAddonCurrent()][type][id] ~= nil then
+		_cdSubscriptions[InspectAddonCurrent()][type][id] = nil
 	end
 
 end
 
-function EnKai.cdManager.getAllCooldowns (cdType) return _cdStore[string.upper(cdType)] end
+function EnKai.cdManager.getAllCooldowns (cdType) return _cdStore[stringUpper(cdType)] end
 
 function EnKai.cdManager.isCooldownActive(cdType, id) 
 
-	if _cdStore[string.upper(cdType)] == nil then return false end
+	if _cdStore[stringUpper(cdType)] == nil then return false end
 
-	if _cdStore[string.upper(cdType)][id] == nil then
+	if _cdStore[stringUpper(cdType)][id] == nil then
 		return false
 	else 
 		return true
@@ -189,8 +197,8 @@ end
 
 function EnKai.cdManager.getCooldownDetails(cdType, id) 
 
-	if _cdStore[string.upper(cdType)] ~= nil then
-		return _cdStore[string.upper(cdType)][id] 
+	if _cdStore[stringUpper(cdType)] ~= nil then
+		return _cdStore[stringUpper(cdType)][id] 
 	end
 	
 	return nil
@@ -204,7 +212,7 @@ function EnKai.cdManager.setGCD(newGCD) _gcd = newGCD end
 function internal.processAbilityCooldowns ()
 
 	local debugId  
-	if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.processAbilityCooldowns") end
+	if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.processAbilityCooldowns") end
 
 	if _cdManager == false then return end
 
@@ -215,27 +223,27 @@ function internal.processAbilityCooldowns ()
 	for key, details in pairs (_cdStore.ABILITY) do
 
 		if _cdStore.ABILITY[key].lastChange == nil then
-			local flag, details = oInspectAbilityNewDetail(key)
+			local flag, details = InspectAbilityNewDetail(key)
 			
 			if flag and details ~= nil then
 				_cdStore.ABILITY[key].remaining = details.currentCooldownRemaining
 				_cdStore.ABILITY[key].duration = details.currentCooldownDuration
 				_cdStore.ABILITY[key].begin = details.currentCooldownBegin
 			else
-				_cdStore.ABILITY[key].remaining = _cdStore.ABILITY[key].duration - (oFuncs.oInspectTimeFrame() - _cdStore.ABILITY[key].begin)
+				_cdStore.ABILITY[key].remaining = _cdStore.ABILITY[key].duration - (InspectTimeFrame() - _cdStore.ABILITY[key].begin)
 			end
 		else
-			_cdStore.ABILITY[key].remaining = _cdStore.ABILITY[key].duration - (oFuncs.oInspectTimeFrame() - _cdStore.ABILITY[key].begin)
+			_cdStore.ABILITY[key].remaining = _cdStore.ABILITY[key].duration - (InspectTimeFrame() - _cdStore.ABILITY[key].begin)
 		end
 		
 		local flag, addonList = _fctIsSubscribed("ABILITY", key)
 		
 		if flag then
-			if _cdStore.ABILITY[key].remaining <= 1 or _cdStore.ABILITY[key].lastChange == nil or oFuncs.oInspectTimeReal() - _cdStore.ABILITY[key].lastChange >= 1 then
+			if _cdStore.ABILITY[key].remaining <= 1 or _cdStore.ABILITY[key].lastChange == nil or InspectTimeReal() - _cdStore.ABILITY[key].lastChange >= 1 then
 				for _, addon in pairs(addonList) do
 					if updates[addon] == nil then updates[addon] = {} end
 					updates[addon][key] = _cdStore.ABILITY[key]
-					_cdStore.ABILITY[key].lastChange = oFuncs.oInspectTimeReal()
+					_cdStore.ABILITY[key].lastChange = InspectTimeReal()
 					hasUpdates = true
 				end
 			end
@@ -248,18 +256,18 @@ function internal.processAbilityCooldowns ()
 		end
 	end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.processAbilityCooldowns", debugId) end
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.processAbilityCooldowns", debugId) end
 
 end
 
 function internal.processItemCooldowns ()
 
 	local debugId  
-	if nkDebug then debugId = nkDebug.traceStart (oFuncs.oInspectAddonCurrent(), "EnKai internal.processItemCooldowns") end
+	if nkDebug then debugId = nkDebug.traceStart (InspectAddonCurrent(), "EnKai internal.processItemCooldowns") end
 
 	if _cdManager == false then return end
 
-	local curTime = oFuncs.oInspectTimeReal()
+	local curTime = InspectTimeReal()
 
 	local updates, hasUpdates = {}, false
 	local adds, hasAdds = {}, false
@@ -276,10 +284,10 @@ function internal.processItemCooldowns ()
 			if temp[thisKey] == nil then
 			
 				if _cdStore.ITEM[thisKey] == nil then
-					local flag, details = pcall(oFuncs.oInspectItemDetail, thisKey)
+					local flag, details = pcall(InspectItemDetail, thisKey)
 
 					if flag and details ~= nil and details.cooldownRemaining ~= nil then
-						_cdStore.ITEM[thisKey] = { type = "ITEM", duration = details.cooldownDuration, begin = details.cooldownBegin, remaining = details.cooldownRemaining, lastChange = oFuncs.oInspectTimeReal() }
+						_cdStore.ITEM[thisKey] = { type = "ITEM", duration = details.cooldownDuration, begin = details.cooldownBegin, remaining = details.cooldownRemaining, lastChange = InspectTimeReal() }
 						if adds[addon] == nil then adds[addon] = {} end
 						adds[addon][thisKey] = _cdStore.ITEM[thisKey]
 						hasAdds = true
@@ -287,7 +295,7 @@ function internal.processItemCooldowns ()
 					
 				else
 				
-					_cdStore.ITEM[thisKey].remaining = _cdStore.ITEM[thisKey].duration - (oFuncs.oInspectTimeFrame() - _cdStore.ITEM[thisKey].begin)
+					_cdStore.ITEM[thisKey].remaining = _cdStore.ITEM[thisKey].duration - (InspectTimeFrame() - _cdStore.ITEM[thisKey].begin)
 					
 					if _cdStore.ITEM[thisKey].remaining <= 0 then
 						if stops[addon] == nil then stops[addon] = {} end
@@ -295,7 +303,7 @@ function internal.processItemCooldowns ()
 						hasStops = true
 						_cdStore.ITEM[thisKey] = nil
 					elseif _cdStore.ITEM[thisKey].remaining <= 1 or curTime - _cdStore.ITEM[thisKey].lastChange >= 1 then
-						_cdStore.ITEM[thisKey].lastChange = oFuncs.oInspectTimeReal()
+						_cdStore.ITEM[thisKey].lastChange = InspectTimeReal()
 						if updates[addon] == nil then updates[addon] = {} end
 						updates[addon][thisKey] = _cdStore.ITEM[thisKey]
 						hasUpdates = true
@@ -326,6 +334,6 @@ function internal.processItemCooldowns ()
 		end
 	end
 
-	if nkDebug then nkDebug.traceEnd (oFuncs.oInspectAddonCurrent(), "EnKai internal.processItemCooldowns", debugId) end
+	if nkDebug then nkDebug.traceEnd (InspectAddonCurrent(), "EnKai internal.processItemCooldowns", debugId) end
 
 end

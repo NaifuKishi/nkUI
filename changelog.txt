@@ -1,9 +1,7 @@
 
-V0.1.3
+V0.1.2
     - fixes: fixed wrong tutorial initialization
     - fixes: fixed action bar not activated by default
-
-V0.1.2
     - fixes: hotfix for missing bar initialization
 
 V0.1.1
@@ -92,6 +90,8 @@ know bug list
 ToDo
 
     - message module (buffs, abilities, important stuff)
+    - rift color settings for unit frames
+    - 
     - removing ability does not clear cooldown timer
 
 
