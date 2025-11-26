@@ -58,7 +58,7 @@ local function _uiTextfield(name, parent)
 		textFieldEdit:SetText(tostring(text))
 		textField:SetValue("backupValue", textFieldEdit:GetText())
 	end
-	
+
 	function textField:GetText()
 		return textFieldEdit:GetText()
 	end

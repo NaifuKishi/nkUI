@@ -1,6 +1,7 @@
 
 V0.1.0
     - new: action bar module
+    - new: middle click allows to edit macros on bar
     - new: combat icon on player frame
     - new: added role icons
     - update: debuffs on target frame a limited to once cause by placer
@@ -73,10 +74,12 @@ v0.0.4
 
 know bug list
 
-    - health not updating on raid frames
+    
 
 ToDo
 
     - message module (buffs, abilities, important stuff)
+    - titel font of windowElement (macro Edit Dialog)
+
 
     

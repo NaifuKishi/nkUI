@@ -19,9 +19,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	local frame = EnKai.uiCreateFrame("nkCanvas", name, parent)
 	
-	local texture, oorTint, cooldownTint, cooldown, overlay
+	local texture, oorTint, cooldownTint, cooldown, macroFrame, overlay
 	local thisItemKey, thisItemType, thisMacroIcon, thisMacroCDType, thisMacroCDKey
+
 	local cooldownActive = false
+	local interactive = false
 	local oor, usable = false, true
 	
 	local path = {{xProportional = 0.5, yProportional = 0}, 
@@ -219,16 +221,45 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				macro = "cast " .. stringGSub(data.name, "\n", "")
 			end
 		else -- macro
-			--macro = string.gsub(thisItemKey, "\r", "\n")
-			--err = true
-			--data = { icon = macroIcon }
+			macro = string.gsub(thisItemKey, "\r", "\n")
+			err = true
+			data = { icon = macroIcon }
 		end
 			
 		if err and data ~= nil and data.icon ~= nil then
 			texture:SetTextureAsync("Rift", data.icon)  
 		else
---			texture:SetTextureAsync("nkUI", "gfx/equipslot_blank.png")  
+			texture:SetTextureAsync("nkUI", "gfx/equipslot_blank")  
 		end
+
+		if interactive then
+		
+			if not macroFrame then
+				macroFrame = EnKai.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.secureContext)
+				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
+				macroFrame:SetSecureMode("restricted")
+				macroFrame:SetMouseMasking("limited")
+				--macroFrame:SetBackgroundColor(1,0,0,1)
+				
+				local thisSize = frame:GetWidth() -2
+				macroFrame:SetWidth(thisSize)
+				macroFrame:SetHeight(thisSize)
+				
+				macroFrame:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
+					_checkDrop()
+				end, macroFrame:GetName() .. ".UI.Input.Mouse.Left.Up")
+			end
+
+			--if macro ~= nil then print ('setting macro ' .. name .. ' ' .. macro) end
+			--if macro ~= nil then print (string.gsub(macro, "\r", "\13")) end
+			
+			EnKai.events.addInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
+			macroFrame:SetVisible(true)
+			
+		elseif macroFrame ~= nil then			
+			macroFrame:SetVisible(false)
+		end
+
 
         local tooltipTarget = texture
 						
@@ -237,11 +268,16 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		elseif thisItemType == "ability" then
 			EnKai.ui.attachAbilityTooltip (tooltipTarget, itemKey)
 		else -- macro
-			--EnKai.ui.attachGenericTooltip (tooltipTarget, "nkHelios macro", macro)
+			EnKai.ui.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
 		end
 	end
 	
 	function frame:GetCooldown() return cooldown end
+
+	function frame:SetInteractive(flag, doUpdate) 
+		interactive = flag 
+		if doUpdate then frame:SetItem(thisItemType, thisItemKey, thisMacroIcon) end
+	end
 	
     function frame:Scale (newScale)
 
@@ -299,6 +335,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	function frame:destroy()
 	
 		local target = texture
+		if interactive then target = macroFrame end
 					
 		if thisItemType == 'item' then
 			EnKai.ui.attachItemTooltip (target, nil)
@@ -311,10 +348,34 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		texture:destroy()
 		EnKai.uiAddToGarbageCollector ('nkFrame', frame, name)
 	end
+
+	local function _editMacro () 
+	
+		if Inspect.System.Secure() == true then return end
+		if uiElements.macroEdit == nil then
+			uiElements.macroEdit = _internal.macroEditDialog(parent)			
+		end
+		
+		uiElements.macroEdit:SetVisible(true)
+		uiElements.macroEdit:SetButton(barIndex, buttonIndex)
+	
+	end
 	
 	texture:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
 		_checkDrop()
 	end, texture:GetName() .. ".UI.Input.Mouse.Left.Up")
+
+	texture:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
+		if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].interactive == true then
+			_editMacro()
+		else
+			EnKai.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
+				data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].interactive = true
+				parent:SetInteractive(true)
+				_editMacro()
+			end)
+		end
+	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
 	texture:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
         frame:ClearItem()

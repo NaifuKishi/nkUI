@@ -59,6 +59,7 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
             actionButton:SetPoint(from, object, to, x, y)
             actionButton:SetUsable(true)
 			actionButton:SetCooldown()
+          	actionButton:SetInteractive(interactive, false)
             actionButton:SetDesign("default")
             actionButton:Scale(scale)
             actionButton:SetVisible(true)
@@ -85,11 +86,31 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
                 for colIndex = 1, cols, 1 do
                     local buttonIndex = ((rowIndex -1) * cols + colIndex)
                     local slotInfo = slots[buttonIndex]
-                    if slotInfo then  thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, nil) end
+                    
+           			if slotInfo ~= nil then
+                        if slotInfo.macroCD ~= nil then
+                            thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, slotInfo.macroIcon, slotInfo.macroCD[1], slotInfo.macroCD[2])
+                        else
+                            thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, slotInfo.macroIcon)
+                        end
+                    end
                 end
             end
         end
     end
+
+    function actionBar:SetInteractive(flag, doUpdate)
+
+        interactive = flag
+
+        for rowIndex = 1, #actionButtons, 1 do
+            local thisRow = actionButtons[rowIndex]
+
+            for colIndex = 1, #thisRow, 1 do
+                thisRow[colIndex]:SetInteractive(flag, doUpdate)
+            end
+        end
+	end
 
     return actionBar
 
@@ -174,17 +195,20 @@ function _internal.uiActionBars()
     uiElements.actionbars.stance = stanceActionBar    
 
     local leftActionBar = _actionBar("nkUI.leftActionBar", 2, 3, data.uiScaleX * .8, 3)
-    leftActionBar: SetPoint ("CENTERRIGHT", mainActionBar, "CENTERLEFT", -15 * data.uiScaleX, 0)
+    leftActionBar:SetPoint ("CENTERRIGHT", mainActionBar, "CENTERLEFT", -15 * data.uiScaleX, 0)
+    leftActionBar:SetInteractive(true)
     leftActionBar:Populate()
     uiElements.actionbars.left = leftActionBar
 
     local rightActionBar = _actionBar("nkUI.rightActionBar", 2, 3, data.uiScaleX * .8, 4)
     rightActionBar: SetPoint ("CENTERLEFT", mainActionBar, "CENTERRIGHT", 15 * data.uiScaleX, 0)
+    rightActionBar:SetInteractive(true)
     rightActionBar:Populate()
     uiElements.actionbars.right = rightActionBar
 
     local rightScreenBar = _actionBar("nkUI.rightScreenBar", 12, 1, data.uiScaleX, 5)
     rightScreenBar: SetPoint ("CENTERRIGHT", UIParent, "CENTERRIGHT", -2, 0)
+    rightScreenBar:SetInteractive(true)
     rightScreenBar:Populate()
     uiElements.actionbars.rightScreen = rightScreenBar
 
@@ -194,7 +218,7 @@ function _internal.uiActionBars()
 	data.abilityList = {}
 	data.gcdActive = false
 	
-	--_internal.stanceActive (false)
+	_internal.stanceActive (false)
 	
     EnKai.cdManager.init()
 
