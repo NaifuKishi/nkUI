@@ -24,9 +24,17 @@ local stringSub		= string.sub
 local function _eventHealth (_, info)
 	for unit, thisData in pairs(info) do		
 		local identifiers = EnKai.unit.getUnitTypes (unit)
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_eventHealth", stringFormat("%s %d", unit, thisData), identifiers) end
+
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local realIdentifier = identifiers[idx]
+				if stringMatch(realIdentifier, "^group%d%d$") and EnKai.unit.getGroupStatus () == "raid" then
+					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
+					realIdentifier = string.format("raid%02d", tonumber(groupID))
+				end
+
+				local frame = _internal.getFrameByIdentifier(realIdentifier)
 
 				if frame then
 					frame:SetHealth(thisData)
@@ -46,7 +54,13 @@ local function _eventHealthMax (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local realIdentifier = identifiers[idx]
+				if stringMatch(realIdentifier, "^group%d%d$") and EnKai.unit.getGroupStatus () == "raid" then
+					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
+					realIdentifier = string.format("raid%02d", tonumber(groupID))
+				end
+
+				local frame = _internal.getFrameByIdentifier(realIdentifier)
 
 				if frame then frame:SetHealthMax(thisData) end
 			end
