@@ -20,6 +20,7 @@ function _internal.macroEditDialog (editBar)
 	ui:SetWidth(320)
 	ui:SetHeight(230)
 	ui:SetTitle("Macro edit")
+    ui:SetTitleFont (addonInfo.id, "Montserrat")
 	
 	local iconEdit = EnKai.uiCreateFrame("nkActionButtonMetro", name .. ".iconEdit", ui:GetContent())
 	iconEdit:SetWidth(48)

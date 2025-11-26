@@ -387,12 +387,21 @@ local function _createTutorialWindow()
             settings = _subTutorialLowerBar(subFrameContainer)
         },        
         {
-            title = "Action bar module",
-            description = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",            image = "gfx/tutorialActionBar.png",
+            title = "Action bar module (1/2)",
+            description = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",            
+            image = "gfx/tutorialActionBar.png",
             width = 560,
             height = 93,
             position = "bottom",
             settings = _subTutorialActionBar(subFrameContainer)
+        },
+        {
+            title = "Action bar module (2/2)",
+            description = "The buttons left and right to the main bar as weel as the bar to the right of the screen are interactive. That means you can click on them to activate abilities and items.\n\nOn top of that you can add macros by middle clicking an action bar slot with your mouse. In the appearing dialog you can configure your macro. You can drop any ability or item in the icon frame.",            
+            image = "gfx/tutorialMacro.png",
+            width = 252,
+            height = 180,
+            position = "bottom",
         },        
         {
             title = "Tooltip module",
@@ -401,9 +410,9 @@ local function _createTutorialWindow()
             width = 182,
             height = 103,
             position = "bottom",
-            settings = _subTutorialTooltip(subFrameContainer)
+            settings = _subTutorialTooltip(subFrameContainer)            
         },
-                {
+        {
             title = "You are done - for now :)",
             description = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window by using the chat command /nkui"
         }
