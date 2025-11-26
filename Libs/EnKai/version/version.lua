@@ -27,18 +27,30 @@ local function fctCheckVersion (myVersion, reportedVersion)
 	local reportedVersionArray = EnKai.strings.split(reportedVersion, '%.')
 	
 	if #myVersionArray ~= #reportedVersionArray then return false end
-	
-	for idx = 1, #myVersionArray, 1 do
-		if tonumber(myVersionArray[idx]) == nil or tonumber(reportedVersionArray[idx]) == nil then return true end -- always report true if version number is not completely number
-	
-		if tonumber(myVersionArray[idx]) < tonumber(reportedVersionArray[idx]) then
-			return false
-		elseif tonumber(myVersionArray[idx]) > tonumber(reportedVersionArray[idx]) then			
-			return true
-		end
-	end	
 
-	return true	
+  local myVersion, reportedVersion = 0, 0
+
+  for idx = 1, #myVersionArray, 1 do
+    local thisNumber = tonumber(myVersionArray[idx])
+    if thisNumber == nil then 
+      return true 
+    end -- no clue why we report true in this case but well ...
+
+    myVersion = myVersion + thisNumber
+  end
+
+  for idx = 1, #reportedVersionArray, 1 do
+    local thisNumber = tonumber(reportedVersionArray[idx])
+    if thisNumber == nil then return true end -- no clue why we report true in this case but well ...
+
+    reportedVersion = reportedVersion + thisNumber
+  end
+
+  if myVersion == reportedVersion then
+    return true
+  else
+    return false
+  end
 
 end
 

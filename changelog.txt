@@ -1,7 +1,11 @@
+
 V0.1.0
     - new: combat icon on player frame
+    - new: added role icons
     - update: debuffs on target frame a limited to once cause by placer
     - update: changed the lowerbar font slightly for readability
+    - fixes: properly identify group status change (raid / group)
+    - fixes: fix raid health update
     - fixes: fixed display issue on new castbars
 
 v0.0.10

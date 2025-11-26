@@ -281,6 +281,19 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     combatIcon:SetVisible(false)
     combatIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconCombat.png")
 
+    local roleIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
+    roleIcon:SetLayer(99)
+    roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
+    roleIcon:SetHeight(20 * scale)
+    roleIcon:SetWidth(20 * scale)
+    roleIcon:SetVisible(false)
+
+    if unitFrameType == "raid" then
+        roleIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 2, 0)
+    else
+        roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
+    end
+    
     -- buff management
 
     function unitFrame:GetBuffIcons() return unitBuffIcons end
@@ -306,6 +319,22 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
             return scale *.7
         else
             return scale
+        end
+    end
+
+    function unitFrame:SetRole(newRole)
+
+        if newRole == "dps" then
+            roleIcon:SetVisible(true)
+            roleIcon:SetTextureAsync(addonInfo.identifier, "gfx/roleDPS.png")
+        elseif newRole == "tank" then 
+            roleIcon:SetVisible(true)
+            roleIcon:SetTextureAsync(addonInfo.identifier, "gfx/roleTank.png")
+        elseif newRole == "heal" then
+            roleIcon:SetVisible(true)
+            roleIcon:SetTextureAsync(addonInfo.identifier, "gfx/roleHeal.png")
+        else
+            roleIcon:SetVisible(false)
         end
     end
 
@@ -503,6 +532,11 @@ function _internal.updateUnit (frame, unitID)
     end
 
     if details.planar then frame:SetPlanar(details.planar) end
+
+    if details.role then
+        frame:SetRole(details.role)
+    end
+
 end
 
 --[[
