@@ -13,6 +13,7 @@ data.actionBarsBuild = false
 uiElements.actionbars = {}
 data.abilityMap = {}
 data.abilityList = {}
+data.gcdActive = false
 
 local stringFormat				= string.format
 
@@ -91,7 +92,7 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
                         if slotInfo.macroCD ~= nil then
                             thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, slotInfo.macroIcon, slotInfo.macroCD[1], slotInfo.macroCD[2])
                         else
-                            thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, slotInfo.macroIcon)
+                            thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, nil)
                         end
                     end
                 end
@@ -158,6 +159,8 @@ function _internal.uiActionBars()
     if data.unitFramesBuild then return end
     if nkUISetup.moduleActionBars.activate == false then return end
 
+    EnKai.cdManager.init()
+
     data.actionBarSetup = nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name]
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
     local _roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }
@@ -213,16 +216,10 @@ function _internal.uiActionBars()
     uiElements.actionbars.rightScreen = rightScreenBar
 
     local bars = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars
-	
-	data.abilityMap = {}
-	data.abilityList = {}
-	data.gcdActive = false
-	
+		
 	_internal.stanceActive (false)
 	
-    EnKai.cdManager.init()
-
-	Command.Event.Attach(Event.TEMPORARY.Role, function ()
+    Command.Event.Attach(Event.TEMPORARY.Role, function ()
         mainActionBar:Populate()
         stanceActionBar:Populate()
         leftActionBar:Populate()

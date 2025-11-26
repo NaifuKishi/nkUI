@@ -46,6 +46,10 @@ end
 
 local function _fctProcessAbilityCooldown (_, info)
 
+	--print ("_fctProcessAbilityCooldown")
+
+	--dump (info)
+
 	local adds, hasAdds = {}, false
 	local stops, hasStops = {}, false  
 	
@@ -81,6 +85,7 @@ local function _fctProcessAbilityCooldown (_, info)
 
 	if hasAdds == true then 
 		for addon, addList in pairs(adds) do
+			--print (addon)
 			EnKai.eventHandlers["EnKai.CDManager"]["Start"](addon, addList) 
 		end
 	end
@@ -95,6 +100,12 @@ end
 
 
 ---------- library public function block ---------
+
+function EnKai.cdManager.GetCooldowns()
+
+	return _cdSubscriptions
+
+end
 
 function EnKai.cdManager.init()
 
@@ -117,10 +128,10 @@ end
 
 function EnKai.cdManager.subscribe(sType, id)
 
-	--if oFuncs.oInspectAddonCurrent() == 'nkRebuff' then print ('subscribe cooldown', sType, id) end
+	--print (sType, id)
 
 	sType = string.upper(sType)
-	
+
 	if _cdSubscriptions[oFuncs.oInspectAddonCurrent()] == nil then
 		_cdSubscriptions[oFuncs.oInspectAddonCurrent()] = { ITEM = {}, ABILITY = {} }
 	end
@@ -131,7 +142,7 @@ function EnKai.cdManager.subscribe(sType, id)
 
 	_cdSubscriptions[oFuncs.oInspectAddonCurrent()][sType][id] = true
 	
-	--dump(_cdSubscriptions)
+	--dump(_cdSubscriptions[oFuncs.oInspectAddonCurrent()])
 	
 	if sType == 'ABILITY' then
 		local list

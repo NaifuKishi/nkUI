@@ -59,6 +59,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	cooldown = EnKai.uiCreateFrame("nkText", name .. '.cooldown', frame)
 	cooldown:SetVisible(false)
+	cooldown:SetFontSize(18)
 	cooldown:SetPoint("CENTER", frame, "CENTER")
 	cooldown:SetFontColor (1, 1, 1, 1)
 	cooldown:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
@@ -101,6 +102,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			cooldown:SetVisible(false)
 			cooldownTint:SetVisible(false)
 			cooldownTint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
+			cooldown:SetFontColor (1, 1, 1, 1)
 			cooldownActive = false
 		else
 			if cooldownActive == false then
@@ -108,8 +110,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				cooldown:SetVisible(true)
 				cooldownTint:SetVisible(true)
 			end
+
+			if tonumber(timer) < 10 then
+				cooldown:SetFontColor(1, 0, 0, 1)
+			end
 			
-			cooldown:SetText(timer)			
+			cooldown:SetText(timer)
 		end		
 	end
 	
@@ -276,7 +282,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	function frame:SetInteractive(flag, doUpdate) 
 		interactive = flag 
-		if doUpdate then frame:SetItem(thisItemType, thisItemKey, thisMacroIcon) end
+		if doUpdate then frame:SetItem(thisItemType, thisItemKey, nil) end
 	end
 	
     function frame:Scale (newScale)

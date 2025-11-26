@@ -1,4 +1,9 @@
 
+V0.1.1
+    - updated: increased cooldown font
+    - update: cooldowns < 10 secs are now red
+    - fixed: cooldowns not working
+
 V0.1.0
     - new: action bar module
     - new: middle click allows to edit macros on bar
