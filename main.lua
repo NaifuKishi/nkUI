@@ -111,6 +111,7 @@ local function _setupDefaults()
 		nkUISetup.combatAlpha = 1
 		nkUISetup.nonCombatAlpha = .2
 		nkUISetup.tutorialVersion = thisTutorialVersion
+		nkUISetup.actionBars = {}
 		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 	else		
 		nkUISetup.tutorial = nil -- V0.0.8 change
