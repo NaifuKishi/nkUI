@@ -216,6 +216,32 @@ local function _subTutorialLowerBar(parent)
 
 end
 
+local function _subTutorialActionBar(parent)
+
+    local name = "nkUI.tutorialWindow.actionbar"
+
+    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
+    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
+    frame:SetVisible(false)
+
+    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
+    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+    activateCheckbox:SetText("Activate this module")
+    activateCheckbox:SetChecked(nkUISetup.moduleActionBars.activate)
+    activateCheckbox:SetLabelWidth(200)
+    activateCheckbox:SetFontSize(16)
+    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
+
+    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
+        nkUISetup.moduleActionBars.activate = newValue
+        _internal.uiActionBarInit (newValue)
+    end, name .. '.activateCheckbox.CheckboxChanged')
+
+    return frame
+
+end
+
 --[[
     _subTutorialTooltip
     Description:
@@ -359,6 +385,14 @@ local function _createTutorialWindow()
             height = 22,
             position = "bottom",
             settings = _subTutorialLowerBar(subFrameContainer)
+        },        
+        {
+            title = "Action bar module",
+            description = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",            image = "gfx/tutorialActionBar.png",
+            width = 560,
+            height = 93,
+            position = "bottom",
+            settings = _subTutorialActionBar(subFrameContainer)
         },        
         {
             title = "Tooltip module",

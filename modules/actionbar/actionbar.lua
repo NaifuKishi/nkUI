@@ -112,9 +112,30 @@ function _internal.stanceActive (flag)
 	
 end
 
+function _internal.uiActionBarInit(flag)
+
+    if flag then
+        if data.unitFramesBuild then
+            for k, v in pairs (uiElements.actionbars) do
+                v:SetVisible(true)
+            end
+        else
+            _internal.uiActionBars()
+        end
+    else
+        if data.unitFramesBuild then
+            for k, v in pairs (uiElements.actionbars) do
+                v:SetVisible(false)
+            end
+        end
+    end    
+
+end
+
 function _internal.uiActionBars()
 
     if data.unitFramesBuild then return end
+    if nkUISetup.moduleActionBars.activate == false then return end
 
     data.actionBarSetup = nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name]
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
@@ -165,7 +186,7 @@ function _internal.uiActionBars()
     local rightScreenBar = _actionBar("nkUI.rightScreenBar", 12, 1, data.uiScaleX, 5)
     rightScreenBar: SetPoint ("CENTERRIGHT", UIParent, "CENTERRIGHT", -2, 0)
     rightScreenBar:Populate()
-    uiElements.actionbars.right = rightScreenBar
+    uiElements.actionbars.rightScreen = rightScreenBar
 
     local bars = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars
 	

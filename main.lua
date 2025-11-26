@@ -103,7 +103,7 @@ local function _setupDefaults()
 	if nkUISetup == nil then 		
 		nkUISetup = {}
 		nkUISetup.uiFrames = { activate = true }
-		nkUISetup.actionBars = { activate = true }
+		nkUISetup.moduleActionBars = { activate = true }
 		nkUISetup.lowerBar = { activate = true }
 		nkUISetup.tooltip = { activate = true }
 		nkUISetup.buffFrame = { activate = true }
@@ -117,7 +117,7 @@ local function _setupDefaults()
 		if nkUISetup.buffUnitFrame == nil  then nkUISetup.buffUnitFrame = { activate = true } end
 		if nkUISetup.combatAlpha == nil  then nkUISetup.combatAlpha = 1 end  -- V0.0.8 change		
 		if nkUISetup.nonCombatAlpha == nil  then nkUISetup.nonCombatAlpha = .2 end -- V0.0.8 change		
-		if nkUISetup.actionBars == nil  then nkUISetup.actionBars = { activate = true } end -- V0.1.0 change		
+		if nkUISetup.moduleActionBars == nil  then nkUISetup.moduleActionBars = { activate = true } end -- V0.1.0 change		
 
 		if nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] == nil then
 			nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }

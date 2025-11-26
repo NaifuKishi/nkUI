@@ -1,5 +1,6 @@
 
 V0.1.0
+    - new: action bar module
     - new: combat icon on player frame
     - new: added role icons
     - update: debuffs on target frame a limited to once cause by placer
@@ -27,7 +28,7 @@ V0.0.9
     - fix: fixed a typo in the EnKai map module
     - fix: fixed some scaling on unit frames
     - fix: first setup error
-    
+
 V0.0.8
     - new: separate setting to activate buffbar and buffs on unit frames
     - new: enabling / disabling unitframe will affect buffs as well
