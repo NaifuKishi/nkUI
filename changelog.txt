@@ -114,9 +114,8 @@ know bug list
 
 ToDo
 
-    - debuff / buff stack handling
-    - message module (buffs, abilities, important stuff)
     - minimap icon module for nkAddons
+    - afk display on unit frame
     - rift color settings for unit frames    
     - Add Target of Target frame
     - Macro for raid / group frames (click healing)
