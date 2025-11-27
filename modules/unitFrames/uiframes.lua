@@ -283,13 +283,14 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
 
     local roleIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
     roleIcon:SetLayer(99)
-    roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
     roleIcon:SetHeight(20 * scale)
     roleIcon:SetWidth(20 * scale)
-    roleIcon:SetVisible(false)
+    roleIcon:SetVisible(false)    
 
     if unitFrameType == "raid" then
         roleIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 2, 0)
+    elseif unitType == "target" then
+        roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -5 * scale, 0)
     else
         roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
     end
@@ -533,9 +534,7 @@ function _internal.updateUnit (frame, unitID)
 
     if details.planar then frame:SetPlanar(details.planar) end
 
-    if details.role then
-        frame:SetRole(details.role)
-    end
+    frame:SetRole(details.role)
 
 end
 

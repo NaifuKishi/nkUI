@@ -1,5 +1,7 @@
 v0.1.3
     - new: action bar combat / out of combat alpha setting
+    - update: Switch side of role icon on target frames
+    - fixes: Hide Role Icon when not targeting group member
 
 V0.1.2
     - fixes: fixed wrong tutorial initialization
@@ -92,12 +94,13 @@ know bug list
 ToDo
 
     - message module (buffs, abilities, important stuff)
-    - rift color settings for unit frames<    
-    - Auto Hide Role Icon when not targeting group member
-    - Add Elite and Boss Symbols to target frames
-    - Switch side of role icon on target frames
+    - minimap icon module for nkAddons
+    - scrolling combat text like Parrot
+    - rift color settings for unit frames
+    - Add Elite and Boss Symbols to target frames    
     - Add Focus frame
     - Add Target of Target frame
+    - Macro for raid / group frames (click healing)
     - Combined stats event with caching?
 
 
