@@ -278,7 +278,6 @@ function _internal.processBuffs ()
         end
 
         for k, thisIcon in pairs (targetDebuffIcons) do
-            print (k)
             if thisIcon.remaining then
                 thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
             end

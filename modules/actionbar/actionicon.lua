@@ -111,7 +111,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				cooldownTint:SetVisible(true)
 			end
 
-			if tonumber(timer) < 10 then
+			if type(timer) == 'number' and tonumber(timer) < 10 then
 				cooldown:SetFontColor(1, 0, 0, 1)
 			end
 			
