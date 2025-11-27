@@ -219,7 +219,7 @@ local function _fctEventCombatDamage(_, info)
     elseif info.type == "water" then
         damageText = stringFormat("<font color='#1976D2'>%d</font>", info.damage)
     else
-        stringFormat("%d", info.damage)
+        damageText = stringFormat("%d", info.damage)
     end
 
     -- Check for critical hit
