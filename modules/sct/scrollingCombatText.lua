@@ -97,14 +97,20 @@ local function animateFrame(frame, text, x, y, inComing)
     frame:SetVisible(true)
 
     local start = InspectTimeFrame()
-    local duration = 1
+    local duration = 1.5
     local startX, startY = x, y -100  -- Center of the screen
     local startAngle = math.rad(45)  -- Start at lower-left
-    local endAngle = math.rad(0)     -- End at upper-right
+    local endAngle = math.rad(-45)     -- End at upper-right
+
+    if inComing == true then
+        startAngle = math.rad(135)  -- Start at lower-right
+        endAngle = math.rad(225)    -- End at upper-left
+    end
+
     local radius = 200
 
     local animationCoroutine = coroutine.create(function ()
-        for idx = 1, 100, 1 do
+        for idx = 1, 200, 1 do
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
                 return 9999
@@ -123,7 +129,7 @@ local function animateFrame(frame, text, x, y, inComing)
     local callBack = function ()
         releaseFrame(frame)
     end
-    EnKai.coroutines.add({ func = animationCoroutine, callBack = callBack, counter = 100, active = true })
+    EnKai.coroutines.add({ func = animationCoroutine, callBack = callBack, counter = 200, active = true })
 end
 
 
@@ -136,7 +142,7 @@ local function displayText(sctText, isPet, inComing, type)
 
     local text = sctText
 
-    if isPet then
+    if isPet and not inComing then
         xVariation = xVariation + 100 
         text = stringFormat("%s: %s", petName, sctText)
     end
@@ -144,7 +150,7 @@ local function displayText(sctText, isPet, inComing, type)
     local frame = getFrame()
 
     if stringFind (type, ".crit") then
-        frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
+        frame:SetTextFont(addonInfo.id, "MontserratBold")
         
         if isPet then
             frame:SetFontSize(critSize * .8)
@@ -152,7 +158,7 @@ local function displayText(sctText, isPet, inComing, type)
             frame:SetFontSize(critSize)
         end
     else
-        frame:SetTextFont(addonInfo.id, "Montserrat")
+        frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
         if isPet then
             frame:SetFontSize(defaultSize * .8)
         else
@@ -200,8 +206,14 @@ local function _validEvent (info)
 
     --- check outgoing
 
-    if info.caster == data.playerID then return true, false, false end
-    if petID ~= nil and info.caster == petID then return true, true, false end
+    if info.caster == data.playerID then return true, false, false end    
+    if petID ~= nil and info.caster == petID then 
+        if info.target == data.playerID then 
+            return true, true, true
+        else
+            return true, true, false 
+        end
+    end
 
     localUnitsTypes = EnKai.unit.getUnitTypes (info.caster) 
     
@@ -224,7 +236,7 @@ local function _fctEventCombatDamage(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local damageText = string.format("%d", info.damage)
+    local damageText = string.format("-%d", info.damage)
 
     -- Check for critical hit
     if info.crit then
@@ -250,6 +262,10 @@ local function _fctEventCombatDamage(_, info)
 
     if info.overkill then
         damageText = damageText .. string.format(" [%d Overkill]", info.overkill)
+    end
+
+    if isIncoming then
+        damageText = stringFormat("[%s] %s", EnKai.unit.GetUnitDetail (info.caster).name, damageText)
     end
 
     local frame = getFrame()
@@ -305,7 +321,9 @@ local function _fctEventCombatResist(_, info)
 end
 
 local function _fctEventCombatHeal(_, info)
+
     local valid, isPet, isIncoming = _validEvent (info)
+
     if valid == false then return end
     
     if info.heal == nil and info.overheal == nil then  return end
@@ -313,9 +331,9 @@ local function _fctEventCombatHeal(_, info)
     local healText 
 
     if info.overheal then
-        healText = string.format("(%d)", info.overheal)
+        healText = string.format("Overheal: %d", info.overheal)
     else
-        healText = string.format("%d", info.heal)
+        healText = string.format("+%d", info.heal)
     end
     
     displayText(healText, isPet, isIncoming, "heal")

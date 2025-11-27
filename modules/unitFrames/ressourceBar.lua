@@ -177,7 +177,10 @@ function _internal.ressourcBar (unit, scale, x, y)
         if (ressource) then
             --if ressourceMax == nil then ressourceMax = ressource end
 
+            if ressource > ressourceMax then ressourceMax = ressource end            
+
             local playerRessourcePercent = (ressource / ressourceMax)
+
             ressourceText:SetText(stringFormat("%d", mathFloor(playerRessourcePercent*100)))
             ressourceFrame:SetWidth(198 * scale * playerRessourcePercent)
         end
