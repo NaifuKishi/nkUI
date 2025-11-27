@@ -705,6 +705,11 @@ function EnKai.unit.GetUnitByIdentifier (identifier)
 		if thisIdentifier == identifier then return unitId end
 	end
 
+	if identifier == "player.target" then -- if player targets himself this is needed
+		local details = InspectUnitDetail("player.target")
+		if details then return details.id end
+	end
+
 	return nil
 
 end

@@ -263,11 +263,12 @@ function _internal.processBuffs ()
 
 	--- process target
 
-	if  EnKai.unit.GetUnitByIdentifier("player.target") then
+	if EnKai.unit.GetUnitByIdentifier("player.target") then
 
         local targetFrame = uiElements.frames["player.target"]
 
         local targetBuffIcons = targetFrame:GetBuffIcons()
+
         local targetDebuffIcons = targetFrame:GetDebuffIcons()
 
         for k, thisIcon in pairs (targetBuffIcons) do
@@ -277,6 +278,7 @@ function _internal.processBuffs ()
         end
 
         for k, thisIcon in pairs (targetDebuffIcons) do
+            print (k)
             if thisIcon.remaining then
                 thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
             end
