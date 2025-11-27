@@ -285,7 +285,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     roleIcon:SetLayer(99)
     roleIcon:SetHeight(20 * scale)
     roleIcon:SetWidth(20 * scale)
-    roleIcon:SetVisible(false)    
+    roleIcon:SetVisible(false)
 
     if unitFrameType == "raid" then
         roleIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 2, 0)
@@ -294,6 +294,13 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     else
         roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
     end
+
+    local tierIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".tierIcon", unitFrame)
+    tierIcon:SetLayer(99)
+    tierIcon:SetHeight(20 * scale)
+    tierIcon:SetWidth(20 * scale)
+    tierIcon:SetVisible(false) 
+    tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -5 * scale, 0)
     
     -- buff management
 
@@ -320,6 +327,19 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
             return scale *.7
         else
             return scale
+        end
+    end
+
+    function unitFrame:SetTier(newTier)
+        
+        if newTier == "group" then
+            tierIcon:SetVisible(true)
+            tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconElite.png")
+        elseif newTier == "raid" then
+            tierIcon:SetVisible(true)
+            tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconBoss.png")
+        else
+            tierIcon:SetVisible(false)
         end
     end
 
@@ -535,6 +555,7 @@ function _internal.updateUnit (frame, unitID)
     if details.planar then frame:SetPlanar(details.planar) end
 
     frame:SetRole(details.role)
+    frame:SetTier(details.tier)
 
 end
 
