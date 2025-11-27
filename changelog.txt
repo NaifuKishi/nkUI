@@ -1,8 +1,10 @@
 v0.1.3
+    - new: scrolling combat text module
     - new: action bar combat / out of combat alpha setting
     - new: Elite and Boss Symbols to target frames
     - new: Focus frame support
     - update: Switch side of role icon on target frames    
+    - update: added /nkui hint at startup
     - fixes: Hide Role Icon when not targeting group member
     - fixes: some context menus were not working
 
@@ -96,16 +98,12 @@ know bug list
 
 ToDo
 
+    - debuff / buff stack handling
     - message module (buffs, abilities, important stuff)
     - minimap icon module for nkAddons
-    - scrolling combat text like Parrot
     - rift color settings for unit frames    
     - Add Target of Target frame
     - Macro for raid / group frames (click healing)
     - Combined stats event with caching?
-    - add blocked handling? (only works for group members)
-    - one bag
-
-
-
-    
+    - add blocked handling? (only works for group members)    
+    - one bag?

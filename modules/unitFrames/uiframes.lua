@@ -372,30 +372,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
         local maxLen = 10
         if unitFrameType == "raid" then maxLen = 5 end
 
-        if stringLen (name) > maxLen then
-            local splitName = EnKai.strings.split(name, " ")
-
-            if #splitName == 1 then
-                splitName = EnKai.strings.split(name, "-")
-            end
-
-            if #splitName == 1 then
-                thisName = stringSub(name, 1, maxLen)
-            else
-                thisName = ""
-                for idx = 1, #splitName -1, 1 do                    
-                    local tempName = stringSub(splitName[idx], 1, 1)                    
-                    
-                    if unitFrameType ~= "raid" then
-                        thisName = thisName .. tempName .. ". "                    
-                    end
-                end
-
-                thisName = thisName .. splitName[#splitName]
-            end
-        else
-            thisName = name
-        end
+        thisName = _internal.shortenName (name, maxLen)
 
         nameText:SetText(thisName)
     end

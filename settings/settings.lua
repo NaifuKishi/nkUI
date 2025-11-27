@@ -326,6 +326,32 @@ local function _subTutorialTooltip(parent)
     return frame
 end
 
+local function _subTutorialSCT(parent)
+
+    local name = "nkUI.tutorialWindow.sct"
+
+    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
+    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
+    frame:SetVisible(false)
+
+    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
+    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+    activateCheckbox:SetText("Activate this module")
+    activateCheckbox:SetChecked(nkUISetup.sct.activate)
+    activateCheckbox:SetLabelWidth(200)
+    activateCheckbox:SetFontSize(16)
+    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
+
+    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
+        nkUISetup.sct.activate = newValue
+        _internal.sctToggle(newValue)
+    end, name .. '.activateCheckbox.CheckboxChanged')
+
+    return frame
+
+end
+
 --[[
     _createTutorialWindow
     Description:
@@ -449,6 +475,15 @@ local function _createTutorialWindow()
             position = "bottom",
         },        
         {
+            title = "Scrolling combat text Module",
+            description = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",            
+            image = "gfx/tutorialSCT.png",
+            width = 383,
+            height = 249,
+            position = "bottom",
+            settings = _subTutorialSCT(subFrameContainer)
+        },            
+        {
             title = "Tooltip module",
             description = "This nkUI module shows a tooltip for units which does look a lot better than the standard tooltip. Unfortunately due to API restrictions it's not possible to display quest information for NPC. There fore sometimes the tooltip will be bigger than neccessary. I'll try to figure out something here in the upcoming weeks.",
             image = "gfx/tutorialTooltip.png",
@@ -462,7 +497,6 @@ local function _createTutorialWindow()
             description = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window by using the chat command /nkui"
         }
     }
-
 
     -- Function to update the tutorial content
     local function updateTutorial()

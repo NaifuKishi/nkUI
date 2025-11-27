@@ -11,6 +11,7 @@ Environment = "4.0"
 
 RunOnStartup = {
 	"main.lua",
+	"tools.lua",
 	"locales/localizationEN.lua",
 	"locales/localizationDE.lua",
 
@@ -25,6 +26,8 @@ RunOnStartup = {
 	"modules/unitFrames/castbar.lua",
 	"modules/unitFrames/buffIcon.lua",
 	"modules/unitFrames/ressourceBar.lua",
+
+	"modules/sct/scrollingCombatText.lua",
 
 	"modules/tooltip/tooltip.lua",
 

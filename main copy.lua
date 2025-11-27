@@ -60,7 +60,7 @@ data.colors = {
 }
 				
 data.uiScaleX, data.uiScaleY = 1, 1
-local thisTutorialVersion = 013
+local thisTutorialVersion = 010
 
 ---------- generate ui context ----------
 
@@ -114,7 +114,6 @@ local function _setupDefaults()
 		nkUISetup.actionBarNonCombatAlpha = .2
 		nkUISetup.tutorialVersion = nil
 		nkUISetup.actionBars = {}
-		nkUISetup.sct = { activate = true }
 		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 	else		
 		nkUISetup.tutorial = nil -- V0.0.8 change
@@ -131,7 +130,7 @@ local function _setupDefaults()
 
 		if nkUISetup.actionBarCombatAlpha == nil then nkUISetup.actionBarCombatAlpha = 1 end
 		if nkUISetup.actionBarNonCombatAlpha == nil then nkUISetup.actionBarNonCombatAlpha = .2 end
-		if nkUISetup.sct == nil then nkUISetup.sct = { activate = true } end
+
 	end
 end
 
@@ -210,9 +209,7 @@ local function _main(_, addon)
                 _internal.uiActionBars()
 			end
 
-			if nkUISetup and nkUISetup.sct and nkUISetup.sct.activate then
-				_internal.sctInit()
-			end
+			_internal.sctInit()
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
