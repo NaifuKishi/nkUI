@@ -5,6 +5,7 @@ v0.2.1
     - fixes: fixed a tooltip error when joining groups
     - fixes: preventing keyboard not working when editing macros
     - fixes: force unit frame update on role change
+    - fixes: properly clearing addonbar
 
 v0.2.0
     - new: scrolling combat text module

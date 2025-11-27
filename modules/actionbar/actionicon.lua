@@ -173,15 +173,25 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				
 		if thisMacroCDType ~= nil then
 			EnKai.cdManager.unsubscribe(thisMacroCDType, thisMacroCDKey)
+
+			data.abilityMap[thisMacroCDKey] = nil
+			data.abilityList[thisMacroCDKey] = nil
 		elseif thisItemKey ~= nil and thisItemKey ~= 'macro' then
 			EnKai.cdManager.unsubscribe(thisItemType, thisItemKey)
+
+			data.abilityMap[thisItemKey] = nil
+			data.abilityList[thisItemKey] = nil
 		end	
-		
+
 		thisItemKey = nil
 		thisItemType = nil
 		thisMacroIcon = nil
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
+
+		if macroFrame then
+			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)
+		end
 
         texture:SetTextureAsync("nkUI", "gfx/emptyFrame.png")  
 		
