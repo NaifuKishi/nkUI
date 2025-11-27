@@ -100,11 +100,11 @@ ToDo
     - minimap icon module for nkAddons
     - scrolling combat text like Parrot
     - rift color settings for unit frames    
-    - Add Focus frame
     - Add Target of Target frame
     - Macro for raid / group frames (click healing)
     - Combined stats event with caching?
-    - add blocked handling for target frame
+    - add blocked handling? (only works for group members)
+    - one bag
 
 
 

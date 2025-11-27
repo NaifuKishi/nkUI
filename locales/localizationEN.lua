@@ -7,6 +7,7 @@ local addonInfo, privateVars = ...
 if ( EnKai.tools.lang.getLanguage()  ~= "German") then
 	privateVars.langTexts = {
 		startUp             		= '<font color="#0094FF">nkUI</font> V%s loaded',
+		commandline             	= '/nkui to open tutorial',
 		txtVersion          		= 'Version %s',
 	}
 end

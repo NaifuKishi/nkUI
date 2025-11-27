@@ -214,6 +214,8 @@ local function _main(_, addon)
 		end, "nkUI.Unit.Availability.Full")
 		
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
+		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
+
 		EnKai.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
 	end  
 end
