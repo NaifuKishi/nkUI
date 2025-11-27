@@ -48,40 +48,38 @@ local function animateFrame(frame, text, x, y, inComing)
     frame:SetText(text)
     frame:SetVisible(true)
 
-    local xOffset = math.random(-50, 50)
     local start = InspectTimeFrame()
     local duration = 1
-    local startX = x
-    local startY = y
+    local startX, startY = x, y -100  -- Center of the screen
+    local startAngle = math.rad(45)  -- Start at lower-left
+    local endAngle = math.rad(0)     -- End at upper-right
+    local radius = 200
 
     local animationCoroutine = coroutine.create(function ()
-
         for idx = 1, 100, 1 do
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
                 return 9999
             end
-
             local t = elapsed / duration
-            local xOffset = 100 * t
-            if inComing then xOffset = - 100 * t end
-
-            local yOffset = -100 * math.sin(t * math.pi)
-
-            frame:SetPoint("CENTER", UIParent, "CENTER", startX + xOffset, startY + yOffset)
+            -- Interpolate the angle
+            local currentAngle = startAngle + (endAngle - startAngle) * t
+            -- Calculate offsets using the interpolated angle
+            local currentXOffset = radius * math.cos(currentAngle)
+            local currentYOffset = radius * math.sin(currentAngle)
+            -- Apply the arc movement relative to the center of the screen, starting at Y = 100
+            frame:SetPoint("CENTER", UIParent, "CENTER", startX + currentXOffset, startY + currentYOffset + 100)
             coroutine.yield(idx)
         end
     end)
-
     local callBack = function ()
         releaseFrame(frame)
     end
-
-    EnKai.coroutines.add ({ func = animationCoroutine, callBack = callBack, counter = 100, active = true })
-
+    EnKai.coroutines.add({ func = animationCoroutine, callBack = callBack, counter = 100, active = true })
 end
 
-local function displayText(sctText, isPet, inComing, type, x, y)
+
+local function displayText(sctText, isPet, inComing, type)
 
     local xVariation = math.random(0, 50)
     if inComing then xVariation = math.random(0, -50) end 
@@ -147,7 +145,7 @@ local function displayText(sctText, isPet, inComing, type, x, y)
         end
     end
 
-    animateFrame(frame, text, x + xVariation, y + yVariation, inComing)
+    animateFrame(frame, text, xVariation, yVariation, inComing)
 end
 
 local function _validEvent (info)
@@ -210,9 +208,9 @@ local function _fctEventCombatDamage(_, info)
 
     -- If it's a critical hit, make the font larger and yellow
     if info.crit then        
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s.crit", info.type), 0, -300)
+        displayText(damageText, isPet, isIncoming, string.format("damage.%s.crit", info.type))
     else
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s", info.type), 0, -300)
+        displayText(damageText, isPet, isIncoming, string.format("damage.%s", info.type))
     end
     
 end
@@ -223,7 +221,7 @@ local function _fctEventCombatDodge(_, info)
     if valid == false then return end
 
     local dodgeText = "Dodge"
-    displayText(dodgeText, isPet, isIncoming, "dodge", 0, -200)
+    displayText(dodgeText, isPet, isIncoming, "dodge")
 end
 
 local function _fctEventCombatImmune(_, info)
@@ -231,7 +229,7 @@ local function _fctEventCombatImmune(_, info)
     if valid == false then return end
 
     local immuneText = "Immune"
-    displayText(immuneText, isPet, isIncoming, "immune", 0, -200)
+    displayText(immuneText, isPet, isIncoming, "immune")
 end
 
 local function _fctEventCombatMiss(_, info)
@@ -239,7 +237,7 @@ local function _fctEventCombatMiss(_, info)
     if valid == false then return end
 
     local missText = "Miss"
-    displayText(missText, isPet, isIncoming, "miss", 0, -200)
+    displayText(missText, isPet, isIncoming, "miss")
 end
 
 local function _fctEventCombatParry(_, info)
@@ -247,7 +245,7 @@ local function _fctEventCombatParry(_, info)
     if valid == false then return end
 
     local parryText = "Parry"
-    displayText(parryText, isPet, isIncoming, "parry", 0, -200)
+    displayText(parryText, isPet, isIncoming, "parry")
 end
 
 local function _fctEventCombatResist(_, info)
@@ -255,7 +253,7 @@ local function _fctEventCombatResist(_, info)
     if valid == false then return end
 
     local resistText = "Resist"
-    displayText(resistText, isPet, isIncoming, "resist", 0, -200)
+    displayText(resistText, isPet, isIncoming, "resist")
 end
 
 local function _fctEventCombatHeal(_, info)
@@ -272,7 +270,7 @@ local function _fctEventCombatHeal(_, info)
         healText = string.format("%d", info.heal)
     end
     
-    displayText(healText, isPet, isIncoming, "heal", 0, -200)
+    displayText(healText, isPet, isIncoming, "heal")
 end
 
 function _internal.sctInit()
