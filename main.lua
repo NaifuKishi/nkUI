@@ -110,6 +110,8 @@ local function _setupDefaults()
 		nkUISetup.buffUnitFrame = { activate = true }
 		nkUISetup.combatAlpha = 1
 		nkUISetup.nonCombatAlpha = .2
+		nkUISetup.actionBarCombatAlpha = 1
+		nkUISetup.actionBarNonCombatAlpha = .2
 		nkUISetup.tutorialVersion = nil
 		nkUISetup.actionBars = {}
 		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
@@ -125,6 +127,9 @@ local function _setupDefaults()
 		if nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] == nil then
 			nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 		end
+
+		if nkUISetup.actionBarCombatAlpha == nil then nkUISetup.actionBarCombatAlpha = 1 end
+		if nkUISetup.actionBarNonCombatAlpha == nil then nkUISetup.actionBarNonCombatAlpha = .2 end
 
 	end
 end

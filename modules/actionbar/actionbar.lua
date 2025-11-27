@@ -227,6 +227,10 @@ function _internal.uiActionBars()
         rightScreenBar:Populate()
     end, "nkHelios.TEMPORARY.Role")
 
+    for k, v in pairs (uiElements.actionbars) do
+        v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
+    end
+
     Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Start")
     Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Update")
     Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Stop")

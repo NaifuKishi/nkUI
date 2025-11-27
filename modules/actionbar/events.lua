@@ -239,3 +239,19 @@ function _events.abGcdStart (_, info)
 		end
 	end
 end
+
+local function _fctSecureEnter()
+
+	for k, v in pairs (uiElements.actionbars) do
+        v:SetAlpha(nkUISetup.actionBarCombatAlpha)
+    end
+
+end
+
+local function _fctSecureLeave()
+	
+	for k, v in pairs (uiElements.actionbars) do
+        v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
+    end
+
+end

@@ -48,6 +48,15 @@ local function toggleAlpha()
 
 end
 
+local function actionBarToggleAlpha()
+    
+    for k, v in pairs (uiElements.actionbars) do
+        v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
+    end
+
+end
+
+
 --[[
     _subTutorialUnitframes
     Description:
@@ -237,6 +246,41 @@ local function _subTutorialActionBar(parent)
         nkUISetup.moduleActionBars.activate = newValue
         _internal.uiActionBarInit (newValue)
     end, name .. '.activateCheckbox.CheckboxChanged')
+
+    combatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".combatAlphaSlider", frame)
+    combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 5)
+    combatAlphaSlider:SetText("Combat alpha %d%%" )
+    combatAlphaSlider:SetWidth(400)
+    combatAlphaSlider:SetRange(0, 100)
+    combatAlphaSlider:SetMidValue(50)
+    combatAlphaSlider:SetPrecision(5)
+    combatAlphaSlider:SetLabelWidth(250)
+    combatAlphaSlider:SetFontSize(16)
+    combatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
+    combatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
+    combatAlphaSlider:AdjustValue(nkUISetup.actionBarCombatAlpha * 100)
+    
+    Command.Event.Attach(EnKai.events[name .. '.combatAlphaSlider'].SliderChanged, function (_, newValue)
+        nkUISetup.actionBarCombatAlpha = newValue / 100
+    end, name .. ".combatAlphaSlider.SliderChanged")
+
+    nonCombatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".nonCombatAlphaSlider", frame)
+    nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
+    nonCombatAlphaSlider:SetText("Combat alpha %d%%" )
+    nonCombatAlphaSlider:SetWidth(400)
+    nonCombatAlphaSlider:SetRange(0, 100)
+    nonCombatAlphaSlider:SetMidValue(50)
+    nonCombatAlphaSlider:SetPrecision(5)    
+    nonCombatAlphaSlider:SetLabelWidth(250)
+    nonCombatAlphaSlider:SetFontSize(16)
+    nonCombatAlphaSlider:SetActive(nkUISetup.uiFrames.activate)
+    nonCombatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
+    nonCombatAlphaSlider:AdjustValue(nkUISetup.actionBarNonCombatAlpha * 100)
+    
+    Command.Event.Attach(EnKai.events[name .. '.nonCombatAlphaSlider'].SliderChanged, function (_, newValue)
+        nkUISetup.actionBarNonCombatAlpha = newValue / 100
+        actionBarToggleAlpha()
+    end, name .. ".nonCombatAlphaSlider.SliderChanged")    
 
     return frame
 
