@@ -204,6 +204,8 @@ local function _fctEventCombatDamage(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
+    local damageText = ""
+
     if info.type == "life" then
         damageText = stringFormat("<font color='#4CAF50'>%d</font>", info.damage)
     elseif info.type == "death" then

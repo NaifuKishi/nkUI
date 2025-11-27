@@ -478,8 +478,8 @@ local function _createTutorialWindow()
             title = "Scrolling combat text Module",
             description = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",            
             image = "gfx/tutorialSCT.png",
-            width = 383,
-            height = 249,
+            width = 429,
+            height = 250,
             position = "bottom",
             settings = _subTutorialSCT(subFrameContainer)
         },            

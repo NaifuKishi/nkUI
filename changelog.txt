@@ -1,5 +1,6 @@
 v0.2.1
     - update: shortened name of caster on sct
+    - update: some SCT color and display tweaks
 
 v0.2.0
     - new: scrolling combat text module
