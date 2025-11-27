@@ -225,29 +225,29 @@ function _internal.uiActionBars()
         leftActionBar:Populate()
         rightActionBar:Populate()
         rightScreenBar:Populate()
-    end, "nkHelios.TEMPORARY.Role")
+    end, "nkUI.TEMPORARY.Role")
 
     for k, v in pairs (uiElements.actionbars) do
         v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
     end
 
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Start")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Update")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, _events.abCooldownProcess, "nkHelios.EnKai.CDManager.Stop")
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Start")
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Update")
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Stop")
 
-    Command.Event.Attach(Event.Buff.Add, _events.abBuffAdd, "nkHelios.Buff.Add")
-	Command.Event.Attach(Event.Buff.Remove, _events.abBuffRemove, "nkHelios.Buff.Remove")
+    Command.Event.Attach(Event.Buff.Add, _events.abBuffAdd, "nkUI.Buff.Add")
+	Command.Event.Attach(Event.Buff.Remove, _events.abBuffRemove, "nkUI.Buff.Remove")
 
-    Command.Event.Attach(Event.Ability.New.Usable.False, _events.abAbilityUnusable, "nkHelios.Ability.New.Usable.False")
-    Command.Event.Attach(Event.Ability.New.Usable.True, _events.abAbilityUsable, "nkHelios.Ability.New.Usable.True")
+    Command.Event.Attach(Event.Ability.New.Usable.False, _events.abAbilityUnusable, "nkUI.Ability.New.Usable.False")
+    Command.Event.Attach(Event.Ability.New.Usable.True, _events.abAbilityUsable, "nkUI.Ability.New.Usable.True")
 
-    Command.Event.Attach(Event.Ability.New.Range.False, _events.abAbilityOutOfRange, "nkHelios.Ability.New.Range.False")
-    Command.Event.Attach(Event.Ability.New.Range.True, _events.abAbilityInRange, "nkHelios.Ability.New.Range.True")
+    Command.Event.Attach(Event.Ability.New.Range.False, _events.abAbilityOutOfRange, "nkUI.Ability.New.Range.False")
+    Command.Event.Attach(Event.Ability.New.Range.True, _events.abAbilityInRange, "nkUI.Ability.New.Range.True")
 
-    Command.Event.Attach(Event.Ability.New.Cooldown.Begin , _events.abGcdStart, "EnKai.cdManager.Ability.New.Cooldown.Begin")
+    Command.Event.Attach(Event.Ability.New.Cooldown.Begin , _events.abGcdStart, "nkUI.Ability.New.Cooldown.Begin")
 
-    Command.Event.Attach(Event.System.Secure.Enter, _events.abSecureEnter, "nkManager.Ssytem.Secure.Enter")
-    Command.Event.Attach(Event.System.Secure.Leave, _events.abSecureLeave, "nkManager.Ssytem.Secure.Leave")
+    Command.Event.Attach(Event.System.Secure.Enter, _events.abSecureEnter, "nkUI.System.Secure.Enter")
+    Command.Event.Attach(Event.System.Secure.Leave, _events.abSecureLeave, "nkUI.System.Secure.Leave")
 
     data.unitFramesBuild = true
 

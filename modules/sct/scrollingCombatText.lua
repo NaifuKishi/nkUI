@@ -7,7 +7,8 @@ local uiElements= privateVars.uiElements
 local _internal = privateVars.internal
 local _events   = privateVars.events
 
-local InspectTimeFrame = Inspect.Time.Frame
+local InspectTimeFrame          = Inspect.Time.Frame
+local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 
 local stringFind        = string.find
 local stringMatch       = string.match
@@ -23,9 +24,14 @@ local sctInit = false
 local defaultSize = 24
 local critSize = 32
 local petID, petName   
+local lastMessage, messageY = nil, 0
+
+local abilityCache = {}
+local abilityTimer = {}
 
 local function createTextFrame()
     local frame = EnKai.uiCreateFrame("nkText", EnKai.tools.uuid(), uiElements.context)
+    frame:SetEffectGlow({ strength = 1 })
     frame:SetVisible(false)
     return frame
 end
@@ -41,6 +47,48 @@ end
 local function releaseFrame(frame)
     frame:SetVisible(false)
     table.insert(framePool, frame)
+end
+
+local function displayMessageAtTopCenter(message, duration)
+    
+    local frame = getFrame()
+    frame:SetText(message)
+    frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    frame:SetFontSize(28)
+    frame:SetFontColor(1, 1, 1, 1) -- White color
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (-200 * data.uiScaleY) + messageY) -- Position at top center
+    frame:SetVisible(true)
+
+    lastMessage = frame:GetName()
+    messageY = messageY - 20
+
+    local start = InspectTimeFrame()
+
+    local animationCoroutine = coroutine.create(function()
+        for idx = 1, duration * 100, 1 do
+            local elapsed = InspectTimeFrame() - start
+            if elapsed > duration then
+                return 9999
+            end
+            coroutine.yield(idx)
+        end
+        
+    end)
+
+    local callBack = function()
+        if frame:GetName() == lastMessage then
+            lastMessage = nil
+            messageY = 0
+        end
+        releaseFrame(frame)        
+    end
+
+    EnKai.coroutines.add({
+        func = animationCoroutine,
+        callBack = callBack,
+        counter = duration * 100, -- Adjust counter based on duration
+        active = true
+    })
 end
 
 local function animateFrame(frame, text, x, y, inComing)
@@ -273,6 +321,43 @@ local function _fctEventCombatHeal(_, info)
     displayText(healText, isPet, isIncoming, "heal")
 end
 
+function _fctEventCooldownStart (_, info)
+
+    local abilities = {}
+    local newAbilities = false
+
+    for k, v in pairs (info) do
+        if v >= 1 then
+            if abilityCache[k] == nil then -- ignore global cooldown
+                abilities[k] = true
+                newAbilities = true
+            end
+            
+            abilityTimer[k] = InspectTimeFrame()
+        end
+    end
+
+    if newAbilities == false then return end
+
+    local details = InspectAbilityNewDetail(abilities)
+
+    for k, v in pairs (details) do
+        abilityCache[k] = v
+    end
+
+end
+
+function _fctEventCooldownEnd (_, info)
+
+    for key, details in pairs (info) do
+        if abilityCache[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
+            abilityTimer[key] = nil
+            displayMessageAtTopCenter(stringFormat("%s ready", abilityCache[key].name), 1.5)
+        end
+    end
+
+end
+
 function _internal.sctInit()
     Command.Event.Attach(Event.Combat.Damage, _fctEventCombatDamage, "nkUI.SCT.Combat.Damage")
     Command.Event.Attach(Event.Combat.Dodge, _fctEventCombatDodge, "nkUI.SCT.Combat.Dodge")
@@ -281,6 +366,9 @@ function _internal.sctInit()
     Command.Event.Attach(Event.Combat.Parry, _fctEventCombatParry, "nkUI.SCT.Combat.Parry")
     Command.Event.Attach(Event.Combat.Resist, _fctEventCombatResist, "nkUI.SCT.Combat.Resist")
     Command.Event.Attach(Event.Combat.Heal, _fctEventCombatHeal, "nkUI.SCT.Combat.Heal")
+
+    Command.Event.Attach(Event.Ability.New.Cooldown.Begin, _fctEventCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
+    Command.Event.Attach(Event.Ability.New.Cooldown.End, _fctEventCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
 
     sctInit = true
 end
@@ -301,6 +389,9 @@ function _internal.sctToggle(value)
         Command.Event.Detach(Event.Combat.Parry, nil, "nkUI.SCT.Combat.Parry")
         Command.Event.Detach(Event.Combat.Resist, nil, "nkUI.SCT.Combat.Resist")
         Command.Event.Detach(Event.Combat.Heal, nil, "nkUI.SCT.Combat.Heal")
+
+        Command.Event.Detach(Event.Ability.New.Cooldown.Begin, nil, "nkUI.SCT.Ability.New.Cooldown.Begin")
+        Command.Event.Detach(Event.Ability.New.Cooldown.End, nil, "nkUI.SCT.Ability.New.Cooldown.End")
 
         sctInit = false
 
