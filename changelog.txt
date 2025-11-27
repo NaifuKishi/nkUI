@@ -6,6 +6,7 @@ v0.2.1
     - fixes: preventing keyboard not working when editing macros
     - fixes: force unit frame update on role change
     - fixes: properly clearing addonbar
+    - fixes: fixed buff alpha when out of combat
 
 v0.2.0
     - new: scrolling combat text module
@@ -122,8 +123,6 @@ ToDo
 
 bug reports
 
-    - Macros and other abilities still work when deleted from the action bar (decided to show video instead) -- I know this problem was mentioned in bug fixes :P$
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.
     - On reload UI if you are targeting someone it doesnt display the targets frame you need to retarget it
-    - When buff reapplies it sets the buff to 1 alpha
     - Also when targeting yourself when buffs reapply then get reparented to the target frame :/

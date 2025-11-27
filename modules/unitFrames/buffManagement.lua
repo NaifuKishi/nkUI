@@ -15,15 +15,16 @@ local InspectBuffDetail     = Inspect.Buff.Detail
 local InspectUnitLookup     = Inspect.Unit.Lookup
 local InspectBuffList       = Inspect.Buff.List
 local InspectTimeReal       = Inspect.Time.Real
+local InspectSystemSecure   = Inspect.System.Secure
 
-local mathFloor     = math.floor
-local stringFormat  = string.format
+local mathFloor             = math.floor
+local stringFormat          = string.format
 
 ---------- init global variables ---------
 
 -- Buff management function
 
-function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
+function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.manageBuffs", frame:GetName(), { unitId = unitId, buffUnit = buffUnit, buffs = buffs, action = action}) end
 
@@ -65,6 +66,7 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
     if action == "add" then
         if buffUnit == unitId then
+
             local details = InspectBuffDetail(buffUnit, buffs)
 
             if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.manageBuffs", "details", details) end
@@ -80,7 +82,7 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
                             if unitDebuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(frame:GetUnitID(), "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                                local icon = _internal.iconManager.get(unitType, "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
                                 unitDebuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
@@ -120,7 +122,7 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
                             if unitBuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(frame:GetUnitID(), "buffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                                local icon = _internal.iconManager.get(unitType, "buffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
                                 unitBuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
@@ -139,6 +141,8 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
 
                             unitBuffIcons[k].icon:SetStack(v.stack)
 
+                            if InspectSystemSecure() == false then unitBuffIcons[k].icon:SetAlpha(nkUISetup.nonCombatAlpha) end
+
                             unitBuffIcons[k].icon:SetTexture("Rift", v.icon)
                             unitBuffIcons[k].icon:SetVisible(true)
                         end
@@ -154,11 +158,15 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
         for k, v in pairs(unitBuffIcons) do
             v.visible = false
             v.icon:SetVisible(false)
+
+            _internal.iconManager.release(unitType, k)
         end
 
         for k, v in pairs(unitDebuffIcons) do
             v.visible = false
             v.icon:SetVisible(false)
+
+            _internal.iconManager.release(unitType, k)
         end
 
         unitBuffDisplayList = {}
@@ -177,6 +185,8 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                     --EnKai.tools.table.removeValue(unitDebuffDisplayList, id)
                     unitDebuffDisplayList[id] = nil
                 end
+
+                _internal.iconManager.release(unitType, id)
             end
         end
 

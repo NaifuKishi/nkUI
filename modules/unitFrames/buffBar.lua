@@ -64,7 +64,7 @@ end
 
 function _internal.buffBar.addBuff(unit, buffs)
 
-    local details = InspectBuffDetail(unit, buffs)            
+    local details = InspectBuffDetail(unit, buffs)
 
     for k, v in pairs(details) do
 
@@ -79,7 +79,6 @@ function _internal.buffBar.addBuff(unit, buffs)
                     debuffIcons[k].icon:ShowBorder(true)
                     debuffIcons[k].icon:SetScale(data.uiScaleX)
                 else
-                    --debuffIcons[k].details = details
                     debuffIcons[k].visible = true
                 end
 
@@ -95,7 +94,7 @@ function _internal.buffBar.addBuff(unit, buffs)
 
                 debuffIcons[k].icon:SetStack(v.stack)
                 debuffIcons[k].icon:SetTexture("Rift", v.icon)
-                debuffIcons[k].icon:SetVisible(true)		
+                debuffIcons[k].icon:SetVisible(true)
                 
                 debuffDisplayList[k] = true
             end

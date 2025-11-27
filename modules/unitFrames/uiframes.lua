@@ -313,10 +313,10 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     function unitFrame:SetBuffDisplayList(list) unitBuffDisplayList = list end
     function unitFrame:SetDebuffDisplayList(list) unitDebuffDisplayList = list end
 
-    function unitFrame:addBuff(buffUnit, buffs) _internal.manageBuffs(self, thisUnitID, buffUnit, buffs, "add") end
-    function unitFrame:changeBuff(unit, buffs) _internal.manageBuffs(self, thisUnitID, unit, buffs, "change") end
-    function unitFrame:ClearBuffs() _internal.manageBuffs(self, thisUnitID, nil, nil, "clear") end
-    function unitFrame:removeBuff(buffUnit, buffs) _internal.manageBuffs(self, thisUnitID, buffUnit, buffs, "remove") end
+    function unitFrame:addBuff(buffUnit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
+    function unitFrame:changeBuff(unit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end
+    function unitFrame:ClearBuffs() _internal.manageBuffs(self, unitType, thisUnitID, nil, nil, "clear") end
+    function unitFrame:removeBuff(buffUnit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "remove") end
 
     function unitFrame:SetUnitID (newId) thisUnitID = newId end
     function unitFrame:GetUnitID () return thisUnitID end
