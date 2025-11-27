@@ -93,6 +93,7 @@ function _internal.buffBar.addBuff(unit, buffs)
                     debuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
                 end
 
+                debuffIcons[k].icon:SetStack(v.stack)
                 debuffIcons[k].icon:SetTexture("Rift", v.icon)
                 debuffIcons[k].icon:SetVisible(true)		
                 
@@ -116,6 +117,7 @@ function _internal.buffBar.addBuff(unit, buffs)
                     buffIcons[k].visible = true
                 end
 
+                buffIcons[k].icon:SetStack(v.stack)
                 buffIcons[k].icon:SetTexture("Rift", v.icon)
                 buffIcons[k].icon:SetVisible(true)
 

@@ -62,8 +62,8 @@ function uiElements.icon (name, parent)
 	
 	icon:SetMouseMasking('limited')
 	
-	local timerFontSize = 16
-	local stackFontSize = 18
+	local timerFontSize = 20
+	local stackFontSize = 16
 	local labelFontSize = 16
 	local showBorder = true
 	local activeEffect = 'none'
@@ -87,15 +87,20 @@ function uiElements.icon (name, parent)
 	timer:SetLayer(4)
 	timer:SetFontColor(1, 1, 1, 0)
 	timer:SetFontSize(timerFontSize)
-	timer:SetPoint("BOTTOMCENTER", border, "BOTTOMCENTER")
+	timer:SetTextFont(addonInfo.id, "Montserrat")
+	timer:SetEffectGlow({strength = 1})
+	timer:SetPoint("BOTTOMCENTER", border, "BOTTOMCENTER", 0, -2)
 	
 	stack:SetLayer(4)
 	stack:SetFontColor(1, 1, 1, 0)
 	stack:SetFontSize(stackFontSize)
-	stack:SetPoint("TOPLEFT", icon, "TOPLEFT", 0 , -1)
+	stack:SetTextFont(addonInfo.id, "MontserratSemiBold")
+	stack:SetEffectGlow({strength = 1})
+	stack:SetPoint("TOPLEFT", icon, "TOPLEFT", 1, -1)
 		
 	label:SetPoint("TOPCENTER", border, "BOTTOMCENTER")
 	label:SetFontColor (1, 1, 1, 1)
+	label:SetTextFont(addonInfo.id, "Montserrat")
 	label:SetFontSize(labelFontSize)
 	label:SetHeight(labelFontSize+4)
 	

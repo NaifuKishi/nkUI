@@ -93,9 +93,11 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                                 unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
                                 unitDebuffIcons[k].icon:ShowBorder(true)
                             else
-                                unitDebuffIcons[k].details = details
+                                unitDebuffIcons[k].details = details                                
                                 unitDebuffIcons[k].visible = true
                             end
+
+                            unitDebuffIcons[k].icon:SetStack(v.stack)
 
                             if v.poison then
                                 unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
@@ -134,6 +136,8 @@ function _internal.manageBuffs(frame, unitId, buffUnit, buffs, action)
                                 unitBuffIcons[k].details = details
                                 unitBuffIcons[k].visible = true
                             end
+
+                            unitBuffIcons[k].icon:SetStack(v.stack)
 
                             unitBuffIcons[k].icon:SetTexture("Rift", v.icon)
                             unitBuffIcons[k].icon:SetVisible(true)
