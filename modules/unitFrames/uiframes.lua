@@ -354,6 +354,9 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
         elseif newRole == "heal" then
             roleIcon:SetVisible(true)
             roleIcon:SetTextureAsync(addonInfo.identifier, "gfx/roleHeal.png")
+        elseif newRole == "support" then
+            roleIcon:SetVisible(true)
+            roleIcon:SetTextureAsync(addonInfo.identifier, "gfx/roleSupport.png")
         else
             roleIcon:SetVisible(false)
         end
