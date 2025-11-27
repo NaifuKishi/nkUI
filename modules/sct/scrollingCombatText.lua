@@ -265,7 +265,7 @@ local function _fctEventCombatDamage(_, info)
     end
 
     if isIncoming then
-        damageText = stringFormat("[%s] %s", EnKai.unit.GetUnitDetail (info.caster).name, damageText)
+        damageText = stringFormat("[%s] %s", _internal.shortenName (EnKai.unit.GetUnitDetail (info.caster).name, 10), damageText)
     end
 
     local frame = getFrame()
