@@ -87,13 +87,12 @@ v0.0.4
 
 know bug list
 
-    
+    - removing ability does not clear cooldown timer
 
 ToDo
 
     - message module (buffs, abilities, important stuff)
-    - rift color settings for unit frames
-    - removing ability does not clear cooldown timer
+    - rift color settings for unit frames<    
     - Auto Hide Role Icon when not targeting group member
     - Add Elite and Boss Symbols to target frames
     - Switch side of role icon on target frames

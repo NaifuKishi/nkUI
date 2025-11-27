@@ -240,7 +240,7 @@ function _events.abGcdStart (_, info)
 	end
 end
 
-local function _fctSecureEnter()
+function _events.abSecureEnter()
 
 	for k, v in pairs (uiElements.actionbars) do
         v:SetAlpha(nkUISetup.actionBarCombatAlpha)
@@ -248,7 +248,7 @@ local function _fctSecureEnter()
 
 end
 
-local function _fctSecureLeave()
+function _events.abSecureLeave()
 	
 	for k, v in pairs (uiElements.actionbars) do
         v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)

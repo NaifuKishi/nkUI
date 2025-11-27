@@ -246,6 +246,9 @@ function _internal.uiActionBars()
 
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin , _events.abGcdStart, "EnKai.cdManager.Ability.New.Cooldown.Begin")
 
+    Command.Event.Attach(Event.System.Secure.Enter, _events.abSecureEnter, "nkManager.Ssytem.Secure.Enter")
+    Command.Event.Attach(Event.System.Secure.Leave, _events.abSecureLeave, "nkManager.Ssytem.Secure.Leave")
+
     data.unitFramesBuild = true
 
 end
