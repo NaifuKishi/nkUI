@@ -34,6 +34,8 @@ local function _fctSecureEnter()
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.combatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(true)
 
+	uiElements.frames["focus"]:SetAlpha(nkUISetup.combatAlpha)
+
 end
 
 local function _fctSecureLeave()
@@ -44,6 +46,8 @@ local function _fctSecureLeave()
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(false)
+
+	uiElements.frames["focus"]:SetAlpha(nkUISetup.nonCombatAlpha)
 
 end
 
@@ -225,6 +229,7 @@ function _events.uiFramesInitEvents()
 	EnKai.unit.subscribe("player")
 	EnKai.unit.subscribe("player.target")
 	EnKai.unit.subscribe("player.pet")
+	EnKai.unit.subscribe("focus")
 
 	for idx = 1, 20, 1 do
 		EnKai.unit.subscribe(stringFormat("group%02d", idx))
@@ -284,6 +289,14 @@ function _events.uiFramesInitEvents()
 		--frame:ContextMenu(targetID)
 		frame:SetVisible(true)
 	end
+
+	local focusID = EnKai.unit.GetUnitByIdentifier ("focus")
+	if (focusID) then 
+		local frame = uiElements.frames["focus"]
+		_internal.updateUnit (frame, focusID) 
+		frame:SetVisible(true)
+	end
+
 
 	EnKai.unit.UpdateGroupUnit()
 

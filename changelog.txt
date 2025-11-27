@@ -1,8 +1,10 @@
 v0.1.3
     - new: action bar combat / out of combat alpha setting
-    - new: Elite and Boss Symbols to target frames    
+    - new: Elite and Boss Symbols to target frames
+    - new: Focus frame support
     - update: Switch side of role icon on target frames    
     - fixes: Hide Role Icon when not targeting group member
+    - fixes: some context menus were not working
 
 V0.1.2
     - fixes: fixed wrong tutorial initialization

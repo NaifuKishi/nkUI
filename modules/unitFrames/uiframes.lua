@@ -331,7 +331,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     end
 
     function unitFrame:SetTier(newTier)
-        
+
         if newTier == "group" then
             tierIcon:SetVisible(true)
             tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconElite.png")
@@ -530,6 +530,8 @@ function _internal.updateUnit (frame, unitID)
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
 
     frame:SetUnitID(unitID)
+    frame:ContextMenu(unitID)
+
     frame:SetName(details.name)
     frame:SetCalling(details.calling)
 
@@ -606,6 +608,10 @@ function _internal.uiFrames()
 
     uiElements.frames["player.target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
+
+    local focus = frameManager.get("focus", .75 * data.uiScaleX, 600 * data.uiScaleX, 1000 * data.uiScaleY, true, false)
+    focus:SetMacro("/target @focus")
+    uiElements.frames["focus"] = focus    
 
     local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
 
@@ -690,6 +696,7 @@ function _internal.uiFrames()
     end    
 
     uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["focus"]:SetAlpha(nkUISetup.nonCombatAlpha)
     uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
     uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
 

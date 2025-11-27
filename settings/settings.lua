@@ -42,9 +42,10 @@ local name = "settings"
 ]]
 local function toggleAlpha()
     
-    uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)    
     uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
     uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["focus"]:SetAlpha(nkUISetup.nonCombatAlpha)
 
 end
 
