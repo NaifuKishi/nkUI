@@ -7,6 +7,8 @@ v0.2.1
     - fixes: force unit frame update on role change
     - fixes: properly clearing addonbar
     - fixes: fixed buff alpha when out of combat
+    - fixes: fixed target unitframe not loading properly if player targets himself
+    - fixes: buff display on target frame if player targets himself
 
 v0.2.0
     - new: scrolling combat text module
