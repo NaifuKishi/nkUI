@@ -69,6 +69,7 @@ function _internal.macroEditDialog (editBar)
 	cancelButton:SetScale(.7)
 	
 	Command.Event.Attach(EnKai.events[name .. ".cancelButton"].Clicked, function (_, newValue)
+		macroEdit:Leave(true)
 		ui:SetVisible(false)
 	end, name .. ".cancelButton.Clicked")
 	
@@ -82,6 +83,7 @@ function _internal.macroEditDialog (editBar)
 	
 	Command.Event.Attach(EnKai.events[name .. ".saveButton"].Clicked, function (_, newValue)		
 		data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
+		macroEdit:Leave(true)
 		ui:SetVisible(false)
 		editBar:Populate()
 	end, name .. ".saveButton.Clicked")

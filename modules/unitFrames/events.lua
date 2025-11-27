@@ -188,6 +188,20 @@ local function _fctZoneEvent(_, thisData)
 	end
 end
 
+local function _fctRoleEvent (_, thisData)
+	
+	for unitID, v in pairs(thisData) do
+		local unitTypes = EnKai.unit.getUnitTypes (unitID)
+		for _, thisType in pairs (unitTypes) do
+			local frame = _internal.getFrameByIdentifier(thisType)
+			EnKai.unit.GetUnitDetail(unitID, true)
+			_internal.updateUnit (frame, unitID)
+		end
+	end	
+end
+
+
+
 ------------------------------ update handler functions ------------------------------
 
 local function _fctUpdateHandler()
@@ -263,6 +277,7 @@ function _events.uiFramesInitEvents()
     Command.Event.Attach(Event.System.Update.Begin, _fctUpdateHandler, "nkUI.System.updateHandler")
 
 	Command.Event.Attach(Event.Unit.Detail.Zone, _fctZoneEvent, "nkUI.Unit.Detail.Zone")
+	Command.Event.Attach(Event.Unit.Detail.Role, _fctRoleEvent, "nkUI.Unit.Detail.Role")
 
 	----- initialize player, pet and target -----
 

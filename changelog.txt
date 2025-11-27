@@ -1,6 +1,10 @@
 v0.2.1
     - update: shortened name of caster on sct
     - update: some SCT color and display tweaks
+    - fixes: added missing support role icon to unitframe
+    - fixes: fixed a tooltip error when joining groups
+    - fixes: preventing keyboard not working when editing macros
+    - fixes: force unit frame update on role change
 
 v0.2.0
     - new: scrolling combat text module
@@ -117,23 +121,8 @@ ToDo
 
 bug reports
 
-    - When text box is still selected and you click save macro you cannot use keyboard keys (WASD for example) -- meaning text field is still taking inputs (but when you open macro editor none of the inputs are shown idk how you have it setup).
-
-    - Also when you click on the macro editor it will not show the text box until you click on it
-
     - Macros and other abilities still work when deleted from the action bar (decided to show video instead) -- I know this problem was mentioned in bug fixes :P$
-
-    - Role icon on player doesnt change when swapping specs. (need to reload ui to update it)
-    - also no icon for support players ;-; 
-
-    Error: nkUI/modules/tooltip/tooltip.lua:267: attempt to index local 'unitDetail' (a nil value)
-    In nkUI / nkUI.Event.tooltip, event Event.Tooltip
-stack traceback:
-    [C]: in function '__index'
-    nkUI/modules/tooltip/tooltip.lua:267: in function 'unit'
-    nkUI/modules/tooltip/tooltip.lua:612: in function <nkUI/modules/tooltip/tooltip.lua:599>
-
-    - error when joining a group (only happened the first time)
-
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.
     - On reload UI if you are targeting someone it doesnt display the targets frame you need to retarget it
+    - When buff reapplies it sets the buff to 1 alpha
+    - Also when targeting yourself when buffs reapply then get reparented to the target frame :/

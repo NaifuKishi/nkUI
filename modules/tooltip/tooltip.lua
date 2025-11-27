@@ -241,6 +241,8 @@ function _tooltip.unit (unitInfo)
 
     local unitDetail = Inspect.Unit.Detail(unitInfo)
 
+    if unitDetail == nil then return end
+
     --dump(unitDetail)
 
     local infoLines = {}
@@ -264,7 +266,10 @@ function _tooltip.unit (unitInfo)
         mage = "#69CCF0"
     }
     
-    local color = relationColors[unitDetail.relation] or "#FFFFFF"
+    local color = "#FFFFFF"
+    if unitDetail.relation then
+        color = relationColors[unitDetail.relation] or "#FFFFFF"
+    end
 
     uiElements.tooltip:SetTitle(string.format('<font color="%s">%s</font>', color, unitDetail.name))
 

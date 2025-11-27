@@ -680,14 +680,13 @@ end
         - The returned table contains various unit properties
         - Information is cached to minimize API calls
 ]]
-function EnKai.unit.GetUnitDetail (unitID)
+function EnKai.unit.GetUnitDetail (unitID, force)
 
 	if _idCache[unitID] ~= nil and #_idCache[unitID] > 0 then
 		unitID = _idCache[unitID][1]
 	end
 	
-	--if _unitCache[unitID] == nil or InspectTimeReal() - _unitCache[unitID].lastUpdate > 60 then -- change check time > 60 secs for performance
-	if _unitCache[unitID] == nil then
+	if force == true or _unitCache[unitID] == nil then
 		local temp = InspectUnitDetail(unitID)
 		if temp ~= nil then
 			_unitCache[temp.id] = temp
