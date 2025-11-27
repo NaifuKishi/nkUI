@@ -52,7 +52,7 @@ end
 local function displayMessageAtTopCenter(message, duration)
     
     local frame = getFrame()
-    frame:SetText(message)
+    frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
     frame:SetFontSize(28)
     frame:SetFontColor(1, 1, 1, 1) -- White color
@@ -93,7 +93,7 @@ end
 
 local function animateFrame(frame, text, x, y, inComing)
 
-    frame:SetText(text)
+    frame:SetText(text, true)
     frame:SetVisible(true)
 
     local start = InspectTimeFrame()
@@ -133,7 +133,7 @@ local function animateFrame(frame, text, x, y, inComing)
 end
 
 
-local function displayText(sctText, isPet, inComing, type)
+local function displayText(sctText, isPet, inComing, crit)
 
     local xVariation = math.random(0, 50)
     if inComing then xVariation = math.random(0, -50) end 
@@ -142,6 +142,7 @@ local function displayText(sctText, isPet, inComing, type)
 
     local text = sctText
 
+
     if isPet and not inComing then
         xVariation = xVariation + 100 
         text = stringFormat("%s: %s", petName, sctText)
@@ -149,7 +150,7 @@ local function displayText(sctText, isPet, inComing, type)
 
     local frame = getFrame()
 
-    if stringFind (type, ".crit") then
+    if crit == true then
         frame:SetTextFont(addonInfo.id, "MontserratBold")
         
         if isPet then
@@ -163,39 +164,6 @@ local function displayText(sctText, isPet, inComing, type)
             frame:SetFontSize(defaultSize * .8)
         else
             frame:SetFontSize(defaultSize)
-        end
-    end
-
-    if stringFind (type, "damage") then
-        local damageType = stringMatch(type, "^damage%.crit%.([^%.]+)$")
-        if not damageType then
-            damageType = stringMatch(type, "^damage%.([^%.]+)$")
-        end
-
-        if inComing then 
-            frame:SetFontColor(1, 0, 0, 1) -- Red
-        elseif damageType == "life" then            
-            frame:SetFontColor(0, .5, 0, 1) -- Green
-        elseif damageType == "death" then
-            frame:SetFontColor(0.5, 0, 0.5, 1) -- Purple
-        elseif damageType == "air" then
-            frame:SetFontColor(0.5, 0.5, 1, 1) -- Light Blue
-        elseif damageType == "earth" then
-            frame:SetFontColor(0.5, 0.3, 0, 1) -- Brown
-        elseif damageType == "fire" then
-            frame:SetFontColor(1, 0.5, 0, 1) -- Orange
-        elseif damageType == "water" then
-            frame:SetFontColor(0, 0.5, 1, 1) -- Blue
-        else
-            frame:SetFontColor(1, 1, 1, 1) -- White
-        end
-    else
-        if type == "immune" or type == "resist" then
-            frame:SetFontColor(1, 1, 0, 1) -- Yellow        
-        elseif type == "heal" then
-            frame:SetFontColor(0, 1, 0, 1) -- Green
-        else
-            frame:SetFontColor(1, 1, 1, 1) -- White
         end
     end
 
@@ -236,7 +204,21 @@ local function _fctEventCombatDamage(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local damageText = string.format("-%d", info.damage)
+    if info.type == "life" then
+        damageText = stringFormat("<font color='#4CAF50'>%d</font>", info.damage)
+    elseif info.type == "death" then
+        damageText = stringFormat("<font color='#9C27B0'>%d</font>", info.damage)
+    elseif info.type == "air" then
+        damageText = stringFormat("<font color='#B0BEC5'>%d</font>", info.damage)
+    elseif info.type == "earth" then
+        damageText = stringFormat("<font color='#795548'>%d</font>", info.damage)
+    elseif info.type == "fire" then
+        damageText = stringFormat("<font color='#FF5722 '>%d</font>", info.damage)
+    elseif info.type == "water" then
+        damageText = stringFormat("<font color='#1976D2'>%d</font>", info.damage)
+    else
+        stringFormat("%d", info.damage)
+    end
 
     -- Check for critical hit
     if info.crit then
@@ -264,17 +246,17 @@ local function _fctEventCombatDamage(_, info)
         damageText = damageText .. string.format(" [%d Overkill]", info.overkill)
     end
 
-    if isIncoming then
-        damageText = stringFormat("[%s] %s", _internal.shortenName (EnKai.unit.GetUnitDetail (info.caster).name, 10), damageText)
+    if isIncoming == true then
+        damageText = stringFormat("<font color='#FF0000'>[%s]</font> %s", _internal.shortenName (EnKai.unit.GetUnitDetail (info.caster).name, 10), damageText)
     end
 
     local frame = getFrame()
 
     -- If it's a critical hit, make the font larger and yellow
     if info.crit then        
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s.crit", info.type))
+        displayText(damageText, isPet, isIncoming, string.format("damage.%s.crit", true))
     else
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s", info.type))
+        displayText(damageText, isPet, isIncoming, string.format("damage.%s", false))
     end
     
 end
@@ -284,40 +266,41 @@ local function _fctEventCombatDodge(_, info)
    local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local dodgeText = "Dodge"
-    displayText(dodgeText, isPet, isIncoming, "dodge")
+    local dodgeText = "<font color='#ffffff'>Dodge</font>"
+    displayText(dodgeText, isPet, isIncoming)
 end
 
 local function _fctEventCombatImmune(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local immuneText = "Immune"
-    displayText(immuneText, isPet, isIncoming, "immune")
+    local immuneText = "<font color='#ffffff'>Immune</font>"
+
+    displayText(immuneText, isPet, isIncoming)
 end
 
 local function _fctEventCombatMiss(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local missText = "Miss"
-    displayText(missText, isPet, isIncoming, "miss")
+    local missText = "<font color='#ffffff'>Miss</font>"
+    displayText(missText, isPet, isIncoming)
 end
 
 local function _fctEventCombatParry(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local parryText = "Parry"
-    displayText(parryText, isPet, isIncoming, "parry")
+    local parryText = "<font color='#ffffff'>Parry</font>"
+    displayText(parryText, isPet, isIncoming)
 end
 
 local function _fctEventCombatResist(_, info)
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local resistText = "Resist"
-    displayText(resistText, isPet, isIncoming, "resist")
+    local resistText = "<font color='#ffffff'>Resist</font>"
+    displayText(resistText, isPet, isIncoming)
 end
 
 local function _fctEventCombatHeal(_, info)
@@ -331,9 +314,9 @@ local function _fctEventCombatHeal(_, info)
     local healText 
 
     if info.overheal then
-        healText = string.format("Overheal: %d", info.overheal)
+        healText = string.format("Overheal: <font color='#00FF00'>%d</font>", info.overheal)
     else
-        healText = string.format("+%d", info.heal)
+        healText = string.format("+<font color='#00FF00'>%d</font>", info.heal)
     end
     
     displayText(healText, isPet, isIncoming, "heal")
