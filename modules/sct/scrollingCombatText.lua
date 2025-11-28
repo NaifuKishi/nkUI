@@ -10,6 +10,8 @@ local _events   = privateVars.events
 local InspectTimeFrame          = Inspect.Time.Frame
 local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 
+local EnKaiUnitGetUnitDetail    = EnKai.unit.GetUnitDetail
+
 local stringFind        = string.find
 local stringMatch       = string.match
 local stringFormat      = string.format
@@ -27,26 +29,44 @@ local petID, petName
 local lastMessage, messageY = nil, 0
 
 local abilityCache = {}
+local iconCache = {}
 local abilityTimer = {}
 
 local function createTextFrame()
-    local frame = EnKai.uiCreateFrame("nkText", EnKai.tools.uuid(), uiElements.context)
+    local name = EnKai.tools.uuid()
+
+    local frame = EnKai.uiCreateFrame("nkText", name, uiElements.context)
     frame:SetEffectGlow({ strength = 1 })
     frame:SetVisible(false)
+
+    -- Create an icon frame for the text frame
+    local icon = EnKai.uiCreateFrame("nkTexture", name .. "." .. EnKai.tools.uuid(), frame)
+    icon:SetPoint("CENTERRIGHT", frame, "CENTERLEFT", -5, 0)
+    icon:SetVisible(false)
+    icon:SetWidth(24)
+    icon:SetHeight(24)
+
+    -- Store the icon frame in the text frame for later access
+    frame.icon = icon
+
     return frame
 end
 
 local function getFrame()
+
     if #framePool > 0 then
-        return table.remove(framePool)
+        return table.remove(framePool)        
     else
-        return createTextFrame()
+        return createTextFrame()        
     end
 end
 
 local function releaseFrame(frame)
+    
     frame:SetVisible(false)
+    frame.icon:SetVisible(false) -- Hide the icon when releasing the frame
     table.insert(framePool, frame)
+
 end
 
 local function displayMessageAtTopCenter(message, duration)
@@ -71,7 +91,7 @@ local function displayMessageAtTopCenter(message, duration)
                 return 9999
             end
             coroutine.yield(idx)
-        end
+        end    
         
     end)
 
@@ -80,7 +100,8 @@ local function displayMessageAtTopCenter(message, duration)
             lastMessage = nil
             messageY = 0
         end
-        releaseFrame(frame)        
+
+        releaseFrame(frame)
     end
 
     EnKai.coroutines.add({
@@ -91,10 +112,15 @@ local function displayMessageAtTopCenter(message, duration)
     })
 end
 
-local function animateFrame(frame, text, x, y, inComing)
+local function animateFrame(frame, text, icon, x, y, inComing)
 
     frame:SetText(text, true)
     frame:SetVisible(true)
+
+    if icon then
+        frame.icon:SetTextureAsync("Rift", icon)
+        frame.icon:SetVisible(true)
+    end
 
     local start = InspectTimeFrame()
     local duration = 1.5
@@ -133,7 +159,7 @@ local function animateFrame(frame, text, x, y, inComing)
 end
 
 
-local function displayText(sctText, isPet, inComing, crit)
+local function displayText(sctText, icon, isPet, inComing, crit)
 
     local xVariation = math.random(0, 50)
     if inComing then xVariation = math.random(0, -50) end 
@@ -167,7 +193,7 @@ local function displayText(sctText, isPet, inComing, crit)
         end
     end
 
-    animateFrame(frame, text, xVariation, yVariation, inComing)
+    animateFrame(frame, text, icon, xVariation, yVariation, inComing)
 end
 
 local function _validEvent (info)
@@ -203,6 +229,18 @@ local function _fctEventCombatDamage(_, info)
     
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
+
+    local icon = nil
+
+    if iconCache[info.abilityNew] == nil then
+        local details = InspectAbilityNewDetail(info.abilityNew)
+        if details then
+            iconCache[info.abilityNew] = details.icon
+            icon = details.icon
+        end
+    else
+         icon = iconCache[info.abilityNew]
+    end
 
     local damageText = ""
 
@@ -249,16 +287,14 @@ local function _fctEventCombatDamage(_, info)
     end
 
     if isIncoming == true then
-        damageText = stringFormat("<font color='#FF0000'>[%s]</font> %s", _internal.shortenName (EnKai.unit.GetUnitDetail (info.caster).name, 10), damageText)
+        damageText = stringFormat("<font color='#FF0000'>[%s]</font> %s", _internal.shortenName (EnKaiUnitGetUnitDetail (info.caster).name, 10), damageText)
     end
-
-    local frame = getFrame()
 
     -- If it's a critical hit, make the font larger and yellow
     if info.crit then        
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s.crit", true))
+        displayText(damageText, icon, isPet, isIncoming, string.format("damage.%s.crit", true))
     else
-        displayText(damageText, isPet, isIncoming, string.format("damage.%s", false))
+        displayText(damageText, icon, isPet, isIncoming, string.format("damage.%s", false))
     end
     
 end
@@ -269,7 +305,7 @@ local function _fctEventCombatDodge(_, info)
     if valid == false then return end
 
     local dodgeText = "<font color='#ffffff'>Dodge</font>"
-    displayText(dodgeText, isPet, isIncoming)
+    displayText(dodgeText, nil, isPet, isIncoming)
 end
 
 local function _fctEventCombatImmune(_, info)
@@ -278,7 +314,7 @@ local function _fctEventCombatImmune(_, info)
 
     local immuneText = "<font color='#ffffff'>Immune</font>"
 
-    displayText(immuneText, isPet, isIncoming)
+    displayText(immuneText, nil, isPet, isIncoming)
 end
 
 local function _fctEventCombatMiss(_, info)
@@ -286,7 +322,7 @@ local function _fctEventCombatMiss(_, info)
     if valid == false then return end
 
     local missText = "<font color='#ffffff'>Miss</font>"
-    displayText(missText, isPet, isIncoming)
+    displayText(missText, nil, isPet, isIncoming)
 end
 
 local function _fctEventCombatParry(_, info)
@@ -294,7 +330,7 @@ local function _fctEventCombatParry(_, info)
     if valid == false then return end
 
     local parryText = "<font color='#ffffff'>Parry</font>"
-    displayText(parryText, isPet, isIncoming)
+    displayText(parryText, nil, isPet, isIncoming)
 end
 
 local function _fctEventCombatResist(_, info)
@@ -302,7 +338,7 @@ local function _fctEventCombatResist(_, info)
     if valid == false then return end
 
     local resistText = "<font color='#ffffff'>Resist</font>"
-    displayText(resistText, isPet, isIncoming)
+    displayText(resistText, nil, isPet, isIncoming)
 end
 
 local function _fctEventCombatHeal(_, info)
@@ -321,7 +357,7 @@ local function _fctEventCombatHeal(_, info)
         healText = string.format("+<font color='#00FF00'>%d</font>", info.heal)
     end
     
-    displayText(healText, isPet, isIncoming, "heal")
+    displayText(healText, nil, isPet, isIncoming, "heal")
 end
 
 function _fctEventCooldownStart (_, info)
