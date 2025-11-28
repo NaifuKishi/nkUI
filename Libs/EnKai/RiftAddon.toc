@@ -74,6 +74,7 @@ RunOnStartup = {
   "unit/unit.lua",
   --"unit/unitstats.lua",
   "manager/manager.lua",
+  "manager/managerV2.lua",
   "version/version.lua",
   "zip/encdec.lua",
   "zip/zip.lua"
@@ -97,7 +98,3 @@ SavedVariables = {
   EnKaiInv = "account",
   EnKaiDebug = "account",
 }
--- X-Curse-Packaged-Version: V3.1.1
--- X-Curse-Project-Name: EnKai
--- X-Curse-Project-ID: enkai
--- X-Curse-Repository-ID: rift/enkai/mainline

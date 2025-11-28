@@ -219,6 +219,8 @@ local function _main(_, addon)
 
 		end, "nkUI.Unit.Availability.Full")
 
+		EnKai.managerV2.RegisterButton("nkUI", "nkUI", "gfx/iconElite.png", _internal.tutorial)
+
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
 
