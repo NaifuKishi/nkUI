@@ -218,7 +218,7 @@ local function _fctEventCombatDamage(_, info)
         damageText = stringFormat("<font color='#FF5722 '>%d</font>", info.damage)
     elseif info.type == "water" then
         damageText = stringFormat("<font color='#1976D2'>%d</font>", info.damage)
-    else
+    elseif info.damage ~= nil then
         damageText = stringFormat("%d", info.damage)
     end
 

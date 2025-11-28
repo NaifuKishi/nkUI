@@ -1,5 +1,6 @@
 v0.2.2
     - fixes: Fixed a potential name conflict on tooltip
+    - fixes: Fixed an error in SCT if event is fired without damage
 
 v0.2.1
     - update: shortened name of caster on sct
