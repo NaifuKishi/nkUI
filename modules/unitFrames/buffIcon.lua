@@ -62,7 +62,7 @@ function uiElements.icon (name, parent)
 	
 	icon:SetMouseMasking('limited')
 	
-	local timerFontSize = 20
+	local timerFontSize = 18
 	local stackFontSize = 16
 	local labelFontSize = 16
 	local showBorder = true
