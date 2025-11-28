@@ -218,8 +218,8 @@ local function _main(_, addon)
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
 		end, "nkUI.Unit.Availability.Full")
-
-		EnKai.managerV2.RegisterButton("nkUI", "nkUI", "gfx/iconElite.png", _internal.tutorial)
+		
+		EnKai.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", _internal.tutorial)
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

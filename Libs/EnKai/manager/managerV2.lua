@@ -27,7 +27,10 @@ local _context = UI.CreateContext("nkManagerV2")
 ---------- local function block ---------
 
 local _buttons = {}
+local _buttonIcons = {}
 local _frame = nil
+
+local function _fctSecureEnter() _frame:CloseAllMenus () end
 
 --[[
    _createFrame
@@ -88,15 +91,17 @@ end
         None
 ]]
 local function _updateFrame()
+
     if not _frame then
         _createFrame()
+        Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkManagerv2.System.Secure.Enter")
     end
 
     -- Clear existing buttons
     for _, child in ipairs(_frame:GetChildren()) do
         child:Destroy()
-    end
-
+    end	
+		
     local from, object, to, x, y = "TOPLEFT", _frame, "TOPLEFT", 5, 5
     local counter = 1
     local maxCounter =math.floor(UI.Native.MapMini:GetWidth() / 37)    
@@ -107,24 +112,36 @@ local function _updateFrame()
 
     -- Add new buttons
     for name, buttonInfo in pairs(_buttons) do
-        local button = UI.CreateFrame("Texture", "EnKai.minimapButton." .. name, _frame)
-        button:SetTexture(buttonInfo.iconSource, buttonInfo.icon)
-        button:SetWidth(32)
-        button:SetHeight(32)
+
+        local button
+
+        if _buttonIcons[name] == nil then
+            button = UI.CreateFrame("Texture", "EnKai.minimapButton." .. name, _frame)
+            button:SetTexture(buttonInfo.iconSource, buttonInfo.icon)
+            button:SetWidth(32)
+            button:SetHeight(32)
+            button:EventDetach(Event.UI.Input.Mouse.Left.Click, nil, name .. ".Click")
+            button:EventAttach(Event.UI.Input.Mouse.Left.Click, buttonInfo.callback, name .. ".Click")
+            _buttonIcons[name] = button
+        else
+            button = _buttonIcons[name]
+        end
+
         button:SetPoint(from, object, to, x, y)
-        button:EventAttach(Event.UI.Input.Mouse.Left.Click, buttonInfo.callback, name .. "Click")
 
-        if counter == 1 then firstButton = button end
+        if counter == 1 then
+            firstButton = button
+        end
 
-        from, object, to, x, y = "TOPLEFT", button, "TOPRIGHT", 5, 0
         counter = counter + 1
-        if counter > maxCounter then 
-          counter = 1
-          from, object, to, x, y = "TOPLEFT", firstButton, "BOTTOMLEFT", 0, 5
-          height = height + 37          
+        from, object, to, x, y = "TOPLEFT", button, "TOPRIGHT", 5, 0
+
+        if counter > maxCounter then
+            counter = 1
+            from, object, to, x, y = "TOPLEFT", firstButton, "BOTTOMLEFT", 0, 5
         end
     end
-
+              
     _frame:SetHeight(height)
 end
 
@@ -140,9 +157,9 @@ end
     Returns:
         None
 ]]
-function EnKai.managerV2.RegisterButton(name, iconSource, icon, callback)
+function EnKai.managerV2.RegisterButton(name, iconSource, icon, callBack)
     
-    _buttons[name] = {icon = icon, iconSource = iconSource, callback = callback}
+    _buttons[name] = {icon = icon, iconSource = iconSource, callback = callBack}
     _updateFrame()
 
 end
