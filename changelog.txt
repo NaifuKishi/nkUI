@@ -1,3 +1,7 @@
+v0.2.3
+    - update: added icons to heals in sct
+    - update: lowered update of experience databar in lowerbar
+
 v0.2.2
     - update: SCT now shows ability icon for outgoing damage
     - fixes: Fixed a potential name conflict on tooltip

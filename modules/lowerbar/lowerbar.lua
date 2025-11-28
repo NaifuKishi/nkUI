@@ -277,7 +277,7 @@ function _internal.experience ()
 
 		local now = InspectTimeFrame()
 
-		if not updateTime or now - updateTime > 1 then
+		if not updateTime or now - updateTime > 5 then -- update experience slower
 			updateTime = now
             percent = 0
 

@@ -9,6 +9,7 @@ local _events   = privateVars.events
 
 local InspectTimeFrame          = Inspect.Time.Frame
 local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
+local InspectAbilityDetail      = Inspect.Ability.Detail
 
 local EnKaiUnitGetUnitDetail    = EnKai.unit.GetUnitDetail
 
@@ -31,6 +32,41 @@ local lastMessage, messageY = nil, 0
 local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
+
+local function getAbilityIcon(info)
+
+    local icon
+    local abilityNew = info.abilityNew
+    local ability = info.ability
+
+    if abilityNew == nil and ability == nil then return end
+
+    if abilityNew ~= nil then
+        if iconCache[abilityNew] == nil then
+            local details = InspectAbilityNewDetail(abilityNew)
+            if details then
+                iconCache[abilityNew] = details.icon
+                icon = details.icon
+            end
+        else
+            icon = iconCache[info.abilityNew]
+        end
+    else
+        if iconCache[ability] == nil then
+            local details = InspectAbilityDetail(ability)
+            if details then
+                iconCache[ability] = details.icon
+                icon = details.icon
+            end
+        else
+            icon = iconCache[ability]
+        end
+    end
+
+    return icon
+
+end
+
 
 local function createTextFrame()
     local name = EnKai.tools.uuid()
@@ -226,21 +262,11 @@ local function _validEvent (info)
 end
 
 local function _fctEventCombatDamage(_, info)
-    
+
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 
-    local icon = nil
-
-    if iconCache[info.abilityNew] == nil then
-        local details = InspectAbilityNewDetail(info.abilityNew)
-        if details then
-            iconCache[info.abilityNew] = details.icon
-            icon = details.icon
-        end
-    else
-         icon = iconCache[info.abilityNew]
-    end
+    local icon = getAbilityIcon(info)
 
     local damageText = ""
 
@@ -349,6 +375,8 @@ local function _fctEventCombatHeal(_, info)
     
     if info.heal == nil and info.overheal == nil then  return end
 
+    local icon = getAbilityIcon(info)
+
     local healText 
 
     if info.overheal then
@@ -357,7 +385,7 @@ local function _fctEventCombatHeal(_, info)
         healText = string.format("+<font color='#00FF00'>%d</font>", info.heal)
     end
     
-    displayText(healText, nil, isPet, isIncoming, "heal")
+    displayText(healText, icon, isPet, isIncoming, "heal")
 end
 
 function _fctEventCooldownStart (_, info)
