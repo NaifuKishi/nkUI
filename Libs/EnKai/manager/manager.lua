@@ -196,7 +196,7 @@ function EnKai.manager.init(addonName, subMenuItems, mainFunc)
 
 	if _button == nil then 
 		_button = _uiAddonButton() 
-		Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkManager.Ssytem.Secure.Enter")
+		Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkManager.System.Secure.Enter")
 	end	
 	
 	if addonName ~= nil then _button:AddAddon (addonName, subMenuItems, mainFunc) end

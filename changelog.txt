@@ -1,3 +1,6 @@
+v0.2.2
+    - fixes: Fixed a potential name conflict on tooltip
+
 v0.2.1
     - update: shortened name of caster on sct
     - update: some SCT color and display tweaks

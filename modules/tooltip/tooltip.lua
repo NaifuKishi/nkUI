@@ -10,7 +10,7 @@ local oFuncs    = privateVars.oFuncs
 
 ---------- init local variables ---------
 
-local name = "tooltip"
+local name = "nkUI.tooltip"
 local _tooltip = {}
 local displayDelay = nil
 local tooltipPos = nil
