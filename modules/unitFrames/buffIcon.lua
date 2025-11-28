@@ -116,10 +116,10 @@ function uiElements.icon (name, parent)
 		label:SetText(text)
 	end
 	
-	function icon:SetTimer(text)
-		timer:ClearWidth()
-		timer:SetText(text)
-	end
+	--function icon:SetTimer(text)
+	--	timer:ClearWidth()
+	--	timer:SetText(text)
+	--end
 	
 	function icon:SetStack(text)
 		stack:ClearWidth()
@@ -202,11 +202,15 @@ function uiElements.icon (name, parent)
 			end
 
 			local unit = "s"
-			if newTimer > 60 then
+			if newTimer > 3600 then
+				newTimer = mathFloor(newTimer / 3600)
+				unit = "h"
+			elseif newTimer > 60 then
 				newTimer = mathFloor(newTimer / 60)
 				unit = "m"
 			end			
 
+			timer:ClearWidth()
 			timer:SetText(stringFormat("%d%s", newTimer, unit))
 			timer:SetVisible(true)
 		else

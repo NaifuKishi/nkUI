@@ -1,6 +1,7 @@
 v0.2.2
     - fixes: Fixed a potential name conflict on tooltip
     - fixes: Fixed an error in SCT if event is fired without damage
+    - fixes: buffs with duration > 60 Minutes are now displayed as hour
 
 v0.2.1
     - update: shortened name of caster on sct
@@ -118,6 +119,7 @@ know bug list
 
 ToDo
 
+    - group update bug on death
     - minimap icon module for nkAddons
     - afk display on unit frame
     - rift color settings for unit frames    
