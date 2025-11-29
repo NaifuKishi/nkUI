@@ -1,3 +1,7 @@
+v0.2.4
+    - fixes: EnKai version manager update
+    - fixes: Fixed lowerbar notoriety display
+
 v0.2.3
     - update: added icons to heals in sct
     - update: lowered update of experience databar in lowerbar
@@ -140,5 +144,7 @@ ToDo
 bug reports
 
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.
-
+Uh when you target yourself and buffs apply then target a mob it transfers the buffs to that frame. Also still doesnt update the buffs on the target frame if they already have existing ones.
+(should not have 2 blade hustle and double coup buffs on the dummy frame) 
+rep is wrong - I'm decorated
     

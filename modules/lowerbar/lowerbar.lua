@@ -315,13 +315,13 @@ function _internal.faction ()
     local currentFaction
     
     local notorietyLevels = {
-            neutral = 0,
-            friendly = 3000,
-            decorated = 10000,
-            honored = 20000,
-            revered = 35000,
-            glorified = 60000,
-            venerated = 90000
+            {label = "neutral", required = 0},
+            {label = "friendly", required = 3000},
+            {label = "decorated", required = 10000},
+            {label = "honored", required = 20000},
+            {label = "revered", required = 35000},
+            {label = "glorified", required = 60000},
+            {label = "venerated", required = 90000},
     }
 
     local list = InspectFactionList()
@@ -364,6 +364,7 @@ function _internal.faction ()
         if factionData ~= nil then
             for k, v in pairs(factionData) do
                 currentFaction = k
+                break
             end            
         end
 
@@ -385,10 +386,10 @@ function _internal.faction ()
 				datasetFaction:SetText(stringFormat("%d%%", 0))
                 datasetFactionName:SetText("")datasetExp:SetText(stringFormat("%d%%", percent ))
             else
-                for k, v in pairs (notorietyLevels) do
-                    if faction.notoriety <= v then
-                        percent = 100 / v * faction.notoriety
-                        level = k
+                for k, v in ipairs (notorietyLevels) do                    
+                    if (faction.notoriety - 26000) <= v.required then
+                        percent = 100 / v.required * (faction.notoriety - 26000)
+                        level = v.label                       
                         break
                     end
                 end
