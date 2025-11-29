@@ -539,6 +539,12 @@ function _internal.updateUnit (frame, unitID)
     frame:SetRole(details.role)
     frame:SetTier(details.tier)
 
+    frame:ClearBuffs()
+
+    local buffs = InspectBuffList(unitID)
+    if (buffs) then frame:addBuff(unitID, buffs) end
+
+
 end
 
 --[[
@@ -731,7 +737,7 @@ function _internal.uiFramesRemoveBuffs()
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
-        if (buffs) then targetFrame:removeBuff(targetID, buffss) end
+        if (buffs) then targetFrame:removeBuff(targetID, buffs) end
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
@@ -739,7 +745,7 @@ function _internal.uiFramesRemoveBuffs()
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)
-        if (buffs) then playerPetFrame:removeBuff(playerPetID, buffss) end
+        if (buffs) then playerPetFrame:removeBuff(playerPetID, buffs) end
     end
 
 end
@@ -755,7 +761,7 @@ function _internal.uiFramesLoadAllBuffs()
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
-        if (buffs) then targetFrame:addBuff(targetID, buffss) end
+        if (buffs) then targetFrame:addBuff(targetID, buffs) end
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
@@ -763,7 +769,7 @@ function _internal.uiFramesLoadAllBuffs()
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)
-        if (buffs) then playerPetFrame:addBuff(playerPetID, buffss) end
+        if (buffs) then playerPetFrame:addBuff(playerPetID, buffs) end
     end
 end
 

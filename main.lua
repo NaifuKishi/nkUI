@@ -151,7 +151,8 @@ end
 local function _main(_, addon)
 	if addon == addonInfo.identifier then
 		table.insert(Command.Slash.Register("nkui"), {_internal.tutorial, "nkUI", "commandHandler"})
-
+		-- table.insert(Command.Slash.Register("bag"), {_internal.oneBagInit, "nkUI", "commandHandler"})
+		
 		local items = { { label = privateVars.langTexts.configuration, callBack = _internal.tutorial} }
 
         EnKai.ui.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
@@ -213,7 +214,7 @@ local function _main(_, addon)
 
 			if nkUISetup and nkUISetup.sct and nkUISetup.sct.activate then
 				_internal.sctInit()
-			end
+			end			
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
