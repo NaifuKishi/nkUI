@@ -17,7 +17,7 @@ RunOnStartup = {
 
 	"modules/lowerbar/lowerbar.lua",
 
-	--"modules/onebag/onebag.lua",
+	"modules/onebag/onebag.lua",
 
 	"modules/unitFrames/events.lua",
 	"modules/unitFrames/statevents.lua",

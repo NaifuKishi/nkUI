@@ -52,6 +52,8 @@ oFuncs.InspectAbilityNewDetail		= Inspect.Ability.New.Detail
 oFuncs.InspectBuffDetail			= Inspect.Buff.Detail
 oFuncs.InspectBuffList				= Inspect.Buff.List
 
+local stringFind					= string.find
+
 ---------- init variables ----------
 
 data.colors = {
@@ -135,6 +137,18 @@ local function _setupDefaults()
 	end
 end
 
+local function _commandHandler (commandline)
+
+	if commandline == nil then return end
+	
+	if stringFind(commandline, "bag") ~= nil then 
+		_internal.oneBagInit()
+	else
+		_internal.tutorial()
+	end
+
+end
+
 --[[
    _main
     Description:
@@ -150,8 +164,7 @@ end
 ]]
 local function _main(_, addon)
 	if addon == addonInfo.identifier then
-		table.insert(Command.Slash.Register("nkui"), {_internal.tutorial, "nkUI", "commandHandler"})
-		-- table.insert(Command.Slash.Register("bag"), {_internal.oneBagInit, "nkUI", "commandHandler"})
+		table.insert(Command.Slash.Register("nkui"), {_commandHandler, "nkUI", "commandHandler"})
 		
 		local items = { { label = privateVars.langTexts.configuration, callBack = _internal.tutorial} }
 
