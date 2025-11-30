@@ -29,6 +29,8 @@ RunOnStartup = {
 	"modules/unitFrames/buffIcon.lua",
 	"modules/unitFrames/ressourceBar.lua",
 
+	"modules/cooldowns/cooldowns.lua",
+
 	"modules/sct/scrollingCombatText.lua",
 
 	"modules/tooltip/tooltip.lua",

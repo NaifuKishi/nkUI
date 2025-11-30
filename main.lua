@@ -226,6 +226,8 @@ local function _main(_, addon)
 				_internal.sctInit()
 			end
 
+			--_internal.cooldownInit()
+
 			UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
 				if uiElements.oneBag == nil then _internal.oneBagInit() end
 
