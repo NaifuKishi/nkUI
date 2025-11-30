@@ -8,8 +8,11 @@ local uiElements= privateVars.uiElements
 local _internal = privateVars.internal
 local _events   = privateVars.events
 
+local InspectTimeReal   = Inspect.Time.Real
+
 local stringFormat      = string.format
 local stringFind        = string.find
+local stringMatch       = string.match
 
 ---------- init local variables ---------
 
@@ -17,6 +20,9 @@ local name = "onebag"
 local itemIcons = {}
 local categoryLabels = {}
 local draggedItem, draggedSlot
+local movedItem
+local cachedItems
+local lastCacheUpdate
 
 ---------- make global functions local ---------
 
@@ -81,6 +87,12 @@ local function _fctItemIcon (name, parent)
         thisSlot = slotID
     end
 
+    function itemFrame:Clear()
+        thisSlot = nil
+        thisItemDI = nil
+        itemFrame:SetVisible(false)
+    end 
+
     function itemFrame:SetQuantity(quantity)
         if quantity then
             quantityText:SetText(quantity)
@@ -128,15 +140,23 @@ local function _fctItemIcon (name, parent)
         end
     end
 
-    itemFrame:EventAttach( Event.UI.Input.Mouse.Left.Down, function (self)	
+    itemIcon:EventAttach( Event.UI.Input.Mouse.Left.Down, function (self)	
         draggedItem = thisItemID
         draggedSlot = thisSlot
         Command.Item.Standard.Left(thisItemID)
 	    Command.Cursor(thisItemID)
 	end, name .. "Event.Left.Down")
 
-    itemFrame:EventAttach( Event.UI.Input.Mouse.Right.Down, function (self)	
-        Command.Item.Standard.Right(thisItemID)
+    itemIcon:EventAttach( Event.UI.Input.Mouse.Right.Down, function (self)	
+        if UI.Native.Bank:GetLoaded() then
+            local vaultSlot = EnKai.inventory.findFreeVaultSlot()
+            if vaultSlot then
+                Command.Item.Move(thisSlot, vaultSlot)
+                movedItem = thisItemID
+             end
+        else
+            Command.Item.Standard.Right(thisItemID)           
+        end
 	end, name .. "Event.Right.Down")	
 
     return itemFrame
@@ -176,9 +196,14 @@ local function _fctBagUI()
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetWidth(680 * data.uiScaleX)
     bagWindow:SetHeight(600 * data.uiScaleX)
-    bagWindow:SetPoint("BOTTOMRIGHT", UI.Native.BagInventory1, "BOTTOMRIGHT")
     bagWindow:SetShadow(true)
     bagWindow:SetLayer(1)
+
+    bagWindow:SetPoint("CENTER", UIParent, "CENTER", 1000 * data.uiScaleX, 000 * data.uiScaleY)
+
+    bagWindow:EventAttach( Event.UI.Input.Mouse.Left.Up, function (self)	
+        Command.Cursor(nil)
+	end, "nkUI.bagWindow" .. ".Event.Left.Up")	
 
     return bagWindow
 
@@ -259,7 +284,7 @@ local function _fctBagSlots ()
 
 end
 
-local function _getRealCategory (category)
+local function _getRealCategory (category, rarity)
 
     if stringFind(category, "consumable") then
         return "Consumable"
@@ -278,35 +303,60 @@ local function _getRealCategory (category)
     elseif stringFind(category, "weapon") then
         return "Weapon"
     elseif stringFind(category, "misc") then
-        return "Various"
+        if rarity == "sellable" then 
+            return "Trash"
+        else
+            return "Various"
+        end
     elseif stringFind(category, "crafting ingredient") then
         return "Crafting material"
     elseif stringFind(category, "crafting recipe") then
         return "Crafting recipe"
+    elseif stringFind(category, "crafting material") or stringFind(category, "crafting augment") then
+        return "Crafting material"        
     elseif stringFind(category, "container") then
         return "Container"
+    elseif stringFind(category, "armor costume") then
+        return "Costume"
+    elseif stringFind(category, "dimension") then
+        return "Dimension"
+    elseif stringFind(category, "planar vessel") then
+        return "Planar Fokus"
     end
 
     return category
 
 end
 
-local function _populateBag()
+function _internal.populateBag()
+
     local counter = 1
     local firstIcon = nil
     local lastIcon = nil
 
-    local items = EnKai.inventory.getBagItems()
+    if cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
+        cachedItems = EnKai.inventory.getBagItems()
+        lastCacheUpdate = InspectTimeReal()
+    end
+
     local categories = {}
 
-    for k, v in pairs(items) do
-        local realCategory = _getRealCategory(v.category)
+    for k, v in pairs(cachedItems) do
+        local realCategory = _getRealCategory(v.category, v.rarity)
 
         if categories[realCategory] == nil then
             categories[realCategory] = {}
         end
-
+        
         categories[realCategory][k] = v
+    end
+
+    local sortedCategories = EnKai.tools.table.getSortedKeys (categories)
+
+    for k, v in pairs(categoryLabels) do
+        if EnKai.tools.table.isMember(sortedCategories, k) == false then
+            v:SetVisible(false)
+        end
     end
 
     local iconsPerLine = 0
@@ -315,7 +365,18 @@ local function _populateBag()
     local startCategory
     local currentYOffset = 0  -- Track vertical position for new categories
 
-    for category, content in pairs(categories) do
+    for k, v in pairs(itemIcons) do
+        if cachedItems[k] == nil then
+            v:Clear()
+        end
+    end
+
+    for idx = 1, #sortedCategories, 1 do
+
+    --    for category, content in pairs(categories) do
+
+        local category = sortedCategories[idx]
+        local content = categories[category]
         local thisCategory = categoryLabels[category]
 
         if thisCategory == nil then
@@ -323,6 +384,8 @@ local function _populateBag()
             thisCategory:SetText(category)
             categoryLabels[category] = thisCategory
         end
+
+        thisCategory:SetVisible(true)
 
         counter = 1
         local contentCounter = 0
@@ -341,10 +404,9 @@ local function _populateBag()
             itemIcons[slot]:SetIcon("Rift", itemDetails.icon)
             itemIcons[slot]:SetRarity(itemDetails.rarity)
             itemIcons[slot]:SetQuantity(stringFormat("%d", itemDetails.stack))
-
             itemIcons[slot]:SetBound(itemDetails.bind, itemDetails.bound)
-
             itemIcons[slot]:SetItem(itemDetails.id)
+            itemIcons[slot]:SetVisible(true)
 
             if counter == 1 then
                 if rows == 1 then
@@ -368,7 +430,7 @@ local function _populateBag()
             counter = counter + 1
         end
 
-        local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 44) + 1
+        local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 42) + 1
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
         thisCategory:SetHeight(((20* data.uiScaleX) + (rows * (40* data.uiScaleX)) + ((rows-1) * (5* data.uiScaleX))))
@@ -382,7 +444,7 @@ local function _populateBag()
             currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScaleX))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
-            if iconsPerLine + cols > 15 then
+            if iconsPerLine + cols >= 15 then
                 thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScaleX, currentYOffset)
                 currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScaleX)))  -- Increased vertical spacing
                 iconsPerLine = cols
@@ -394,6 +456,13 @@ local function _populateBag()
 
         lastCategory = thisCategory
     end
+
+    if lastCategory then
+        local bottom = lastCategory:GetBottom()
+        local top = uiElements.oneBag:GetTop()
+        uiElements.oneBag:SetHeight(bottom - top + 10)        
+    end
+
 end
 
 local function _fctItemSlot (_, slots)
@@ -412,13 +481,16 @@ local function _fctItemSlot (_, slots)
         if doBatSlotsUpdate and doInventoryUpdate then break end
     end
 
-    if doInventoryUpdate then _populateBag() end
+    if doInventoryUpdate then 
+        EnKai.inventory.updateDB()
+        _internal.populateBag() 
+    end
     if doBatSlotsUpdate then  _fctGetBagSlots() end
 
 end
 
 local function _fctItemUpdate (_, a, b)
-
+    --print "Hossa"
 end
 
 function _internal.oneBagInit()
@@ -434,14 +506,40 @@ function _internal.oneBagInit()
         uiElements.oneBag = _fctBagUI()
         uiElements.oneBagBagSlots = _fctBagSlots ()
 
-        Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "EnKai.inventory.Item.Slot")
-        Command.Event.Attach(Event.Item.Update, _fctItemUpdate, "EnKai.inventory.Item.Update")
+        Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "nkUI.OneBag.Item.Slot")
+        Command.Event.Attach(Event.Item.Update, _fctItemUpdate, "nkUI.OneBag.Item.Update")
+
+        Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].SlotUpdate, function (_, slots)
+            if cachedItems then
+                for k, v in pairs(slots) do
+                    if stringMatch(k,"^si%d%d%.%d%d%d$") then
+                        if v == false then
+                            cachedItems[k] = nil
+                        else
+                            cachedItems[k] = EnKai.inventory.GetItemByKey (v)
+                        end
+                    end
+                end                
+            end
+
+            _internal.populateBag()
+
+        end, "nkUI.OneBag.EnKai.InventoryManager.SlotUpdate")
 
         Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, items)
+--[[            dump (items)
+            for k, v in pairs(items) do
+                if movedItem == k and v > 0 then
+                    movedItem = nil
+                    EnKai.inventory.updateDB()
+                    _internal.populateBag()
+                end
+            end
+]]
         end, "nkUI.OneBag.EnKai.InventoryManager.Update")
     end
 
-    _populateBag()
+    _internal.populateBag()
     _fctGetBagSlots()
 
 end

@@ -484,6 +484,7 @@ function _internal.sctInit()
 
     Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)         
         local gain = accumulated - lastAccumulated
+        if gain == 0 then return end
         displayMovingMessage(stringFormat("%d exp", gain), 2)
         lastAccumulated = accumulated
     end, "nkui.SCT.TEMPORARY.Experience")

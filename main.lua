@@ -224,7 +224,13 @@ local function _main(_, addon)
 
 			if nkUISetup and nkUISetup.sct and nkUISetup.sct.activate then
 				_internal.sctInit()
-			end			
+			end
+
+			UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
+				if uiElements.oneBag == nil then _internal.oneBagInit() end
+
+				uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
+			end, "nkUI.OneBag.Native.Bank.Loaded")
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 

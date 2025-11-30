@@ -449,7 +449,11 @@ local function _createTutorialWindow()
         },
         {
             title = "One bag module (2/2)",
-            description = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.",
+            description = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.\n\nAlso I suggest that you scale your default bags to the lowest setting possible which is 50%.",
+            image = "gfx/tutorialOneBagScale.png",
+            width = 525,
+            height = 115,
+            position = "bottom",
         },
         {
             title = "Unit Frame module",
