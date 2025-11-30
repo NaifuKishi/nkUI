@@ -1,4 +1,4 @@
-v0.2.4
+v0.3.0
     - new: one bag module
     - update: added exp gain to SCT
     - update: clicking lowerbar currency will open bag
