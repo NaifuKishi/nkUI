@@ -304,6 +304,8 @@ end
 
 local function _fctEventCombatDamage(_, info)
 
+    if info.damage == nil then return end
+
     local valid, isPet, isIncoming = _validEvent (info)
     if valid == false then return end
 

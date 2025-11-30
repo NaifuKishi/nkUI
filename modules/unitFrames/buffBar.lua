@@ -40,7 +40,7 @@ function _internal.buffBar.UpdateBuffDisplay()
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", UIParent, 10, 10
     local lastIcon
-    local firstBuffIcon = UIParent
+    local firstBuffIcon
 
     local sortedBuffs = {}
     local sortedDebuffs = {}
@@ -53,11 +53,13 @@ function _internal.buffBar.UpdateBuffDisplay()
         if firstBuffIcon == nil then firstBuffIcon = icon end
     end
 
-    from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 10
+    if firstBuffIcon == nil then firstBuffIcon = UIParent end
+    from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 20
 
     for k, v in pairs (debuffDisplayList) do
         local icon = debuffIcons[k].icon
         icon:SetPoint(from, object, to, x, y)
+        
         from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
     end
 end
@@ -70,6 +72,7 @@ function _internal.buffBar.addBuff(unit, buffs)
 
         if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
             if debuffDisplayList[k] == nil then
+
                 if debuffIcons[k] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, 1 * data.uiScaleX, 0, 0)
                     debuffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
@@ -106,13 +109,11 @@ function _internal.buffBar.addBuff(unit, buffs)
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. k, 1 * data.uiScaleX, 0, 0)
                     buffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
 
-                    --buffIcons[k] = { icon = uiElements.icon ("nkUI.buffIcon." .. k, uiElements.context), visible = true, details = v }
                     buffIcons[k].icon:SetBuff(unit, k)
                     buffIcons[k].icon:SetEffect(privateVars.effects.gloss)
                     buffIcons[k].icon:ShowBorder(true)
                     buffIcons[k].icon:SetScale(data.uiScaleX)
                 else
-                    --buffIcons[k].details = details
                     buffIcons[k].visible = true
                 end
 
