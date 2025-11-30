@@ -16,12 +16,32 @@ local stringFind        = string.find
 local name = "onebag"
 local itemIcons = {}
 local categoryLabels = {}
+local draggedItem, draggedSlot
 
 ---------- make global functions local ---------
 
+local function _fctGetBagSlots ()
+
+    local slots = EnKai.inventory.getBagSlots()
+
+    for idx = 1, 8, 1 do
+
+        local bagSlot = slots[stringFormat("sibg.%03d", idx)]
+
+        if bagSlot.icon == nil then
+            uiElements.oneBagBagSlots:SetIcon(idx, addonInfo.identifier, "gfx/iconLockedBagSlot.png")
+            uiElements.oneBagBagSlots:SetTint (idx, true)
+        else
+            uiElements.oneBagBagSlots:SetIcon(idx, "Rift", bagSlot.icon)
+            uiElements.oneBagBagSlots:SetTint (idx, false)
+        end
+    end    
+
+end
+
 local function _fctItemIcon (name, parent)
 
-    local thisItemID
+    local thisItemID, thisSlot
 
     local itemFrame = EnKai.uiCreateFrame("nKFrame", name, parent) 
     itemFrame:SetWidth(40)
@@ -38,24 +58,27 @@ local function _fctItemIcon (name, parent)
     quantityText:SetFontColor(1, 1, 1, 1)
     quantityText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     quantityText:SetEffectGlow({ strength = 3})
-    quantityText:SetLayer(1)
+    quantityText:SetLayer(2)
 
     local bindText = EnKai.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
-    bindText:SetFontSize(14)
+    bindText:SetFontSize(10)
     bindText:SetFontColor(1, 1, 1, 1)
     bindText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})
-    bindText:SetLayer(1)
+    bindText:SetLayer(2)
 
     function itemFrame:SetItem (itemID)
         thisItemID = itemID        
-        EnKai.ui.attachItemTooltip (itemFrame, itemID)
-        
+        EnKai.ui.attachItemTooltip (itemIcon, itemID)        
     end
 
-    function itemFrame:SetIcon(addonName, path)
+    function itemFrame:SetIcon (addonName, path)
         itemIcon:SetTextureAsync(addonName, path)
+    end
+
+    function itemFrame:SetSlot(slotID)
+        thisSlot = slotID
     end
 
     function itemFrame:SetQuantity(quantity)
@@ -106,6 +129,8 @@ local function _fctItemIcon (name, parent)
     end
 
     itemFrame:EventAttach( Event.UI.Input.Mouse.Left.Down, function (self)	
+        draggedItem = thisItemID
+        draggedSlot = thisSlot
         Command.Item.Standard.Left(thisItemID)
 	    Command.Cursor(thisItemID)
 	end, name .. "Event.Left.Down")
@@ -147,15 +172,91 @@ end
 
 local function _fctBagUI()
 
-    local bagWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.contextTop)
+    local bagWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.context)
     bagWindow:SetTitle("nkUI Inventory")
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetWidth(680)
     bagWindow:SetHeight(600)
     bagWindow:SetPoint("BOTTOMRIGHT", UI.Native.BagInventory1, "BOTTOMRIGHT")
     bagWindow:SetShadow(true)
+    bagWindow:SetLayer(1)
 
     return bagWindow
+
+end
+
+local function _fctBagSlots ()
+
+    local bagSlots = {}
+
+    local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
+    bagSlotsFrame:SetWidth(365)
+    bagSlotsFrame:SetHeight(50)
+    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5, 8)
+    bagSlotsFrame:SetBackgroundColor(0,0,0,0.5)
+    bagSlotsFrame:SetLayer(2)
+
+    for idx = 1, 8, 1 do
+        local thisSlot = EnKai.uiCreateFrame("nkCanvas", "nkUIBagSlot"..idx, bagSlotsFrame)
+        thisSlot:SetWidth(40)
+        thisSlot:SetHeight(40)
+        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", (idx-1)*45 + 5, 5)        
+        
+        local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1 }
+        local path = {  {xProportional = 0, yProportional = 0},
+                        {xProportional = 1, yProportional = 0},
+                        {xProportional = 1, yProportional = 1},
+                        {xProportional = 0, yProportional = 1},
+                        {xProportional = 0, yProportional = 0}
+                        }  
+
+        thisSlot:SetShape (path, nil, stroke)
+
+        local icon = EnKai.uiCreateFrame("nkTexture", "nkUIBagSlotIcon"..idx, bagSlotsFrame)
+        icon:SetWidth(38)
+        icon:SetHeight(38)
+        icon:SetPoint("CENTER", thisSlot, "CENTER")
+        icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
+        icon:SetLayer(1)
+
+        icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, _)
+            if draggedItem == nil or draggedSlot == nil then return end
+
+            local type, held = Inspect.Cursor()
+            local target = stringFormat("sibg.%03d", idx)
+            local source = draggedSlot
+            Command.Item.Move(target, source)
+            Command.Cursor(nil)
+
+        end, "nkUIBagSlotIcon"..idx .. ".Left.Up")  
+                
+
+        thisSlot.icon = icon                
+
+        local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint"..idx, bagSlotsFrame)
+        tint:SetWidth(38)
+        tint:SetHeight(38)
+        tint:SetPoint("CENTER", thisSlot, "CENTER")
+        tint:SetBackgroundColor(1, 0, 0, 0.5)
+        tint:SetLayer(2)
+        tint:SetVisible(false)
+
+        thisSlot.tint = tint
+    
+        bagSlots[stringFormat("sibg.%03d", idx)] = thisSlot        
+    end
+
+    function bagSlotsFrame:SetIcon (index, addonID, icon)
+        local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
+        thisSlot.icon:SetTextureAsync(addonID, icon)
+    end
+
+    function bagSlotsFrame:SetTint (index, newValue)
+        local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
+        thisSlot.tint:SetVisible(newValue)
+    end
+
+    return bagSlotsFrame
 
 end
 
@@ -181,6 +282,10 @@ local function _getRealCategory (category)
         return "Various"
     elseif stringFind(category, "crafting ingredient") then
         return "Crafting material"
+    elseif stringFind(category, "crafting recipe") then
+        return "Crafting recipe"
+    elseif stringFind(category, "container") then
+        return "Container"
     end
 
     return category
@@ -188,7 +293,6 @@ local function _getRealCategory (category)
 end
 
 local function _populateBag()
-
     local counter = 1
     local firstIcon = nil
     local lastIcon = nil
@@ -210,60 +314,62 @@ local function _populateBag()
     local firstCategory = true
     local lastCategory
     local startCategory
-    
-    for category, content in pairs (categories) do
+    local currentYOffset = 0  -- Track vertical position for new categories
 
+    for category, content in pairs(categories) do
         local thisCategory = categoryLabels[category]
 
         if thisCategory == nil then
-            thisCategory = _fctItemCategory ("nkUI.onebagCategory." .. category, uiElements.oneBag:GetContent())
-            thisCategory:SetText(category)            
+            thisCategory = _fctItemCategory("nkUI.onebagCategory." .. category, uiElements.oneBag:GetContent())
+            thisCategory:SetText(category)
             categoryLabels[category] = thisCategory
-        end        
+        end
 
         counter = 1
         local contentCounter = 0
         firstIcon = thisCategory
         local cols, rows = 0, 1
 
-        for slot, itemDetails in pairs (content) do
+        for slot, itemDetails in pairs(content) do
             local thisIcon = itemIcons[slot]
 
             if itemIcons[slot] == nil then
-                thisIcon = _fctItemIcon ("nkUI.onebagItem." .. slot, thisCategory)
-                itemIcons[slot] = thisIcon                
+                thisIcon = _fctItemIcon("nkUI.onebagItem." .. slot, thisCategory)
+                itemIcons[slot] = thisIcon
             end
 
+            itemIcons[slot]:SetSlot(slot)
             itemIcons[slot]:SetIcon("Rift", itemDetails.icon)
             itemIcons[slot]:SetRarity(itemDetails.rarity)
             itemIcons[slot]:SetQuantity(stringFormat("%d", itemDetails.stack))
+
             itemIcons[slot]:SetBound(itemDetails.bind, itemDetails.bound)
 
             itemIcons[slot]:SetItem(itemDetails.id)
-            
+
             if counter == 1 then
                 if rows == 1 then
                     itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20)
                 else
                     itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2)
                 end
-                firstIcon = thisIcon 
-            else 
+                firstIcon = thisIcon
+            else
                 itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5, 0)
             end
-            
+
             if rows == 1 then cols = cols + 1 end
 
-            if counter == 15 then 
-                counter = 0 
+            if counter == 15 then
+                counter = 0
                 rows = rows + 1
-            end            
-            
+            end
+
             lastIcon = thisIcon
             counter = counter + 1
-        end        
+        end
 
-        local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 44) + 1 -- 42 is not perfectly correct but the answer to everything!
+        local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 44) + 1
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
         thisCategory:SetHeight(20 + (rows * 40) + ((rows-1) *5))
@@ -274,44 +380,69 @@ local function _populateBag()
             thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5, 5)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
+            currentYOffset = thisCategory:GetHeight() + 15  -- Increased vertical spacing
         else
-            thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50, 0)
-            iconsPerLine = iconsPerLine + cols + 1
-
-            if iconsPerLine == 0 or iconsPerLine + cols > 15 then
-                thisCategory:SetPoint("TOPLEFT", startCategory, "BOTTOMLEFT", 0, 5)
-                startCategory = thisCategory
-                iconsPerLine = 0
+            -- Check if we need to start a new line
+            if iconsPerLine + cols > 15 then
+                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5, currentYOffset)
+                currentYOffset = currentYOffset + thisCategory:GetHeight() + 10  -- Increased vertical spacing
+                iconsPerLine = cols
+            else
+                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50, 0)
+                iconsPerLine = iconsPerLine + cols + 1
             end
         end
 
         lastCategory = thisCategory
-   end
-
+    end
 end
 
-local function _fctItemSlot (_, a, b)
-    _populateBag()
+local function _fctItemSlot (_, slots)
+    
+    local doInventoryUpdate = false
+    local doBatSlotsUpdate = false
+
+    for thisSlot, state in pairs (slots) do
+        
+        if stringFind(thisSlot, "sibg.") then
+            doBatSlotsUpdate = true
+        elseif string.find(thisSlot, "si") then
+            doInventoryUpdate = true
+        end
+
+        if doBatSlotsUpdate and doInventoryUpdate then break end
+    end
+
+    if doInventoryUpdate then _populateBag() end
+    if doBatSlotsUpdate then  _fctGetBagSlots() end
+
 end
 
 local function _fctItemUpdate (_, a, b)
-    --dump (a)
-    --dump (b)
+
 end
 
 function _internal.oneBagInit()
 
-    EnKai.inventory.updateDB()
-    uiElements.oneBag = _fctBagUI()
+    if uiElements.oneBag then 
+        if uiElements.oneBag:GetVisible() then
+            uiElements.oneBag:SetVisible(false)
+        else
+            uiElements.oneBag:SetVisible(true)
+        end
+    else
+        EnKai.inventory.updateDB()
+        uiElements.oneBag = _fctBagUI()
+        uiElements.oneBagBagSlots = _fctBagSlots ()
+
+        Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "EnKai.inventory.Item.Slot")
+        Command.Event.Attach(Event.Item.Update, _fctItemUpdate, "EnKai.inventory.Item.Update")
+
+        Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, items)
+        end, "nkUI.OneBag.EnKai.InventoryManager.Update")
+    end
+
     _populateBag()
-
-    Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "EnKai.inventory.Item.Slot")
-	Command.Event.Attach(Event.Item.Update, _fctItemUpdate, "EnKai.inventory.Item.Update")
-
-    Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (x, a, b)
-        dump (x)
-        dump (a)
-        dump (b)
-	end, "nkUI.OneBag.EnKai.InventoryManager.Update")
+    _fctGetBagSlots()
 
 end

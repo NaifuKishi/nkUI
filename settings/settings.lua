@@ -425,7 +425,7 @@ local function _createTutorialWindow()
     local steps = {
         {
             title = "Welcome to nkUI",
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.",
+            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n- New one bag module",
             image = "gfx/EnKaiLogo.png",
             width = 300,
             height = 79,
@@ -438,6 +438,18 @@ local function _createTutorialWindow()
             width = 170,
             height = 240,
             position = "right",
+        },
+        {
+            title = "One bag module (1/2)",
+            description = "This nkUI module is a replacement for the ingame bags and shows everything in one tiday frame.",
+            image = "gfx/tutorialOneBag.png",
+            width = 405,
+            height = 350,
+            position = "bottom",
+        },
+        {
+            title = "One bag module (2/2)",
+            description = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.",
         },
         {
             title = "Unit Frame module",
@@ -476,7 +488,7 @@ local function _createTutorialWindow()
         },        
         {
             title = "Scrolling combat text Module",
-            description = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",            
+            description = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",
             image = "gfx/tutorialSCT.png",
             width = 429,
             height = 250,

@@ -415,8 +415,6 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
-        --print (health, healthMax, unitFrameWidth)
-
         if health == 0 then
             healthText:SetText("0")
             healthFrame:SetWidth(1)

@@ -147,7 +147,6 @@ function _internal.ressourcBar (unit, scale, x, y)
     end
 
     function ressourceBGFrame:SetRessourceMax(newMax)
-        --print ("ressourceMax", newMax)
         ressourceMax = newMax
     end
 

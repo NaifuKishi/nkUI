@@ -185,11 +185,8 @@ local function _main(_, addon)
 			
 			_setupDefaults()
 
-			--print(nkUISetup.tutorialVersion, thisTutorialVersion) 
-
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
     			nkUISetup.tutorialVersion = thisTutorialVersion
-                --print(nkUISetup.tutorialVersion, thisTutorialVersion)
 				_internal.tutorial()
 			end
 

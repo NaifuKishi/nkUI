@@ -10,6 +10,7 @@ local _events   = privateVars.events
 local InspectTimeFrame          = Inspect.Time.Frame
 local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local InspectAbilityDetail      = Inspect.Ability.Detail
+local InspectExperience         = Inspect.Experience
 
 local EnKaiUnitGetUnitDetail    = EnKai.unit.GetUnitDetail
 
@@ -28,6 +29,7 @@ local defaultSize = 24
 local critSize = 32
 local petID, petName   
 local lastMessage, messageY = nil, 0
+local lastAccumulated = 0
 
 local abilityCache = {}
 local iconCache = {}
@@ -144,6 +146,45 @@ local function displayMessageAtTopCenter(message, duration)
         func = animationCoroutine,
         callBack = callBack,
         counter = duration * 100, -- Adjust counter based on duration
+        active = true
+    })
+end
+
+local function displayMovingMessage(message, duration)
+    local frame = getFrame()
+    frame:SetText(message, true)
+    frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    frame:SetFontSize(28)
+    frame:SetFontColor(0.678, 0.847, 0.902, 1) -- Light blue color (RGB: 173, 215, 230)
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0) -- Start at center
+    frame:SetVisible(true)
+
+    local start = InspectTimeFrame()
+    local startY = -200
+    local endY = -400  -- Move upward (negative Y)
+
+    local animationCoroutine = coroutine.create(function()
+        for idx = 1, duration * 100, 1 do
+            local elapsed = InspectTimeFrame() - start
+            if elapsed > duration then
+                return 9999
+            end
+            local t = elapsed / duration
+            -- Move the frame upward
+            local currentY = startY + (endY - startY) * t
+            frame:SetPoint("CENTER", UIParent, "CENTER", 0, currentY)
+            coroutine.yield(idx)
+        end
+    end)
+
+    local callBack = function()
+        releaseFrame(frame)
+    end
+
+    EnKai.coroutines.add({
+        func = animationCoroutine,
+        callBack = callBack,
+        counter = duration * 100,
         active = true
     })
 end
@@ -426,6 +467,10 @@ function _fctEventCooldownEnd (_, info)
 end
 
 function _internal.sctInit()
+    
+    local experience = InspectExperience()
+    lastAccumulated = experience.accumulated
+
     Command.Event.Attach(Event.Combat.Damage, _fctEventCombatDamage, "nkUI.SCT.Combat.Damage")
     Command.Event.Attach(Event.Combat.Dodge, _fctEventCombatDodge, "nkUI.SCT.Combat.Dodge")
     Command.Event.Attach(Event.Combat.Immune, _fctEventCombatImmune, "nkUI.SCT.Combat.Immune")
@@ -436,6 +481,12 @@ function _internal.sctInit()
 
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin, _fctEventCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
     Command.Event.Attach(Event.Ability.New.Cooldown.End, _fctEventCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
+
+    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)         
+        local gain = accumulated - lastAccumulated
+        displayMovingMessage(stringFormat("%d exp", gain), 2)
+        lastAccumulated = accumulated
+    end, "nkui.SCT.TEMPORARY.Experience")
 
     sctInit = true
 end
@@ -459,6 +510,8 @@ function _internal.sctToggle(value)
 
         Command.Event.Detach(Event.Ability.New.Cooldown.Begin, nil, "nkUI.SCT.Ability.New.Cooldown.Begin")
         Command.Event.Detach(Event.Ability.New.Cooldown.End, nil, "nkUI.SCT.Ability.New.Cooldown.End")
+
+        Command.Event.Detach(Event.TEMPORARY.Experience, nil, "nkui.SCT.TEMPORARY.Experience")
 
         sctInit = false
 

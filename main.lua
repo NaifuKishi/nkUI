@@ -62,7 +62,7 @@ data.colors = {
 }
 				
 data.uiScaleX, data.uiScaleY = 1, 1
-local thisTutorialVersion = 013
+local thisTutorialVersion = 024
 
 ---------- generate ui context ----------
 
@@ -201,11 +201,8 @@ local function _main(_, addon)
 			
 			_setupDefaults()
 
-			--print(nkUISetup.tutorialVersion, thisTutorialVersion) 
-
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
     			nkUISetup.tutorialVersion = thisTutorialVersion
-                --print(nkUISetup.tutorialVersion, thisTutorialVersion)
 				_internal.tutorial()
 			end
 

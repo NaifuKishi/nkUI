@@ -133,8 +133,6 @@ local function _eventBuffAdd(_, unit, buffs)
 
 	-- Handle unit frame buffs
 	if nkUISetup.buffUnitFrame.activate then
-		--print ("_eventBuffAdd")
-		--print (unit)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 
 		if #identifiers > 0 then
@@ -321,10 +319,6 @@ function _events.playerAvailable (_, thisInfo, plusInfo)
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", thisInfo) end
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", plusInfo) end
 
-	--print ("_events.playerAvailable")
-	--dump (a)
-	--dump (b)
-	--dump (c)
 end
 
 function _events.groupStatus (_, groupType)

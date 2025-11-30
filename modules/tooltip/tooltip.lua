@@ -151,8 +151,6 @@ function _tooltip.ui ()
         tooltipHeight = UI.Native.Tooltip:GetHeight()
         tooltipWidth = UI.Native.Tooltip:GetWidth()
         
-        --print (height, tooltipHeight)
-
         if height > tooltipHeight then
             tooltip:SetHeight(height)            
         else
@@ -167,7 +165,6 @@ function _tooltip.ui ()
     end
 
     function tooltip:SetTooltipSize(newWidth, newHeight)
-        --print (newWidth, newHeight)
         tooltipWidth = newWidth + 6
         tooltipHeight = newHeight + 6
     end
@@ -242,8 +239,6 @@ function _tooltip.unit (unitInfo)
     local unitDetail = Inspect.Unit.Detail(unitInfo)
 
     if unitDetail == nil then return end
-
-    --dump(unitDetail)
 
     local infoLines = {}
     local relationColors = {
@@ -326,9 +321,6 @@ function _tooltip.unit (unitInfo)
         table.insert(infoLines, string.format('Public group : %d member(s)', unitDetail.publicSize) )
     end
 
-    --print ("-------------")
-    --dump(infoLines)
-
     uiElements.tooltip:SetBody(infoLines)    
     uiElements.tooltip:SetStats({}, false)
 
@@ -345,8 +337,6 @@ function _tooltip.item(iteminfo)
 
     local itemDetail = Inspect.Item.Detail(iteminfo)
     local playerDetail = EnKai.unit.getPlayerDetails()
-
-    --dump(itemDetail)
 
     local infoLines = {}
 
@@ -452,14 +442,12 @@ function _tooltip.item(iteminfo)
 end
 
 function _tooltip.ability(abilityInfo)
-    --dump (abilityInfo)
+
     local abilityDetail = Inspect.Ability.New.Detail(abilityInfo)
     
     if abilityDetail == nil then return end
     
     local playerDetail = EnKai.unit.getPlayerDetails()
-
-    --dump (abilityDetail)
 
     local infoLines = {}
     local statLines = {}
@@ -617,17 +605,7 @@ function _events.tooltip (_, tooltipType, tooltipInfo)
         _tooltip.unit(tooltipInfo)
         uiElements.tooltip:SetVisible(true)
     end
-    --elseif (tooltipType == "itemtype") then        
---        print ("tooltip itemtype")
---        return
-    --elseif (tooltipType == "item") then
---        _tooltip.item(tooltipInfo)
-    --elseif (tooltipType == "ability") then
---        _tooltip.ability(tooltipInfo)
-    --elseif (tooltipType == "buff") then    
-        --- buff
-    --end
-    
+   
 
     --displayDelay = Inspect.Time.Real()
     

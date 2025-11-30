@@ -105,6 +105,10 @@ function _internal.currency ()
     datasetCurrency:SetTextFont(addonInfo.id, "Montserrat")    
     datasetCurrency:SetEffectGlow({ strength = 1})
 
+    datasetCurrency:EventAttach(Event.UI.Input.Mouse.Left.Click, function (self)
+        _internal.oneBagInit()
+    end, "nkUI.lowerbar.currency.Left.Click")  
+
     local function _updateCoin(_, currency)
 	
 		if currency['coin'] == nil then return end
@@ -273,32 +277,29 @@ function _internal.experience ()
     datasetExp:SetTextFont(addonInfo.id, "Montserrat")
     datasetExp:SetEffectGlow({ strength = 1})
 
-	local function _updateExperience()
+	local function _updateExperience(experience)
 
-		local now = InspectTimeFrame()
+        percent = 0
 
-		if not updateTime or now - updateTime > 5 then -- update experience slower
-			updateTime = now
-            percent = 0
+        if experience == nil then experience = InspectExperience() end
 
-			local experience = InspectExperience()
+        if experience == nil then 
+            datasetExp:SetText(stringFormat("%d%%", 0))
+        elseif experience.accumulated == nil then
+            datasetExp:SetText(stringFormat("%d%%", 0))
+        else			
+            percent = 100 / experience.needed * experience.accumulated
+            datasetExp:SetText(stringFormat("%d%%", percent ))
+        end
 
-			if experience == nil then 
-				datasetExp:SetText(stringFormat("%d%%", 0))
-			elseif experience.accumulated == nil then
-				datasetExp:SetText(stringFormat("%d%%", 0))
-			else			
-                percent = 100 / experience.needed * experience.accumulated
-				datasetExp:SetText(stringFormat("%d%%", percent ))
-			end
-
-            datasetExpBar:SetWidth ( data.layout.barWidth * (percent/100))
-
-		end
+        datasetExpBar:SetWidth ( data.layout.barWidth * (percent/100))
 	end
 
     
-    Command.Event.Attach(Event.System.Update.Begin, _updateExperience, "nkui.lowerBar.exp.System.Update.Begin")
+    --Command.Event.Attach(Event.System.Update.Begin, _updateExperience, "nkui.lowerBar.exp.System.Update.Begin")
+    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed) 
+        _updateExperience({accumulated = accumulated, needed = needed, rested = rested})
+    end, "nkui.lowerBar.exp.TEMPORARY.Experience")
 
     _updateExperience()
 
@@ -580,11 +581,7 @@ function _internal.lowerBar ()
 
     _internal.location()
 
---local roleList = Inspect.Role.List()
 
---for k, v in pairs (roleList) do
-    --print (v)
---end
 
 end
 

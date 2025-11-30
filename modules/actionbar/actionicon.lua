@@ -266,9 +266,6 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				end, macroFrame:GetName() .. ".UI.Input.Mouse.Left.Up")
 			end
 
-			--if macro ~= nil then print ('setting macro ' .. name .. ' ' .. macro) end
-			--if macro ~= nil then print (string.gsub(macro, "\r", "\13")) end
-			
 			EnKai.events.addInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
 			macroFrame:SetVisible(true)
 			

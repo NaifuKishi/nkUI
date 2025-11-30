@@ -49,8 +49,6 @@ end
 
 local function _eventHealthMax (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventHealthMax")
-
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
@@ -70,8 +68,6 @@ end
 
 local function _eventEnergy (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventEnergy")
-
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
@@ -107,7 +103,6 @@ end
 
 local function _eventMana (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventMana")
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
@@ -125,7 +120,6 @@ end
 
 local function _eventCharge (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventCharge")
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
@@ -143,7 +137,6 @@ end
 
 local function _eventPower (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventPower")
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
@@ -161,7 +154,6 @@ end
 
 local function _eventPlanar (_, info)
 	for unit, thisData in pairs(info) do
-		--print ("_eventPlanar")
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
