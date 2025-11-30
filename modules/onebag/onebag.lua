@@ -44,8 +44,8 @@ local function _fctItemIcon (name, parent)
     local thisItemID, thisSlot
 
     local itemFrame = EnKai.uiCreateFrame("nKFrame", name, parent) 
-    itemFrame:SetWidth(40)
-    itemFrame:SetHeight(40)
+    itemFrame:SetWidth(40 * data.uiScaleX)
+    itemFrame:SetHeight(40 * data.uiScaleX)
     
     local itemIcon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 2, 2)
@@ -54,7 +54,7 @@ local function _fctItemIcon (name, parent)
 
     local quantityText = EnKai.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
-    quantityText:SetFontSize(14)
+    quantityText:SetFontSize(14 * data.uiScaleX)
     quantityText:SetFontColor(1, 1, 1, 1)
     quantityText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     quantityText:SetEffectGlow({ strength = 3})
@@ -62,7 +62,7 @@ local function _fctItemIcon (name, parent)
 
     local bindText = EnKai.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
-    bindText:SetFontSize(10)
+    bindText:SetFontSize(10 * data.uiScaleX)
     bindText:SetFontColor(1, 1, 1, 1)
     bindText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})
@@ -146,11 +146,10 @@ end
 local function _fctItemCategory (name, parent)
     
     local categoryFrame = EnKai.uiCreateFrame("nkFrame",  name .. ".categoryFrame", parent)    
-    categoryFrame:SetHeight(60)
-    --categoryFrame:SetBackgroundColor(1,1,1,1)
+    categoryFrame:SetHeight(60 * data.uiScaleX)
 
     local categoryText = EnKai.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
-    categoryText:SetFontSize(14)
+    categoryText:SetFontSize(14 * data.uiScaleX)
     categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT")
     categoryText:SetFontColor(1, 1, 1, 1)
     categoryText:SetTextFont (addonInfo.id, "MontserratSemiBold")
@@ -175,8 +174,8 @@ local function _fctBagUI()
     local bagWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.context)
     bagWindow:SetTitle("nkUI Inventory")
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-    bagWindow:SetWidth(680)
-    bagWindow:SetHeight(600)
+    bagWindow:SetWidth(680 * data.uiScaleX)
+    bagWindow:SetHeight(600 * data.uiScaleX)
     bagWindow:SetPoint("BOTTOMRIGHT", UI.Native.BagInventory1, "BOTTOMRIGHT")
     bagWindow:SetShadow(true)
     bagWindow:SetLayer(1)
@@ -190,17 +189,17 @@ local function _fctBagSlots ()
     local bagSlots = {}
 
     local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
-    bagSlotsFrame:SetWidth(365)
-    bagSlotsFrame:SetHeight(50)
-    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5, 8)
+    bagSlotsFrame:SetWidth(365 * data.uiScaleX)
+    bagSlotsFrame:SetHeight(50 * data.uiScaleX)
+    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5 * data.uiScaleX, 8 * data.uiScaleX)
     bagSlotsFrame:SetBackgroundColor(0,0,0,0.5)
     bagSlotsFrame:SetLayer(2)
 
     for idx = 1, 8, 1 do
         local thisSlot = EnKai.uiCreateFrame("nkCanvas", "nkUIBagSlot"..idx, bagSlotsFrame)
-        thisSlot:SetWidth(40)
-        thisSlot:SetHeight(40)
-        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", (idx-1)*45 + 5, 5)        
+        thisSlot:SetWidth(40 * data.uiScaleX)
+        thisSlot:SetHeight(40 * data.uiScaleX)
+        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", ((idx-1)*45 + 5)* data.uiScaleX, 5* data.uiScaleX)
         
         local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1 }
         local path = {  {xProportional = 0, yProportional = 0},
@@ -213,8 +212,8 @@ local function _fctBagSlots ()
         thisSlot:SetShape (path, nil, stroke)
 
         local icon = EnKai.uiCreateFrame("nkTexture", "nkUIBagSlotIcon"..idx, bagSlotsFrame)
-        icon:SetWidth(38)
-        icon:SetHeight(38)
+        icon:SetWidth(38 * data.uiScaleX)
+        icon:SetHeight(38 * data.uiScaleX)
         icon:SetPoint("CENTER", thisSlot, "CENTER")
         icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
         icon:SetLayer(1)
@@ -234,8 +233,8 @@ local function _fctBagSlots ()
         thisSlot.icon = icon                
 
         local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint"..idx, bagSlotsFrame)
-        tint:SetWidth(38)
-        tint:SetHeight(38)
+        tint:SetWidth(38 * data.uiScaleX)
+        tint:SetHeight(38 * data.uiScaleX)
         tint:SetPoint("CENTER", thisSlot, "CENTER")
         tint:SetBackgroundColor(1, 0, 0, 0.5)
         tint:SetLayer(2)
@@ -349,13 +348,13 @@ local function _populateBag()
 
             if counter == 1 then
                 if rows == 1 then
-                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20)
+                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20* data.uiScaleX)
                 else
                     itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2)
                 end
                 firstIcon = thisIcon
             else
-                itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5, 0)
+                itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5* data.uiScaleX, 0)
             end
 
             if rows == 1 then cols = cols + 1 end
@@ -372,23 +371,23 @@ local function _populateBag()
         local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 44) + 1
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
-        thisCategory:SetHeight(20 + (rows * 40) + ((rows-1) *5))
-        thisCategory:SetWidth((cols * 40) + ((cols-1) *5))
+        thisCategory:SetHeight(((20* data.uiScaleX) + (rows * (40* data.uiScaleX)) + ((rows-1) * (5* data.uiScaleX))))
+        thisCategory:SetWidth(((cols * (40* data.uiScaleX)) + ((cols-1) * (5* data.uiScaleX))))
 
         if firstCategory then
             firstCategory = false
-            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5, 5)
+            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScaleX, 5* data.uiScaleX)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
-            currentYOffset = thisCategory:GetHeight() + 15  -- Increased vertical spacing
+            currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScaleX))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
             if iconsPerLine + cols > 15 then
-                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5, currentYOffset)
-                currentYOffset = currentYOffset + thisCategory:GetHeight() + 10  -- Increased vertical spacing
+                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScaleX, currentYOffset)
+                currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScaleX)))  -- Increased vertical spacing
                 iconsPerLine = cols
             else
-                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50, 0)
+                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50* data.uiScaleX, 0)
                 iconsPerLine = iconsPerLine + cols + 1
             end
         end
