@@ -19,6 +19,7 @@ local mathFloor     = math.floor
 local stringFormat  = string.format
 local stringLen     = string.len
 local stringSub     = string.sub
+local stringFind    = string.find
 
 ---------- init global variables ---------
 
@@ -497,7 +498,7 @@ function frameManager.clearAll()
 end
 
 
-function _internal.updateUnit (frame, unitID)
+function _internal.updateUnit (frame, unitID, identifier)
 
     if frame == nil then return end
 
@@ -539,9 +540,10 @@ function _internal.updateUnit (frame, unitID)
 
     frame:ClearBuffs()
 
-    local buffs = InspectBuffList(unitID)
-    if (buffs) then frame:addBuff(unitID, buffs) end
-
+    if stringFind (identifier, "raid") == nil then
+        local buffs = InspectBuffList(unitID)
+        if (buffs) then frame:addBuff(unitID, buffs) end
+    end
 
 end
 
@@ -710,7 +712,7 @@ function _internal.uiFramesToggle(value)
 
     if value == true and not uiElements.frames["player"] then
         _internal.uiFrames ()
-        _internal.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id)
+        _internal.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id, "player")
         uiElements.frames["player.ressourcebar"]:update (EnKai.unit.getPlayerDetails().id)
     end
 

@@ -460,7 +460,7 @@ end
 function _fctEventCooldownEnd (_, info)
 
     for key, details in pairs (info) do
-        if abilityCache[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
+        if abilityCache[key] ~= nil and abilityTimer[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
             abilityTimer[key] = nil
             displayMessageAtTopCenter(stringFormat("%s ready", abilityCache[key].name), 1.5)
         end

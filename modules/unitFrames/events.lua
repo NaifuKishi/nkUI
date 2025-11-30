@@ -179,8 +179,9 @@ local function _fctZoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
 		if k == data.playerID then
-			_internal.updateUnit (playerFrame, playerID)
+			_internal.updateUnit (playerFrame, playerID, "player")
 			_internal.processBuffs ()
+			break
 		end
 	end
 end
@@ -192,7 +193,7 @@ local function _fctRoleEvent (_, thisData)
 		for _, thisType in pairs (unitTypes) do
 			local frame = _internal.getFrameByIdentifier(thisType)
 			EnKai.unit.GetUnitDetail(unitID, true)
-			_internal.updateUnit (frame, unitID)
+			_internal.updateUnit (frame, unitID, thisType)
 		end
 	end	
 end
@@ -281,7 +282,7 @@ function _events.uiFramesInitEvents()
 	local playerID = EnKai.unit.GetUnitDetail ("player").id
 
 	local playerFrame = uiElements.frames["player"]
-	_internal.updateUnit (playerFrame, playerID)
+	_internal.updateUnit (playerFrame, playerID, "player")
 	playerFrame:ContextMenu(playerID)
 
 	uiElements.frames["player.ressourcebar"]:update(playerID)
@@ -289,7 +290,7 @@ function _events.uiFramesInitEvents()
 	local petID = EnKai.unit.GetUnitByIdentifier ("player.pet")	
 	if (petID) then 
 		local frame = uiElements.frames["player.pet"]
-		_internal.updateUnit (frame, petID) 
+		_internal.updateUnit (frame, petID, "player.pet") 
 		frame:ContextMenu(petID)
 		frame:SetVisible(true)
 	end
@@ -297,7 +298,7 @@ function _events.uiFramesInitEvents()
 	local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
 	if (targetID) then 
 		local frame = uiElements.frames["player.target"]
-		_internal.updateUnit (frame, targetID) 
+		_internal.updateUnit (frame, targetID, "player.target") 
 		--frame:ContextMenu(targetID)
 		frame:SetVisible(true)
 	end
@@ -305,7 +306,7 @@ function _events.uiFramesInitEvents()
 	local focusID = EnKai.unit.GetUnitByIdentifier ("focus")
 	if (focusID) then 
 		local frame = uiElements.frames["focus"]
-		_internal.updateUnit (frame, focusID) 
+		_internal.updateUnit (frame, focusID, "focus") 
 		frame:SetVisible(true)
 	end
 
@@ -332,8 +333,9 @@ function _events.groupStatus (_, groupType)
 		end
 	elseif groupType == "raid" then
 		for idx = 1, 5, 1 do
-			local frame = uiElements.frames[stringFormat("group%02d", idx)]
+			local frame = uiElements.frames[stringFormat("group%02d", idx)]			
 			frame:SetVisible(false)
+			--_internal.manageBuffs(frame, stringFormat("group%02d", idx), nil, nil, nil, "clear")
 		end
 	else
 		for idx = 1, 20, 1 do
@@ -373,7 +375,7 @@ function _events.available (_, units)
 		end		
 
 		if frame then
-			_internal.updateUnit (frame, unitID) 
+			_internal.updateUnit (frame, unitID, identifier) 
 			frame:SetVisible(true)
 		end
 	end
@@ -425,7 +427,7 @@ function _events.change (_, unitID, identifier)
 			frame:ClearBuffs()
 		else		
 			if frame then
-				_internal.updateUnit (frame, unitID) 
+				_internal.updateUnit (frame, unitID, identifier) 
 				frame:SetVisible(true)
 			end
 		end
