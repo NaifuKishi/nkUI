@@ -540,7 +540,9 @@ function _internal.updateUnit (frame, unitID, identifier)
 
     frame:ClearBuffs()
 
-    if stringFind (identifier, "raid") == nil then
+    local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+
+    if stringFind (identifier, "group") and groupStatus ~= 'raid' then
         local buffs = InspectBuffList(unitID)
         if (buffs) then frame:addBuff(unitID, buffs) end
     end

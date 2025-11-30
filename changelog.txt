@@ -1,6 +1,7 @@
 v0.3.1
     - fixes: Debuff on buff bar where no longer showing
     - fixes: A rare SCT issue if a damage event didn't include damage
+    - fixes: buffs and debuffs not longer showing on raid frames
 
 v0.3.0
     - new: one bag module
@@ -158,4 +159,12 @@ bug reports
 
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.
 
-    
+    uh equipping items via nkui bag doesnt update the bag correct (results in missing item icons and can display equipped items)
+
+    Ihave pyroblade equipped now and it also doesnt show the other two weapons I have in my bag anymore
+(also displays wrong icon for pyroblade [showing one of my other items]) 
+
+    When targeting self buffs um duplicate when toggling off and on the module (minor)
+xp percent still shows when disabling low bar module
+
+This may be hard to see 3rd picture the buff that makes you gold shows 11 seconds left (correct) top left buff module says 1m and target frame shows 4m (and the two 1hr buffs are off by a few mins too I see 41m vs 39m) 
