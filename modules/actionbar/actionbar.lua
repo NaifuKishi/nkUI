@@ -186,30 +186,30 @@ function _internal.uiActionBars()
 	
 	if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()] == nil then return end    
 
-    local mainActionBar = _actionBar("nkUI.mainActionBar", 2, 12, data.uiScaleX, 1)
-    mainActionBar: SetPoint ("CENTER", UIParent, "CENTER", 0, 550 * data.uiScaleY)    
+    local mainActionBar = _actionBar("nkUI.mainActionBar", 2, 12, 1, 1)
+    mainActionBar: SetPoint ("CENTER", UIParent, "CENTER", 0, nkUISetup.modules.actionBars.offset)    
     mainActionBar:Populate()
     uiElements.actionbars.main = mainActionBar
     
-    local stanceActionBar = _actionBar("nkUI.mainActionBarStance", 2, 12, data.uiScaleX, 2)
-    stanceActionBar: SetPoint ("CENTER", UIParent, "CENTER", 0, 550 * data.uiScaleY)
+    local stanceActionBar = _actionBar("nkUI.mainActionBarStance", 2, 12, 1, 2)
+    stanceActionBar: SetPoint ("CENTER", UIParent, "CENTER", 0, nkUISetup.modules.actionBars.offset)  
     stanceActionBar:Populate()
     stanceActionBar:SetVisible(false)
     uiElements.actionbars.stance = stanceActionBar    
 
-    local leftActionBar = _actionBar("nkUI.leftActionBar", 2, 3, data.uiScaleX * .8, 3)
-    leftActionBar:SetPoint ("CENTERRIGHT", mainActionBar, "CENTERLEFT", -15 * data.uiScaleX, 0)
+    local leftActionBar = _actionBar("nkUI.leftActionBar", 2, 3, .8, 3)
+    leftActionBar:SetPoint ("CENTERRIGHT", mainActionBar, "CENTERLEFT", -nkUISetup.modules.actionBars.spacing, 0)
     leftActionBar:SetInteractive(true)
     leftActionBar:Populate()
     uiElements.actionbars.left = leftActionBar
 
-    local rightActionBar = _actionBar("nkUI.rightActionBar", 2, 3, data.uiScaleX * .8, 4)
-    rightActionBar: SetPoint ("CENTERLEFT", mainActionBar, "CENTERRIGHT", 15 * data.uiScaleX, 0)
+    local rightActionBar = _actionBar("nkUI.rightActionBar", 2, 3, .8, 4)
+    rightActionBar: SetPoint ("CENTERLEFT", mainActionBar, "CENTERRIGHT", nkUISetup.modules.actionBars.spacing, 0)
     rightActionBar:SetInteractive(true)
     rightActionBar:Populate()
     uiElements.actionbars.right = rightActionBar
 
-    local rightScreenBar = _actionBar("nkUI.rightScreenBar", 12, 1, data.uiScaleX, 5)
+    local rightScreenBar = _actionBar("nkUI.rightScreenBar", 12, 1, 1, 5)
     rightScreenBar: SetPoint ("CENTERRIGHT", UIParent, "CENTERRIGHT", -2, 0)
     rightScreenBar:SetInteractive(true)
     rightScreenBar:Populate()

@@ -37,7 +37,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     local buffSetup = frame:GetBuffSetup()
 
     local function updateBuffDisplay()
-        local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -22 * data.uiScaleY
+        local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -22 
         local lastIcon
         local firstBuffIcon = frame
 
@@ -53,7 +53,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
             if idx == 1 then firstBuffIcon = icon end
         end
 
-        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10 * data.uiScaleY
+        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10 
         lastIcon = nil
 
         for k, v in pairs (unitDebuffDisplayList) do
@@ -62,7 +62,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
             icon:SetPoint(from, object, to, x, y)
             icon:Setup(frame:GetBuffSetup())
             lastIcon = icon
-            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5 * data.uiScaleX, 0
+            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5 , 0
         end
     end
 

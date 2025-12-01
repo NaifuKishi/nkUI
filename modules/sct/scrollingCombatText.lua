@@ -114,7 +114,7 @@ local function displayMessageAtTopCenter(message, duration)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
     frame:SetFontSize(28)
     frame:SetFontColor(1, 1, 1, 1) -- White color
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (-200 * data.uiScaleY) + messageY) -- Position at top center
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (nkUISetup.modules.sct.messageOffset) + messageY) -- Position at top center
     frame:SetVisible(true)
 
     lastMessage = frame:GetName()

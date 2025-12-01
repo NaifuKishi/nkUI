@@ -129,19 +129,6 @@ local function _main(_, addon)
 
 		EnKai.art.SetTheme("nkUI")
 
-		local parentWidth = UIParent:GetWidth()
-		local parentHeight = UIParent:GetHeight()
-		data.uiScaleX = parentWidth / 3440
-		data.uiScaleY = parentHeight / 1440
-		data.layout = {
-			fontSize = 15,
-			barHeight = 17,
-			barWidth = 300,
-			barText = 15,
-			timeSize = 36,
-			dateSize = 15
-		}
-
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
 			EnKai.unit.init()
 			

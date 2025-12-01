@@ -8,7 +8,10 @@ local _internal = privateVars.internal
 local _events   = privateVars.events
 
 privateVars.settings		= {}
+
 local _settings = privateVars.settings
+
+local stringFind = string.find
 
 ---------- init local variables ---------
 
@@ -76,16 +79,62 @@ local _defaults = {
         actionBars  = { activate = true, 
                         combatAlpha = 1, 
                         nonCombatAlpha = .2,
+                        offset = 550,
+                        spacing = 15,
                     },
-        lowerBar    = { activate = true },
+        lowerBar    = { activate = true,                         
+                        fontSize = 15,
+                        barHeight = 17,
+                        barWidth = 300,
+                        barText = 15,
+                        timeSize = 36,
+                        dateSize = 15
+		            },
         oneBag      = { activate = true },
         buffBar     = { activate = true,
                         buffs = { width = 40, height = 40, timer = 14, stack = 12, label = 10}            
                     },
-        sct         = { activate = true },
+        sct         = { activate = true,
+                        messageOffset = -200 },
         tooltip     = { activate = true }
     }
 }
+
+local function _scaleUI ()
+        
+    if parentWidth ~= 3440 then
+
+        local scale = UIParent:GetWidth() / 1920
+
+        nkUISetup.modules.unitFrames.frames.player.x = 600 * scale
+        nkUISetup.modules.unitFrames.frames.player.y = 700 * scale
+
+        nkUISetup.modules.unitFrames.frames.target.x = 1140 * scale
+        nkUISetup.modules.unitFrames.frames.target.y = 700 * scale
+
+        nkUISetup.modules.unitFrames.frames.playerPet.x = 400 * scale
+        nkUISetup.modules.unitFrames.frames.playerPet.y = 750 * scale
+
+        nkUISetup.modules.unitFrames.frames.focus.x = 400 * scale
+        nkUISetup.modules.unitFrames.frames.focus.y = 850 * scale
+
+        nkUISetup.modules.unitFrames.frames.ressourceBar.x = 860 * scale
+        nkUISetup.modules.unitFrames.frames.ressourceBar.y = 700 * scale
+
+        nkUISetup.modules.unitFrames.frames.group.x = 500 * scale
+        nkUISetup.modules.unitFrames.frames.group.y = 300 * scale
+
+        nkUISetup.modules.unitFrames.frames.raid.x = 50 * scale
+        nkUISetup.modules.unitFrames.frames.raid.y = 300 * scale
+
+        nkUISetup.modules.unitFrames.frames.playerCastBar.x = 835 * scale
+        nkUISetup.modules.unitFrames.frames.playerCastBar.y = 800 * scale  
+
+        nkUISetup.modules.unitFrames.frames.targetCastBar.x = 835 * scale
+        nkUISetup.modules.unitFrames.frames.targetCastBar.y = 625 * scale
+    end  
+
+end
 
 --[[
    _setupDefaults
@@ -107,6 +156,8 @@ function _internal.setupDefaults()
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
     end
+
+    if data.uiScale ~= 1 then _scaleUI (nkUISetup) end
 
 end
 

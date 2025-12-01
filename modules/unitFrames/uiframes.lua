@@ -637,21 +637,6 @@ function _internal.uiFrames()
         to, object, x, y = "BOTTOMLEFT", firstRaid, 0, 2
     end
 
-    --[[
-    for idx = 1, 5, 1 do        
-        local groupPet = frameManager.get(stringFormat("group%02d.pet", idx), (data.uiScaleX-.3), 0, 0, false)
-        local group = uiElements.frames[stringFormat("group%02d", idx)]
-        groupPet:ClearPoint("TOPLEFT")
-        groupPet:SetPoint("BOTTOMLEFT", group, "BOTTOMRIGHT", 20, 0)
-        groupPet:SetMacro(stringFormat("/target @group%02d.pet", idx))
-        groupPet:SetWidth (148 * data.uiScaleX)
-        --groupPet:SetVisible(true)        
-        --_internal.updateUnit (groupPet, data.playerID)
-
-        uiElements.frames[stringFormat("group%02d.pet", idx)] = group
-    end
-    ]]
-
     function playerRessourceBar:update (unitID)
         if (unitID == data.playerID) then
             local details = EnKai.unit.GetUnitDetail(unitID)

@@ -50,8 +50,8 @@ local function _fctItemIcon (name, parent)
     local thisItemID, thisSlot
 
     local itemFrame = EnKai.uiCreateFrame("nKFrame", name, parent) 
-    itemFrame:SetWidth(40 * data.uiScaleX)
-    itemFrame:SetHeight(40 * data.uiScaleX)
+    itemFrame:SetWidth(40 * data.uiScale)
+    itemFrame:SetHeight(40 * data.uiScale)
     
     local itemIcon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 2, 2)
@@ -60,7 +60,7 @@ local function _fctItemIcon (name, parent)
 
     local quantityText = EnKai.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
-    quantityText:SetFontSize(14 * data.uiScaleX)
+    quantityText:SetFontSize(14 * data.uiScale)
     quantityText:SetFontColor(1, 1, 1, 1)
     quantityText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     quantityText:SetEffectGlow({ strength = 3})
@@ -68,7 +68,7 @@ local function _fctItemIcon (name, parent)
 
     local bindText = EnKai.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
-    bindText:SetFontSize(10 * data.uiScaleX)
+    bindText:SetFontSize(10 * data.uiScale)
     bindText:SetFontColor(1, 1, 1, 1)
     bindText:SetTextFont (addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})
@@ -166,10 +166,10 @@ end
 local function _fctItemCategory (name, parent)
     
     local categoryFrame = EnKai.uiCreateFrame("nkFrame",  name .. ".categoryFrame", parent)    
-    categoryFrame:SetHeight(60 * data.uiScaleX)
+    categoryFrame:SetHeight(60 * data.uiScale)
 
     local categoryText = EnKai.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
-    categoryText:SetFontSize(14 * data.uiScaleX)
+    categoryText:SetFontSize(14 * data.uiScale)
     categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT")
     categoryText:SetFontColor(1, 1, 1, 1)
     categoryText:SetTextFont (addonInfo.id, "MontserratSemiBold")
@@ -194,12 +194,12 @@ local function _fctBagUI()
     local bagWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.context)
     bagWindow:SetTitle("nkUI Inventory")
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-    bagWindow:SetWidth(680 * data.uiScaleX)
-    bagWindow:SetHeight(600 * data.uiScaleX)
+    bagWindow:SetWidth(680 * data.uiScale)
+    bagWindow:SetHeight(600 * data.uiScale)
     bagWindow:SetShadow(true)
     bagWindow:SetLayer(1)
 
-    bagWindow:SetPoint("CENTER", UIParent, "CENTER", 1000 * data.uiScaleX, 000 * data.uiScaleY)
+    bagWindow:SetPoint("CENTER", UIParent, "CENTER", 1000 * data.uiScale, 000 * data.uiScale)
 
     bagWindow:EventAttach( Event.UI.Input.Mouse.Left.Up, function (self)	
         Command.Cursor(nil)
@@ -214,17 +214,17 @@ local function _fctBagSlots ()
     local bagSlots = {}
 
     local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
-    bagSlotsFrame:SetWidth(365 * data.uiScaleX)
-    bagSlotsFrame:SetHeight(50 * data.uiScaleX)
-    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5 * data.uiScaleX, 8 * data.uiScaleX)
+    bagSlotsFrame:SetWidth(365 * data.uiScale)
+    bagSlotsFrame:SetHeight(50 * data.uiScale)
+    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5 * data.uiScale, 8 * data.uiScale)
     bagSlotsFrame:SetBackgroundColor(0,0,0,0.5)
     bagSlotsFrame:SetLayer(2)
 
     for idx = 1, 8, 1 do
         local thisSlot = EnKai.uiCreateFrame("nkCanvas", "nkUIBagSlot"..idx, bagSlotsFrame)
-        thisSlot:SetWidth(40 * data.uiScaleX)
-        thisSlot:SetHeight(40 * data.uiScaleX)
-        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", ((idx-1)*45 + 5)* data.uiScaleX, 5* data.uiScaleX)
+        thisSlot:SetWidth(40 * data.uiScale)
+        thisSlot:SetHeight(40 * data.uiScale)
+        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", ((idx-1)*45 + 5)* data.uiScale, 5* data.uiScale)
         
         local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1 }
         local path = {  {xProportional = 0, yProportional = 0},
@@ -237,8 +237,8 @@ local function _fctBagSlots ()
         thisSlot:SetShape (path, nil, stroke)
 
         local icon = EnKai.uiCreateFrame("nkTexture", "nkUIBagSlotIcon"..idx, bagSlotsFrame)
-        icon:SetWidth(38 * data.uiScaleX)
-        icon:SetHeight(38 * data.uiScaleX)
+        icon:SetWidth(38 * data.uiScale)
+        icon:SetHeight(38 * data.uiScale)
         icon:SetPoint("CENTER", thisSlot, "CENTER")
         icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
         icon:SetLayer(1)
@@ -258,8 +258,8 @@ local function _fctBagSlots ()
         thisSlot.icon = icon                
 
         local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint"..idx, bagSlotsFrame)
-        tint:SetWidth(38 * data.uiScaleX)
-        tint:SetHeight(38 * data.uiScaleX)
+        tint:SetWidth(38 * data.uiScale)
+        tint:SetHeight(38 * data.uiScale)
         tint:SetPoint("CENTER", thisSlot, "CENTER")
         tint:SetBackgroundColor(1, 0, 0, 0.5)
         tint:SetLayer(2)
@@ -410,13 +410,13 @@ function _internal.populateBag()
 
             if counter == 1 then
                 if rows == 1 then
-                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20* data.uiScaleX)
+                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20* data.uiScale)
                 else
                     itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2)
                 end
                 firstIcon = thisIcon
             else
-                itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5* data.uiScaleX, 0)
+                itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5* data.uiScale, 0)
             end
 
             if rows == 1 then cols = cols + 1 end
@@ -433,23 +433,23 @@ function _internal.populateBag()
         local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 42) + 1
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
-        thisCategory:SetHeight(((20* data.uiScaleX) + (rows * (40* data.uiScaleX)) + ((rows-1) * (5* data.uiScaleX))))
-        thisCategory:SetWidth(((cols * (40* data.uiScaleX)) + ((cols-1) * (5* data.uiScaleX))))
+        thisCategory:SetHeight(((20* data.uiScale) + (rows * (40* data.uiScale)) + ((rows-1) * (5* data.uiScale))))
+        thisCategory:SetWidth(((cols * (40* data.uiScale)) + ((cols-1) * (5* data.uiScale))))
 
         if firstCategory then
             firstCategory = false
-            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScaleX, 5* data.uiScaleX)
+            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScale, 5* data.uiScale)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
-            currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScaleX))  -- Increased vertical spacing
+            currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScale))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
             if iconsPerLine + cols >= 15 then
-                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScaleX, currentYOffset)
-                currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScaleX)))  -- Increased vertical spacing
+                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScale, currentYOffset)
+                currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScale)))  -- Increased vertical spacing
                 iconsPerLine = cols
             else
-                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50* data.uiScaleX, 0)
+                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50* data.uiScale, 0)
                 iconsPerLine = iconsPerLine + cols + 1
             end
         end
