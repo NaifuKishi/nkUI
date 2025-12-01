@@ -96,7 +96,7 @@ local function _commandHandler (commandline)
 			_internal.oneBagInit()
 		end
 	else
-		_internal.tutorial()
+		_internal.setupInit ()
 	end
 
 end
@@ -193,11 +193,9 @@ local function _main(_, addon)
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
-			_internal.setupUI ()
-
 		end, "nkUI.Unit.Availability.Full")
 		
-		EnKai.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", _internal.tutorial)
+		EnKai.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", _internal.setupInit)
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

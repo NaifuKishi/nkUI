@@ -27,336 +27,6 @@ local name = "tutorial"
 ---------- init local function ---------
 
 --[[
-    toggleAlpha
-    Description:
-        Adjusts the alpha (transparency) of player-related UI elements based on combat status.
-    Parameters:
-        None
-    Returns:
-        None
-    Notes:
-        - This function is called when the non-combat alpha setting is changed
-        - It affects the transparency of player, pet, and target frames
-    Available Methods:
-        - None (local function)
-]]
-local function toggleAlpha()
-    
-    uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)    
-    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-    uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-    uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-
-end
-
-local function actionBarToggleAlpha()
-    
-    for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
-    end
-
-end
-
-
---[[
-    _subTutorialUnitframes
-    Description:
-        Creates and configures the unit frames tutorial sub-section.
-    Parameters:
-        parent (table): The parent frame to which this sub-section will be attached
-    Returns:
-        table: The created frame containing unit frames configuration options
-    Notes:
-        - This function creates checkboxes and sliders for unit frames configuration
-        - It includes options for activating the module, buff/debuff bars, and alpha settings
-        - The function handles event attachments for configuration changes
-    Available Methods:
-        - None (local function)
-]]
-local function _subTutorialUnitframes(parent)
-
-    local buffsCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider
-
-    local name = "nkUI.tutorialWindow.unitframes"
-
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
-    frame:SetVisible(false)
-
-    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-    activateCheckbox:SetText("Activate this module")
-    activateCheckbox:SetChecked(nkUISetup.modules.unitFrames.activate)
-    activateCheckbox:SetLabelWidth(250)
-    activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
-    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.unitFrames.activate = newValue
-        buffsCheckbox:SetActive(newValue)
-        buffsUnitBarCheckbox:SetActive(newValue)
-        combatAlphaSlider:SetActive(newValue)
-        nonCombatAlphaSlider:SetActive(newValue)
-
-        _internal.uiFramesToggle(newValue)
-
-        if newValue == false then 
-            _internal.buffBar.clearAllBuffs() 
-            _internal.uiFramesRemoveBuffs()
-        else
-            _internal.uiFramesLoadAllBuffs()
-            _internal.buffBar.loadAllBuffs()
-        end
-
-    end, name .. '.activateCheckbox.CheckboxChanged')
-
-    buffsCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".buffsCheckbox", frame)
-    buffsCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 20)
-    buffsCheckbox:SetText("Main buff/debuff bar")
-    buffsCheckbox:SetChecked(nkUISetup.modules.buffBar.activate)
-    buffsCheckbox:SetLabelWidth(250)
-    buffsCheckbox:SetFontSize(16)
-    buffsCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-    buffsCheckbox:SetActive(nkUISetup.modules.unitFrames.activate)
-
-    Command.Event.Attach(EnKai.events[name .. '.buffsCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.buffBar.activate = newValue
-        if newValue == false then 
-            _internal.buffBar.clearAllBuffs()             
-        else
-            _internal.buffBar.loadAllBuffs()
-        end
-    end, name .. '.buffsCheckbox.CheckboxChanged')
-
-    buffsUnitBarCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".buffsUnitBarCheckbox", frame)
-    buffsUnitBarCheckbox:SetPoint("TOPLEFT", buffsCheckbox, "BOTTOMLEFT", 0, 5)
-    buffsUnitBarCheckbox:SetText("Buffs/debuffs on unit frames")
-    buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs)
-    buffsUnitBarCheckbox:SetLabelWidth(250)
-    buffsUnitBarCheckbox:SetFontSize(16)
-    buffsUnitBarCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-    buffsUnitBarCheckbox:SetActive(nkUISetup.modules.unitFrames.activate)
-
-    Command.Event.Attach(EnKai.events[name .. '.buffsUnitBarCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.unitFrames.showBuffs = newValue
-        if newValue == false then 
-            _internal.uiFramesRemoveBuffs()
-        else
-            _internal.uiFramesLoadAllBuffs()
-        end
-    end, name .. '.buffsUnitBarCheckbox.CheckboxChanged')
-
-    combatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".combatAlphaSlider", frame)
-    combatAlphaSlider:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 5)
-    combatAlphaSlider:SetText("Combat alpha %d%%" )
-    combatAlphaSlider:SetWidth(400)
-    combatAlphaSlider:SetRange(0, 100)
-    combatAlphaSlider:SetMidValue(50)
-    combatAlphaSlider:SetPrecision(5)
-    combatAlphaSlider:SetLabelWidth(250)
-    combatAlphaSlider:SetFontSize(16)
-    combatAlphaSlider:SetActive(nkUISetup.modules.unitFrames.activate)
-    combatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
-    combatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.combatAlpha * 100)
-    
-    Command.Event.Attach(EnKai.events[name .. '.combatAlphaSlider'].SliderChanged, function (_, newValue)
-        nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
-    end, name .. ".combatAlphaSlider.SliderChanged")
-
-    nonCombatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".nonCombatAlphaSlider", frame)
-    nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
-    nonCombatAlphaSlider:SetText("Non combat alpha %d%%" )
-    nonCombatAlphaSlider:SetWidth(400)
-    nonCombatAlphaSlider:SetRange(0, 100)
-    nonCombatAlphaSlider:SetMidValue(50)
-    nonCombatAlphaSlider:SetPrecision(5)    
-    nonCombatAlphaSlider:SetLabelWidth(250)
-    nonCombatAlphaSlider:SetFontSize(16)
-    nonCombatAlphaSlider:SetActive(nkUISetup.modules.unitFrames.activate)
-    nonCombatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
-    nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)
-    
-    Command.Event.Attach(EnKai.events[name .. '.nonCombatAlphaSlider'].SliderChanged, function (_, newValue)
-        nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
-        toggleAlpha()
-    end, name .. ".nonCombatAlphaSlider.SliderChanged")
-
-    return frame
-
-end
-
---[[
-    _subTutorialLowerBar
-    Description:
-        Creates and configures the lower bar tutorial sub-section.
-    Parameters:
-        parent (table): The parent frame to which this sub-section will be attached
-    Returns:
-        table: The created frame containing lower bar configuration options
-    Notes:
-        - This function creates a checkbox for activating the lower bar module
-        - It handles the event attachment for configuration changes
-    Available Methods:
-        - None (local function)
-]]
-local function _subTutorialLowerBar(parent)
-
-    local name = "nkUI.tutorialWindow.lowerBar"
-
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
-    frame:SetVisible(false)
-
-    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-    activateCheckbox:SetText("Activate this module")
-    activateCheckbox:SetChecked(nkUISetup.modules.lowerBar.activate)
-    activateCheckbox:SetLabelWidth(200)
-    activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
-    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.lowerBar.activate = newValue
-        _internal.lowerBarInit (newValue)
-    end, name .. '.activateCheckbox.CheckboxChanged')
-
-    return frame
-
-end
-
-local function _subTutorialActionBar(parent)
-
-    local name = "nkUI.tutorialWindow.actionbar"
-
-    local combatAlphaSlider, nonCombatAlphaSlider
-
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
-    frame:SetVisible(false)
-
-    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-    activateCheckbox:SetText("Activate this module")
-    activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate)
-    activateCheckbox:SetLabelWidth(200)
-    activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
-    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.actionBars.activate = newValue
-        combatAlphaSlider:SetActive(newValue)
-        nonCombatAlphaSlider:SetActive(newValue)        
-        _internal.uiActionBarInit (newValue)
-    end, name .. '.activateCheckbox.CheckboxChanged')
-
-    combatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".combatAlphaSlider", frame)
-    combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 5)
-    combatAlphaSlider:SetText("Combat alpha %d%%" )
-    combatAlphaSlider:SetWidth(400)
-    combatAlphaSlider:SetRange(0, 100)
-    combatAlphaSlider:SetMidValue(50)
-    combatAlphaSlider:SetPrecision(5)
-    combatAlphaSlider:SetLabelWidth(250)
-    combatAlphaSlider:SetFontSize(16)
-    combatAlphaSlider:SetActive(nkUISetup.modules.actionBars.activate)
-    combatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
-    combatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.combatAlpha * 100)
-    
-    Command.Event.Attach(EnKai.events[name .. '.combatAlphaSlider'].SliderChanged, function (_, newValue)
-        nkUISetup.modules.actionBars.combatAlpha = newValue / 100
-    end, name .. ".combatAlphaSlider.SliderChanged")
-
-    nonCombatAlphaSlider = EnKai.uiCreateFrame("nkSlider", name .. ".nonCombatAlphaSlider", frame)
-    nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
-    nonCombatAlphaSlider:SetText("Non combat alpha %d%%" )
-    nonCombatAlphaSlider:SetWidth(400)
-    nonCombatAlphaSlider:SetRange(0, 100)
-    nonCombatAlphaSlider:SetMidValue(50)
-    nonCombatAlphaSlider:SetPrecision(5)    
-    nonCombatAlphaSlider:SetLabelWidth(250)
-    nonCombatAlphaSlider:SetFontSize(16)
-    nonCombatAlphaSlider:SetActive(nkUISetup.modules.actionBars.activate)
-    nonCombatAlphaSlider:SetFont(addonInfo.id, "Montserrat")
-    nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.nonCombatAlpha * 100)
-    
-    Command.Event.Attach(EnKai.events[name .. '.nonCombatAlphaSlider'].SliderChanged, function (_, newValue)
-        nkUISetup.modules.actionBars.nonCombatAlpha = newValue / 100
-        actionBarToggleAlpha()
-    end, name .. ".nonCombatAlphaSlider.SliderChanged")    
-
-    return frame
-
-end
-
---[[
-    _subTutorialTooltip
-    Description:
-        Creates and configures the tooltip tutorial sub-section.
-    Parameters:
-        parent (table): The parent frame to which this sub-section will be attached
-    Returns:
-        table: The created frame containing tooltip configuration options
-    Notes:
-        - This function creates a checkbox for activating the tooltip module
-        - It handles the event attachment for configuration changes
-    Available Methods:
-        - None (local function)
-]]
-local function _subTutorialTooltip(parent)
-
-    local name = "nkUI.tutorialWindow.tooltip"
-
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
-    frame:SetVisible(false)
-
-    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-    activateCheckbox:SetText("Activate this module")
-    activateCheckbox:SetChecked(nkUISetup.modules.tooltip.activate)
-    activateCheckbox:SetLabelWidth(200)
-    activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
-    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.tooltip.activate = newValue
-        if (newValue == true) then _internal.tooltip() end
-    end, name .. '.activateCheckbox.CheckboxChanged')
-
-    return frame
-end
-
-local function _subTutorialSCT(parent)
-
-    local name = "nkUI.tutorialWindow.sct"
-
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT")
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
-    frame:SetVisible(false)
-
-    local activateCheckbox = EnKai.uiCreateFrame("nkCheckbox", name .. ".activateCheckbox", frame)
-    activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-    activateCheckbox:SetText("Activate this module")
-    activateCheckbox:SetChecked(nkUISetup.modules.sct.activate)
-    activateCheckbox:SetLabelWidth(200)
-    activateCheckbox:SetFontSize(16)
-    activateCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
-    Command.Event.Attach(EnKai.events[name .. '.activateCheckbox'].CheckboxChanged, function (_, newValue)		
-        nkUISetup.modules.sct.activate = newValue
-        _internal.sctToggle(newValue)
-    end, name .. '.activateCheckbox.CheckboxChanged')
-
-    return frame
-
-end
-
---[[
     _createTutorialWindow
     Description:
         Creates the main tutorial window for nkUI settings.
@@ -429,12 +99,16 @@ local function _createTutorialWindow()
     local steps = {
         {
             title = "Welcome to nkUI",
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n- New one bag module",
+            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n- settings\n- New one bag module",
             image = "gfx/EnKaiLogo.png",
             width = 300,
             height = 79,
             position = "bottom",
         },
+        {
+            title = "nkUI Settings",
+            description = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.",
+        },        
         {
             title = "Default UI elements",
             description = "This addon provides a lot of replacements for the standard UI elements. Unfortunately due to a lot of limitations in the RIFT API the default elements cannot be deactivated by addons.\n\nInstead you have to do so manually once. You can do so by hitting Escape and use the option [Edit Layout]. Using that option you can hide default ui elements.",
@@ -465,7 +139,6 @@ local function _createTutorialWindow()
             image = "gfx/tutorialUnitFrames.png",
             width = 400,
             height = 46,
-            settings = _subTutorialUnitframes(subFrameContainer),
             position = "bottom"
         },        
         {
@@ -475,7 +148,6 @@ local function _createTutorialWindow()
             width = 560,
             height = 22,
             position = "bottom",
-            settings = _subTutorialLowerBar(subFrameContainer)
         },        
         {
             title = "Action bar module (1/2)",
@@ -484,7 +156,6 @@ local function _createTutorialWindow()
             width = 560,
             height = 93,
             position = "bottom",
-            settings = _subTutorialActionBar(subFrameContainer)
         },
         {
             title = "Action bar module (2/2)",
@@ -501,7 +172,6 @@ local function _createTutorialWindow()
             width = 429,
             height = 250,
             position = "bottom",
-            settings = _subTutorialSCT(subFrameContainer)
         },            
         {
             title = "Tooltip module",
@@ -510,11 +180,10 @@ local function _createTutorialWindow()
             width = 182,
             height = 103,
             position = "bottom",
-            settings = _subTutorialTooltip(subFrameContainer)            
         },
         {
             title = "You are done - for now :)",
-            description = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window by using the chat command /nkui"
+            description = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window from the settings."
         }
     }
 

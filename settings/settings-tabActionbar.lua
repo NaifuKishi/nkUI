@@ -43,7 +43,7 @@ function _settings.uiConfigTabActionBar (name, parent)
             _internal.actionBarToggleAlpha()
         end)
         
-        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
+        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "TOPRIGHT", 30, 0)
         nonCombatAlphaSlider:SetRange(0, 100)
         nonCombatAlphaSlider:SetMidValue(50)
         nonCombatAlphaSlider:SetPrecision(5)    

@@ -11,65 +11,35 @@ local stringFormat = string.format
 
 function _settings.uiConfigTabUnitFrames (name, parent)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider
+    local paneTabUFPlayer, paneTabUFTarget, paneTabUFPlayerPet, paneTabUFFocus, paneTabUFGroup, paneTabUFRaid
 
-    function frame:build()
+    local tabPane = EnKai.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", parent:GetBodyFrame())
+    --tabPane:SetColor({ thickness = 1, r = 0.078, g = 0.188, b = 0.306, a = 1}, { type = 'solid', r = 0.051, g = 0.118, b = 0.192, a = 1}, nil, { r = 1, g = 1, b = 1, a = 1})
+    tabPane:SetColor({ thickness = 1, r = 0, g = 0, b = 0, a = 1}, { type = 'solid', r = 0, g = 0, b = 0, a = .6}, nil, { r = 1, g = 1, b = 1, a = 1})
+    tabPane:SetBorder(false)
+    tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
 
-        activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
-            nkUISetup.modules.unitFrames.activate = newValue
-            if buffsUnitBarCheckbox then buffsUnitBarCheckbox:SetActive(newValue) end
-            if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
-            if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
+    function tabPane:build()
+        paneTabUFPlayer = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Player", tabPane, "PLAYER", nkUISetup.modules.unitFrames.frames.player)
+        paneTabUFTarget = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Target", tabPane, "TARGET", nkUISetup.modules.unitFrames.frames.target)
+        paneTabUFPlayerPet = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.PlayerPet", tabPane, "PLAYER PET", nkUISetup.modules.unitFrames.frames.playerPet)
+        paneTabUFFocus = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Focus", tabPane, "FOCUS", nkUISetup.modules.unitFrames.frames.focus)
+        paneTabUFGroup = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Group", tabPane, "GROUP", nkUISetup.modules.unitFrames.frames.group)
+        paneTabUFRaid = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Raid", tabPane, "RAID", nkUISetup.modules.unitFrames.frames.raid)        
 
-            _internal.uiFramesToggle(newValue)
+        tabPane:SetPoint("TOPLEFT", parent:GetBodyFrame(), "TOPLEFT", 10, 10)
+        tabPane:SetPoint("BOTTOMRIGHT", parent:GetBodyFrame(), "BOTTOMRIGHT", -10, -50)
+        tabPane:SetLayer(1)
 
-            if newValue == false then 
-                _internal.uiFramesRemoveBuffs()
-            else
-                _internal.uiFramesLoadAllBuffs()
-            end
-        end)
+        tabPane:AddPane( { label = "Player", frame = paneTabUFPlayer, initFunc = function() paneTabUFPlayer:build() end}, false)
+        tabPane:AddPane( { label = "Target", frame = paneTabUFTarget, initFunc = function() paneTabUFTarget:build() end}, false)
+        tabPane:AddPane( { label = "Player Pet", frame = paneTabUFPlayerPet, initFunc = function() paneTabUFPlayerPet:build() end}, false)
+        tabPane:AddPane( { label = "Focus", frame = paneTabUFFocus, initFunc = function() paneTabUFFocus:build() end}, false)
+        tabPane:AddPane( { label = "Group", frame = paneTabUFGroup, initFunc = function() paneTabUFGroup:build() end}, false)
+        tabPane:AddPane( { label = "Raid", frame = paneTabUFRaid, initFunc = function() paneTabUFRaid:build() end}, true)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.sct.activate)
-
-        local moduleActive = nkUISetup.modules.unitFrames.activate
-
-        buffsUnitBarCheckbox = _settings.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
-            nkUISetup.modules.unitFrames.showBuffs = newValue
-            if newValue == false then 
-                _internal.uiFramesRemoveBuffs()
-            else
-                _internal.uiFramesLoadAllBuffs()
-            end
-        end)
-
-        buffsUnitBarCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
-        buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs)
-
-        combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
-            nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
-        end)
-
-        combatAlphaSlider:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 5)
-        combatAlphaSlider:SetRange(0, 100)
-        combatAlphaSlider:SetMidValue(50)
-        combatAlphaSlider:SetPrecision(5)
-        combatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.combatAlpha * 100)
-
-        nonCombatAlphaSlider = _settings.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
-            nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
-            _internal.actionBarToggleAlpha()
-        end)
-        
-        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
-        nonCombatAlphaSlider:SetRange(0, 100)
-        nonCombatAlphaSlider:SetMidValue(50)
-        nonCombatAlphaSlider:SetPrecision(5)    
-        nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)
     end
 
-    return frame
+    return tabPane
 
 end

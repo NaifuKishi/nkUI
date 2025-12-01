@@ -60,7 +60,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
             local icon = unitDebuffIcons[k].icon
             icon:ClearAll()
             icon:SetPoint(from, object, to, x, y)
-            icon:SetScale(.7 * frame:GetBuffScale())
+            icon:Setup(frame:GetBuffSetup())
             lastIcon = icon
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5 * data.uiScaleX, 0
         end

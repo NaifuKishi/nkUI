@@ -172,7 +172,7 @@ function _internal.setupUI ()
 
     config:SetPoint("CENTER", UIParent, "CENTER")
     config:SetWidth(900)
-    config:SetHeight(600)
+    config:SetHeight(650)
     config:SetTitle(addonInfo.toc.Identifier .. " ".. addonInfo.toc.Version)
     config:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     config:SetCloseable(true)
@@ -192,20 +192,13 @@ function _internal.setupUI ()
     local paneTabSCT = _settings.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
     local paneTabTooltip = _settings.uiConfigTabTooltip(name .. ".tab.Tooltip", tabPane)
     local paneTabBuffBar = _settings.uiConfigTabBuffBar(name .. ".tab.BuffBar", tabPane)
-    local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
-
-    local paneTabUFPlayer = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Player", tabPane, "PLAYER", nkUISetup.modules.unitFrames.frames.player)
-    local paneTabUFTarget = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Target", tabPane, "TARGET", nkUISetup.modules.unitFrames.frames.target)
-    local paneTabUFPlayerPet = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.PlayerPet", tabPane, "PLAYER PET", nkUISetup.modules.unitFrames.frames.playerPet)
-    local paneTabUFFocus = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Focus", tabPane, "FOCUS", nkUISetup.modules.unitFrames.frames.focus)
-    local paneTabUFGroup = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Group", tabPane, "GROUP", nkUISetup.modules.unitFrames.frames.group)
-    local paneTabUFRaid = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Raid", tabPane, "RAID", nkUISetup.modules.unitFrames.frames.raid)
 
     local paneTabRessourceBar = _settings.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
 
     local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "PLAYER CASTBAR", nkUISetup.modules.unitFrames.frames.playerCastBar)
     local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "TARGET CASTBAR", nkUISetup.modules.unitFrames.frames.targetCastBar)
-    
+
+    local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
 
     local EnKaiLogo = EnKai.uiCreateFrame("nkTexture", name .. ".EnKaiLogo", config)
     EnKaiLogo:SetTextureAsync(EnKai.art.GetThemeLogo()[1],EnKai.art.GetThemeLogo()[2])
@@ -231,7 +224,7 @@ function _internal.setupUI ()
     closeButton:SetLayer(9)
 
     Command.Event.Attach(EnKai.events[name .. ".closeButton"].Clicked, function (_, newValue)
-        uiElements.config:SetVisible(false)   
+        uiElements.settings:SetVisible(false)   
     end, name .. ".closeButton.Clicked")
 
     local tutorialButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".tutorialButton", config:GetContent())
@@ -245,8 +238,7 @@ function _internal.setupUI ()
     tutorialButton:SetLayer(9)
 
     Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
-        --if uiElements.tutorial == nil then uiElements.tutorial = intFct.tutorial() end
-        --uiElements.tutorial:SetVisible(true)
+        _internal.tutorial()
     end, name .. ".tutorialButton.Clicked")
 
     local oSetVisible = config.SetVisible
@@ -264,19 +256,13 @@ function _internal.setupUI ()
     tabPane:AddPane( { label = "SCT", frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
     tabPane:AddPane( { label = "Tooltip", frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
     tabPane:AddPane( { label = "Buff bar", frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
-    tabPane:AddPane( { label = "Unit frames", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, false)
-    
-    tabPane:AddPane( { label = "uf Player", frame = paneTabUFPlayer, initFunc = function() paneTabUFPlayer:build() end}, false)
-    tabPane:AddPane( { label = "uf Target", frame = paneTabUFTarget, initFunc = function() paneTabUFTarget:build() end}, false)
-    tabPane:AddPane( { label = "uf Player Pet", frame = paneTabUFPlayerPet, initFunc = function() paneTabUFPlayerPet:build() end}, false)
-    tabPane:AddPane( { label = "uf Focus", frame = paneTabUFFocus, initFunc = function() paneTabUFFocus:build() end}, false)
-    tabPane:AddPane( { label = "uf Group", frame = paneTabUFGroup, initFunc = function() paneTabUFGroup:build() end}, false)
-    tabPane:AddPane( { label = "uf Raid", frame = paneTabUFRaid, initFunc = function() paneTabUFRaid:build() end}, false)
 
     tabPane:AddPane( { label = "Ressource bar", frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
 
     tabPane:AddPane( { label = "Player castbar", frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
-    tabPane:AddPane( { label = "Target castbar", frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, true)
+    tabPane:AddPane( { label = "Target castbar", frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
+
+    tabPane:AddPane( { label = "Unit frames", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
 
     --if EnKai.internal.checkEvents ("nkRadial", true) == false then return nil end
 

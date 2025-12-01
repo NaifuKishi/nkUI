@@ -1,5 +1,5 @@
-v0.4.0
-    - updates: prepare settings module
+v0.3.5
+    - new: addon settings
     - fixes: some minor tutorial fixes
 
 v0.3.1
