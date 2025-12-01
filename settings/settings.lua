@@ -102,7 +102,7 @@ local _defaults = {
 ]]
 function _internal.setupDefaults()
 
-    if nkUISetup == nil or nkUISetup.tutorialVersion == nil then
+    if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion == 24 then
         nkUISetup = _defaults
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
