@@ -36,6 +36,17 @@ RunOnStartup = {
 	"modules/tooltip/tooltip.lua",
 
 	"settings/settings.lua",
+	"settings/settings-tabUF.lua",
+	"settings/settings-tabActionbar.lua",
+	"settings/settings-tabBuffbar.lua",
+	"settings/settings-tabCastBar.lua",
+	"settings/settings-tabLowerbar.lua",
+	"settings/settings-tabRessourceBar.lua",
+	"settings/settings-tabSCT.lua",
+	"settings/settings-tabTooltip.lua",
+	"settings/settings-tabUF.lua",
+	"settings/settings-tabUnitFrames.lua",
+
 	"settings/tutorial.lua",
 
 	"modules/actionbar/actionbar.lua",

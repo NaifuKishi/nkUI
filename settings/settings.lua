@@ -7,6 +7,9 @@ local uiElements= privateVars.uiElements
 local _internal = privateVars.internal
 local _events   = privateVars.events
 
+privateVars.settings		= {}
+local _settings = privateVars.settings
+
 ---------- init local variables ---------
 
 local _defaults = {
@@ -54,7 +57,7 @@ local _defaults = {
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
                                                         margins = { name = 0, health = 0, energy = 0, planar = 0, combatIcon = 5, roleIcon = 2, tierIcon = 5 },
-                                                        iconSizes = {combat = 22, role = 15, tier = 15 }
+                                                        iconSizes = {combat = 22, role = 15, tier = 15 },
                                                     },
                                     ressourceBar    = { x = 1620, y = 1020, width = 200, height = 17,
                                                         combo = { width = 30, height = 12},
@@ -105,4 +108,188 @@ function _internal.setupDefaults()
         nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
     end
 
+end
+
+function _internal.toggleAlpha()
+    
+    uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)    
+    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+    uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+    uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+
+end
+
+function _internal.actionBarToggleAlpha()
+    
+    for k, v in pairs (uiElements.actionbars) do
+        v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
+    end
+
+end
+
+function _settings.checkbox (name, parent, text, active, callBack)
+
+    local thisCheckbox = EnKai.uiCreateFrame("nkCheckbox", name, parent)
+    
+    thisCheckbox:SetText(text, true)
+    thisCheckbox:SetActive(active)
+    thisCheckbox:SetLabelWidth(200)
+    thisCheckbox:SetFontSize(14)
+    thisCheckbox:SetTextFont(addonInfo.id, "Montserrat")
+
+    Command.Event.Attach(EnKai.events[name].CheckboxChanged, function (_, newValue)		
+        callBack(newValue)
+    end, name .. ".CheckboxChanged")
+
+    return thisCheckbox
+
+end
+
+function _settings.slider (name, parent, text, active, callBack)
+
+    local thisSlider = EnKai.uiCreateFrame("nkSlider", name, parent)
+
+    thisSlider:SetText(text, true)
+    thisSlider:SetWidth(350)
+    thisSlider:SetLabelWidth(200)
+    thisSlider:SetFontSize(14)
+    thisSlider:SetActive(active)
+    thisSlider:SetFont(addonInfo.id, "Montserrat")
+
+    Command.Event.Attach(EnKai.events[name].SliderChanged, function (_, newValue)
+        callBack(newValue)
+    end, name .. ".SliderChanged")
+
+    return thisSlider
+
+end
+
+function _internal.setupUI ()
+    
+    local name = "nkUI.config"
+
+    local config = EnKai.uiCreateFrame("nkWindowMetro", name, uiElements.context)
+
+    config:SetPoint("CENTER", UIParent, "CENTER")
+    config:SetWidth(900)
+    config:SetHeight(600)
+    config:SetTitle(addonInfo.toc.Identifier .. " ".. addonInfo.toc.Version)
+    config:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+    config:SetCloseable(true)
+    --config:SetColor({ r = 00, g = 0, b = 0, a = 1, thickness=1}, {type = "solid", r = 0.051, g = 0, b = 0.0, a = .7})
+    config:SetTitleFontColor(1, 1, 1, 1)
+    config:SetShadow(true)
+
+    local tabPane = EnKai.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", config:GetContent())
+    --tabPane:SetColor({ thickness = 1, r = 0.078, g = 0.188, b = 0.306, a = 1}, { type = 'solid', r = 0.051, g = 0.118, b = 0.192, a = 1}, nil, { r = 1, g = 1, b = 1, a = 1})
+    tabPane:SetColor({ thickness = 1, r = 0, g = 0, b = 0, a = 1}, { type = 'solid', r = 0, g = 0, b = 0, a = .6}, nil, { r = 1, g = 1, b = 1, a = 1})
+    tabPane:SetBorder(false)
+    tabPane:SetVertical(true)
+    tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
+
+    local paneTabActionBar = _settings.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
+    local paneTabLowerBar = _settings.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
+    local paneTabSCT = _settings.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
+    local paneTabTooltip = _settings.uiConfigTabTooltip(name .. ".tab.Tooltip", tabPane)
+    local paneTabBuffBar = _settings.uiConfigTabBuffBar(name .. ".tab.BuffBar", tabPane)
+    local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
+
+    local paneTabUFPlayer = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Player", tabPane, "PLAYER", nkUISetup.modules.unitFrames.frames.player)
+    local paneTabUFTarget = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Target", tabPane, "TARGET", nkUISetup.modules.unitFrames.frames.target)
+    local paneTabUFPlayerPet = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.PlayerPet", tabPane, "PLAYER PET", nkUISetup.modules.unitFrames.frames.playerPet)
+    local paneTabUFFocus = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Focus", tabPane, "FOCUS", nkUISetup.modules.unitFrames.frames.focus)
+    local paneTabUFGroup = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Group", tabPane, "GROUP", nkUISetup.modules.unitFrames.frames.group)
+    local paneTabUFRaid = _settings.uiConfigTabUF(name .. ".tab.UnitFrames.Raid", tabPane, "RAID", nkUISetup.modules.unitFrames.frames.raid)
+
+    local paneTabRessourceBar = _settings.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
+
+    local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "PLAYER CASTBAR", nkUISetup.modules.unitFrames.frames.playerCastBar)
+    local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "TARGET CASTBAR", nkUISetup.modules.unitFrames.frames.targetCastBar)
+    
+
+    local EnKaiLogo = EnKai.uiCreateFrame("nkTexture", name .. ".EnKaiLogo", config)
+    EnKaiLogo:SetTextureAsync(EnKai.art.GetThemeLogo()[1],EnKai.art.GetThemeLogo()[2])
+    EnKaiLogo:SetPoint("BOTTOMLEFT", config:GetContent(), "BOTTOMLEFT", 10, -5)
+    EnKaiLogo:SetWidth(125)
+    EnKaiLogo:SetHeight(33)
+
+    local versionText = UI.CreateFrame("Text", name .. ".versionText", config)
+    versionText:SetFontSize(11)
+    versionText:SetText(string.format("Version %s", addonInfo.toc.Version))
+    versionText:SetFontColor(236, 228, 189, 1)
+    versionText:SetPoint("BOTTOMRIGHT", tabPane, "BOTTOMRIGHT", -5, -5)
+    versionText:SetLayer(99)
+
+    local closeButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".closeButton", config:GetContent())
+
+    closeButton:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -10)
+    closeButton:SetText("Close")
+    closeButton:SetFontColor(1, 1, 1)
+    --closeButton:SetColor(_mainColor.r, _mainColor.g, _mainColor.b)
+    closeButton:SetIcon("EnKai", "gfx/icons/close.png")
+    closeButton:SetScale(.8)
+    closeButton:SetLayer(9)
+
+    Command.Event.Attach(EnKai.events[name .. ".closeButton"].Clicked, function (_, newValue)
+        uiElements.config:SetVisible(false)   
+    end, name .. ".closeButton.Clicked")
+
+    local tutorialButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".tutorialButton", config:GetContent())
+
+    tutorialButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
+    tutorialButton:SetText("Tutorial")
+    tutorialButton:SetFontColor(1, 1, 1)
+    --tutorialButton:SetColor(_mainColor.r, _mainColor.g, _mainColor.b)
+    tutorialButton:SetIcon("EnKai", "gfx/icons/info.png")
+    tutorialButton:SetScale(.8)
+    tutorialButton:SetLayer(9)
+
+    Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
+        --if uiElements.tutorial == nil then uiElements.tutorial = intFct.tutorial() end
+        --uiElements.tutorial:SetVisible(true)
+    end, name .. ".tutorialButton.Clicked")
+
+    local oSetVisible = config.SetVisible
+
+    function config:SetVisible(flag)   
+        oSetVisible(self, flag)
+    end
+
+    tabPane:SetPoint("TOPLEFT", config:GetContent(), "TOPLEFT", 10, 10)
+    tabPane:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -50)
+    tabPane:SetLayer(1)
+
+    tabPane:AddPane( { label = "Action bar", frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
+    tabPane:AddPane( { label = "Lower bar", frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
+    tabPane:AddPane( { label = "SCT", frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
+    tabPane:AddPane( { label = "Tooltip", frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
+    tabPane:AddPane( { label = "Buff bar", frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
+    tabPane:AddPane( { label = "Unit frames", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, false)
+    
+    tabPane:AddPane( { label = "uf Player", frame = paneTabUFPlayer, initFunc = function() paneTabUFPlayer:build() end}, false)
+    tabPane:AddPane( { label = "uf Target", frame = paneTabUFTarget, initFunc = function() paneTabUFTarget:build() end}, false)
+    tabPane:AddPane( { label = "uf Player Pet", frame = paneTabUFPlayerPet, initFunc = function() paneTabUFPlayerPet:build() end}, false)
+    tabPane:AddPane( { label = "uf Focus", frame = paneTabUFFocus, initFunc = function() paneTabUFFocus:build() end}, false)
+    tabPane:AddPane( { label = "uf Group", frame = paneTabUFGroup, initFunc = function() paneTabUFGroup:build() end}, false)
+    tabPane:AddPane( { label = "uf Raid", frame = paneTabUFRaid, initFunc = function() paneTabUFRaid:build() end}, false)
+
+    tabPane:AddPane( { label = "Ressource bar", frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
+
+    tabPane:AddPane( { label = "Player castbar", frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
+    tabPane:AddPane( { label = "Target castbar", frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, true)
+
+    --if EnKai.internal.checkEvents ("nkRadial", true) == false then return nil end
+
+    config:SetVisible(true)
+
+    return config
+
+end
+
+function _internal.setupInit ()
+    if uiElements.settings == nil then
+        uiElements.settings = _internal.setupUI ()
+    else
+        uiElements.settings:SetVisible(true)
+    end
 end

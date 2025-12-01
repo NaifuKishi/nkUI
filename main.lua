@@ -193,6 +193,8 @@ local function _main(_, addon)
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
+			_internal.setupUI ()
+
 		end, "nkUI.Unit.Availability.Full")
 		
 		EnKai.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", _internal.tutorial)

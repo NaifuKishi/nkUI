@@ -210,7 +210,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     if unitFrameType == "raid" then
         nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
-    elseif reverse then
+    elseif setup.reverse then
         nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
     else
         nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
