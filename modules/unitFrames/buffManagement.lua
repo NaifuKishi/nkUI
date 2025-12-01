@@ -34,6 +34,8 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     local unitBuffDisplayList = frame:GetBuffDisplayList() or {}
     local unitDebuffDisplayList = frame:GetDebuffDisplayList() or {}
 
+    local buffSetup = frame:GetBuffSetup()
+
     local function updateBuffDisplay()
         local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -22 * data.uiScaleY
         local lastIcon
@@ -44,7 +46,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
             icon:ClearAll()
             icon:ClearPoint("BOTTOMLEFT")
             icon:SetPoint(from, object, to, x, y)
-            icon:SetScale(.7 * frame:GetBuffScale())
+            icon:Setup(frame:GetBuffSetup())
             lastIcon = icon
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 2, 0
 
@@ -82,7 +84,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
                             if unitDebuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(unitType, "debuffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                                local icon = _internal.iconManager.get(unitType, "debuffIcon." .. k, buffSetup, 0, 0)
                                 unitDebuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
@@ -122,7 +124,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
                             if unitBuffIcons[k] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(unitType, "buffIcon." .. k, .7 * frame:GetBuffScale(), 0, 0)
+                                local icon = _internal.iconManager.get(unitType, "buffIcon." .. k, buffSetup, 0, 0)
                                 unitBuffIcons[k] = {
                                     icon = icon,
                                     visible = true,
@@ -141,7 +143,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
                             unitBuffIcons[k].icon:SetStack(v.stack)
 
-                            if InspectSystemSecure() == false then unitBuffIcons[k].icon:SetAlpha(nkUISetup.nonCombatAlpha) end
+                            if InspectSystemSecure() == false then unitBuffIcons[k].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
 
                             unitBuffIcons[k].icon:SetTexture("Rift", v.icon)
                             unitBuffIcons[k].icon:SetVisible(true)

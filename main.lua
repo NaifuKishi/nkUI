@@ -87,62 +87,14 @@ uiElements.contextLowest:SetSecureMode("restricted")
 
 ---------- local function block ----------
 
---[[
-   _setupDefaults
-    Description:
-        Initializes default configuration values for the nkUI addon if they don't exist.
-    Parameters:
-        None
-    Returns:
-        None
-    Notes:
-        - Creates default configuration table if it doesn't exist
-        - Updates tutorial version and adds new configuration options
-        - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
-]]
-local function _setupDefaults()
-
-	if nkUISetup == nil then 		
-		nkUISetup = {}
-		nkUISetup.uiFrames = { activate = true }
-		nkUISetup.moduleActionBars = { activate = true }
-		nkUISetup.lowerBar = { activate = true }
-		nkUISetup.tooltip = { activate = true }
-		nkUISetup.buffFrame = { activate = true }
-		nkUISetup.buffUnitFrame = { activate = true }
-		nkUISetup.combatAlpha = 1
-		nkUISetup.nonCombatAlpha = .2
-		nkUISetup.actionBarCombatAlpha = 1
-		nkUISetup.actionBarNonCombatAlpha = .2
-		nkUISetup.tutorialVersion = nil
-		nkUISetup.actionBars = {}
-		nkUISetup.sct = { activate = true }
-		nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
-	else		
-		nkUISetup.tutorial = nil -- V0.0.8 change
-		if nkUISetup.buffUnitFrame == nil  then nkUISetup.buffUnitFrame = { activate = true } end
-		if nkUISetup.combatAlpha == nil  then nkUISetup.combatAlpha = 1 end  -- V0.0.8 change		
-		if nkUISetup.nonCombatAlpha == nil  then nkUISetup.nonCombatAlpha = .2 end -- V0.0.8 change		
-		if nkUISetup.moduleActionBars == nil  then nkUISetup.moduleActionBars = { activate = true } end -- V0.1.0 change		
-
-		if nkUISetup.actionBars == nil then nkUISetup.actionBars = {} end
-
-		if nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] == nil then
-			nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
-		end
-
-		if nkUISetup.actionBarCombatAlpha == nil then nkUISetup.actionBarCombatAlpha = 1 end
-		if nkUISetup.actionBarNonCombatAlpha == nil then nkUISetup.actionBarNonCombatAlpha = .2 end
-		if nkUISetup.sct == nil then nkUISetup.sct = { activate = true } end
-	end
-end
-
 local function _commandHandler (commandline)
 
 	if commandline == nil then return end
-	
-	if stringFind(commandline, "bag") ~= nil then 
-		_internal.oneBagInit()
+		
+	if stringFind(commandline, "bag") ~= nil then
+		if nkUISetup and nkUISetup.modules and nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
+			_internal.oneBagInit()
+		end
 	else
 		_internal.tutorial()
 	end
@@ -199,40 +151,45 @@ local function _main(_, addon)
 			EnKai.BuffManager.init() -- Initialize the BuffManager if not already done
             EnKai.inventory.init(false)
 			
-			_setupDefaults()
+			_internal.setupDefaults()
 
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
     			nkUISetup.tutorialVersion = thisTutorialVersion
 				_internal.tutorial()
 			end
 
-			if nkUISetup and nkUISetup.tooltip and nkUISetup.tooltip.activate then
-				_internal.tooltip()
-			end
+			if nkUISetup and nkUISetup.modules then
+				if nkUISetup.modules.tooltip and nkUISetup.modules.tooltip.activate then
+					_internal.tooltip()
+				end
 
-			if nkUISetup and nkUISetup.lowerBar and nkUISetup.lowerBar.activate then
-				_internal.lowerBar()
-			end
+				if nkUISetup.modules.lowerBar and nkUISetup.modules.lowerBar.activate then
+					_internal.lowerBar()
+				end
+				
+				if nkUISetup.modules.unitFrames and nkUISetup.modules.unitFrames.activate then
+					_internal.uiFrames()
+				end
 
-			if nkUISetup and nkUISetup.uiFrames and nkUISetup.uiFrames.activate then
-                _internal.uiFrames()
-			end
+				if nkUISetup.modules.actionBars and nkUISetup.modules.actionBars.activate then
+					_internal.uiActionBars()
+				end				
+				
+				if nkUISetup.modules.sct and nkUISetup.modules.sct.activate then
+					_internal.sctInit()
+				end
 
-			if nkUISetup and nkUISetup.moduleActionBars and nkUISetup.moduleActionBars.activate then
-                _internal.uiActionBars()
-			end
+				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
+					
+					UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
+						if uiElements.oneBag == nil then _internal.oneBagInit() end
 
-			if nkUISetup and nkUISetup.sct and nkUISetup.sct.activate then
-				_internal.sctInit()
+						uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
+					end, "nkUI.OneBag.Native.Bank.Loaded")
+				end
 			end
 
 			--_internal.cooldownInit()
-
-			UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
-				if uiElements.oneBag == nil then _internal.oneBagInit() end
-
-				uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
-			end, "nkUI.OneBag.Native.Bank.Loaded")
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 

@@ -1,3 +1,7 @@
+v0.4.0
+    - updates: prepare settings module
+    - fixes: some minor tutorial fixes
+
 v0.3.1
     - fixes: Debuff on buff bar where no longer showing
     - fixes: A rare SCT issue if a damage event didn't include damage

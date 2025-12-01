@@ -591,7 +591,7 @@ end
 
 function _events.tooltip (_, tooltipType, tooltipInfo)
 
-    if nkUISetup.tooltip.activate == false then return end
+    if nkUISetup.modules.tooltip.activate == false then return end
 
     if (tooltipType == nil) then
         uiElements.tooltip:SetVisible(false)

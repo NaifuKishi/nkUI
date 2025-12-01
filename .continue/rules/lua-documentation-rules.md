@@ -1,4 +1,5 @@
 ---
+name: LUA Documentation Rules
 globs: "**/*.lua"
 description: This rule applies to all LUA files and functions within the
   project. It ensures that all code is well-documented for better

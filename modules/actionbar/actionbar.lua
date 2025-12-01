@@ -157,11 +157,11 @@ end
 function _internal.uiActionBars()
 
     if data.unitFramesBuild then return end
-    if nkUISetup.moduleActionBars.activate == false then return end
+    if nkUISetup.modules.actionBars.activate == false then return end
 
     EnKai.cdManager.init()
 
-    data.actionBarSetup = nkUISetup.actionBars[EnKai.unit.getPlayerDetails().name]
+    data.actionBarSetup = nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name]
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
     local _roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }
 
@@ -228,7 +228,7 @@ function _internal.uiActionBars()
     end, "nkUI.TEMPORARY.Role")
 
     for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
+        v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
     end
 
     Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Start")

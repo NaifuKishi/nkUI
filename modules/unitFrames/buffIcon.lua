@@ -164,28 +164,21 @@ function uiElements.icon (name, parent)
 		end
 	end
 	
-	function icon:SetScale(newScale)
-		scale = newScale
+	function icon:Setup(newSetup)
 	
-		icon:SetWidth( 50 * newScale)
-		icon:SetHeight( 50 * newScale)
+		icon:SetWidth(newSetup.width)
+		icon:SetHeight(newSetup.height)
 		
-		border:SetWidth( 50 * newScale)
-		border:SetHeight( 50 * newScale)
+		border:SetWidth(newSetup.width)
+		border:SetHeight(newSetup.height)
 		
-		local fontSize = mathFloor(labelFontSize * newScale)
+		label:SetFontSize(newSetup.label)
+		label:SetHeight(newSetup.label + 4)
 		
-		label:SetFontSize(fontSize)
-		label:SetHeight(fontSize + 4)
+		timer:SetFontSize(newSetup.timer)
+		timer:SetHeight(newSetup.timer + 4)
 		
-		local fontSize = mathFloor(timerFontSize * newScale)
-		
-		timer:SetFontSize(fontSize)
-		timer:SetHeight(fontSize + 4)
-		
-		local fontSize = mathFloor(stackFontSize * newScale)
-		
-		stack:SetFontSize(fontSize )
+		stack:SetFontSize(newSetup.stack )
 	end
 	
 	function icon:SetLabelColor(r, g, b, a)

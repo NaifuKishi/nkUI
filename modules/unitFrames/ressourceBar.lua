@@ -33,24 +33,24 @@ local ressourceColor = {
 
 -- ressource bar function
 
-function _internal.ressourcBar (unit, scale, x, y)
+function _internal.ressourcBar (unit, setup)
 
     local thisName = name .. ".ressourceBar." .. unit
     local ressourceMax
     local comboIcon = {}
     
     local ressourceBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.context)
-    ressourceBGFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    ressourceBGFrame:SetWidth(200 * scale)
-    ressourceBGFrame:SetHeight(17 * scale)
+    ressourceBGFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
+    ressourceBGFrame:SetWidth(setup.width)
+    ressourceBGFrame:SetHeight(setup.height)
     ressourceBGFrame:SetBackgroundColor(0, 0, 0, .25)
     ressourceBGFrame:SetVisible(false)
 
     local ressourceFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".ressourceFrame", ressourceBGFrame)
     
     ressourceFrame:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", 1, 1)
-    ressourceFrame:SetWidth(198)
-    ressourceFrame:SetHeight(15)    
+    ressourceFrame:SetWidth(setup.width - 2)
+    ressourceFrame:SetHeight(setup.height -2)    
 
     local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     local path = {  {xProportional = 0, yProportional = 0},
@@ -62,38 +62,38 @@ function _internal.ressourcBar (unit, scale, x, y)
   
     local ressourceText = EnKai.uiCreateFrame("nkText", thisName .. ".ressourceText", ressourceFrame)
 
-    ressourceText:SetPoint("CENTER", ressourceBGFrame, "CENTER", 0, 10)
+    ressourceText:SetPoint("CENTER", ressourceBGFrame, "CENTER", 0, setup.margins.ressource)
 
     ressourceText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    ressourceText:SetFontSize(20 * scale)
+    ressourceText:SetFontSize(setup.fontSizes.ressource)
     ressourceText:SetFontColor(1, 1, 1, 1)
     ressourceText:SetEffectGlow({ strength = 1})
 
     local chargeBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceChargeBGFrame", ressourceBGFrame)
     chargeBGFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
-    chargeBGFrame:SetWidth(160)
-    chargeBGFrame:SetHeight(12)
+    chargeBGFrame:SetWidth(setup.charge.width)
+    chargeBGFrame:SetHeight(setup.charge.height)
     chargeBGFrame:SetBackgroundColor(0, 0, 0, 1)
     chargeBGFrame:SetVisible(false)
 
     local chargeFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".ressourceChargeFrame", chargeBGFrame)    
     chargeFrame:SetPoint("TOPLEFT", chargeBGFrame, "TOPLEFT", 1, 1)
-    chargeFrame:SetWidth(158)
-    chargeFrame:SetHeight(10)    
+    chargeFrame:SetWidth(setup.charge.width-2)
+    chargeFrame:SetHeight(setup.charge.height-2)    
     chargeFrame:SetShape (path, ressourceColor["charge"], nil)
     chargeFrame:SetVisible(false)
 
     local chargeText = EnKai.uiCreateFrame("nkText", thisName .. ".chargeText", chargeFrame)
     chargeText:SetPoint("CENTER", chargeFrame, "CENTER", 0, -7)
     chargeText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    chargeText:SetFontSize(16 * scale)
+    chargeText:SetFontSize(setup.fontSizes.charge)
     chargeText:SetFontColor(1, 1, 1, 1)
     chargeText:SetEffectGlow({ strength = 1})
 
     local comboFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceComboFrame", ressourceBGFrame)
     comboFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
-    comboFrame:SetWidth(158)
-    comboFrame:SetHeight(12)
+    comboFrame:SetWidth(setup.combo.width * 5 + 8) -- can be done better. 5 combo points width 2 pixel margin
+    comboFrame:SetHeight(setup.combo.height)
     comboFrame:SetVisible(false)
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", comboFrame, 0, 0
@@ -108,8 +108,8 @@ function _internal.ressourcBar (unit, scale, x, y)
     for idx = 1, 5, 1 do
         local combo = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx, comboFrame)
         combo:SetPoint(from, object, to, x, y)
-        combo:SetWidth(30)
-        combo:SetHeight(12)
+        combo:SetWidth(setup.combo.width)
+        combo:SetHeight(setup.combo.height)
         combo:SetBackgroundColor(0, 0, 0, 1)
 
         combo.inner = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx .. ".inner", combo)
@@ -142,7 +142,7 @@ function _internal.ressourcBar (unit, scale, x, y)
             chargeBGFrame:SetVisible(true)
             local chargePercent = (newCharge / 100)
             chargeText:SetText(stringFormat("%d", mathFloor(chargePercent*100)))
-            chargeFrame:SetWidth(158 * scale * chargePercent)
+            chargeFrame:SetWidth((setup.charge.width - 2) * chargePercent)
         end
     end
 
@@ -151,7 +151,7 @@ function _internal.ressourcBar (unit, scale, x, y)
     end
 
     function ressourceBGFrame:SetMaxCombo(maxCombo)
-        local width = maxCombo * 30
+        local width = maxCombo * setup.combo.width
         width = width + ((maxCombo - 1) *2)
         comboFrame:SetWidth(width)
     end
@@ -181,7 +181,7 @@ function _internal.ressourcBar (unit, scale, x, y)
             local playerRessourcePercent = (ressource / ressourceMax)
 
             ressourceText:SetText(stringFormat("%d", mathFloor(playerRessourcePercent*100)))
-            ressourceFrame:SetWidth(198 * scale * playerRessourcePercent)
+            ressourceFrame:SetWidth((setup.width -2) * playerRessourcePercent)
         end
     end
 

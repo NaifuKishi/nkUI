@@ -66,7 +66,8 @@ local iconManager = {
         - SetEffect(effect): Sets the effect for the icon
         - SetBuff(buffUnit, buffId): Sets the buff for the icon
 ]]
-function iconManager.get(unitType, iconType, scale, x, y)
+function iconManager.get(unitType, iconType, setup, x, y)
+
     -- Check if icon already exists
     if iconManager.activeIcons[unitType] and iconManager.activeIcons[unitType][iconType] then
         return iconManager.activeIcons[unitType][iconType]
@@ -78,7 +79,7 @@ function iconManager.get(unitType, iconType, scale, x, y)
         icon:SetVisible(true)
         icon:ClearAll()
         icon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-        icon:SetScale(scale)
+        icon:Setup(setup)
 
         -- Reset other icon properties as needed
         -- ...
@@ -94,7 +95,7 @@ function iconManager.get(unitType, iconType, scale, x, y)
     local thisName = EnKai.tools.uuid()
     local thisIcon = uiElements.icon(thisName .. ".icon", uiElements.context)
     thisIcon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    thisIcon:SetScale(scale)
+    thisIcon:Setup(setup)
     thisIcon:SetVisible(false)
 
     -- Implement icon-specific functionality

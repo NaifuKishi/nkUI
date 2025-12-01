@@ -36,6 +36,7 @@ RunOnStartup = {
 	"modules/tooltip/tooltip.lua",
 
 	"settings/settings.lua",
+	"settings/tutorial.lua",
 
 	"modules/actionbar/actionbar.lua",
 	"modules/actionbar/actionicon.lua",

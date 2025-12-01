@@ -587,12 +587,16 @@ end
 
 function _internal.lowerBarInit (value)
 
-    if #uiElements.lowerBarModules == 0 then    
-        _internal.lowerBar()
+    if #uiElements.lowerBarModules == 0 then
+        EnKai.events.addInsecure(function() 
+            _internal.lowerBar()
+        end, nil, nil)        
     else
-        for k, v in pairs (uiElements.lowerBarModules) do
-            v:SetVisible(value)
-        end
+        EnKai.events.addInsecure(function() 
+			for k, v in pairs (uiElements.lowerBarModules) do
+                v:SetVisible(value)
+            end
+		end, nil, nil)        
     end
 
 end

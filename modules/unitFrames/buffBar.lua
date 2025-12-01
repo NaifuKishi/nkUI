@@ -74,13 +74,13 @@ function _internal.buffBar.addBuff(unit, buffs)
             if debuffDisplayList[k] == nil then
 
                 if debuffIcons[k] == nil then 
-                    local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, 1 * data.uiScaleX, 0, 0)
+                    local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. k, nkUISetup.modules.buffBar.buffs, 0, 0)
                     debuffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
                     
                     debuffIcons[k].icon:SetBuff(unit, k)
                     debuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
                     debuffIcons[k].icon:ShowBorder(true)
-                    debuffIcons[k].icon:SetScale(data.uiScaleX)
+                    debuffIcons[k].icon:Setup(nkUISetup.modules.buffBar.buffs)
                 else
                     debuffIcons[k].visible = true
                 end
@@ -106,13 +106,13 @@ function _internal.buffBar.addBuff(unit, buffs)
             if buffDisplayList[k] == nil then
 
                 if buffIcons[k] == nil then 
-                    local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. k, 1 * data.uiScaleX, 0, 0)
+                    local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. k, nkUISetup.modules.buffBar.buffs, 0, 0)
                     buffIcons[k] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
 
                     buffIcons[k].icon:SetBuff(unit, k)
                     buffIcons[k].icon:SetEffect(privateVars.effects.gloss)
                     buffIcons[k].icon:ShowBorder(true)
-                    buffIcons[k].icon:SetScale(data.uiScaleX)
+                    buffIcons[k].icon:Setup(nkUISetup.modules.buffBar.buffs)
                 else
                     buffIcons[k].visible = true
                 end

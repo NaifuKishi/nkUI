@@ -27,27 +27,27 @@ local processBuffs	= _internal.processBuffs
 
 local function _fctSecureEnter()
 
-	uiElements.frames["player"]:SetAlpha(nkUISetup.combatAlpha)
+	uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 	uiElements.frames["player"]:SetCombat(true)
 
-	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.combatAlpha)
-	uiElements.frames["player.target"]:SetAlpha(nkUISetup.combatAlpha)
+	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
+	uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(true)
 
-	uiElements.frames["focus"]:SetAlpha(nkUISetup.combatAlpha)
+	uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 
 end
 
 local function _fctSecureLeave()
 	
-	uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
+	uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player"]:SetCombat(false)
 
-	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
-	uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
+	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+	uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(false)
 
-	uiElements.frames["focus"]:SetAlpha(nkUISetup.nonCombatAlpha)
+	uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 
 end
 
@@ -123,16 +123,16 @@ local function _eventBuffAdd(_, unit, buffs)
 	
 	local groupStatus, groupSize = EnKai.unit.getGroupStatus()
 
-	if nkUISetup.uiFrames.activate == false then return end
+	if nkUISetup.modules.unitFrames.activate == false then return end
 
 	-- Handle player buffs
-	if unit == data.playerID and nkUISetup.buffFrame.activate then
+	if unit == data.playerID and nkUISetup.modules.buffBar.activate then
 		_internal.buffBar.addBuff(unit, buffs)
 		_internal.buffBar.UpdateBuffDisplay()
 	end
 
 	-- Handle unit frame buffs
-	if nkUISetup.buffUnitFrame.activate then
+	if nkUISetup.modules.unitFrames.showBuffs then
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 
 		if #identifiers > 0 then
@@ -148,19 +148,19 @@ local function _eventBuffAdd(_, unit, buffs)
 end
 
 local function _eventBuffChange (_, unit, buffs)
-	if nkUISetup.buffFrame.activate == false then return end
+	if nkUISetup.modules.buffBar.activate == false then return end
 end
 
 local function _eventBuffRemove (_, unit, buffs)
 
-	if nkUISetup.uiFrames.activate == false then return end
+	--if nkUISetup.modules.unitFrames.activate == false then return end
 
-	if unit == data.playerID and nkUISetup.buffFrame.activate then 
+	if unit == data.playerID and nkUISetup.modules.buffBar.activate then 
 		_internal.buffBar.removeBuff(unit, buffs) 
 		_internal.buffBar.UpdateBuffDisplay()
 	end
 
-	if nkUISetup.buffUnitFrame.activate then
+	if nkUISetup.modules.unitFrames.showBuffs then
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do

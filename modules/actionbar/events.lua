@@ -243,7 +243,7 @@ end
 function _events.abSecureEnter()
 
 	for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.actionBarCombatAlpha)
+        v:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
     end
 
 end
@@ -251,7 +251,7 @@ end
 function _events.abSecureLeave()
 	
 	for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.actionBarNonCombatAlpha)
+        v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
     end
 
 end

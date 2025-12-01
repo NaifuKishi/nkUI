@@ -103,14 +103,10 @@ local frameManager = {
         - ClearBuffs(): Clears all buffs from the frame
         - removeBuff(buffUnit, buffs): Removes buffs from the frame
 ]]
-function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
-    
-    local unitFrameWidth
-    local frameWidth, frameHeight = 250 * scale, 35 * scale
+function frameManager.get(unitType, unitFrameType, setup)
 
-    if unitFrameType == "raid" then
-        frameWidth, frameHeight = 100 * scale, 45 * scale
-    end
+    local unitFrameWidth
+    local frameWidth, frameHeight = setup.width, setup.height
 
     -- Check if frame already exists
 
@@ -123,7 +119,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
         local frame = table.remove(frameManager.framePool)
         frame:SetVisible(true)
         frame:ClearAll()
-        frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+        frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
         frame:SetWidth(frameWidth)
         frame:SetHeight(frameHeight)
         frame:SetBackgroundColor(0, 0, 0, .5)
@@ -148,7 +144,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
 
 
     local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.context)
-    unitFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+    unitFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
     unitFrame:SetWidth(frameWidth)
     unitFrame:SetHeight(frameHeight)    
     unitFrame:SetVisible(false)
@@ -173,7 +169,7 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     end
     
     local secureFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
-    secureFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+    secureFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
     secureFrame:SetBackgroundColor(0, 0, 0, 0)
@@ -213,29 +209,29 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     local nameText = EnKai.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
     if unitFrameType == "raid" then
-        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2 * scale, 0)
+        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
     elseif reverse then
-        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 0)
+        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
     else
-        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2* scale, 0)
+        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
     end
 
     nameText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    nameText:SetFontSize(16 * scale)
+    nameText:SetFontSize(setup.fontSizes.name)
     nameText:SetFontColor(1, 1, 1, 1)
     nameText:SetEffectGlow({ strength = 1})
     nameText:SetLayer(2)
 
     local healthText = EnKai.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
 
-    if reverse then
-        healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2* scale, 15* scale)
+    if setup.reverse then
+        healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, setup.margins.health)
     else
-        healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2* scale, 15* scale)
+        healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, setup.margins.health)
     end
 
     healthText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    healthText:SetFontSize(28 * scale)
+    healthText:SetFontSize(setup.fontSizes.health)
     healthText:SetFontColor(1, 1, 1, 1)
     healthText:SetEffectGlow({ offsetX = 1, offsetY = 1})
     
@@ -245,13 +241,13 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
     if reverse then
-        energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2 * scale, -12 * scale)
+        energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -setup.margins.energy)
     else
-        energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2 * scale, -12 * scale)
+        energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2, -setup.margins.energy)
     end
 
     energyText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    energyText:SetFontSize(14 * scale)
+    energyText:SetFontSize(setup.fontSizes.energy)
     energyText:SetFontColor(1, 1, 1, 1)
     energyText:SetEffectGlow({ offsetX = 1, offsetY = 1})
     energyText:SetLayer(2)
@@ -261,13 +257,13 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
     if reverse then
-        planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4* scale, 0)
+        planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
     else
-        planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 4* scale, 0)
+        planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", setup.margins.planar, 0)
     end
 
     planarText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    planarText:SetFontSize(12 * scale)
+    planarText:SetFontSize(setup.fontSizes.planar)
     planarText:SetFontColor(1, 1, 1, 1)
     planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
     planarText:SetLayer(2)
@@ -276,32 +272,30 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
 
     local combatIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
     combatIcon:SetLayer(99)
-    combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -5 * scale, 0)
-    combatIcon:SetHeight(30 * scale)
-    combatIcon:SetWidth(30 * scale)
+    combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -setup.margins.combatIcon, 0)
+    combatIcon:SetHeight(setup.iconSizes.combat)
+    combatIcon:SetWidth(setup.iconSizes.combat)
     combatIcon:SetVisible(false)
     combatIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconCombat.png")
 
     local roleIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
     roleIcon:SetLayer(99)
-    roleIcon:SetHeight(20 * scale)
-    roleIcon:SetWidth(20 * scale)
+    roleIcon:SetHeight(setup.iconSizes.role)
+    roleIcon:SetWidth(setup.iconSizes.role)
     roleIcon:SetVisible(false)
 
-    if unitFrameType == "raid" then
-        roleIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 2, 0)
-    elseif unitType == "target" then
-        roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -5 * scale, 0)
+    if setup.reverse then
+        roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.roleIcon, 0)
     else
-        roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", 5 * scale, 0)
+        roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", setup.margins.roleIcon, 0)
     end
 
     local tierIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".tierIcon", unitFrame)
     tierIcon:SetLayer(99)
-    tierIcon:SetHeight(20 * scale)
-    tierIcon:SetWidth(20 * scale)
+    tierIcon:SetHeight(setup.iconSizes.tier)
+    tierIcon:SetWidth(setup.iconSizes.tier)
     tierIcon:SetVisible(false) 
-    tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -5 * scale, 0)
+    tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.tierIcon, 0)
     
     -- buff management
 
@@ -323,12 +317,15 @@ function frameManager.get(unitType, scale, x, y, reverse, unitFrameType)
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
-    function unitFrame:GetBuffScale() 
+    function unitFrame:GetBuffSetup() 
+        return setup.buffs
+        --[[
         if unitFrameType == "group" then
             return scale *.7
         else
             return scale
         end
+        ]]
     end
 
     function unitFrame:SetTier(newTier)
@@ -573,55 +570,59 @@ function _internal.uiFrames()
     uiElements.frames = {}
 
         -- Use the frame manager to get frames
-    local player = frameManager.get("player", data.uiScaleX, 1320 * data.uiScaleX, 1000 * data.uiScaleY, false, false)
+    local player = frameManager.get("player", false, nkUISetup.modules.unitFrames.frames.player)
     player:SetUnitID(Inspect.Unit.Lookup('player'))
     player:SetVisible(true)
     player:SetMacro("/target @self")
 
     uiElements.frames["player"] = player
 
-    local playerRessourceBar = _internal.ressourcBar("player", data.uiScaleX, 1620 * data.uiScaleX, 1020 * data.uiScaleY)
-    local playerCastbar = _internal.createCastBar("player", playerRessourceBar)
+    local playerRessourceBar = _internal.ressourcBar("player", nkUISetup.modules.unitFrames.frames.ressourceBar)
+    local playerCastbar = _internal.createCastBar("player", nkUISetup.modules.unitFrames.frames.playerCastBar)
 
     uiElements.frames["player.castbar"] = playerCastbar
     uiElements.frames["player.ressourcebar"]  = playerRessourceBar  
 
-    local playerPet = frameManager.get("player.pet", .75 * data.uiScaleX, 1000 * data.uiScaleX, 1050 * data.uiScaleY, false, false)
+    local playerPet = frameManager.get("player.pet", false, nkUISetup.modules.unitFrames.frames.playerPet)
     playerPet:SetMacro("/target @pet")
 
     uiElements.frames["player.pet"] = playerPet
 
-    local target = frameManager.get("target", data.uiScaleX, (2120 - 250) * data.uiScaleX, 1000 * data.uiScaleY, true, false)
-    local targetCastbar = _internal.createCastBar("player.target", playerRessourceBar)
+    local target = frameManager.get("target", false, nkUISetup.modules.unitFrames.frames.target)
+    local targetCastbar = _internal.createCastBar("player.target", nkUISetup.modules.unitFrames.frames.targetCastBar)
 
     uiElements.frames["player.target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
 
-    local focus = frameManager.get("focus", .75 * data.uiScaleX, 600 * data.uiScaleX, 1000 * data.uiScaleY, true, false)
+    local focus = frameManager.get("focus", false, nkUISetup.modules.unitFrames.frames.focus)
     focus:SetMacro("/target @focus")
-    uiElements.frames["focus"] = focus    
+    uiElements.frames["focus"] = focus
 
-    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 600 * data.uiScaleX, 500 * data.uiScaleY
+    local setup = nkUISetup.modules.unitFrames.frames.group
+
+    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y
 
     for idx = 1, 5, 1 do
-        local group = frameManager.get(stringFormat("group%02d", idx), (data.uiScaleX - .1), 0, 0, false, "group")
+        local group = frameManager.get(stringFormat("group%02d", idx), "group", setup)
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
         --_internal.updateUnit (group, data.playerID)
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
-        to, object, x, y = "BOTTOMLEFT", group, 0, 80 * data.uiScaleY
+        to, object, x, y = "BOTTOMLEFT", group, 0, setup.margins.group
     end
 
-    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", 100 * data.uiScaleX, 500 * data.uiScaleY
+    setup = nkUISetup.modules.unitFrames.frames.raid
+
+    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y
     local firstRaid
 
     for idx1 = 0, 3, 1 do
         for idx2 = 1, 5, 1 do
             local index = idx1 * 5 + idx2
 
-            local raid = frameManager.get(stringFormat("raid%02d", index), (data.uiScaleX - .1), 0, 0, false, "raid")
+            local raid = frameManager.get(stringFormat("raid%02d", index), "raid", setup)
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
@@ -683,10 +684,10 @@ function _internal.uiFrames()
         end
     end    
 
-    uiElements.frames["player"]:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames["focus"]:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.nonCombatAlpha)
-    uiElements.frames["player.target"]:SetAlpha(nkUISetup.nonCombatAlpha)
+    uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+    uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+    uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 
    _events.uiFramesInitEvents()
 	

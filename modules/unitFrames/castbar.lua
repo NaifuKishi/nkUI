@@ -21,25 +21,21 @@ local name = "uiCastBars"
 
 ---------- addon internal function block ---------
 
-function _internal.createCastBar (unitType, parent)
+function _internal.createCastBar (unitType, setup)
 
 	local thisName = name .. "." .. unitType
 
 	local castbar =  EnKai.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.secureContext)
 	castbar:SetVisible(false)
-	castbar:SetWidth(250 * data.uiScaleX)
-	castbar:SetHeight(24 * data.uiScaleY)
-	castbar:SetBackgroundColor(0, 0,0 , 1)
+	castbar:SetWidth(setup.width)
+	castbar:SetHeight(setup.height)
+	castbar:SetBackgroundColor(0, 0, 0, 1)
 	
-	if unitType == "player" then
-		castbar:SetPoint("TOPCENTER", parent, "BOTTOMCENTER", 0, 59 * data.uiScaleY)		
-	elseif unitType == "player.target" then
-		castbar:SetPoint("BOTTOMCENTER", parent, "TOPCENTER", 0, -100 * data.uiScaleY)
-	end
+	castbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)		
 
 	local castbarFill = EnKai.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
 	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 1, 0)
-	castbarFill:SetHeight(castbar:GetHeight()-2)
+	castbarFill:SetHeight(setup.height-2)
 	castbarFill:SetLayer(1)
 	
 	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
@@ -55,21 +51,21 @@ function _internal.createCastBar (unitType, parent)
 
 	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
 	castBarText:SetPoint("CENTER", castbar, "CENTER")
-	castBarText:SetFontSize(16 * data.uiScaleX)
+	castBarText:SetFontSize(setup.fontSizes.text)
 	castBarText:SetFontColor (1, 1, 1, 1)
 	castBarText:SetEffectGlow({ strength = 1})
 	castBarText:SetLayer(2)
 
 	local castBarTimer = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Timerr", castbar)
 	castBarTimer:SetPoint("CENTERRIGHT", castbar, "CENTERRIGHT")
-	castBarTimer:SetFontSize(14 * data.uiScaleX)
+	castBarTimer:SetFontSize(setup.fontSizes.timer)
 	castBarTimer:SetFontColor (1, 1, 1, 1)
 	castBarTimer:SetEffectGlow({ strength = 1})
 	castBarTimer:SetLayer(2)
 	
 	function castbar:SetTimer (remaining, duration)
 		local percent = 1 / duration * (duration - remaining)
-		castbarFill:SetWidth((248 * data.uiScaleX) * percent)		
+		castbarFill:SetWidth((setup.width -2) * percent)		
 		castBarTimer:SetText(string.format("%.1f", remaining))
 	end
 
