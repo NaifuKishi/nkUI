@@ -13,93 +13,101 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, reverseCheckbox, nameFontSize, healthFontSize, energyFontSize, planarFontSize, nameMargins, healthMargins, energyMargins, planarMargins, combatIconMargins, roleIconMargins, tierIconMargins, combatIconSize, roleIconSize, tierIconSize, buffWidth, buffHeight, timerFontSize, stackFontSize, labelFontSize
-    local fontSizesHeader, marginsHeader, iconSizeHeader, iconSizeHeader
+    local sizeHeader, fontSizesHeader, marginsHeader, iconSizeHeader, buffSizeHeader
     local introText
 
     function frame:build()
 
-        introText = EnKai.uiCreateFrame("nkText", name .. ".introText", frame)
-        introText:SetPoint("TOPLEFT", frame, "TOPLEFT" , 0, 5)
-        introText:SetFontSize(14)
-        introText:SetText(stringFormat("This section allows you the set up the <b><font color='#3399FF'>%s</font></b> unit frame. All settings are only for that unit frame.", unitType), true)
-        introText:SetTextFont(addonInfo.id, "Montserrat")
+        sizeHeader = _settings.header ( name .. ".sizeHeader", frame, "Unit frame size")
+        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT" , 0, 5)
 
         widthSlider = _settings.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.width = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
-        widthSlider:SetPoint("TOPLEFT", introText, "BOTTOMLEFT", 0, 25)
-        widthSlider:SetRange(0, 400)
-        widthSlider:SetMidValue(20)
+        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
+        widthSlider:SetRange(100, 400)
+        widthSlider:SetMidValue(250)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(thisSettings.width)
         
         heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.height = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
         heightSlider:SetPoint("TOPLEFT", widthSlider, "TOPRIGHT", 30, 0)
-        heightSlider:SetRange(0, 100)
-        heightSlider:SetMidValue(50)
+        heightSlider:SetRange(10, 50)
+        heightSlider:SetMidValue(30)
         heightSlider:SetPrecision(1)
         heightSlider:AdjustValue(thisSettings.height)
 
-        reverseCheckbox = _settings.checkbox(name .. ".reverseCheckbox", frame, "Reverse display", true, function(newValue)        
-            thisSettings.reverse = newValue            
-        end)
+        if unitType ~= "raid" and unitType ~= "group" then
+            reverseCheckbox = _settings.checkbox(name .. ".reverseCheckbox", frame, "Reverse display", true, function(newValue)        
+                thisSettings.reverse = newValue
+                _internal.uiFrameRedraw(unitType)
+            end)
 
-        reverseCheckbox:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 5)
-        reverseCheckbox:SetChecked(thisSettings.reverse)
+            reverseCheckbox:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 5)
+            reverseCheckbox:SetChecked(thisSettings.reverse, true)
+        end
 
         -- font sizes
         
-        fontSizesHeader = EnKai.uiCreateFrame("nkText", name .. ".fontSizesHeader", frame)
-        fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT" , 0, 10)
-        fontSizesHeader:SetFontSize(14)
-        fontSizesHeader:SetText("Font sizes")
-        fontSizesHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+        fontSizesHeader = _settings.header ( name .. ".fontSizesHeader", frame, "Text sizes")
 
+        if unitType ~= "raid" and unitType ~= "group" then
+            fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT" , 0, 15)
+        else
+            fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
+        end
 
-        nameFontSize = _settings.slider (name .. ".nameFontSize", frame, "Name font size <font color='#3399FF'>%d</font>", true, function (newValue)
+        nameFontSize = _settings.slider (name .. ".nameFontSize", frame, "Unit name <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.name = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
         nameFontSize:SetPoint("TOPLEFT", fontSizesHeader, "BOTTOMLEFT", 0, 10)
-        nameFontSize:SetRange(0, 40)
-        nameFontSize:SetMidValue(20)
+        nameFontSize:SetRange(10, 40)
+        nameFontSize:SetMidValue(25)
         nameFontSize:SetPrecision(1)
         nameFontSize:AdjustValue(thisSettings.fontSizes.name)
 
-        healthFontSize = _settings.slider (name .. ".healthFontSize", frame, "Health font size <font color='#3399FF'>%d</font>", true, function (newValue)
+        healthFontSize = _settings.slider (name .. ".healthFontSize", frame, "Health text <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.health = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
         healthFontSize:SetPoint("TOPLEFT", nameFontSize, "TOPRIGHT", 30, 0)
-        healthFontSize:SetRange(0, 40)
-        healthFontSize:SetMidValue(20)
+        healthFontSize:SetRange(10, 40)
+        healthFontSize:SetMidValue(25)
         healthFontSize:SetPrecision(1)
         healthFontSize:AdjustValue(thisSettings.fontSizes.health)
 
-        energyFontSize = _settings.slider (name .. ".energyFontSize", frame, "Energy font size <font color='#3399FF'>%d</font>", true, function (newValue)
+        energyFontSize = _settings.slider (name .. ".energyFontSize", frame, "Energy text <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.energy = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
         energyFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
-        energyFontSize:SetRange(0, 40)
-        energyFontSize:SetMidValue(20)
+        energyFontSize:SetRange(10, 40)
+        energyFontSize:SetMidValue(25)
         energyFontSize:SetPrecision(1)
         energyFontSize:AdjustValue(thisSettings.fontSizes.energy)
 
-        planarFontSize = _settings.slider (name .. ".planarFontSize", frame, "Planar font size <font color='#3399FF'>%d</font>", true, function (newValue)
+        planarFontSize = _settings.slider (name .. ".planarFontSize", frame, "Planar text <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.planar = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
         planarFontSize:SetPoint("TOPLEFT", energyFontSize, "TOPRIGHT", 30, 0)
-        planarFontSize:SetRange(0, 40)
-        planarFontSize:SetMidValue(20)
+        planarFontSize:SetRange(10, 40)
+        planarFontSize:SetMidValue(25)
         planarFontSize:SetPrecision(1)
         planarFontSize:AdjustValue(thisSettings.fontSizes.planar)
 
+        --[[
         -- margins
 
         marginsHeader = EnKai.uiCreateFrame("nkText", name .. ".marginsHeader", frame)
@@ -177,66 +185,75 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
         tierIconMargins:SetMidValue(0)
         tierIconMargins:SetPrecision(1)
         tierIconMargins:AdjustValue(thisSettings.margins.tierIcon)
+]]
 
         -- icon sizes
 
-        iconSizeHeader = EnKai.uiCreateFrame("nkText", name .. ".marginiconSizeHeadersHeader", frame)
-        iconSizeHeader:SetPoint("TOPLEFT", roleIconMargins, "BOTTOMLEFT" , 0, 10)
-        iconSizeHeader:SetFontSize(14)
-        iconSizeHeader:SetText("Icon sizes")
-        iconSizeHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+        iconSizeHeader = _settings.header ( name .. ".iconSizeHeader", frame, "Icon sizes")
+        iconSizeHeader:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT" , 0, 15)
 
-        combatIconSize = _settings.slider (name .. ".combatIconSize", frame, "Combat icon size <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.iconSizes.combat = newValue
-        end)
-
-        combatIconSize:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, 10)
-        combatIconSize:SetRange(0, 40)
-        combatIconSize:SetMidValue(20)
-        combatIconSize:SetPrecision(1)
-        combatIconSize:AdjustValue(thisSettings.iconSizes.combat)
-
-        roleIconSize = _settings.slider (name .. ".roleIconSize", frame, "Role icon size <font color='#3399FF'>%d</font>", true, function (newValue)
+        roleIconSize = _settings.slider (name .. ".roleIconSize", frame, "Role icon <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.iconSizes.role = newValue
+            _internal.uiFrameRedraw(unitType)
         end)
 
-        roleIconSize:SetPoint("TOPLEFT", combatIconSize, "BOTTOMRIGHT", 30, 0)
-        roleIconSize:SetRange(0, 40)
-        roleIconSize:SetMidValue(20)
+        roleIconSize:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, 15)
+        roleIconSize:SetRange(10, 40)
+        roleIconSize:SetMidValue(25)
         roleIconSize:SetPrecision(1)
-        roleIconSize:AdjustValue(thisSettings.iconSizes.role)
+        roleIconSize:AdjustValue(thisSettings.iconSizes.role)            
 
-        tierIconSize = _settings.slider (name .. ".tierIconSize", frame, "Tier icon size <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.iconSizes.tier = newValue
-        end)
+        if unitType ~= "raid" and unitType ~= "group" then
+            combatIconSize = _settings.slider (name .. ".combatIconSize", frame, "Combat icon <font color='#3399FF'>%d</font>", true, function (newValue)
+                thisSettings.iconSizes.combat = newValue
+                _internal.uiFrameRedraw(unitType)
+            end)
 
-        tierIconSize:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT", 0, 5)
-        tierIconSize:SetRange(0, 40)
-        tierIconSize:SetMidValue(20)
-        tierIconSize:SetPrecision(1)
-        tierIconSize:AdjustValue(thisSettings.iconSizes.tier)
+            combatIconSize:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, 5)
+            combatIconSize:SetRange(10, 40)
+            combatIconSize:SetMidValue(25)
+            combatIconSize:SetPrecision(1)
+            combatIconSize:AdjustValue(thisSettings.iconSizes.combat)
+
+
+
+            tierIconSize = _settings.slider (name .. ".tierIconSize", frame, "Tier icon <font color='#3399FF'>%d</font>", true, function (newValue)
+                thisSettings.iconSizes.tier = newValue
+                _internal.uiFrameRedraw(unitType)
+            end)
+
+            tierIconSize:SetPoint("TOPLEFT", combatIconSize, "TOPRIGHT", 30, 0)
+            tierIconSize:SetRange(10, 40)
+            tierIconSize:SetMidValue(25)
+            tierIconSize:SetPrecision(1)
+            tierIconSize:AdjustValue(thisSettings.iconSizes.tier)
+        end
 
         if  thisSettings.buffs ~= nil then
 
             -- buff sizes
 
-            iconSizeHeader = EnKai.uiCreateFrame("nkText", name .. ".iconSizeHeader", frame)
-            iconSizeHeader:SetPoint("TOPLEFT", tierIconSize, "BOTTOMLEFT" , 0, 10)
-            iconSizeHeader:SetFontSize(14)
-            iconSizeHeader:SetText("Buff display setup")
-            iconSizeHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+            buffSizeHeader = _settings.header ( name .. ".buffSizeHeader", frame, "Buff display setup")
 
-            buffWidth = _settings.slider (name .. ".buffWidth", frame, "Buff icon width <font color='#3399FF'>%d</font>", true, function (newValue)
+            if unitType ~= "raid" and unitType ~= "group" then
+                buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT" , 0, 15)
+            else
+                buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT" , 0, 15)
+            end
+
+            buffWidth = _settings.slider (name .. ".buffWidth", frame, "Buff icon size <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.buffs.width = newValue
+                thisSettings.buffs.height = newValue
+                _internal.uiFrameRedraw(unitType)
             end)
 
-            buffWidth:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, 10)
-            buffWidth:SetRange(0, 60)
-            buffWidth:SetMidValue(30)
+            buffWidth:SetPoint("TOPLEFT", buffSizeHeader, "BOTTOMLEFT", 0, 15)
+            buffWidth:SetRange(10, 40)
+            buffWidth:SetMidValue(25)
             buffWidth:SetPrecision(1)
             buffWidth:AdjustValue(thisSettings.buffs.width)
 
-            buffHeight = _settings.slider (name .. ".buffHeight", frame, "Buff icon height <font color='#3399FF'>%d</font>", true, function (newValue)
+            --[[buffHeight = _settings.slider (name .. ".buffHeight", frame, "Buff icon height <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.buffs.height = newValue
             end)
 
@@ -245,28 +262,30 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
             buffHeight:SetMidValue(30)
             buffHeight:SetPrecision(1)
             buffHeight:AdjustValue(thisSettings.buffs.height)
-
-            timerFontSize = _settings.slider (name .. ".timerFontSize", frame, "Timer font size <font color='#3399FF'>%d</font>", true, function (newValue)
+            ]]
+            timerFontSize = _settings.slider (name .. ".timerFontSize", frame, "Timer size <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.buffs.timer = newValue
+                _internal.uiFrameRedraw(unitType)
             end)
 
             timerFontSize:SetPoint("TOPLEFT", buffWidth, "BOTTOMLEFT", 0, 20)
-            timerFontSize:SetRange(0, 30)
-            timerFontSize:SetMidValue(15)
+            timerFontSize:SetRange(10, 30)
+            timerFontSize:SetMidValue(20)
             timerFontSize:SetPrecision(1)
             timerFontSize:AdjustValue(thisSettings.buffs.timer)
 
-            stackFontSize = _settings.slider (name .. ".stackFontSize", frame, "Stack font size <font color='#3399FF'>%d</font>", true, function (newValue)
+            stackFontSize = _settings.slider (name .. ".stackFontSize", frame, "Stack size <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.buffs.stack = newValue
+                _internal.uiFrameRedraw(unitType)
             end)
 
             stackFontSize:SetPoint("TOPLEFT", timerFontSize, "TOPRIGHT", 30, 0)
-            stackFontSize:SetRange(0, 30)
-            stackFontSize:SetMidValue(15)
+            stackFontSize:SetRange(10, 30)
+            stackFontSize:SetMidValue(20)
             stackFontSize:SetPrecision(1)
             stackFontSize:AdjustValue(thisSettings.buffs.stack)
 
-            labelFontSize = _settings.slider (name .. ".labelFontSize", frame, "Label font size <font color='#3399FF'>%d</font>", true, function (newValue)
+            --[[labelFontSize = _settings.slider (name .. ".labelFontSize", frame, "Label size <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.buffs.label = newValue
             end)
 
@@ -274,7 +293,7 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
             labelFontSize:SetRange(0, 30)
             labelFontSize:SetMidValue(15)
             labelFontSize:SetPrecision(1)
-            labelFontSize:AdjustValue(thisSettings.buffs.label)
+            labelFontSize:AdjustValue(thisSettings.buffs.label)]]
         end
 
     end

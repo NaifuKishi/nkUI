@@ -114,8 +114,8 @@ function _internal.ressourcBar (unit, setup)
 
         combo.inner = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx .. ".inner", combo)
         combo.inner:SetPoint("TOPLEFT", combo, "TOPLEFT", 1, 1)
-        combo.inner:SetWidth(28)
-        combo.inner:SetHeight(10)
+        combo.inner:SetWidth(setup.combo.width-2)
+        combo.inner:SetHeight(setup.combo.width-2)
         combo.inner:SetBackgroundColor(color[idx].r, color[idx].g, color[idx].b, color[idx].a)
 
         table.insert(comboIcon, combo)
@@ -183,6 +183,36 @@ function _internal.ressourcBar (unit, setup)
             ressourceText:SetText(stringFormat("%d", mathFloor(playerRessourcePercent*100)))
             ressourceFrame:SetWidth((setup.width -2) * playerRessourcePercent)
         end
+    end
+
+    function ressourceBGFrame:Redraw(newSetup)
+
+        ressourceBGFrame:SetWidth(setup.width)
+        ressourceBGFrame:SetHeight(setup.height)        
+        ressourceFrame:SetWidth(setup.width - 2)
+        ressourceFrame:SetHeight(setup.height -2)
+
+        ressourceText:SetFontSize(setup.fontSizes.ressource)
+
+        chargeBGFrame:SetWidth(setup.charge.width)
+        chargeBGFrame:SetHeight(setup.charge.height)
+        chargeFrame:SetWidth(setup.charge.width-2)
+        chargeFrame:SetHeight(setup.charge.height-2)   
+        chargeText:SetFontSize(setup.fontSizes.charge) 
+        
+        comboFrame:SetWidth(setup.combo.width * 5 + 8) -- can be done better. 5 combo points width 2 pixel margin
+        comboFrame:SetHeight(setup.combo.height)
+
+        for idx = 1, 5, 1 do
+            comboIcon[idx]:SetWidth(setup.combo.width)
+            comboIcon[idx]:SetHeight(setup.combo.height)
+
+            comboIcon[idx].inner:SetWidth(setup.combo.width-2)
+            comboIcon[idx].inner:SetHeight(setup.combo.height-2)
+        end
+
+        EnKai.ui.reloadDialog ("nkUI")
+
     end
 
     return ressourceBGFrame

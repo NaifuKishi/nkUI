@@ -31,7 +31,7 @@ function _internal.createCastBar (unitType, setup)
 	castbar:SetHeight(setup.height)
 	castbar:SetBackgroundColor(0, 0, 0, 1)
 	
-	castbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)		
+	castbar:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)		
 
 	local castbarFill = EnKai.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
 	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 1, 0)
@@ -54,6 +54,7 @@ function _internal.createCastBar (unitType, setup)
 	castBarText:SetFontSize(setup.fontSizes.text)
 	castBarText:SetFontColor (1, 1, 1, 1)
 	castBarText:SetEffectGlow({ strength = 1})
+	castBarText:SetTextFont(addonInfo.id, "Montserrat")
 	castBarText:SetLayer(2)
 
 	local castBarTimer = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Timerr", castbar)
@@ -61,6 +62,7 @@ function _internal.createCastBar (unitType, setup)
 	castBarTimer:SetFontSize(setup.fontSizes.timer)
 	castBarTimer:SetFontColor (1, 1, 1, 1)
 	castBarTimer:SetEffectGlow({ strength = 1})
+	castBarTimer:SetTextFont(addonInfo.id, "Montserrat")
 	castBarTimer:SetLayer(2)
 	
 	function castbar:SetTimer (remaining, duration)
@@ -71,6 +73,17 @@ function _internal.createCastBar (unitType, setup)
 
 	function castbar:SetSpell(spellname)
 		castBarText:SetText(spellname)
+	end
+
+	function castbar:Redraw()
+		castbar:SetTimer(1, 99)
+		castbar:SetSpell("Sample spell")
+
+		castbar:SetWidth(setup.width)
+		castbar:SetHeight(setup.height)
+		castbarFill:SetHeight(setup.height-2)
+		castBarText:SetFontSize(setup.fontSizes.text)
+		castBarTimer:SetFontSize(setup.fontSizes.timer)
 	end
 
 	return castbar

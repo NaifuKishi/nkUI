@@ -51,6 +51,10 @@ function _internal.timeDate ()
     datasetTime:SetTextFont(addonInfo.id, "Montserrat")
     datasetTime:SetEffectGlow({ strength = 1, offsetX = 1, offsetY = 1, blurX=1, blurY = 1})
 
+    function datasetTime:Redraw ()
+        datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
+    end
+
     local datasetDate = EnKai.uiCreateFrame("nkText", name .. ".datasetdate", uiElements.contextLowest)
     datasetDate:SetPoint("BOTTOMCENTER", datasetTime, "TOPCENTER",0, 7)
     datasetDate:SetText("00/00/0000")
@@ -58,6 +62,10 @@ function _internal.timeDate ()
     datasetDate:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetDate:SetTextFont(addonInfo.id, "Montserrat")
     datasetDate:SetEffectGlow({ strength = 1})
+
+    function datasetDate:Redraw ()
+        datasetDate:SetFontSize(nkUISetup.modules.lowerBar.dateSize)
+    end    
 
     local updateClockTime = InspectTimeServer()
     local updateDate
@@ -109,6 +117,10 @@ function _internal.currency ()
         _internal.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")  
 
+    function datasetCurrency:Redraw()
+        datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    end
+
     local function _updateCoin(_, currency)
 	
 		if currency['coin'] == nil then return end
@@ -149,6 +161,10 @@ function _internal.fps()
     datasetFPS:SetTextFont(addonInfo.id, "Montserrat")    
     datasetFPS:SetEffectGlow({ strength = 1})
 
+    function datasetFPS:Redraw()
+        datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    end
+
     local fpsUpdateTime, fpsDeltaTime = nil, nil
 	local frameCount, fpsTimer = 0, 0
 		
@@ -186,6 +202,10 @@ function _internal.location()
     datasetLocation:SetTextFont(addonInfo.id, "Montserrat")
     datasetLocation:SetSecureMode('restricted')
     datasetLocation:SetEffectGlow({ strength = 1})
+
+    function datasetLocation:Redraw()
+        datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    end
 
     local buttons = {}
     local abilities = {["A3C5AEC64D3793518"] = true}
@@ -277,6 +297,16 @@ function _internal.experience ()
     datasetExp:SetTextFont(addonInfo.id, "Montserrat")
     datasetExp:SetEffectGlow({ strength = 1})
 
+    function datasetExpBarBG:Redraw()
+        datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+        datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+        datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+    end
+
+    function datasetExp:Redraw()
+        datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    end
+
 	local function _updateExperience(experience)
 
         percent = 0
@@ -359,6 +389,14 @@ function _internal.faction ()
     datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
     datasetFactionName:SetFontColor(0, 0, 0, 1)
     datasetFactionName:SetTextFont(addonInfo.id, "Montserrat")
+
+    function datasetFactionBarBG:Redraw()
+        datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+        datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+        datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+        datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
+    end
     
     local function _updateFaction(_, factionData)
 
@@ -423,6 +461,10 @@ function _internal.social ()
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")    
     datasetSocial:SetEffectGlow({ strength = 1})
+
+    function datasetSocial:Redraw()
+        datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    end
 	
 	local function _findGuildEntry (name) -- needed
 
@@ -544,6 +586,16 @@ function _internal.social ()
 	Command.Event.Attach(Event.Unit.Availability.Full, _checkPlayer, "nkUI.lowerbar.Unit.Availability.Full")
 	
     table.insert(uiElements.lowerBarModules, datasetSocial)
+
+end
+
+function _internal.lowerBarRedraw()
+
+    for idx = 1, #uiElements.lowerBarModules, 1 do
+        uiElements.lowerBarModules[idx]:Redraw()
+    end
+
+    EnKai.ui.reloadDialog ("nkUI")
 
 end
 

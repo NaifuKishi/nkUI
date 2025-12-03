@@ -171,3 +171,26 @@ function _internal.buffBar.loadAllBuffs()
    _internal.buffBar.UpdateBuffDisplay() 
 
 end
+
+function _internal.buffBar.Redraw()
+   
+    local newSetup = {  width   = nkUISetup.modules.buffBar.buffs.width,
+                        height  = nkUISetup.modules.buffBar.buffs.height,
+                        label   = nkUISetup.modules.buffBar.buffs.label,
+                        timer   = nkUISetup.modules.buffBar.buffs.timer,
+                        stack   = nkUISetup.modules.buffBar.buffs.stack
+                    }
+
+    local buffs =  _internal.buffBar.GetBuffIcons ()
+    for k, v in pairs (buffs) do
+        v.icon:Setup(newSetup)
+	end
+
+    local debuffs = _internal.buffBar.GetDebuffIcons ()
+    for k, v in pairs (debuffs) do
+         v.icon:Setup(newSetup)
+    end
+
+    EnKai.ui.reloadDialog ("nkUI")
+
+end

@@ -49,18 +49,18 @@ local _defaults = {
                                                         iconSizes = {combat = 22, role = 15, tier = 15 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}                                                                                                                
                                                     },
-                                    group           = { x = 600, y = 500, width = 250, height = 35,
+                                    group           = { x = 600, y = 300, width = 250, height = 35,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10},
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, group = 80 },
-                                                        iconSizes = {combat = 0, role = 0, tier = 0 },
+                                                        iconSizes = {combat = 0, role = 15, tier = 0 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}
                                                     },
-                                    raid            = { x = 100, y = 500, width = 100, height = 45,
+                                    raid            = { x = 50, y = 300, width = 100, height = 45,
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
                                                         margins = { name = 0, health = 0, energy = 0, planar = 0, combatIcon = 5, roleIcon = 2, tierIcon = 5 },
-                                                        iconSizes = {combat = 22, role = 15, tier = 15 },
+                                                        iconSizes = {combat = 0, role = 15, tier = 0 },
                                                     },
                                     ressourceBar    = { x = 1620, y = 1020, width = 200, height = 17,
                                                         combo = { width = 30, height = 12},
@@ -68,17 +68,17 @@ local _defaults = {
                                                         margins = { ressource = 10 },
                                                         fontSizes = {charge = 16, ressource = 20}
                                                      },
-                                    playerCastBar   = { x = 1595, y = 1100, width = 250, height = 24,
+                                    playerCastBar   = { x = 0, y = 400, width = 250, height = 24,
                                                         fontSizes = {text = 16, timer = 14}
                                                     },
-                                    targetCastBar   = { x = 1595, y = 900, width = 250, height = 24,
+                                    targetCastBar   = { x = 0, y = 200, width = 250, height = 24,
                                                         fontSizes = {text = 16, timer = 14}
                                                     },
                                 }
                     },
         actionBars  = { activate = true, 
                         combatAlpha = 1, 
-                        nonCombatAlpha = .2,
+                        nonCombatAlpha = .2,                        
                         offset = 550,
                         spacing = 15,
                     },
@@ -101,7 +101,9 @@ local _defaults = {
 }
 
 local function _scaleUI ()
-        
+       
+    local parentWidth = UIParent:GetWidth()
+
     if parentWidth ~= 3440 then
 
         local scale = UIParent:GetWidth() / 1920
@@ -215,6 +217,31 @@ function _settings.slider (name, parent, text, active, callBack)
 
 end
 
+
+function _settings.label (name, parent, text)
+
+    local thisText = EnKai.uiCreateFrame("nkText", name, parent)
+
+    thisText:SetText(text, true)
+    thisText:SetWidth(350)
+    thisText:SetFontSize(14)
+    thisText:SetFont(addonInfo.id, "Montserrat")
+
+    return thisText
+
+end
+
+function _settings.header (name, parent, text)
+
+    local thisHeader = EnKai.uiCreateFrame("nkText", name, parent)
+    thisHeader:SetFontSize(14)
+    thisHeader:SetText(text)
+    thisHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+
+    return thisHeader
+
+end
+
 function _internal.setupUI ()
     
     local name = "nkUI.config"
@@ -227,13 +254,9 @@ function _internal.setupUI ()
     config:SetTitle(addonInfo.toc.Identifier .. " ".. addonInfo.toc.Version)
     config:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     config:SetCloseable(true)
-    --config:SetColor({ r = 00, g = 0, b = 0, a = 1, thickness=1}, {type = "solid", r = 0.051, g = 0, b = 0.0, a = .7})
     config:SetTitleFontColor(1, 1, 1, 1)
-    config:SetShadow(true)
 
     local tabPane = EnKai.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", config:GetContent())
-    --tabPane:SetColor({ thickness = 1, r = 0.078, g = 0.188, b = 0.306, a = 1}, { type = 'solid', r = 0.051, g = 0.118, b = 0.192, a = 1}, nil, { r = 1, g = 1, b = 1, a = 1})
-    tabPane:SetColor({ thickness = 1, r = 0, g = 0, b = 0, a = 1}, { type = 'solid', r = 0, g = 0, b = 0, a = .6}, nil, { r = 1, g = 1, b = 1, a = 1})
     tabPane:SetBorder(false)
     tabPane:SetVertical(true)
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -246,8 +269,8 @@ function _internal.setupUI ()
 
     local paneTabRessourceBar = _settings.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
 
-    local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "PLAYER CASTBAR", nkUISetup.modules.unitFrames.frames.playerCastBar)
-    local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "TARGET CASTBAR", nkUISetup.modules.unitFrames.frames.targetCastBar)
+    local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "player.castbar", nkUISetup.modules.unitFrames.frames.playerCastBar)
+    local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "player.target.castbar", nkUISetup.modules.unitFrames.frames.targetCastBar)
 
     local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
 
@@ -330,3 +353,4 @@ function _internal.setupInit ()
         uiElements.settings:SetVisible(true)
     end
 end
+

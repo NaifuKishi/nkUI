@@ -31,11 +31,13 @@ function _settings.uiConfigTabActionBar (name, parent)
         activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate)
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
        
+
+
         combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha <font color='#3399FF'>%d</font>%%", moduleActive, function (newValue)
              nkUISetup.modules.actionBars.combatAlpha = newValue / 100
         end)
 
-        combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
+        combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 30)
         combatAlphaSlider:SetRange(0, 100)
         combatAlphaSlider:SetMidValue(50)
         combatAlphaSlider:SetPrecision(5)
@@ -46,13 +48,13 @@ function _settings.uiConfigTabActionBar (name, parent)
             _internal.actionBarToggleAlpha()
         end)
         
-        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "TOPRIGHT", 30, 0)
+        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 10)
         nonCombatAlphaSlider:SetRange(0, 100)
         nonCombatAlphaSlider:SetMidValue(50)
         nonCombatAlphaSlider:SetPrecision(5)    
         nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.nonCombatAlpha * 100)
 
-        offsetSlider = _settings.slider(name .. ".offsetSlider", frame, "Offset <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        --[[offsetSlider = _settings.slider(name .. ".offsetSlider", frame, "Offset <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.actionBars.offset = newValue
         end)
         
@@ -61,17 +63,18 @@ function _settings.uiConfigTabActionBar (name, parent)
         offsetSlider:SetMidValue(0)
         offsetSlider:SetPrecision(5)    
         offsetSlider:AdjustValue(nkUISetup.modules.actionBars.offset)
+       
 
-        spacingSlider = _settings.slider(name .. ".spacingSlider", frame, "Spacing <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        spacingSlider = _settings.slider(name .. ".spacingSlider", frame, "Spacing 3x2 elements: <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.actionBars.spacing = newValue
         end)
         
-        spacingSlider:SetPoint("TOPLEFT", offsetSlider, "TOPRIGHT", 30, 0)
-        spacingSlider:SetRange(-50, 50)
-        spacingSlider:SetMidValue(0)
+        spacingSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 15)
+        spacingSlider:SetRange(0, 50)
+        spacingSlider:SetMidValue(22)
         spacingSlider:SetPrecision(5)    
         spacingSlider:AdjustValue(nkUISetup.modules.actionBars.spacing)        
-
+ ]]
     end
 
     return frame

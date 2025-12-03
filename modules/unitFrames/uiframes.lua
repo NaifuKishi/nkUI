@@ -189,7 +189,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     local healthFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
     healthFrame:SetLayer(1)
 
-    if reverse then
+    if setup.reverse then
         healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -1, 1)
     else
         healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 1, 1)
@@ -240,7 +240,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
-    if reverse then
+    if setup.reverse then
         energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -setup.margins.energy)
     else
         energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2, -setup.margins.energy)
@@ -256,7 +256,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
-    if reverse then
+    if setup.reverse then
         planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
     else
         planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", setup.margins.planar, 0)
@@ -297,6 +297,77 @@ function frameManager.get(unitType, unitFrameType, setup)
     tierIcon:SetVisible(false) 
     tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.tierIcon, 0)
     
+    function unitFrame:Redraw()        
+        unitFrame:SetWidth(setup.width)
+        unitFrame:SetHeight(setup.height) 
+        secureFrame:SetWidth(setup.width)
+        secureFrame:SetHeight(setup.height)
+        
+        healthFrame:ClearAll()
+        healthFrame:SetWidth((setup.width -2))
+        healthFrame:SetHeight((setup.height -2))
+
+        nameText:ClearAll()
+        nameText:SetFontSize(setup.fontSizes.name)
+
+        healthText:ClearAll()
+        healthText:SetFontSize(setup.fontSizes.health)
+
+        energyText:ClearAll()
+        energyText:SetFontSize(setup.fontSizes.energy)
+        
+        planarText:ClearAll()
+        planarText:SetFontSize(setup.fontSizes.planar)
+
+        roleIcon:ClearAll()
+        roleIcon:SetHeight(setup.iconSizes.role)
+        roleIcon:SetWidth(setup.iconSizes.role)
+
+        combatIcon:SetHeight(setup.iconSizes.combat)
+        combatIcon:SetWidth(setup.iconSizes.combat)
+        
+        tierIcon:SetHeight(setup.iconSizes.tier)
+        tierIcon:SetWidth(setup.iconSizes.tier)
+
+        if setup.reverse then            
+            healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -1, 1)
+            healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, setup.margins.health)
+            energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -setup.margins.energy)
+            planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
+            roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.roleIcon, 0)
+            
+            if string.find(unitType, "raid") then
+                nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
+            else            
+                nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
+            end
+        else
+            healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 1, 1)
+            healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, setup.margins.health)
+            energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2, -setup.margins.energy)
+            planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", setup.margins.planar, 0)
+            roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", setup.margins.roleIcon, 0)
+
+            if string.find(unitType, "raid") then
+                nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
+            else
+                nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
+            end
+        end
+        
+        if unitType == "player" then
+            combatIcon:SetVisible(true)
+        end
+
+        if unitType == "player" or unitType == "player.target" then
+            unitFrame:SetTier("raid")
+        end
+
+        unitFrame:ProcessUnitDetails (EnKai.unit.getPlayerDetails().id)
+        unitFrame:SetRole("dps")
+        
+    end
+
     -- buff management
 
     function unitFrame:GetBuffIcons() return unitBuffIcons end
@@ -765,3 +836,23 @@ function _internal.getFrameByIdentifier(identifier)
     return uiElements.frames[identifier]
 end
 
+function _internal.uiFrameRedraw(bar)
+
+    if bar == "group" then
+        for idx = 1, 5, 1 do
+            uiElements.frames[stringFormat("group%02d", idx)]:SetVisible(true)
+            uiElements.frames[stringFormat("group%02d", idx)]:Redraw()
+        end
+    elseif bar == "raid" then
+        for idx = 1, 20, 1 do
+            uiElements.frames[stringFormat("raid%02d", idx)]:SetVisible(true)
+            uiElements.frames[stringFormat("raid%02d", idx)]:Redraw()
+        end
+    else
+        uiElements.frames[bar]:SetVisible(true) 
+        uiElements.frames[bar]:Redraw() 
+    end   
+
+    EnKai.ui.reloadDialog ("nkUI")
+
+end

@@ -18,6 +18,6 @@ The EnKai library must be used to write code at all times.
 
 For RIFT specific questions, refer to:
 
-- Rift API: https://www.seebs.net/rift/pts/full.html
+- Rift API: https://www.seebs.net/rift/live/full.html
 
 Always cite documentation when explaining concepts.

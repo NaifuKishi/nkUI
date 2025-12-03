@@ -20,7 +20,7 @@ function _settings.uiConfigTabSCT (name, parent)
              nkUISetup.modules.sct.activate = newValue
             _internal.sctToggle(newValue)
 
-            if messageOffsetSizeSlider then messageOffsetSizeSlider:SetActive(newValue) end
+            --if messageOffsetSizeSlider then messageOffsetSizeSlider:SetActive(newValue) end
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
@@ -28,15 +28,18 @@ function _settings.uiConfigTabSCT (name, parent)
 
         local moduleActive = nkUISetup.modules.sct.activate
 
+        --[[positionHeader = _settings.header ( name .. ".positionHeader", frame, "Vertical offsets")
+        positionHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT" , 0, 15)
+
         messageOffsetSizeSlider = _settings.slider (name .. ".messageOffsetSizeSlider", frame, "Message offset <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.sct.messageOffset = newValue
         end)
         
-        messageOffsetSizeSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
+        messageOffsetSizeSlider:SetPoint("TOPLEFT", positionHeader, "BOTTOMLEFT", 0, 15)
         messageOffsetSizeSlider:SetRange(-400, 200)
         messageOffsetSizeSlider:SetMidValue(0)
         messageOffsetSizeSlider:SetPrecision(1)
-        messageOffsetSizeSlider:AdjustValue(nkUISetup.modules.sct.messageOffset)
+        messageOffsetSizeSlider:AdjustValue(nkUISetup.modules.sct.messageOffset)]]
     end
 
     return frame
