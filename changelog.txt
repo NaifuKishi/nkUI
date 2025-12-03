@@ -1,3 +1,12 @@
+v0.4.1
+    
+    - update: Changed buff timer font for better readability
+    - fixes: Fixed stupid performance bug
+
+v0.4.0
+    - new: moveable ui
+    - update: reworked settings
+
 v0.3.5
     - new: addon settings
     - fixes: some minor tutorial fixes
@@ -172,3 +181,27 @@ bug reports
 xp percent still shows when disabling low bar module
 
 This may be hard to see 3rd picture the buff that makes you gold shows 11 seconds left (correct) top left buff module says 1m and target frame shows 4m (and the two 1hr buffs are off by a few mins too I see 41m vs 39m) 
+
+- Check with 2nd account. At least one user had problem with settings not being loaded
+
+Percentages of health is not accurate.
+
+On first load the bag was still its small ol self but I guess reload UI made it bigger.
+
+Unable to click on buffbar tab in settings
+Changining non combat alpha slide on unit frames doesn't update alpha 
+(have to reload ui so make it prompt you need to reload ui like the other settings do)
+
+performance
+Most likely due to me spamming coda (which refreshes a bunch of buffs) so it could be linked to buff bars actually
+
+
+
+Another error relating to moving frames. 
+
+Steps I did (disabled them all, moved each ui element by a little, reload UI, open setting, click move ui button)
+
+Disabling the UI element, reloading ui, open setting, and click on the UI element's tab will reenable the UI element even if it is not enabled too.
+(but when you reload ui it goes back to disabled)
+
+Looks like just unitframes and lower bar do it.

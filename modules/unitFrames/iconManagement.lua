@@ -104,6 +104,7 @@ function iconManager.get(unitType, iconType, setup, x, y)
     if not iconManager.activeIcons[unitType] then
         iconManager.activeIcons[unitType] = {}
     end
+
     iconManager.activeIcons[unitType][iconType] = thisIcon
     return thisIcon
 end

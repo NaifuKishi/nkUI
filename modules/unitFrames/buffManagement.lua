@@ -33,6 +33,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     local unitDebuffIcons = frame:GetDebuffIcons() or {}
     local unitBuffDisplayList = frame:GetBuffDisplayList() or {}
     local unitDebuffDisplayList = frame:GetDebuffDisplayList() or {}
+    local unitBuffId2BuffType = frame:GetBuffId2BuffTypeList() or {}
 
     local buffSetup = frame:GetBuffSetup()
 
@@ -74,18 +75,22 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
             if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.manageBuffs", "details", details) end
 
             for k, v in pairs(details) do
+
+                local buffIdentifier = v.type
+                unitBuffId2BuffType[k] = buffIdentifier
+
                 if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
 
                     local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
 
                     if unitId ~= targetID or (unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == data.playerID) then
-                        if unitDebuffDisplayList[k] == nil then
-                            unitDebuffDisplayList[k] = true
+                        if unitDebuffDisplayList[buffIdentifier] == nil then
+                            unitDebuffDisplayList[buffIdentifier] = true
 
-                            if unitDebuffIcons[k] == nil then
+                            if unitDebuffIcons[buffIdentifier] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(unitType, "debuffIcon." .. k, buffSetup, 0, 0)
-                                unitDebuffIcons[k] = {
+                                local icon = _internal.iconManager.get(unitType, "debuffIcon." .. buffIdentifier, buffSetup, 0, 0)
+                                unitDebuffIcons[buffIdentifier] = {
                                     icon = icon,
                                     visible = true,
                                     details = v, 
@@ -93,39 +98,42 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                     remaining = v.remaining,
                                     start = InspectTimeReal()
                                 }
-                                unitDebuffIcons[k].icon:SetBuff(buffUnit, k)
-                                unitDebuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                                unitDebuffIcons[k].icon:ShowBorder(true)
+                                unitDebuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
+                                unitDebuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
+                                unitDebuffIcons[buffIdentifier].icon:ShowBorder(true)
                             else
-                                unitDebuffIcons[k].details = details                                
-                                unitDebuffIcons[k].visible = true
+                                unitDebuffIcons[buffIdentifier].details = details                                
+                                unitDebuffIcons[buffIdentifier].visible = true
                             end
 
-                            unitDebuffIcons[k].icon:SetStack(v.stack)
+                            unitDebuffIcons[buffIdentifier].icon:SetStack(v.stack)
 
                             if v.poison then
-                                unitDebuffIcons[k].icon:SetBorderColor(0, 0.5, 0, 1)
+                                unitDebuffIcons[buffIdentifier].icon:SetBorderColor(0, 0.5, 0, 1)
                             elseif v.curse then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0.25, 0, 1)
+                                unitDebuffIcons[buffIdentifier].icon:SetBorderColor(0.5, 0.25, 0, 1)
                             elseif v.disease then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0.5, 1)
+                                unitDebuffIcons[buffIdentifier].icon:SetBorderColor(0.5, 0, 0.5, 1)
                             elseif v.debuff then
-                                unitDebuffIcons[k].icon:SetBorderColor(0.5, 0, 0, 1)
+                                unitDebuffIcons[buffIdentifier].icon:SetBorderColor(0.5, 0, 0, 1)
                             end
 
-                            unitDebuffIcons[k].icon:SetTexture("Rift", v.icon)
-                            unitDebuffIcons[k].icon:SetVisible(true)
+                            unitDebuffIcons[buffIdentifier].icon:SetTexture("Rift", v.icon)
+                            unitDebuffIcons[buffIdentifier].icon:SetVisible(true)
+                        else
+                            unitDebuffIcons[buffIdentifier].remaining = v.remaining
+                            unitDebuffIcons[buffIdentifier].start = InspectTimeReal()
                         end
                     end
                 else
                     if (v.remaining and v.remaining < nkUISetup.modules.unitFrames.buffDuration) then
-                        if (unitBuffDisplayList[k] == nil) then
-                           unitBuffDisplayList[k] = true
+                        if (unitBuffDisplayList[buffIdentifier] == nil) then
+                           unitBuffDisplayList[buffIdentifier] = true
 
-                            if unitBuffIcons[k] == nil then
+                            if unitBuffIcons[buffIdentifier] == nil then
                                 -- Use the icon manager to get an icon
-                                local icon = _internal.iconManager.get(unitType, "buffIcon." .. k, buffSetup, 0, 0)
-                                unitBuffIcons[k] = {
+                                local icon = _internal.iconManager.get(unitType, "buffIcon." .. buffIdentifier, buffSetup, 0, 0)
+                                unitBuffIcons[buffIdentifier] = {
                                     icon = icon,
                                     visible = true,
                                     details = v, 
@@ -133,20 +141,23 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                     remaining = v.remaining,
                                     start = InspectTimeReal()
                                 }
-                                unitBuffIcons[k].icon:SetBuff(buffUnit, k)
-                                unitBuffIcons[k].icon:SetEffect(privateVars.effects.gloss)
-                                unitBuffIcons[k].icon:ShowBorder(true)
+                                unitBuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
+                                unitBuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
+                                unitBuffIcons[buffIdentifier].icon:ShowBorder(true)
                             else
-                                unitBuffIcons[k].details = details
-                                unitBuffIcons[k].visible = true
+                                unitBuffIcons[buffIdentifier].details = details
+                                unitBuffIcons[buffIdentifier].visible = true
                             end
 
-                            unitBuffIcons[k].icon:SetStack(v.stack)
+                            unitBuffIcons[buffIdentifier].icon:SetStack(v.stack)
 
-                            if InspectSystemSecure() == false then unitBuffIcons[k].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
+                            if InspectSystemSecure() == false then unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
 
-                            unitBuffIcons[k].icon:SetTexture("Rift", v.icon)
-                            unitBuffIcons[k].icon:SetVisible(true)
+                            unitBuffIcons[buffIdentifier].icon:SetTexture("Rift", v.icon)
+                            unitBuffIcons[buffIdentifier].icon:SetVisible(true)
+                        else
+                            unitBuffIcons[buffIdentifier].remaining = v.remaining
+                            unitBuffIcons[buffIdentifier].start = InspectTimeReal()
                         end
                     end
                 end
@@ -176,19 +187,22 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     elseif action == "remove" then
         if buffUnit == unitId then
             for id, v in pairs(buffs) do
-                if unitBuffIcons[id] then
-                    unitBuffIcons[id].visible = false
-                    unitBuffIcons[id].icon:SetVisible(false)
+
+                local buffType = unitBuffId2BuffType[id]
+
+                if unitBuffIcons[buffType] then
+                    unitBuffIcons[buffType].visible = false
+                    unitBuffIcons[buffType].icon:SetVisible(false)
                     --EnKai.tools.table.removeValue(unitBuffDisplayList, id)
-                    unitBuffDisplayList[id] = nil
-                elseif unitDebuffIcons[id] then
-                    unitDebuffIcons[id].visible = false
-                    unitDebuffIcons[id].icon:SetVisible(false)
+                    unitBuffDisplayList[buffType] = nil
+                elseif unitDebuffIcons[buffType] then
+                    unitDebuffIcons[buffType].visible = false
+                    unitDebuffIcons[buffType].icon:SetVisible(false)
                     --EnKai.tools.table.removeValue(unitDebuffDisplayList, id)
-                    unitDebuffDisplayList[id] = nil
+                    unitDebuffDisplayList[buffType] = nil
                 end
 
-                _internal.iconManager.release(unitType, id)
+                _internal.iconManager.release(unitType, buffType)
             end
         end
 
@@ -200,6 +214,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     frame:SetDebuffIcons(unitDebuffIcons)
     frame:SetBuffDisplayList(unitBuffDisplayList)
     frame:SetDebuffDisplayList(unitDebuffDisplayList)
+    frame:SetBuffId2BuffTypeList(unitBuffId2BuffType)
 
 end
 

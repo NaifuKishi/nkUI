@@ -141,7 +141,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     local unitDebuffIcons = {}
     local unitBuffDisplayList = {}
     local unitDebuffDisplayList = {}
-
+    local unitBuffId2BuffType = {}
 
     local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.context)
     unitFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
@@ -387,10 +387,12 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:GetDebuffIcons() return unitDebuffIcons end
     function unitFrame:GetBuffDisplayList() return unitBuffDisplayList end
     function unitFrame:GetDebuffDisplayList() return unitDebuffDisplayList end
+    function unitFrame:GetBuffId2BuffTypeList() return unitBuffId2BuffType end
     function unitFrame:SetBuffIcons(icons) unitBuffIcons = icons end
     function unitFrame:SetDebuffIcons(icons) unitDebuffIcons = icons end
     function unitFrame:SetBuffDisplayList(list) unitBuffDisplayList = list end
     function unitFrame:SetDebuffDisplayList(list) unitDebuffDisplayList = list end
+    function unitFrame:SetBuffId2BuffTypeList(list) unitBuffId2BuffType = list end
 
     function unitFrame:addBuff(buffUnit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
     function unitFrame:changeBuff(unit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end

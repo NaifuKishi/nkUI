@@ -81,16 +81,12 @@ local function updateCooldownBar(cooldown)
     local cooldownTime = cooldown.duration
     local remainingTime = cooldown.duration - (InspectTimeFrame() - cooldown.start)
 
-    print (cooldown.duration)
-    print (InspectTimeFrame() - cooldown.start)
-
     if remainingTime <= 0 then
         --removeCooldown(_, { cooldown)
         return
     end
 
     local progress = remainingTime / cooldownTime
-    print (progress)
     cooldown.display.bar:SetWidth(100 * progress)
 
     if progress < 0.5 then
