@@ -355,6 +355,19 @@ function frameManager.get(unitType, unitFrameType, setup)
             end
         end
         
+        if string.find(unitType, "raid") == nil then
+            local buffIcons = unitFrame:GetBuffIcons()
+            local debuffIcons = unitFrame:GetDebuffIcons()
+
+            for k, v in pairs (buffIcons) do
+                v.icon:Setup(setup.buffs)
+            end
+
+            for k, v in pairs (debuffIcons) do
+                v.icon:Setup(setup.buffs)
+            end
+        end
+
         if unitType == "player" then
             combatIcon:SetVisible(true)
         end
@@ -851,7 +864,7 @@ function _internal.uiFrameRedraw(bar)
     else
         uiElements.frames[bar]:SetVisible(true) 
         uiElements.frames[bar]:Redraw() 
-    end   
+    end
 
     EnKai.ui.reloadDialog ("nkUI")
 

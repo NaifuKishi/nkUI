@@ -21,6 +21,7 @@ local _defaults = {
                         combatAlpha = 1, 
                         nonCombatAlpha = .2, 
                         showBuffs = true,
+                        buffDuration = 60,
                         frames = {  player          = { x = 1320, y = 1000, width = 250, height = 35, 
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
@@ -249,7 +250,7 @@ function _internal.setupUI ()
     local config = EnKai.uiCreateFrame("nkWindowMetro", name, uiElements.context)
 
     config:SetPoint("CENTER", UIParent, "CENTER")
-    config:SetWidth(900)
+    config:SetWidth(950)
     config:SetHeight(650)
     config:SetTitle(addonInfo.toc.Identifier .. " ".. addonInfo.toc.Version)
     config:SetTitleFont(addonInfo.id, "MontserratSemiBold")
@@ -271,6 +272,8 @@ function _internal.setupUI ()
 
     local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "player.castbar", nkUISetup.modules.unitFrames.frames.playerCastBar)
     local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "player.target.castbar", nkUISetup.modules.unitFrames.frames.targetCastBar)
+
+    local paneTabUnitFrameBasic = _settings.uiConfigTabUFBasic(name .. ".tab.UnitFrameBasic", tabPane)
 
     local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
 
@@ -336,7 +339,9 @@ function _internal.setupUI ()
     tabPane:AddPane( { label = "Player castbar", frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
     tabPane:AddPane( { label = "Target castbar", frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
 
-    tabPane:AddPane( { label = "Unit frames", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
+    tabPane:AddPane( { label = "Unitframes", frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
+
+    tabPane:AddPane( { label = "Units", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
 
     --if EnKai.internal.checkEvents ("nkRadial", true) == false then return nil end
 

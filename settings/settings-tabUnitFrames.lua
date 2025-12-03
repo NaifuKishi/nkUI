@@ -15,7 +15,7 @@ function _settings.uiConfigTabUnitFrames (name, parent)
 
     local tabPane = EnKai.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", parent:GetBodyFrame())
     --tabPane:SetColor({ thickness = 1, r = 0.078, g = 0.188, b = 0.306, a = 1}, { type = 'solid', r = 0.051, g = 0.118, b = 0.192, a = 1}, nil, { r = 1, g = 1, b = 1, a = 1})
-    tabPane:SetColor({ thickness = 1, r = 0, g = 0, b = 0, a = 1}, { type = 'solid', r = 0, g = 0, b = 0, a = .6}, nil, { r = 1, g = 1, b = 1, a = 1})
+    --tabPane:SetColor({ thickness = 1, r = 0, g = 0, b = 0, a = 1}, { type = 'solid', r = 0, g = 0, b = 0, a = .6}, nil, { r = 1, g = 1, b = 1, a = 1})
     tabPane:SetBorder(false)
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
 

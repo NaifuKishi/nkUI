@@ -118,7 +118,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                         end
                     end
                 else
-                    if (v.remaining and v.remaining < 60) then
+                    if (v.remaining and v.remaining < nkUISetup.modules.unitFrames.buffDuration) then
                         if (unitBuffDisplayList[k] == nil) then
                            unitBuffDisplayList[k] = true
 
