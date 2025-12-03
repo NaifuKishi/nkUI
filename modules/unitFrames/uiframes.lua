@@ -119,7 +119,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         local frame = table.remove(frameManager.framePool)
         frame:SetVisible(true)
         frame:ClearAll()
-        frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
+        frame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
         frame:SetWidth(frameWidth)
         frame:SetHeight(frameHeight)
         frame:SetBackgroundColor(0, 0, 0, .5)
@@ -144,7 +144,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
 
     local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.context)
-    unitFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
+    unitFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     unitFrame:SetWidth(frameWidth)
     unitFrame:SetHeight(frameHeight)    
     unitFrame:SetVisible(false)
@@ -169,7 +169,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     end
     
     local secureFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
-    secureFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y)
+    secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
     secureFrame:SetBackgroundColor(0, 0, 0, 0)
@@ -665,7 +665,7 @@ function _internal.uiFrames()
     local playerCastbar = _internal.createCastBar("player", nkUISetup.modules.unitFrames.frames.playerCastBar)
 
     uiElements.frames["player.castbar"] = playerCastbar
-    uiElements.frames["player.ressourcebar"]  = playerRessourceBar  
+    uiElements.frames["player.ressourcebar"] = playerRessourceBar  
 
     local playerPet = frameManager.get("player.pet", false, nkUISetup.modules.unitFrames.frames.playerPet)
     playerPet:SetMacro("/target @pet")
@@ -684,22 +684,23 @@ function _internal.uiFrames()
 
     local setup = nkUISetup.modules.unitFrames.frames.group
 
-    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y
+    local from, object, to, x, y = "CENTER", UIParent, "CENTER", setup.x, setup.y
 
     for idx = 1, 5, 1 do
         local group = frameManager.get(stringFormat("group%02d", idx), "group", setup)
+        group:ClearPoint("CENTER")
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
         --_internal.updateUnit (group, data.playerID)
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
-        to, object, x, y = "BOTTOMLEFT", group, 0, setup.margins.group
+        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", group, 0, setup.margins.group
     end
 
     setup = nkUISetup.modules.unitFrames.frames.raid
 
-    local from, object, to, x, y = "TOPLEFT", UIParent, "TOPLEFT", setup.x, setup.y
+    local from, object, to, x, y = "CENTER", UIParent, "CENTER", setup.x, setup.y
     local firstRaid
 
     for idx1 = 0, 3, 1 do
@@ -707,13 +708,14 @@ function _internal.uiFrames()
             local index = idx1 * 5 + idx2
 
             local raid = frameManager.get(stringFormat("raid%02d", index), "raid", setup)
+            raid:ClearPoint("CENTER")
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
             --_internal.updateUnit (raid, data.playerID)
             uiElements.frames[stringFormat("raid%02d", index)] = raid
 
-            to, object, x, y = "TOPRIGHT", raid, 2, 0
+            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
 
             if idx2 == 1 then firstRaid = raid end
         end

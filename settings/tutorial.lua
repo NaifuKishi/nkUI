@@ -99,7 +99,7 @@ local function _createTutorialWindow()
     local steps = {
         {
             title = "Welcome to nkUI",
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n- settings\n- New one bag module",
+            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n\n- Made ui movable\n- Redesigned settings\n- New one bag module",
             image = "gfx/EnKaiLogo.png",
             width = 300,
             height = 79,

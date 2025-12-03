@@ -22,48 +22,48 @@ local _defaults = {
                         nonCombatAlpha = .2, 
                         showBuffs = true,
                         buffDuration = 60,
-                        frames = {  player          = { x = 1320, y = 1000, width = 250, height = 35, 
+                        frames = {  player          = { x = -400, y = 300, width = 250, height = 35, 
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
                                                         margins = { name = 15, health = 15, energy = 12, planar = 4, combatIcon = 5, roleIcon = 5, tierIcon = 5 },
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
                                                         buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10}                                                        
                                                     },
-                                    playerPet       = { x = 1000, y = 1050, width = 185, height = 25,
+                                    playerPet       = { x = -675, y = 400, width = 185, height = 25,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10}, 
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5 },
                                                         iconSizes = {combat = 0, role = 0, tier = 0 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}                                                        
                                                     },
-                                    target          = { x = 1870, y = 1000, width = 250, height = 35,
+                                    target          = { x = 400, y = 300, width = 250, height = 35,
                                                         reverse = true,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
                                                         margins = { name = 15, health = 15, energy = 12, planar = 4, combatIcon = 5, roleIcon = 5, tierIcon = 5 },
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
                                                         buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10}                      
                                                     },
-                                    focus           = { x = 600, y = 1000, width = 185, height = 25,
+                                    focus           = { x = -900, y = 250, width = 185, height = 25,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10},                     
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5 },
                                                         iconSizes = {combat = 22, role = 15, tier = 15 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}                                                                                                                
                                                     },
-                                    group           = { x = 600, y = 300, width = 250, height = 35,
+                                    group           = { x = -900, y = -300, width = 250, height = 35,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10},
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, group = 80 },
                                                         iconSizes = {combat = 0, role = 15, tier = 0 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}
                                                     },
-                                    raid            = { x = 50, y = 300, width = 100, height = 45,
+                                    raid            = { x = -1590, y = -500, width = 100, height = 45,
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12}, 
                                                         margins = { name = 0, health = 0, energy = 0, planar = 0, combatIcon = 5, roleIcon = 2, tierIcon = 5 },
                                                         iconSizes = {combat = 0, role = 15, tier = 0 },
                                                     },
-                                    ressourceBar    = { x = 1620, y = 1020, width = 200, height = 17,
+                                    ressourceBar    = { x = 0, y = 300, width = 200, height = 17,
                                                         combo = { width = 30, height = 12},
                                                         charge = { width = 160, height = 12},
                                                         margins = { ressource = 10 },
@@ -80,6 +80,10 @@ local _defaults = {
         actionBars  = { activate = true, 
                         combatAlpha = 1, 
                         nonCombatAlpha = .2,                        
+                        x = 0,
+                        y = 550,
+                        rightBarX = 1695,
+                        rightBarY = 0,
                         offset = 550,
                         spacing = 15,
                     },
@@ -93,6 +97,7 @@ local _defaults = {
 		            },
         oneBag      = { activate = true },
         buffBar     = { activate = true,
+                        x = -1690, y = -690,
                         buffs = { width = 40, height = 40, timer = 14, stack = 12, label = 10}            
                     },
         sct         = { activate = true,
@@ -105,37 +110,45 @@ local function _scaleUI ()
        
     local parentWidth = UIParent:GetWidth()
 
-    if parentWidth ~= 3440 then
+    if parentWidth == 3440 then return end
 
-        local scale = UIParent:GetWidth() / 1920
+    data.uiScale = parentWidth / 3440
 
-        nkUISetup.modules.unitFrames.frames.player.x = 600 * scale
-        nkUISetup.modules.unitFrames.frames.player.y = 700 * scale
+    nkUISetup.modules.actionBars.x = nkUISetup.modules.actionBars.x * data.uiScale
+    nkUISetup.modules.actionBars.y = nkUISetup.modules.actionBars.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.target.x = 1140 * scale
-        nkUISetup.modules.unitFrames.frames.target.y = 700 * scale
+    nkUISetup.modules.actionBars.rightBarX = nkUISetup.modules.actionBars.rightBarX * data.uiScale
+    nkUISetup.modules.actionBars.rightBarY = nkUISetup.modules.actionBars.rightBarY * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.playerPet.x = 400 * scale
-        nkUISetup.modules.unitFrames.frames.playerPet.y = 750 * scale
+    nkUISetup.modules.buffBar.x = nkUISetup.modules.buffBar.x * data.uiScale
+    nkUISetup.modules.buffBar.y = nkUISetup.modules.buffBar.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.focus.x = 400 * scale
-        nkUISetup.modules.unitFrames.frames.focus.y = 850 * scale
+    nkUISetup.modules.unitFrames.frames.player.x = nkUISetup.modules.unitFrames.frames.player.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.player.y = nkUISetup.modules.unitFrames.frames.player.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.ressourceBar.x = 860 * scale
-        nkUISetup.modules.unitFrames.frames.ressourceBar.y = 700 * scale
+    nkUISetup.modules.unitFrames.frames.target.x = nkUISetup.modules.unitFrames.frames.target.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.target.y = nkUISetup.modules.unitFrames.frames.target.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.group.x = 500 * scale
-        nkUISetup.modules.unitFrames.frames.group.y = 300 * scale
+    nkUISetup.modules.unitFrames.frames.playerPet.x = nkUISetup.modules.unitFrames.frames.playerPet.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.playerPet.y = nkUISetup.modules.unitFrames.frames.playerPet.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.raid.x = 50 * scale
-        nkUISetup.modules.unitFrames.frames.raid.y = 300 * scale
+    nkUISetup.modules.unitFrames.frames.focus.x = nkUISetup.modules.unitFrames.frames.focus.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.focus.y = nkUISetup.modules.unitFrames.frames.focus.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.playerCastBar.x = 835 * scale
-        nkUISetup.modules.unitFrames.frames.playerCastBar.y = 800 * scale  
+    nkUISetup.modules.unitFrames.frames.ressourceBar.x = nkUISetup.modules.unitFrames.frames.ressourceBar.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.ressourceBar.y = nkUISetup.modules.unitFrames.frames.ressourceBar.y * data.uiScale
 
-        nkUISetup.modules.unitFrames.frames.targetCastBar.x = 835 * scale
-        nkUISetup.modules.unitFrames.frames.targetCastBar.y = 625 * scale
-    end  
+    nkUISetup.modules.unitFrames.frames.group.x = nkUISetup.modules.unitFrames.frames.group.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.group.y = nkUISetup.modules.unitFrames.frames.group.y * data.uiScale
+
+    nkUISetup.modules.unitFrames.frames.raid.x = nkUISetup.modules.unitFrames.frames.raid.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.raid.y = nkUISetup.modules.unitFrames.frames.raid.y * data.uiScale
+
+    nkUISetup.modules.unitFrames.frames.playerCastBar.x = nkUISetup.modules.unitFrames.frames.playerCastBar.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.playerCastBar.y = nkUISetup.modules.unitFrames.frames.playerCastBar.y * data.uiScale  
+
+    nkUISetup.modules.unitFrames.frames.targetCastBar.x = nkUISetup.modules.unitFrames.frames.targetCastBar.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.targetCastBar.x = nkUISetup.modules.unitFrames.frames.targetCastBar.x * data.uiScale
 
 end
 
@@ -154,13 +167,13 @@ end
 ]]
 function _internal.setupDefaults()
 
-    if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion == 24 then
+    if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
-    end
 
-    if data.uiScale ~= 1 then _scaleUI (nkUISetup) end
+        _scaleUI ()
+    end
 
 end
 
@@ -317,6 +330,20 @@ function _internal.setupUI ()
     Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
         _internal.tutorial()
     end, name .. ".tutorialButton.Clicked")
+
+    local moveButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".moveButton", config:GetContent())
+
+    moveButton:SetPoint("CENTERRIGHT", tutorialButton, "CENTERLEFT", -10, 0)
+    moveButton:SetText("Move UI")
+    moveButton:SetFontColor(1, 1, 1)
+    moveButton:SetIcon("EnKai", "gfx/icons/info.png")
+    moveButton:SetScale(.8)
+    moveButton:SetLayer(9)
+
+    Command.Event.Attach(EnKai.events[name .. ".moveButton"].Clicked, function (_, newValue)
+        _internal.initMove()
+        config:SetVisible(false)
+    end, name .. ".moveButton.Clicked")
 
     local oSetVisible = config.SetVisible
 

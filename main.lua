@@ -61,8 +61,8 @@ data.colors = {
     accent	= { r = .24, g = .68, b = .91, a = 1 }
 }
 				
-data.uiScaleX, data.uiScaleY = 1, 1
-local thisTutorialVersion = 025
+data.uiScale = 1
+local thisTutorialVersion = 40
 
 ---------- generate ui context ----------
 
@@ -174,6 +174,7 @@ local function _main(_, addon)
 						uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
 					end, "nkUI.OneBag.Native.Bank.Loaded")
 				end
+				
 			end
 
 			--_internal.cooldownInit()

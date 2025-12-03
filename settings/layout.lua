@@ -12,54 +12,70 @@ local oFuncs    = privateVars.oFuncs
 
 local InspectMouse  = Inspect.Mouse
 
-local function _moveFrame (x, y, height, width, label, callBack)
+local stringFormat  = string.format
 
-    local name = "nkUI.moveFrame." .. label
+local gridFrames = {}
+local moveFrames = {}
+local buffBarFrame
+local moveActive = false
 
-    local frame = uiElements.EnKai.uiCreateFrame("nkFrame", name, UIParent)
+local function _moveFrame (moveFrame, label, callBack)
+
+    local name = EnKai.tools.uuid()
+    local width, height = moveFrame:GetWidth(), moveFrame:GetHeight()
+   
+    local info = moveFrame:ReadAll()
+
+    local x, y = info.x[0.5].offset, info.y[0.5].offset    
+    local newX, newY
+
+    local frame = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextTop)
     frame:SetWidth(width)
     frame:SetHeight(height)
-    frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    frame:SetBackgroundColor(0.529, 0.808, 0.922, 0.5)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    frame:SetBackgroundColor(0.529, 0.808, 0.922, 1)
     
-    local text = uiElements.EnKai.uiCreateFrame("nkText", name .. ".text", frame)
+    local text = EnKai.uiCreateFrame("nkText", name .. ".text", frame)
     text:SetFontSize(16)
     text:SetPoint("CENTER", frame, "CENTER")
     text:SetFontColor(1, 1, 1, 1)
     text:SetText(label)
+    text:SetTextFont(addonInfo.id, "MontserratSemiBold")
+
+    moveFrame:SetPoint("CENTER", frame, "CENTER")
 
     frame:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)            
         self.leftDown = true
         local mouse = InspectMouse()
 
-        self.originalXDiff = mouse.x - self:GetLeft()
-        self.originalYDiff = mouse.y - self:GetTop()
-
-        local left, top, right, bottom = window:GetBounds()
-
-        frame:ClearPoint("TOPLEFT")
-        frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", left, top)
+        self.originalXDiff = mouse.x - x
+        self.originalYDiff = mouse.y - y
     end, name .. ".Left.Down")
 
     frame:EventAttach( Event.UI.Input.Mouse.Cursor.Move, function (self, _, x, y)  
         if self.leftDown ~= true then return end
 
-        local newX, newY = x - self.originalXDiff, y - self.originalYDiff
+        newX, newY = x - self.originalXDiff, y - self.originalYDiff
 
-        frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", newX, newY)
+        text:SetText(stringFormat("%s (%d/%d)", label, newX, newY))
+
+        frame:SetPoint("CENTER", UIParent, "CENTER", newX, newY)
     end, name .. ".Cursor.Move")
 
     frame:EventAttach( Event.UI.Input.Mouse.Left.Up, function (self) 
         if self.leftDown ~= true then return end
         self.leftDown = false
+
+        x, y = newX, newY
         
-        callBack(self:GetLeft(), self:GetTop())
+        callBack(newX, newY)
     end, name .. ".Left.Up")
 
-    header:EventAttach( Event.UI.Input.Mouse.Left.Upoutside, function (self)
+    frame:EventAttach( Event.UI.Input.Mouse.Left.Upoutside, function (self)
         if self.leftDown ~= true then return end
         self.leftDown = false      
-        callBack(self:GetLeft(), self:GetTop())  
+
+        callBack(newX, newY)
     end , name .. ".Left.Upoutside")
   
     return frame
@@ -68,6 +84,122 @@ end
 
 function _internal.initMove ()
 
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player"], "PLAYER FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.player.x = newX
+        nkUISetup.modules.unitFrames.frames.player.y = newY        
+    end))
 
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player.pet"], "PET FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.playerPet.x = newX
+        nkUISetup.modules.unitFrames.frames.playerPet.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player.target"], "TARGET FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.target.x = newX
+        nkUISetup.modules.unitFrames.frames.target.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["focus"], "FOCUS FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.focus.x = newX
+        nkUISetup.modules.unitFrames.frames.focus.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["group01"], "GROUP FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.group.x = newX
+        nkUISetup.modules.unitFrames.frames.group.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["raid01"], "RAID FRAME", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.raid.x = newX
+        nkUISetup.modules.unitFrames.frames.raid.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player.ressourcebar"], "RESSOURCE BAR", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.ressourceBar.x = newX
+        nkUISetup.modules.unitFrames.frames.ressourceBar.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player.castbar"], "PLAYER CASTBAR", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.playerCastBar.x = newX
+        nkUISetup.modules.unitFrames.frames.playerCastBar.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.castbar"], "TARGET CASTBAR", function (newX, newY)
+        nkUISetup.modules.unitFrames.frames.targetCastBar.x = newX
+        nkUISetup.modules.unitFrames.frames.targetCastBar.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.actionbars.main, "ACTION BAR", function (newX, newY)
+        nkUISetup.modules.actionBars.x = newX
+        nkUISetup.modules.actionBars.y = newY        
+    end))
+
+    table.insert(moveFrames, _moveFrame (uiElements.actionbars.rightScreen, "RIGHT BAR", function (newX, newY)
+        nkUISetup.modules.actionBars.rightBarX = newX
+        nkUISetup.modules.actionBars.rightBarY = newY        
+    end))
+
+    buffBarFrame = EnKai.uiCreateFrame("nkFrame", EnKai.tools.uuid(), uiElements.contextTop)
+    buffBarFrame:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
+    buffBarFrame:SetWidth(nkUISetup.modules.buffBar.buffs.width)
+    buffBarFrame:SetHeight(nkUISetup.modules.buffBar.buffs.height)
+
+    table.insert(moveFrames, _moveFrame (buffBarFrame, "BUFF BAR", function (newX, newY)
+        nkUISetup.modules.buffBar.x = newX
+        nkUISetup.modules.buffBar.y = newY        
+    end))
+    
+    local height = UIParent:GetHeight()
+    local width = UIParent:GetWidth()
+
+    local stroke = {r = .6, g = .6, b = .6, a = .5, thickness = 1 }
+    local path =  {  {xProportional = 0, yProportional = 0},
+                  {xProportional = 1, yProportional = 0},
+                  {xProportional = 1, yProportional = 1},
+                  {xProportional = 0, yProportional = 1},
+                  {xProportional = 0, yProportional = 0}
+                  }  
+
+    for idx = 1, math.floor((height / 2) / 25), 1 do
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * 25)
+        thisGrid:SetShape(path, nil, stroke)
+        thisGrid:SetWidth(width)
+        thisGrid:SetHeight(25)
+
+        table.insert(gridFrames, thisGrid)
+    end
+
+    for idx = 1, math.floor((height / 2) / 25), 1 do
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * -25)
+        thisGrid:SetShape(path, nil, stroke)
+        thisGrid:SetWidth(width)
+        thisGrid:SetHeight(25)
+
+        table.insert(gridFrames, thisGrid)
+    end    
+
+    for idx = 1, math.floor((width / 2) / 25), 1 do
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * 25, 0)
+        thisGrid:SetShape(path, nil, stroke)
+        thisGrid:SetWidth(25)
+        thisGrid:SetHeight(height)
+
+        table.insert(gridFrames, thisGrid)
+    end
+
+    for idx = 1, math.floor((width / 2) / 25), 1 do
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * -25, 0)
+        thisGrid:SetShape(path, nil, stroke)
+        thisGrid:SetWidth(25)
+        thisGrid:SetHeight(height)
+
+        table.insert(gridFrames, thisGrid)
+    end
+
+    EnKai.ui.reloadDialog ("Reload after you are done moving")
 
 end

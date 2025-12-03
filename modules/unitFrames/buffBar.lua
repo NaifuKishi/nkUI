@@ -38,7 +38,7 @@ end
 
 function _internal.buffBar.UpdateBuffDisplay()
 
-    local from, to, object, x, y = "TOPLEFT", "TOPLEFT", UIParent, 10, 10
+    local from, to, object, x, y = "CENTER", "CENTER", UIParent, nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y
     local lastIcon
     local firstBuffIcon
 
@@ -47,6 +47,7 @@ function _internal.buffBar.UpdateBuffDisplay()
 
     for k, v in pairs (buffDisplayList) do
         local icon = buffIcons[k].icon
+        icon:ClearAll()
         icon:SetPoint(from, object, to, x, y)
         from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
 
@@ -181,7 +182,7 @@ function _internal.buffBar.Redraw()
                         stack   = nkUISetup.modules.buffBar.buffs.stack
                     }
 
-    local buffs =  _internal.buffBar.GetBuffIcons ()
+    local buffs = _internal.buffBar.GetBuffIcons ()
     for k, v in pairs (buffs) do
         v.icon:Setup(newSetup)
 	end
