@@ -196,5 +196,4 @@ Unable to click on buffbar tab in settings
 Changining non combat alpha slide on unit frames doesn't update alpha 
 (have to reload ui so make it prompt you need to reload ui like the other settings do)
 
-
 Percentages of health is not accurate.
