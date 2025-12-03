@@ -24,7 +24,7 @@ function _settings.uiConfigTabSCT (name, parent)
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.sct.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.sct.activate, true)
 
         local moduleActive = nkUISetup.modules.sct.activate
 

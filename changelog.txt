@@ -1,6 +1,8 @@
 v0.4.1
     
     - update: Changed buff timer font for better readability
+    - fixes: Setting now properly recognizes enabling / disabling of modules
+    - fixes: Moving now ignores disabled modules
     - fixes: Fixed stupid performance bug
 
 v0.4.0
@@ -195,11 +197,7 @@ Changining non combat alpha slide on unit frames doesn't update alpha
 performance
 Most likely due to me spamming coda (which refreshes a bunch of buffs) so it could be linked to buff bars actually
 
-
-
-Another error relating to moving frames. 
-
-Steps I did (disabled them all, moved each ui element by a little, reload UI, open setting, click move ui button)
+Percentages of health is not accurate.
 
 Disabling the UI element, reloading ui, open setting, and click on the UI element's tab will reenable the UI element even if it is not enabled too.
 (but when you reload ui it goes back to disabled)

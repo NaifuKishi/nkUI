@@ -28,11 +28,9 @@ function _settings.uiConfigTabActionBar (name, parent)
 
         local moduleActive = nkUISetup.modules.actionBars.activate
 
-        activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate, true)
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
        
-
-
         combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha <font color='#3399FF'>%d</font>%%", moduleActive, function (newValue)
              nkUISetup.modules.actionBars.combatAlpha = newValue / 100
         end)

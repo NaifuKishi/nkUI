@@ -34,7 +34,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.sct.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.unitFrames.activate, true)
 
         local moduleActive = nkUISetup.modules.unitFrames.activate
 
@@ -61,6 +61,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         buffsUnitBarCheckbox = _settings.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
             nkUISetup.modules.unitFrames.showBuffs = newValue
+
             if newValue == false then 
                 _internal.uiFramesRemoveBuffs()
             else
@@ -69,7 +70,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
         end)
 
         buffsUnitBarCheckbox:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 30)
-        buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs)
+        buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs, true)
 
         buffDurationLabel = EnKai.uiCreateFrame("nkText", name .. ".buffDurationLabel", frame)
         buffDurationLabel:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 15)

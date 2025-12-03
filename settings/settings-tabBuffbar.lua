@@ -36,7 +36,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.buffBar.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.buffBar.activate, true)
 
         local moduleActive = nkUISetup.modules.buffBar.activate
 

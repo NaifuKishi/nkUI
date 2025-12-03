@@ -17,12 +17,12 @@ function _settings.uiConfigTabTooltip (name, parent)
     function frame:build()
 
         activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
-            nkUISetup.modules.sct.activate = newValue
+            nkUISetup.modules.tooltip.activate = newValue
             _internal.sctToggle(newValue)
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.sct.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.tooltip.activate, false)
 
     end
 

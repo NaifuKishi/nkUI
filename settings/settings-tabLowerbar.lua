@@ -32,7 +32,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
-        activateCheckbox:SetChecked(nkUISetup.modules.lowerBar.activate)
+        activateCheckbox:SetChecked(nkUISetup.modules.lowerBar.activate, true)
 
         local moduleActive = nkUISetup.modules.lowerBar.activate
 
