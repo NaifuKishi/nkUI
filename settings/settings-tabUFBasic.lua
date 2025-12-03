@@ -40,6 +40,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
+            __internal.toggleAlpha()
         end)
 
         combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
@@ -50,7 +51,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         nonCombatAlphaSlider = _settings.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
-            _internal.actionBarToggleAlpha()
+            _internal.toggleAlpha()
         end)
         
         nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
@@ -60,7 +61,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
         nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)        
 
         buffsUnitBarCheckbox = _settings.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
-            nkUISetup.modules.unitFrames.showBuffs = newValue
+            nkUISetup.modules.unitFrames.showBuffs = newValue            
 
             if newValue == false then 
                 _internal.uiFramesRemoveBuffs()
