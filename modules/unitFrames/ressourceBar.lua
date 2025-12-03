@@ -115,7 +115,7 @@ function _internal.ressourcBar (unit, setup)
         combo.inner = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx .. ".inner", combo)
         combo.inner:SetPoint("TOPLEFT", combo, "TOPLEFT", 1, 1)
         combo.inner:SetWidth(setup.combo.width-2)
-        combo.inner:SetHeight(setup.combo.width-2)
+        combo.inner:SetHeight(setup.combo.height-2)
         combo.inner:SetBackgroundColor(color[idx].r, color[idx].g, color[idx].b, color[idx].a)
 
         table.insert(comboIcon, combo)
