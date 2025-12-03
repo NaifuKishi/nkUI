@@ -1,6 +1,7 @@
 v0.4.1
     
     - update: Changed buff timer font for better readability
+    - fixes: Switching role now clears empty action bar slots
     - fixes: Setting unit frame alpha now changes it on display
     - fixes: Setting now properly recognizes enabling / disabling of modules
     - fixes: Moving now ignores disabled modules
@@ -187,7 +188,6 @@ This may be hard to see 3rd picture the buff that makes you gold shows 11 second
 
 - Check with 2nd account. At least one user had problem with settings not being loaded
 
-Percentages of health is not accurate.
 
 On first load the bag was still its small ol self but I guess reload UI made it bigger.
 

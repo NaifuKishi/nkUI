@@ -7,8 +7,14 @@ local uiElements  = privateVars.uiElements
 local _internal   = privateVars.internal
 local _events     = privateVars.events
 
+local inspectTimeFrame 			= Inspect.Time.Frame
+local InspectItemDetail			= Inspect.Item.Detail
+local InspectSystemSecure		= Inspect.System.Secure
+local InspectCursor				= Inspect.Cursor
+local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
+local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+
 local stringGSub        = string.gsub
-local inspectTimeFrame = Inspect.Time.Frame
 
 ---------- init global variables ---------
 
@@ -153,12 +159,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	local function _checkDrop ()
 	
-		if Inspect.System.Secure() == true then return end
-		local cType, cHeld = Inspect.Cursor()
+		if InspectSystemSecure() == true then return end
+		local cType, cHeld = InspectCursor()
 		
 		if cType == 'item' or cType == 'ability' then
 			frame:SetItem(cType, cHeld, nil)
-			data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil }
+			data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil }
 		end
 		
 		Command.Cursor(nil)
@@ -188,6 +194,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroIcon = nil
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
+
+		frame:SetUsable(true)
 
 		if macroFrame then
 			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)
@@ -225,12 +233,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		local err, data, macro
 		
 		if thisItemType == 'item' then
-			err, data = pcall(Inspect.Item.Detail, itemKey)
+			err, data = pcall(InspectItemDetail, itemKey)
 			if err and data ~= nil then
 				macro = "use " .. stringGSub(data.name, "\n", "")
 			end
 		elseif thisItemType == "ability" then
-			err, data = pcall(Inspect.Ability.New.Detail, itemKey)
+			err, data = pcall(InspectAbilityNewDetail, itemKey)
 			if err and data ~= nil then
 				frame:SetOOR(data.outOfRange)
 				frame:SetUsable(not data.unusable)
@@ -364,7 +372,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	local function _editMacro () 
 	
-		if Inspect.System.Secure() == true then return end
+		if InspectSystemSecure() == true then return end
 		if uiElements.macroEdit == nil then
 			uiElements.macroEdit = _internal.macroEditDialog(parent)			
 		end
@@ -379,11 +387,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	end, texture:GetName() .. ".UI.Input.Mouse.Left.Up")
 
 	texture:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
-		if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].interactive == true then
+		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			_editMacro()
 		else
 			EnKai.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
-				data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].interactive = true
+				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				_editMacro()
 			end)
@@ -392,7 +400,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	texture:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
         frame:ClearItem()
-		data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots[buttonIndex] = {}
+		data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
 	end, texture:GetName() .. ".UI.Input.Mouse.Right.Down")
 	
 	return frame

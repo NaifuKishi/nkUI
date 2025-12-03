@@ -94,6 +94,8 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
                         else
                             thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, nil)
                         end
+                    else
+                        thisRow[colIndex]:ClearItem()
                     end
                 end
             end
