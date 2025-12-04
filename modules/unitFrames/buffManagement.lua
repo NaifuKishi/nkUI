@@ -95,7 +95,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                     visible = true,
                                     details = v
                                 }
-                                unitDebuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
+                                unitDebuffIcons[buffIdentifier].icon:SetBuff(buffUnit, k)
                                 unitDebuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
                                 unitDebuffIcons[buffIdentifier].icon:ShowBorder(true)
                             else
@@ -140,7 +140,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                     visible = true,
                                     details = v
                                 }
-                                unitBuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
+                                unitBuffIcons[buffIdentifier].icon:SetBuff(buffUnit, k)
                                 unitBuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
                                 unitBuffIcons[buffIdentifier].icon:ShowBorder(true)
                             else

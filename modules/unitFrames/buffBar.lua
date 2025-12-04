@@ -83,7 +83,7 @@ function _internal.buffBar.addBuff(unit, buffs)
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. buffIdentifier, nkUISetup.modules.buffBar.buffs, 0, 0)
                     debuffIcons[buffIdentifier] = { icon = icon, visible = true, name = v.name }
                     
-                    debuffIcons[buffIdentifier].icon:SetBuff(unit, buffIdentifier)
+                    debuffIcons[buffIdentifier].icon:SetBuff(unit, k)
                     debuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
                     debuffIcons[buffIdentifier].icon:ShowBorder(true)
                     debuffIcons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)

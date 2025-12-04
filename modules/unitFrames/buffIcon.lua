@@ -300,7 +300,10 @@ function uiElements.icon (name, parent)
 
 	function icon:ShowTooltip()
 		if thisBuffId then
-			local details = InspectBuffDetail(thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
+			--local success, details = pcall(InspectBuffDetail, thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
+			--if success and details then Command.Tooltip(thisUnitType, thisBuffId) end
+
+			local details = InspectBuffDetail( thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
 			if details then Command.Tooltip(thisUnitType, thisBuffId) end
 		end
 	end

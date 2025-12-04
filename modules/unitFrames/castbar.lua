@@ -72,7 +72,12 @@ function _internal.createCastBar (unitType, setup)
 	end
 
 	function castbar:SetSpell(spellname)
+		castBarText:ClearWidth()
 		castBarText:SetText(spellname)
+
+		if castBarText:GetWidth() > setup.width then
+			castBarText:SetWith(castBarText:GetWidth())
+		end
 	end
 
 	function castbar:Redraw()

@@ -1,3 +1,6 @@
+v0.4.3
+    - fixes: tooltip for buffs working once again
+
 v0.4.2
     - new: Role switch element for lowerbar
     - fixes: Fixed a buff timer issue
