@@ -48,6 +48,10 @@ function uiElements.icon (name, parent)
 	
 	local properties = {}
 	local tooltipIcon = nil
+	local lastTimer = nil
+	local lastStack = nil
+	local isBelow10 = false
+	local timerVisible = false
 
 	function icon:SetValue(property, value)
 		properties[property] = value
@@ -122,11 +126,12 @@ function uiElements.icon (name, parent)
 	--end
 	
 	function icon:SetStack(text)
-		stack:ClearWidth()
+		--stack:ClearWidth()
 		if text == nil then
 			stack:SetText("")
-		else
+		elseif text ~= lastStack then			
 			stack:SetText(tostring(text))
+			lastStack = text
 		end
 	end
 	
@@ -188,27 +193,51 @@ function uiElements.icon (name, parent)
 	function icon:SetTimer (newTimer)
 		if newTimer then 
 
-			if mathFloor(newTimer) <= 10 then
-				timer:SetFontColor(1, 0, 0, 0)				
-			else
-				timer:SetFontColor(1, 1, 1, 0)
+			if EnKai.tools.math.round (newTimer, 0) <= 10 then
+				if isBelow10 == false then
+					timer:SetFontColor(1, 0, 0, 0)
+					isBelow10 = true
+				end
 			end
 
 			local unit = "s"
 			if newTimer > 3600 then
-				newTimer = mathFloor(newTimer / 3600)
+				newTimer = newTimer / 3600
 				unit = "h"
 			elseif newTimer > 60 then
-				newTimer = mathFloor(newTimer / 60)
+				newTimer = newTimer / 60
 				unit = "m"
-			end			
+			end
 
-			timer:ClearWidth()
-			timer:SetText(stringFormat("%d%s", newTimer, unit))
-			timer:SetVisible(true)
+			newTimer = EnKai.tools.math.round (newTimer, 0)
+
+			if newTimer ~= lastTimer then
+				--timer:ClearWidth()
+				timer:SetText(stringFormat("%d%s", newTimer, unit))
+
+				if timerVisible == false then 
+					timer:SetVisible(true)
+					timerVisible = true
+				end
+
+				lastTimer = newTimer
+			end
 		else
-			timer:SetVisible(false)
+			if timerVisible == true then 
+				timer:SetVisible(true)
+				timerVisible = false
+			end
+
+			lastTimer = nil
 		end
+	end
+
+	function icon:Clear()
+		lastTimer = nil
+		timerVisible = false
+		isBelow10 = false
+		timer:SetFontColor(1, 1, 1, 0)
+		icon:SetVisible(false)
 	end
 
 	function icon:SetTimerColor(r, g, b, a, ro, go, bo)
