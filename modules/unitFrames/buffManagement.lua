@@ -93,10 +93,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                 unitDebuffIcons[buffIdentifier] = {
                                     icon = icon,
                                     visible = true,
-                                    details = v, 
-                                    duration = v.duration,
-                                    remaining = v.remaining,
-                                    start = InspectTimeReal()
+                                    details = v
                                 }
                                 unitDebuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
                                 unitDebuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
@@ -105,6 +102,10 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                 unitDebuffIcons[buffIdentifier].details = details                                
                                 unitDebuffIcons[buffIdentifier].visible = true
                             end
+
+                            unitDebuffIcons[buffIdentifier].remaining = v.remaining
+                            unitDebuffIcons[buffIdentifier].duration = v.duration
+                            unitDebuffIcons[buffIdentifier].start = InspectTimeReal()
 
                             unitDebuffIcons[buffIdentifier].icon:SetStack(v.stack)
 
@@ -122,6 +123,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                             unitDebuffIcons[buffIdentifier].icon:SetVisible(true)
                         else
                             unitDebuffIcons[buffIdentifier].remaining = v.remaining
+                            unitDebuffIcons[buffIdentifier].duration = v.duration
                             unitDebuffIcons[buffIdentifier].start = InspectTimeReal()
                         end
                     end
@@ -136,10 +138,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                 unitBuffIcons[buffIdentifier] = {
                                     icon = icon,
                                     visible = true,
-                                    details = v, 
-                                    duration = v.duration,
-                                    remaining = v.remaining,
-                                    start = InspectTimeReal()
+                                    details = v
                                 }
                                 unitBuffIcons[buffIdentifier].icon:SetBuff(buffUnit, buffIdentifier)
                                 unitBuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
@@ -149,6 +148,10 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                                 unitBuffIcons[buffIdentifier].visible = true
                             end
 
+                            unitBuffIcons[buffIdentifier].duration = v.duration
+                            unitBuffIcons[buffIdentifier].remaining = v.remaining
+                            unitBuffIcons[buffIdentifier].start = InspectTimeReal()
+
                             unitBuffIcons[buffIdentifier].icon:SetStack(v.stack)
 
                             if InspectSystemSecure() == false then unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
@@ -156,6 +159,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                             unitBuffIcons[buffIdentifier].icon:SetTexture("Rift", v.icon)
                             unitBuffIcons[buffIdentifier].icon:SetVisible(true)
                         else
+                            unitBuffIcons[buffIdentifier].duration = v.duration
                             unitBuffIcons[buffIdentifier].remaining = v.remaining
                             unitBuffIcons[buffIdentifier].start = InspectTimeReal()
                         end

@@ -81,7 +81,7 @@ function _internal.buffBar.addBuff(unit, buffs)
 
                 if debuffIcons[buffIdentifier] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.debuffIcon." .. buffIdentifier, nkUISetup.modules.buffBar.buffs, 0, 0)
-                    debuffIcons[buffIdentifier] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
+                    debuffIcons[buffIdentifier] = { icon = icon, visible = true, name = v.name }
                     
                     debuffIcons[buffIdentifier].icon:SetBuff(unit, buffIdentifier)
                     debuffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
@@ -90,6 +90,10 @@ function _internal.buffBar.addBuff(unit, buffs)
                 else
                     debuffIcons[buffIdentifier].visible = true
                 end
+
+                debuffIcons[buffIdentifier].remaining = v.remaining
+                debuffIcons[buffIdentifier].duration = v.duration
+                debuffIcons[buffIdentifier].start = InspectTimeReal()
 
                 if v.poison then
                     debuffIcons[buffIdentifier].icon:SetBorderColor(0, 0.5, 0, 1)
@@ -108,6 +112,7 @@ function _internal.buffBar.addBuff(unit, buffs)
                 debuffDisplayList[buffIdentifier] = true
             else
                 debuffIcons[buffIdentifier].remaining = v.remaining
+                debuffIcons[buffIdentifier].duration = v.duration
                 debuffIcons[buffIdentifier].start = InspectTimeReal()
             end
         else
@@ -116,7 +121,7 @@ function _internal.buffBar.addBuff(unit, buffs)
 
                 if buffIcons[buffIdentifier] == nil then 
                     local icon = _internal.iconManager.get(data.playerID, "buffbar.buffIcon." .. buffIdentifier, nkUISetup.modules.buffBar.buffs, 0, 0)
-                    buffIcons[buffIdentifier] = { icon = icon, visible = true, name = v.name, duration = v.duration, remaining = v.remaining, start = InspectTimeReal() }
+                    buffIcons[buffIdentifier] = { icon = icon, visible = true, name = v.name }
 
                     buffIcons[buffIdentifier].icon:SetBuff(unit, k)
                     buffIcons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
@@ -126,6 +131,10 @@ function _internal.buffBar.addBuff(unit, buffs)
                     buffIcons[buffIdentifier].visible = true
                 end
 
+                buffIcons[buffIdentifier].remaining = v.remaining
+                buffIcons[buffIdentifier].duration = v.duration
+                buffIcons[buffIdentifier].start = InspectTimeReal()
+
                 buffIcons[buffIdentifier].icon:SetStack(v.stack)
                 buffIcons[buffIdentifier].icon:SetTexture("Rift", v.icon)
                 buffIcons[buffIdentifier].icon:SetVisible(true)
@@ -133,6 +142,7 @@ function _internal.buffBar.addBuff(unit, buffs)
                 buffDisplayList[buffIdentifier] = true
             else
                 buffIcons[buffIdentifier].remaining = v.remaining
+                buffIcons[buffIdentifier].duration = v.duration
                 buffIcons[buffIdentifier].start = InspectTimeReal()
             end
         end					
