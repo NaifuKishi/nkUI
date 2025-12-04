@@ -76,7 +76,7 @@ function _internal.createCastBar (unitType, setup)
 		castBarText:SetText(spellname)
 
 		if castBarText:GetWidth() > setup.width then
-			castBarText:SetWith(castBarText:GetWidth())
+			castBarText:SetText(_internal.shortenName (spellname, 10))
 		end
 	end
 
