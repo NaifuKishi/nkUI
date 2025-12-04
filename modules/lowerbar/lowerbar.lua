@@ -22,6 +22,8 @@ local InspectGuildRosterDetail  = Inspect.Guild.Roster.Detail
 local InspectGuildRosterList    = Inspect.Guild.Roster.List
 local InspectSocialFriendDetail = Inspect.Social.Friend.Detail
 local InspectSocialFriendList   = Inspect.Social.Friend.List
+local InspectRoleList           = Inspect.Role.List
+local InspectTEMPORARYRole      = Inspect.TEMPORARY.Role
 
 local stringGSub        = string.gsub
 local stringFormat      = string.format
@@ -32,6 +34,7 @@ local name = "lowerBar"
 local parentWidth = UIParent:GetWidth()
 local halfWidth = parentWidth / 2
 local aThird = halfWidth / 3
+local aFourth = halfWidth / 4
 
 ---------- init variables ---------
 
@@ -152,10 +155,10 @@ end
 
 function _internal.fps()
 
-    local x = halfWidth / 3
+    local x = halfWidth / 4
 
     local datasetFPS = EnKai.uiCreateFrame('nkText', name .. ".fps", uiElements.contextLowest)
-    datasetFPS:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMLEFT", aThird, -5)
+    datasetFPS:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMLEFT", aFourth, -5)
     datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetFPS:SetTextFont(addonInfo.id, "Montserrat")    
@@ -279,7 +282,7 @@ function _internal.experience ()
     local updateTime
 
     local datasetExpBarBG = EnKai.uiCreateFrame('nkFrame', name .. ".experienceFrameBG", uiElements.contextLowest)
-    datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -aThird, -11)
+    datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -aFourth, -9)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
@@ -366,7 +369,7 @@ function _internal.faction ()
     end
     
     local datasetFactionBarBG = EnKai.uiCreateFrame('nkFrame', name .. ".factionFrameBG", uiElements.contextLowest)
-    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", aThird, -11)
+    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", aThird, -9)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
@@ -589,6 +592,87 @@ function _internal.social ()
 
 end
 
+function _internal.lowerBarRoles()
+
+    local name = "lowerbar.roles"
+
+    local datasetRole = EnKai.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowest)
+    datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -aFourth *2, -5)
+    datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
+    datasetRole:SetTextFont(addonInfo.id, "Montserrat")
+    datasetRole:SetEffectGlow({ strength = 1})
+    datasetRole:SetSecureMode('restricted')
+
+    local roleSwitch = EnKai.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
+    roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
+    roleSwitch:SetSecureMode('restricted')
+    roleSwitch:SetHeight(1)
+    roleSwitch:SetVisible(false)
+
+    local buttonShown = false
+    local roleDisplay = {}
+
+    local function updateRoles ()
+
+        local roles = InspectRoleList()
+        local curRole = InspectTEMPORARYRole()
+        
+        local object = roleSwitch
+
+        for k, v in pairs(roleDisplay) do
+            v:SetVisible(false)
+        end
+
+        for roleID, desc in pairs (roles) do
+            local id = tonumber(string.sub ( roleID, string.len(roleID) - 1)) + 1
+            local thisRole
+
+            if id == curRole then
+                datasetRole:SetText(desc)
+            else
+                if roleDisplay[roleID] == nil then
+                    thisRole = EnKai.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)                
+                    thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+                    thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)                
+                    thisRole:SetEffectGlow({ strength = 1}) 
+                    thisRole:SetTextFont(addonInfo.id, "Montserrat")                   
+                    thisRole:SetText(desc)                    
+                    thisRole:SetSecureMode('restricted')                                
+
+                    local macro = "role " .. id
+                    thisRole:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
+
+                    roleDisplay[roleID] = thisRole
+                else
+                    thisRole = roleDisplay[roleID]
+                    thisRole:SetTextFont(addonInfo.id, "Montserrat")    
+                end
+
+                thisRole:SetVisible(true)
+                thisRole:SetPoint("BOTTOMCENTER", object, "TOPCENTER")
+                
+                object = thisRole
+            end
+
+        end
+    end
+
+    updateRoles()
+
+    datasetRole:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()
+        if buttonShown == true then buttonShown = false else buttonShown = true end
+        roleSwitch:SetVisible(buttonShown)
+	end, name .. "_Left_Click")
+
+    Command.Event.Attach(Event.TEMPORARY.Role, function(handle, role) 
+        buttonShown = false
+        updateRoles()
+        roleSwitch:SetVisible(false)
+    end, 'nkUI.lowerbar.role.TEMPORARY.role')
+
+end
+
 function _internal.lowerBarRedraw()
 
     for idx = 1, #uiElements.lowerBarModules, 1 do
@@ -606,7 +690,11 @@ function _internal.lowerBar ()
 
     _internal.social ()
 
-    --- experience
+    --- roles
+
+    _internal.lowerBarRoles()
+
+    --- experience    
 
     _internal.experience ()
 

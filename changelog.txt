@@ -1,5 +1,7 @@
 v0.4.2
 
+    - new: Role switch element for lowerbar
+    - fixes: Some alignment issues with lowerbar
     - fixes: Fixed a bug where OneBag was not updating properly
     - fixes: Hide tooltip when closing OneBag
     - fixes: disabling lowerbar not properly hide notoriety percent value
