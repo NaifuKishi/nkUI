@@ -2,6 +2,7 @@ v0.4.2
 
     - fixes: Fixed a bug where OneBag was not updating properly
     - fixes: Hide tooltip when closing OneBag
+    - fixes: disabling lowerbar not properly hide notoriety percent value
 
 v0.4.1
     

@@ -377,7 +377,7 @@ function _internal.faction ()
     datasetFactionBar:SetWidth(0)
     datasetFactionBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
 
-    local datasetFaction = EnKai.uiCreateFrame('nkText', name .. ".faction", uiElements.contextLowest)
+    local datasetFaction = EnKai.uiCreateFrame('nkText', name .. ".faction", datasetFactionBarBG)
     datasetFaction:SetPoint("BOTTOMCENTER", datasetFactionBarBG, "TOPCENTER", 0, 0)
     datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFaction:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
