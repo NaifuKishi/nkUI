@@ -1,3 +1,8 @@
+v0.4.4
+    - fixes: improved performance of buff handling
+    - fixes: Buff timers are now rounded instead of flattened
+    - fixes: Buff timer should now update correctly when enabling / disabling buffs
+
 v0.4.3
     - fixes: tooltip for buffs working once again
     - fixes: auto shorten long spellnames on castbar
