@@ -1,5 +1,7 @@
 v0.4.3
     - fixes: tooltip for buffs working once again
+    - fixes: auto shorten long spellnames on castbar
+    - fixes: fixed error in lowerbar role change
 
 v0.4.2
     - new: Role switch element for lowerbar
@@ -202,3 +204,7 @@ On first load the bag was still its small ol self but I guess reload UI made it 
 Unable to click on buffbar tab in settings
 
 Percentages of health is not accurate.
+
+try to make EnKai tooltip smarter for onebag to not cause cpu spikes
+
+Opening bag doesn't show entire bag (need to click drag area to update it)
