@@ -626,7 +626,6 @@ function _internal.lowerBarRoles()
 
         for roleID, desc in pairs (roles) do
             local id = EnKai.tools.hex2number(roleID) +1
-            print (id)
             --local id = tonumber(string.sub ( roleID, string.len(roleID) - 1)) + 1
             local thisRole
 
