@@ -629,7 +629,7 @@ function _internal.lowerBarRoles()
             local thisRole
 
             if id == curRole then
-                datasetRole:SetText(desc)
+                datasetRole:SetText(stringFormat("Active role: %s", desc))
             else
                 if roleDisplay[roleID] == nil then
                     thisRole = EnKai.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)                
