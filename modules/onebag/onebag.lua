@@ -76,7 +76,7 @@ local function _fctItemIcon (name, parent)
 
     function itemFrame:SetItem (itemID)
         thisItemID = itemID        
-        EnKai.ui.attachItemTooltip (itemIcon, itemID)        
+        EnKai.ui.attachItemTooltip (itemIcon, itemID)
     end
 
     function itemFrame:SetIcon (addonName, path)
@@ -322,19 +322,21 @@ local function _getRealCategory (category, rarity)
         return "Dimension"
     elseif stringFind(category, "planar vessel") then
         return "Planar Fokus"
+    elseif stringFind(category, "armor") then
+        return "Armor"
     end
 
     return category
 
 end
 
-function _internal.populateBag()
+function _internal.populateBag(forceCacheUpdate)
 
     local counter = 1
     local firstIcon = nil
     local lastIcon = nil
 
-    if cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
+    if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
         cachedItems = EnKai.inventory.getBagItems()
         lastCacheUpdate = InspectTimeReal()
     end
@@ -466,6 +468,9 @@ function _internal.populateBag()
 end
 
 local function _fctItemSlot (_, slots)
+
+    --print ("_fctItemSlot")
+    --dump (slots)
     
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
@@ -481,10 +486,13 @@ local function _fctItemSlot (_, slots)
         if doBatSlotsUpdate and doInventoryUpdate then break end
     end
 
+    --print (doInventoryUpdate)
+
     if doInventoryUpdate then 
         EnKai.inventory.updateDB()
-        _internal.populateBag() 
+        _internal.populateBag(true) 
     end
+
     if doBatSlotsUpdate then  _fctGetBagSlots() end
 
 end
@@ -497,6 +505,7 @@ function _internal.oneBagInit()
 
     if uiElements.oneBag then 
         if uiElements.oneBag:GetVisible() then
+            EnKai.ui.getItemTooltip():SetVisible(false)
             uiElements.oneBag:SetVisible(false)
         else
             uiElements.oneBag:SetVisible(true)
@@ -527,7 +536,8 @@ function _internal.oneBagInit()
         end, "nkUI.OneBag.EnKai.InventoryManager.SlotUpdate")
 
         Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, items)
---[[            dump (items)
+            --dump (items)
+--[[            
             for k, v in pairs(items) do
                 if movedItem == k and v > 0 then
                     movedItem = nil

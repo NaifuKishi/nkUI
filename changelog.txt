@@ -1,3 +1,8 @@
+v0.4.2
+
+    - fixes: Fixed a bug where OneBag was not updating properly
+    - fixes: Hide tooltip when closing OneBag
+
 v0.4.1
     
     - update: Changed buff timer font for better readability
@@ -176,8 +181,6 @@ bug reports
 
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.
 
-    uh equipping items via nkui bag doesnt update the bag correct (results in missing item icons and can display equipped items)
-
     Ihave pyroblade equipped now and it also doesnt show the other two weapons I have in my bag anymore
 (also displays wrong icon for pyroblade [showing one of my other items]) 
 
@@ -192,8 +195,5 @@ This may be hard to see 3rd picture the buff that makes you gold shows 11 second
 On first load the bag was still its small ol self but I guess reload UI made it bigger.
 
 Unable to click on buffbar tab in settings
-
-Changining non combat alpha slide on unit frames doesn't update alpha 
-(have to reload ui so make it prompt you need to reload ui like the other settings do)
 
 Percentages of health is not accurate.
