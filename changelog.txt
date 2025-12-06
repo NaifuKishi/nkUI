@@ -1,3 +1,7 @@
+v0.5.1
+    - fixes: extra line in bag if exactly 15 items
+    - fixes: Buff bar realignment error
+
 v0.5.0
     - update: improved performance of buff handling
     - fixes: Charge is now properly displayed on mages
