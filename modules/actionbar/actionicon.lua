@@ -239,6 +239,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			end
 		elseif thisItemType == "ability" then
 			err, data = pcall(InspectAbilityNewDetail, itemKey)
+
+			if data == nil then
+				err, data = pcall(InspectAbilityDetail, itemKey)
+			end
+
 			if err and data ~= nil then
 				frame:SetOOR(data.outOfRange)
 				frame:SetUsable(not data.unusable)

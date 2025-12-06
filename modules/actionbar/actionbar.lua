@@ -227,11 +227,16 @@ function _internal.uiActionBars()
 	_internal.stanceActive (false)
 	
     Command.Event.Attach(Event.TEMPORARY.Role, function ()
-        mainActionBar:Populate()
-        stanceActionBar:Populate()
-        leftActionBar:Populate()
-        rightActionBar:Populate()
-        rightScreenBar:Populate()
+
+        local function populateActionBars ()
+            mainActionBar:Populate()
+            stanceActionBar:Populate()
+            leftActionBar:Populate()
+            rightActionBar:Populate()
+            rightScreenBar:Populate()
+        end
+
+        
     end, "nkUI.TEMPORARY.Role")
 
     for k, v in pairs (uiElements.actionbars) do

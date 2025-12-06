@@ -3,6 +3,7 @@ V0.5.3
     - fixes: Tried to fix some layering issues
     - fixes: Potential fix for buff gaps
     - fixes: Changing lowerbar font no longer results in error
+    - fixes: Fixed incorect buff timer colors
 
 v0.5.2
     - fixes: buff management optimization
