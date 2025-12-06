@@ -41,8 +41,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
         
         local buffSetup = frame:GetBuffSetup()
         local x = 0
-        local y = - (buffSetup.height+30)
-        
+        local y = - (buffSetup.height+30)        
 
         for k, v in pairs (unitBuffDisplayList) do            
             if unitBuffIcons[k].lastX ~= x then
@@ -112,6 +111,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
         for k, v in pairs(unitBuffIcons) do
             v.visible = false
             v.icon:SetVisible(false)
+            v.lastX = nil
 
             _internal.iconManager.release(unitType, k)
         end
@@ -119,6 +119,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
         for k, v in pairs(unitDebuffIcons) do
             v.visible = false
             v.icon:SetVisible(false)
+             v.lastX = nil
 
             _internal.iconManager.release(unitType, k)
         end
@@ -134,11 +135,13 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                 if unitBuffIcons[buffType] then
                     unitBuffIcons[buffType].visible = false
                     unitBuffIcons[buffType].icon:Clear()
+                    unitBuffIcons[buffType].lastX = nil
                     --EnKai.tools.table.removeValue(unitBuffDisplayList, id)
                     unitBuffDisplayList[buffType] = nil
                 elseif unitDebuffIcons[buffType] then
                     unitDebuffIcons[buffType].visible = false
                     unitDebuffIcons[buffType].icon:Clear()
+                    unitDebuffIcons[buffType].lastX = nil
                     --EnKai.tools.table.removeValue(unitDebuffDisplayList, id)
                     unitDebuffDisplayList[buffType] = nil
                 end

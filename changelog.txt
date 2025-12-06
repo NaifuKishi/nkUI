@@ -223,3 +223,36 @@ Percentages of health is not accurate.
 try to make EnKai tooltip smarter for onebag to not cause cpu spikes
 
 Opening bag doesn't show entire bag (need to click drag area to update it)
+
+
+Main buff bar hovering over the icon does not always 100% guarantee a tooltip to show and as a result you cannot right click to remove buff (doesnt detect mousein)
+
+Targeting self places buff on the target frame instead of creating a new batch to place on target frame.
+Untargeting also makes it so it keeps updating there too.
+When a new buff is applied it reparents to the player frame tho.
+
+Having issues with tooltip of buff bar and unit frame buffs. Should I turn off the tooltip anchor? Is there a mixture of settings I need to be able to get tooltips of buffs an debuffs in combat?
+
+
+Gaps in player buff bar
+
+Certain buffs are still displayed above the UI settings menu
+
+Main buff bar hovering over the icon does not always 100% guarantee a tooltip to show and as a result you cannot right click to remove buff (doesnt detect mousein)
+
+Buff timers do not show up on other party memebers.
+and buffs can parent to your party member frame as well
+
+Action bar is being really weird. Not updating certain ability cooldown timers. Going out of combat should reenable main action bar macros which it doesnt, reloading ui doesn't do it either, even creating an entirely new macro still can't fire it off.
+
+
+Error: nkUI/modules/lowerbar/lowerbar.lua:682: attempt to call method 'Redraw' (a nil value)
+    In nkUI / nkUI.config.tab.LowerBar.fontSizeSlider.SliderChanged, event Event.EnKai.nkUI.config.tab.LowerBar.fontSizeSliderSliderChanged
+stack traceback:
+    [C]: in function 'Redraw'
+    nkUI/modules/lowerbar/lowerbar.lua:682: in function 'lowerBarRedraw'
+    nkUI/settings/settings-tabLowerbar.lua:44: in function 'callBack'
+    nkUI/settings/settings.lua:233: in function <nkUI/settings/settings.lua:232>
+    [C]: in function 'SliderChanged'
+    EnKai/ui/form/slider.lua:174: in function 'ProcessMove'
+    EnKai/ui/form/slider.lua:138: in function <EnKai/ui/form/slider.lua:137>

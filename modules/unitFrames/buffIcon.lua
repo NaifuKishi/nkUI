@@ -246,6 +246,7 @@ function uiElements.icon (name, parent)
 	end
 
 	function icon:Clear()
+		
 		lastTimer = nil
 		timerVisible = false
 		isBelow10 = false

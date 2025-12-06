@@ -56,7 +56,7 @@ function _internal.buffBar.UpdateBuffDisplay()
     for k, v in pairs (debuffDisplayList) do
         if debuffIcons[k].lastX ~= x then
             local icon = debuffIcons[k].icon
-            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, (nkUISetup.modules.buffBar.buffs.height + 2))
+            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, (nkUISetup.modules.buffBar.buffs.height + 12))
         end
         
         debuffIcons[k].lastX = x
@@ -91,10 +91,12 @@ function _internal.buffBar.removeBuff (unit, buffs)
         if buffIcons[buffType] then
             buffIcons[buffType].visible = false
             buffIcons[buffType].icon:Clear()
+            buffIcons[buffType].lastX = nil
             buffDisplayList[buffType] = nil 
         elseif debuffIcons[buffType] then
             debuffIcons[buffType].visible = false
             debuffIcons[buffType].icon:Clear()
+            debuffIcons[buffType].lastX = nil
             debuffDisplayList[buffType] = nil
         end
 
@@ -122,7 +124,6 @@ function _internal.buffBar.clearAllBuffs()
    _internal.buffBar.removeBuff(data.playerID, buffs)
     
 end
-
 
 function _internal.buffBar.loadAllBuffs()
 
