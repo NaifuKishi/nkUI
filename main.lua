@@ -136,8 +136,8 @@ local function _main(_, addon)
 			data.playerID = id
 
 			EnKai.BuffManager.init() -- Initialize the BuffManager if not already done
-            EnKai.inventory.init(false)
-			
+            EnKai.inventory.init(false)				
+
 			_internal.setupDefaults()
 
 			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
@@ -194,4 +194,5 @@ end
 
 -------------------- STARTUP EVENTS --------------------
 
-Command.Event.Attach(Event.Addon.Load.End, _main, "nkUI.Addon.Load.End")
+--Command.Event.Attach(Event.Addon.Load.End, _main, "nkUI.Addon.Load.End")
+Command.Event.Attach(Event.Addon.SavedVariables.Load.End, _main, "nkUI.SavedVariables.Load.End")

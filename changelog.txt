@@ -1,5 +1,8 @@
 v0.4.4
-    - fixes: improved performance of buff handling
+    - update: improved performance of buff handling
+    - fixes: Fixed a bug when loading on new char
+    - fixes: Fixed are bug in experience display of SCT
+    - fixes: Switched OneBag Tooltip to ingame tooltip    
     - fixes: Buff timers are now rounded instead of flattened
     - fixes: Buff timer should now update correctly when enabling / disabling buffs
     - fixes: Planar charges no longer shown on units without any
@@ -196,13 +199,10 @@ bug reports
 
     Ihave pyroblade equipped now and it also doesnt show the other two weapons I have in my bag anymore
 (also displays wrong icon for pyroblade [showing one of my other items]) 
-
-    When targeting self buffs um duplicate when toggling off and on the module (minor)
+    
 xp percent still shows when disabling low bar module
 
-
 - Check with 2nd account. At least one user had problem with settings not being loaded
-
 
 On first load the bag was still its small ol self but I guess reload UI made it bigger.
 

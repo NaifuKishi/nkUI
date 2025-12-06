@@ -471,7 +471,7 @@ end
 function _internal.sctInit()
     
     local experience = InspectExperience()
-    lastAccumulated = experience.accumulated
+    lastAccumulated = experience.accumulated    
 
     Command.Event.Attach(Event.Combat.Damage, _fctEventCombatDamage, "nkUI.SCT.Combat.Damage")
     Command.Event.Attach(Event.Combat.Dodge, _fctEventCombatDodge, "nkUI.SCT.Combat.Dodge")
@@ -484,7 +484,8 @@ function _internal.sctInit()
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin, _fctEventCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
     Command.Event.Attach(Event.Ability.New.Cooldown.End, _fctEventCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
 
-    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)         
+    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
+        if lastAccumulated == nil then lastAccumulated = accumulated end
         local gain = accumulated - lastAccumulated
         if gain == 0 then return end
         displayMovingMessage(stringFormat("%d exp", gain), 2)

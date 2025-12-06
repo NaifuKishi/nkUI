@@ -76,7 +76,7 @@ local function _fctItemIcon (name, parent)
 
     function itemFrame:SetItem (itemID)
         thisItemID = itemID        
-        EnKai.ui.attachItemTooltip (itemIcon, itemID)
+        --EnKai.ui.attachItemTooltip (itemIcon, itemID)
     end
 
     function itemFrame:SetIcon (addonName, path)
@@ -139,6 +139,14 @@ local function _fctItemIcon (name, parent)
             bindText:SetVisible(false)
         end
     end
+
+    itemIcon:EventAttach( Event.UI.Input.Mouse.Cursor.In, function (self)	
+        Command.Tooltip(thisItemID)
+    end, name .. "Event.UI.Input.Mouse.Cursor.In")
+
+    itemIcon:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function (self)	
+        Command.Tooltip(nil)
+    end, name .. "Event.UI.Input.Mouse.Cursor.Out")
 
     itemIcon:EventAttach( Event.UI.Input.Mouse.Left.Down, function (self)	
         draggedItem = thisItemID
@@ -505,7 +513,7 @@ function _internal.oneBagInit()
 
     if uiElements.oneBag then 
         if uiElements.oneBag:GetVisible() then
-            EnKai.ui.getItemTooltip():SetVisible(false)
+            --EnKai.ui.getItemTooltip():SetVisible(false)
             uiElements.oneBag:SetVisible(false)
         else
             uiElements.oneBag:SetVisible(true)

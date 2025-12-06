@@ -174,6 +174,12 @@ function _internal.setupDefaults()
 
         _scaleUI ()
     end
+    
+    -- check for new char
+
+    if nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] == nil then
+        nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
+    end
 
 end
 
@@ -308,7 +314,6 @@ function _internal.setupUI ()
     closeButton:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -10)
     closeButton:SetText("Close")
     closeButton:SetFontColor(1, 1, 1)
-    --closeButton:SetColor(_mainColor.r, _mainColor.g, _mainColor.b)
     closeButton:SetIcon("EnKai", "gfx/icons/close.png")
     closeButton:SetScale(.8)
     closeButton:SetLayer(9)
@@ -322,7 +327,6 @@ function _internal.setupUI ()
     tutorialButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
     tutorialButton:SetText("Tutorial")
     tutorialButton:SetFontColor(1, 1, 1)
-    --tutorialButton:SetColor(_mainColor.r, _mainColor.g, _mainColor.b)
     tutorialButton:SetIcon("EnKai", "gfx/icons/info.png")
     tutorialButton:SetScale(.8)
     tutorialButton:SetLayer(9)
@@ -336,7 +340,7 @@ function _internal.setupUI ()
     moveButton:SetPoint("CENTERRIGHT", tutorialButton, "CENTERLEFT", -10, 0)
     moveButton:SetText("Move UI")
     moveButton:SetFontColor(1, 1, 1)
-    moveButton:SetIcon("EnKai", "gfx/icons/info.png")
+    moveButton:SetIcon("EnKai", "gfx/icons/circle.png")
     moveButton:SetScale(.8)
     moveButton:SetLayer(9)
 
