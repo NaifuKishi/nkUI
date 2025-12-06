@@ -17,6 +17,8 @@ data.abilityMap = {}
 data.abilityList = {}
 data.gcdActive = false
 
+local InspectTimeFrame      = Inspect.Time.Frame
+
 local stringFormat				= string.format
 
 ---------- init local variables ---------
@@ -228,6 +230,8 @@ function _internal.uiActionBars()
 	
     Command.Event.Attach(Event.TEMPORARY.Role, function ()
 
+        -- add a 1 second delay cause of a RIFT bug not providing Ability details properly
+
         local function populateActionBars ()
             mainActionBar:Populate()
             stanceActionBar:Populate()
@@ -236,7 +240,7 @@ function _internal.uiActionBars()
             rightScreenBar:Populate()
         end
 
-        
+        EnKai.events.addInsecure(populateActionBars, InspectTimeFrame(), 2)
     end, "nkUI.TEMPORARY.Role")
 
     for k, v in pairs (uiElements.actionbars) do
