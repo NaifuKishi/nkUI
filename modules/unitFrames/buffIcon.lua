@@ -52,6 +52,7 @@ function uiElements.icon (name, parent)
 	local lastStack = nil
 	local isBelow10 = false
 	local timerVisible = false
+	local lastSetup = {}
 
 	function icon:SetValue(property, value)
 		properties[property] = value
@@ -170,20 +171,32 @@ function uiElements.icon (name, parent)
 	end
 	
 	function icon:Setup(newSetup)
-	
-		icon:SetWidth(newSetup.width)
-		icon:SetHeight(newSetup.height)
+
+		if lastSetup.width ~= newSetup.width then	
+			icon:SetWidth(newSetup.width)
+			border:SetWidth(newSetup.width)
+		end
 		
-		border:SetWidth(newSetup.width)
-		border:SetHeight(newSetup.height)
+		if lastSetup.height ~= newSetup.height then
+			icon:SetHeight(newSetup.height)
+			border:SetHeight(newSetup.height)
+		end
+
+		if lastSetup.label ~= newSetup.label then		
+			label:SetFontSize(newSetup.label)
+			label:SetHeight(newSetup.label + 4)
+		end
 		
-		label:SetFontSize(newSetup.label)
-		label:SetHeight(newSetup.label + 4)
-		
-		timer:SetFontSize(newSetup.timer)
-		timer:SetHeight(newSetup.timer + 4)
-		
-		stack:SetFontSize(newSetup.stack )
+		if lastSetup.timer ~= newSetup.timer then		
+			timer:SetFontSize(newSetup.timer)
+			timer:SetHeight(newSetup.timer + 4)
+		end
+			
+		if lastSetup.stack ~= newSetup.stack then
+			stack:SetFontSize(newSetup.stack )
+		end
+
+		lastSetup = newSetup
 	end
 	
 	function icon:SetLabelColor(r, g, b, a)
@@ -238,6 +251,7 @@ function uiElements.icon (name, parent)
 		isBelow10 = false
 		timer:SetFontColor(1, 1, 1, 0)
 		icon:SetVisible(false)
+		icon:ClearAll()
 	end
 
 	function icon:SetTimerColor(r, g, b, a, ro, go, bo)

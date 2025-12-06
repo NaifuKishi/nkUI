@@ -39,52 +39,28 @@ end
 
 function _internal.buffBar.UpdateBuffDisplay()
 
-    local from, to, object, x, y = "CENTER", "CENTER", UIParent, nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y
-    local lastIcon
-    local firstBuffIcon
+    local x = 0
 
-    local sortedBuffs = {}
-    local sortedDebuffs = {}
-
-    local pos = 1
-
-     for k, v in pairs (buffDisplayList) do
-        local icon = buffIcons[k].icon
-        icon:ClearAll()
-     end
-
-    for k, v in pairs (buffDisplayList) do
-        local icon = buffIcons[k].icon
-
-        if buffIcons[k].pos ~= pos then
-            icon:SetPoint(from, object, to, x, y)
-            buffIcons[k].pos = pos
+    for k, v in pairs (buffDisplayList) do        
+        if buffIcons[k].lastX ~= x then
+            local icon = buffIcons[k].icon
+            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, 0)
         end
 
-        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
-        if firstBuffIcon == nil then firstBuffIcon = icon end
-        pos = pos + 1
+        buffIcons[k].lastX = x
+        x = x + nkUISetup.modules.buffBar.buffs.width + 2        
     end
 
-    if firstBuffIcon == nil then firstBuffIcon = UIParent end
-    from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 20
-    pos = 1
+    x = 0
 
-     for k, v in pairs (debuffDisplayList) do
-        local icon = debuffIcons[k].icon
-        icon:ClearAll()
-     end    
-
-    for k, v in pairs (debuffDisplayList) do        
-        local icon = debuffIcons[k].icon
-        
-        if debuffIcons[k].pos ~= pos then
-            icon:SetPoint(from, object, to, x, y)
-            debuffIcons[k].pos = pos
+    for k, v in pairs (debuffDisplayList) do
+        if debuffIcons[k].lastX ~= x then
+            local icon = debuffIcons[k].icon
+            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, (nkUISetup.modules.buffBar.buffs.height + 2))
         end
         
-        from, to, object, x, y = "TOPLEFT", "TOPRIGHT", icon, 5, 0
-        pos = pos + 1
+        debuffIcons[k].lastX = x
+        x = x + nkUISetup.modules.buffBar.buffs.width + 2
     end
 end
 

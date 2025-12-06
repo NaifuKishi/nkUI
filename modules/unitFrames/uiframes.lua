@@ -659,6 +659,10 @@ function _internal.uiFrames()
 
     uiElements.frames = {}
 
+    local buffBarHolder = EnKai.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.context)
+    buffBarHolder:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
+    uiElements.frames["buffBar"] = buffBarHolder
+
         -- Use the frame manager to get frames
     local player = frameManager.get("player", false, nkUISetup.modules.unitFrames.frames.player)
     player:SetUnitID(Inspect.Unit.Lookup('player'))

@@ -38,51 +38,35 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
     local buffSetup = frame:GetBuffSetup()
 
     local function updateBuffDisplay()
-        local from, to, object, x, y = "BOTTOMLEFT", "TOPLEFT", frame, 0, -22 
-        local lastIcon
-        local firstBuffIcon = frame
-        local pos = 1
+        
+        local buffSetup = frame:GetBuffSetup()
+        local x = 0
+        local y = - (buffSetup.height+30)
+        
 
-        for k, v in pairs (unitBuffDisplayList) do
-            local icon = unitBuffIcons[k].icon
-            icon:ClearAll()
-        end
-
-        for k, v in pairs (unitBuffDisplayList) do
-            local icon = unitBuffIcons[k].icon
-
-            if unitBuffIcons[k].pos ~= pos then            
-                icon:SetPoint(from, object, to, x, y)
-                icon:Setup(frame:GetBuffSetup())
-                unitBuffIcons[k].pos = pos
+        for k, v in pairs (unitBuffDisplayList) do            
+            if unitBuffIcons[k].lastX ~= x then
+                local icon = unitBuffIcons[k].icon
+                icon:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
+                icon:Setup(buffSetup)
             end
-
-            lastIcon = icon
-            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 2, 0
-            pos = pos + 1
+            
+            unitBuffIcons[k].lastX = x            
+            x = x + buffSetup.width + 2            
         end
 
-        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", frame, 0, 10 
-        lastIcon = nil
-        pos = 1
+        x, y = 0, frame:GetHeight() + 20
 
         for k, v in pairs (unitDebuffDisplayList) do
-            local icon = unitDebuffIcons[k].icon
-            icon:ClearAll()
-        end
 
-        for k, v in pairs (unitDebuffDisplayList) do
-            local icon = unitDebuffIcons[k].icon
-
-            if unitDebuffIcons[k].pos ~= pos then
-                icon:SetPoint(from, object, to, x, y)
-                icon:Setup(frame:GetBuffSetup())
-                unitDebuffIcons[k].pos = pos
+            if unitDebuffIcons[k].lastX ~= x then
+                local icon = unitDebuffIcons[k].icon
+                icon:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
+                icon:Setup(buffSetup)
             end
-
-            lastIcon = icon
-            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastIcon, 5 , 0
-            pos = pos + 1
+            
+            unitDebuffIcons[k].lastX = x
+            x = x + buffSetup.width + 2
         end
     end
 
