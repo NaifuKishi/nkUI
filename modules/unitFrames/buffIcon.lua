@@ -211,6 +211,9 @@ function uiElements.icon (name, parent)
 					timer:SetFontColor(1, 0, 0, 0)
 					isBelow10 = true
 				end
+			elseif isBelow10 == true then
+				isBelow10 = false
+				timer:SetFontColor(1, 1, 1, 0)
 			end
 
 			local unit = "s"
