@@ -48,12 +48,15 @@ function _internal.buffBar.UpdateBuffDisplay()
 
     local pos = 1
 
+     for k, v in pairs (buffDisplayList) do
+        local icon = buffIcons[k].icon
+        icon:ClearAll()
+     end
+
     for k, v in pairs (buffDisplayList) do
         local icon = buffIcons[k].icon
 
         if buffIcons[k].pos ~= pos then
-            icon:ClearPoint("TOPLEFT")
-            icon:ClearPoint("CENTER")
             icon:SetPoint(from, object, to, x, y)
             buffIcons[k].pos = pos
         end
@@ -66,6 +69,11 @@ function _internal.buffBar.UpdateBuffDisplay()
     if firstBuffIcon == nil then firstBuffIcon = UIParent end
     from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", firstBuffIcon, 0, 20
     pos = 1
+
+     for k, v in pairs (debuffDisplayList) do
+        local icon = debuffIcons[k].icon
+        icon:ClearAll()
+     end    
 
     for k, v in pairs (debuffDisplayList) do        
         local icon = debuffIcons[k].icon

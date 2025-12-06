@@ -45,10 +45,13 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
         for k, v in pairs (unitBuffDisplayList) do
             local icon = unitBuffIcons[k].icon
+            icon:ClearAll()
+        end
+
+        for k, v in pairs (unitBuffDisplayList) do
+            local icon = unitBuffIcons[k].icon
 
             if unitBuffIcons[k].pos ~= pos then            
-                icon:ClearAll()
-                icon:ClearPoint("BOTTOMLEFT")
                 icon:SetPoint(from, object, to, x, y)
                 icon:Setup(frame:GetBuffSetup())
                 unitBuffIcons[k].pos = pos
@@ -65,9 +68,13 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
         for k, v in pairs (unitDebuffDisplayList) do
             local icon = unitDebuffIcons[k].icon
+            icon:ClearAll()
+        end
+
+        for k, v in pairs (unitDebuffDisplayList) do
+            local icon = unitDebuffIcons[k].icon
 
             if unitDebuffIcons[k].pos ~= pos then
-                icon:ClearAll()
                 icon:SetPoint(from, object, to, x, y)
                 icon:Setup(frame:GetBuffSetup())
                 unitDebuffIcons[k].pos = pos

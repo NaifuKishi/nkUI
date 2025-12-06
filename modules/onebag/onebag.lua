@@ -440,6 +440,8 @@ function _internal.populateBag(forceCacheUpdate)
             counter = counter + 1
         end
 
+        if rows > 1 and counter == 1 then rows = rows - 1 end -- preventing an extra line if a item line is exactly 15 items
+
         local checkTitleWidth = math.floor(thisCategory:GetTextWidth() / 42) + 1
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
