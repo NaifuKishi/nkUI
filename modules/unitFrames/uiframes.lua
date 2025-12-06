@@ -616,7 +616,7 @@ function _internal.updateUnit (frame, unitID, identifier)
         frame:SetEnergy(details.focus - 100)
     end
 
-    if details.planar then frame:SetPlanar(details.planar) end
+    frame:SetPlanar(details.planar)
 
     frame:SetRole(details.role)
     frame:SetTier(details.tier)

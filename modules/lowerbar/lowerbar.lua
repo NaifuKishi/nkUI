@@ -672,6 +672,8 @@ function _internal.lowerBarRoles()
         roleSwitch:SetVisible(false)
     end, 'nkUI.lowerbar.role.TEMPORARY.role')
 
+    table.insert(uiElements.lowerBarModules, datasetRole)
+
 end
 
 function _internal.lowerBarRedraw()

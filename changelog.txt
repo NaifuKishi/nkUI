@@ -2,6 +2,7 @@ v0.4.4
     - fixes: improved performance of buff handling
     - fixes: Buff timers are now rounded instead of flattened
     - fixes: Buff timer should now update correctly when enabling / disabling buffs
+    - fixes: Planar charges no longer shown on units without any
 
 v0.4.3
     - fixes: tooltip for buffs working once again
@@ -199,7 +200,6 @@ bug reports
     When targeting self buffs um duplicate when toggling off and on the module (minor)
 xp percent still shows when disabling low bar module
 
-This may be hard to see 3rd picture the buff that makes you gold shows 11 seconds left (correct) top left buff module says 1m and target frame shows 4m (and the two 1hr buffs are off by a few mins too I see 41m vs 39m) 
 
 - Check with 2nd account. At least one user had problem with settings not being loaded
 
