@@ -250,8 +250,7 @@ function uiElements.icon (name, parent)
 		timerVisible = false
 		isBelow10 = false
 		timer:SetFontColor(1, 1, 1, 0)
-		icon:SetVisible(false)
-		icon:ClearAll()
+		icon:SetVisible(false)		
 	end
 
 	function icon:SetTimerColor(r, g, b, a, ro, go, bo)
