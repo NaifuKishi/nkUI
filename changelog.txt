@@ -1,3 +1,6 @@
+v0.5.2
+    - fixes: buff management optimization
+
 v0.5.1
     - fixes: extra line in bag if exactly 15 items
     - fixes: Buff bar realignment error
