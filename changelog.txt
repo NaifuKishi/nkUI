@@ -1,5 +1,7 @@
 v0.4.4
     - update: improved performance of buff handling
+    - fixes: Fixed a bug related to mages charges
+    - fixes: Fixed health not updating after reduction of max health
     - fixes: Fixed a bug when loading on new char
     - fixes: Fixed are bug in experience display of SCT
     - fixes: Switched OneBag Tooltip to ingame tooltip    

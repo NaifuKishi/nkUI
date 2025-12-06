@@ -487,8 +487,12 @@ function frameManager.get(unitType, unitFrameType, setup)
         energyText:SetText(stringFormat("%d", mathFloor(energyPercent*100)))
     end
 
-    function unitFrame:SetHealthMax (newHealthMax) 
+    function unitFrame:SetHealthMax (newHealthMax)
+        if newHealthMax == nil then return end
         healthMax = newHealthMax
+        if health == nil or health < healthMax then
+            unitFrame:SetHealth(healthMax)
+        end
     end
 
     function unitFrame:SetHealth (health) 

@@ -48,6 +48,7 @@ local function _eventHealthCap (a,b,c)
 end
 
 local function _eventHealthMax (_, info)
+
 	for unit, thisData in pairs(info) do
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
@@ -123,9 +124,9 @@ local function _eventCharge (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				--local frame = _internal.getFrameByIdentifier(identifiers[idx])		
 
-				if frame then frame:SetCharge(thisData) end
+				--if frame then frame:SetCharge(thisData) end
 
 				if identifiers[idx] == "player" then
 					uiElements.frames["player.ressourcebar"]:SetCharge(thisData)
