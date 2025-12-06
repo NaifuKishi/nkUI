@@ -73,10 +73,10 @@ function uiElements.icon (name, parent)
 	local showBorder = true
 	local activeEffect = 'none'
 	local scale = 1
-	local thisUnitId, thisBuffId
+	local thisUnitId, thisBuffId, thisBuffType
 		
 	icon:SetWidth(50)
-	icon:SetHeight(65)
+	icon:SetHeight(50)
 	--icon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 100)
 	
 	border:SetPoint("TOPLEFT", icon, "TOPLEFT")
@@ -325,39 +325,32 @@ function uiElements.icon (name, parent)
 		icon:SetVisible(false)
 	end
 
-	icon.Event.MouseIn =
-		function()		
-			icon:ShowTooltip()
-		end
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In.Dive, function()
+		--dump (Inspect.Buff.List(thisUnitType))
 
-	icon.Event.MouseOut =
-		function()
-			icon:HideTooltip(thisBuffId)
-		end
+		--print (thisUnitType, thisBuffId, thisBuffType)
+		--local buffs = {}
+		--buffs [thisBuffId] = thisBuffType
+		--local details = InspectBuffDetail( thisUnitType, buffs) -- this is a workaround for a bug I need to figure out some time
+		--dump (details)
+		--if details then 
+			Command.Tooltip(thisUnitType, thisBuffId) 
+		--end
 
-	icon.Event.RightClick =
-		function()
-			Command.Buff.Cancel(thisBuffId)
-		end
+    end, name .. ".UI.Input.Mouse.Cursor.In")
 
-	function icon:SetBuff(unitType, buffId)
-		thisUnitType, thisBuffId = unitType, buffId
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out.Dive, function()
+        Command.Tooltip(nil)
+    end, name .. ".UI.Input.Mouse.Cursor.Out")
+
+	texture:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
+        Command.Buff.Cancel(thisBuffId)
+    end, name .. ".UI.Input.Mouse.Right.Click")
+
+	function icon:SetBuff(unitType, buffId, buffType)
+		thisUnitType, thisBuffId, thisBuffType = unitType, buffId, buffType
 	end
-
-	function icon:ShowTooltip()
-		if thisBuffId then
-			--local success, details = pcall(InspectBuffDetail, thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
-			--if success and details then Command.Tooltip(thisUnitType, thisBuffId) end
-
-			local details = InspectBuffDetail( thisUnitType, thisBuffId) -- this is a workaround for a bug I need to figure out some time
-			if details then Command.Tooltip(thisUnitType, thisBuffId) end
-		end
-	end
-
-	function icon:HideTooltip(buffId)
-		Command.Tooltip(nil)
-	end
-
+	
 	
 	return icon
 	

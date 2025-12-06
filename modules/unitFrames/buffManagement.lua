@@ -254,7 +254,6 @@ function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifie
             local icon = _internal.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
             
-            icons[buffIdentifier].icon:SetBuff(unit, buffID)
             icons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
             icons[buffIdentifier].icon:ShowBorder(true)
             icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
@@ -272,7 +271,7 @@ function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifie
         else
             icons[buffIdentifier].visible = true
         end
-
+        
         icons[buffIdentifier].icon:SetStack(buffDetails.stack)        
         icons[buffIdentifier].icon:SetVisible(true)
         
@@ -281,6 +280,7 @@ function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifie
 
     icons[buffIdentifier].remaining = buffDetails.remaining
     icons[buffIdentifier].duration = buffDetails.duration
+    icons[buffIdentifier].icon:SetBuff(unit, buffID, buffIdentifier)
 
     if buffDetails.remaining == nil or buffDetails.duration == nil then
         icons[buffIdentifier].start = InspectTimeReal()
