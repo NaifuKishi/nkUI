@@ -1,5 +1,6 @@
 v0.4.4
     - update: improved performance of buff handling
+    - fixes: Charge is now properly displayed on mages
     - fixes: Fixed a bug related to mages charges
     - fixes: Fixed health not updating after reduction of max health
     - fixes: Fixed a bug when loading on new char

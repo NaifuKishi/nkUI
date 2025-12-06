@@ -81,7 +81,7 @@ function _internal.ressourcBar (unit, setup)
     chargeFrame:SetWidth(setup.charge.width-2)
     chargeFrame:SetHeight(setup.charge.height-2)    
     chargeFrame:SetShape (path, ressourceColor["charge"], nil)
-    chargeFrame:SetVisible(false)
+    --chargeFrame:SetVisible(false)
 
     local chargeText = EnKai.uiCreateFrame("nkText", thisName .. ".chargeText", chargeFrame)
     chargeText:SetPoint("CENTER", chargeFrame, "CENTER", 0, -7)
