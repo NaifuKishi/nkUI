@@ -659,6 +659,14 @@ function _internal.lowerBarRoles()
         end
     end
 
+    function datasetRole:Redraw()
+        datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+
+        for k, v in pairs(roleDisplay) do
+            v:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        end
+    end
+
     updateRoles()
 
     datasetRole:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()

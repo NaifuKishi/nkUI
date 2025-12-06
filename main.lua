@@ -74,6 +74,9 @@ uiElements.contextLowest:SetStrata('hud')
 uiElements.contextDialog = UI.CreateContext("nkUI.Dialog")
 uiElements.contextDialog:SetStrata('dialog')
 
+uiElements.contextTooltip = UI.CreateContext("nkUI.Tooltip")
+uiElements.contextTooltip:SetStrata('tooltip')
+
 uiElements.contextLowestRestricted = UI.CreateContext("nkUI.lowestRestricted")
 uiElements.contextLowestRestricted:SetStrata('hud')
 uiElements.contextLowestRestricted:SetSecureMode("restricted")
