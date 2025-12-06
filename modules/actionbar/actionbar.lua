@@ -37,7 +37,7 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
     local width = (cols * buttonSize * scale ) + ((cols -1) * spacing)
     local height = (rows * buttonSize * scale ) + ((rows - 1) * spacing)
 
-    local actionBar = EnKai.uiCreateFrame("nkFrame", thisName, uiElements.context)
+    local actionBar = EnKai.uiCreateFrame("nkFrame", thisName, uiElements.contextLowest)
     
     actionBar:SetWidth (width)
     actionBar:SetHeight (height)

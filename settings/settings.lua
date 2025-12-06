@@ -266,7 +266,7 @@ function _internal.setupUI ()
     
     local name = "nkUI.config"
 
-    local config = EnKai.uiCreateFrame("nkWindowMetro", name, uiElements.context)
+    local config = EnKai.uiCreateFrame("nkWindowMetro", name, uiElements.contextDialog)
 
     config:SetPoint("CENTER", UIParent, "CENTER")
     config:SetWidth(950)

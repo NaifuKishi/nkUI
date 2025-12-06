@@ -39,7 +39,7 @@ function _internal.ressourcBar (unit, setup)
     local ressourceMax
     local comboIcon = {}
     
-    local ressourceBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.context)
+    local ressourceBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.contextLowest)
     ressourceBGFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     ressourceBGFrame:SetWidth(setup.width)
     ressourceBGFrame:SetHeight(setup.height)

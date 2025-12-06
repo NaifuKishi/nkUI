@@ -29,7 +29,7 @@ local function _moveFrame (moveFrame, label, callBack)
     local x, y = info.x[0.5].offset, info.y[0.5].offset    
     local newX, newY
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextTop)
+    local frame = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextDialog)
     frame:SetWidth(width)
     frame:SetHeight(height)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
@@ -162,7 +162,7 @@ function _internal.initMove ()
     end
 
     if nkUISetup.modules.buffBar.activate then
-        buffBarFrame = EnKai.uiCreateFrame("nkFrame", EnKai.tools.uuid(), uiElements.contextTop)
+        buffBarFrame = EnKai.uiCreateFrame("nkFrame", EnKai.tools.uuid(), uiElements.contextDialog)
         buffBarFrame:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
         buffBarFrame:SetWidth(nkUISetup.modules.buffBar.buffs.width)
         buffBarFrame:SetHeight(nkUISetup.modules.buffBar.buffs.height)
@@ -185,7 +185,7 @@ function _internal.initMove ()
                   }  
 
     for idx = 1, math.floor((height / 2) / 25), 1 do
-        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * 25)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(width)
@@ -195,7 +195,7 @@ function _internal.initMove ()
     end
 
     for idx = 1, math.floor((height / 2) / 25), 1 do
-        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * -25)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(width)
@@ -205,7 +205,7 @@ function _internal.initMove ()
     end    
 
     for idx = 1, math.floor((width / 2) / 25), 1 do
-        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * 25, 0)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(25)
@@ -215,7 +215,7 @@ function _internal.initMove ()
     end
 
     for idx = 1, math.floor((width / 2) / 25), 1 do
-        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowest)
+        local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * -25, 0)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(25)

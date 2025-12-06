@@ -28,7 +28,7 @@ function _tooltip.ui ()
     UI.Native.Tooltip:SetLayer(1)
     --UI.Native.Tooltip:SetStrata("hud")
 
-    local tooltip = EnKai.uiCreateFrame("nkFrame", name .. ".tooltip", uiElements.tooltipContext)
+    local tooltip = EnKai.uiCreateFrame("nkFrame", name .. ".tooltip", uiElements.contextDialog)
     tooltip:SetLayer(99 )
     tooltip:SetVisible(false)
     tooltip:SetWidth(tooltipWidth)

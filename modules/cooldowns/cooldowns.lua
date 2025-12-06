@@ -27,7 +27,7 @@ local function createCooldownElement(abilityId)
         timer = nil
     }
 
-    cooldown.frame = EnKai.uiCreateFrame("nkTexture", "nkUI.cooldown." .. abilityId, uiElements.context)
+    cooldown.frame = EnKai.uiCreateFrame("nkTexture", "nkUI.cooldown." .. abilityId, uiElements.contextDialog)
     cooldown.frame:SetWidth(40)
     cooldown.frame:SetHeight(40)
 

@@ -68,22 +68,19 @@ local thisTutorialVersion = 40
 
 -- hud, notify, dialog, tutorial, menu, layout, topmost, loading, modal
 
-uiElements.context = UI.CreateContext("nkUI") 
-uiElements.context:SetStrata('dialog')
+uiElements.contextLowest = UI.CreateContext("nkUI.lowest")
+uiElements.contextLowest:SetStrata('hud')
+
+uiElements.contextDialog = UI.CreateContext("nkUI.Dialog")
+uiElements.contextDialog:SetStrata('dialog')
+
+uiElements.contextLowestRestricted = UI.CreateContext("nkUI.lowestRestricted")
+uiElements.contextLowestRestricted:SetStrata('hud')
+uiElements.contextLowestRestricted:SetSecureMode("restricted")
 
 uiElements.secureContext = UI.CreateContext("nkUI.secure")
 uiElements.secureContext:SetStrata('tutorial')
 uiElements.secureContext:SetSecureMode("restricted")
-
-uiElements.tooltipContext = UI.CreateContext("nkUI.Tooltip")
-uiElements.tooltipContext:SetStrata('tooltip')
-
-uiElements.contextTop = UI.CreateContext("nkUI.Dialog")
-uiElements.contextTop:SetStrata('topmost')
-
-uiElements.contextLowest = UI.CreateContext("nkUI.lowest")
-uiElements.contextLowest:SetStrata('hud')
-uiElements.contextLowest:SetSecureMode("restricted")
 
 ---------- local function block ----------
 

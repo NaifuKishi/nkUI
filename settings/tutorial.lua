@@ -46,7 +46,7 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextTop)
+    local tutorialWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextDialog)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)

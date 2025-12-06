@@ -15,7 +15,7 @@ function _internal.macroEditDialog (editBar)
 	
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
-	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextTop)
+	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextDialog)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
 	ui:SetHeight(230)

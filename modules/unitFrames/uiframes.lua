@@ -143,7 +143,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     local unitDebuffDisplayList = {}
     local unitBuffId2BuffType = {}
 
-    local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.context)
+    local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.contextLowest)
     unitFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     unitFrame:SetWidth(frameWidth)
     unitFrame:SetHeight(frameHeight)    
@@ -659,7 +659,7 @@ function _internal.uiFrames()
 
     uiElements.frames = {}
 
-    local buffBarHolder = EnKai.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.context)
+    local buffBarHolder = EnKai.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.contextLowest)
     buffBarHolder:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
     uiElements.frames["buffBar"] = buffBarHolder
 

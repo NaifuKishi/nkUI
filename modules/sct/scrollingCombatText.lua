@@ -73,7 +73,7 @@ end
 local function createTextFrame()
     local name = EnKai.tools.uuid()
 
-    local frame = EnKai.uiCreateFrame("nkText", name, uiElements.context)
+    local frame = EnKai.uiCreateFrame("nkText", name, uiElements.contextLowest)
     frame:SetEffectGlow({ strength = 1 })
     frame:SetVisible(false)
 
