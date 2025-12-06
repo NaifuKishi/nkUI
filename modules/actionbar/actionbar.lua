@@ -108,6 +108,17 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
         end
     end
 
+    function actionBar:Clear()
+        for rowIndex = 1, rows, 1 do
+            local thisRow = actionButtons[rowIndex]
+
+            for colIndex = 1, cols, 1 do                
+                thisRow[colIndex]:ClearItem()
+                thisRow[colIndex]:SetCooldown()
+            end
+        end
+    end
+
     function actionBar:SetInteractive(flag, doUpdate)
 
         interactive = flag
@@ -231,6 +242,14 @@ function _internal.uiActionBars()
     Command.Event.Attach(Event.TEMPORARY.Role, function ()
 
         -- add a 1 second delay cause of a RIFT bug not providing Ability details properly
+        data.abilityMap = {}
+        data.abilityList = {}
+
+        mainActionBar:Clear()
+        stanceActionBar:Clear()
+        leftActionBar:Clear()
+        rightActionBar:Clear()
+        rightScreenBar:Clear()
 
         local function populateActionBars ()
             mainActionBar:Populate()
