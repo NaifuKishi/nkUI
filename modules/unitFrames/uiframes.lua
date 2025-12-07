@@ -329,6 +329,9 @@ function frameManager.get(unitType, unitFrameType, setup)
 
         energyText:ClearAll()
         energyText:SetFontSize(setup.fontSizes.energy)
+
+        levelText:ClearAll()
+        levelText:SetFontSize(setup.fontSizes.level)
         
         planarText:ClearAll()
         planarText:SetFontSize(setup.fontSizes.planar)

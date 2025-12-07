@@ -12,7 +12,7 @@ local stringFormat = string.format
 function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    local widthSlider, heightSlider, reverseCheckbox, nameFontSize, healthFontSize, energyFontSize, planarFontSize, nameMargins, healthMargins, energyMargins, planarMargins, combatIconMargins, roleIconMargins, tierIconMargins, combatIconSize, roleIconSize, tierIconSize, buffWidth, buffHeight, timerFontSize, stackFontSize, labelFontSize
+    local widthSlider, heightSlider, reverseCheckbox, nameFontSize, healthFontSize, energyFontSize, planarFontSize, nameMargins, healthMargins, energyMargins, planarMargins, combatIconMargins, roleIconMargins, tierIconMargins, combatIconSize, roleIconSize, tierIconSize, buffWidth, buffHeight, timerFontSize, stackFontSize, labelFontSize, levelFontSize
     local sizeHeader, fontSizesHeader, marginsHeader, iconSizeHeader, buffSizeHeader
     local introText
 
@@ -107,6 +107,17 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
         planarFontSize:SetPrecision(1)
         planarFontSize:AdjustValue(thisSettings.fontSizes.planar)
 
+        levelFontSize = _settings.slider (name .. ".levelFontSize", frame, "Level text <font color='#3399FF'>%d</font>", true, function (newValue)
+            thisSettings.fontSizes.level = newValue
+            _internal.uiFrameRedraw(unitType)
+        end)
+
+        levelFontSize:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT", 0, 5)
+        levelFontSize:SetRange(10, 40)
+        levelFontSize:SetMidValue(25)
+        levelFontSize:SetPrecision(1)
+        levelFontSize:AdjustValue(thisSettings.fontSizes.level)
+
         --[[
         -- margins
 
@@ -192,7 +203,7 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
         if unitType ~= "player.pet" then
 
             iconSizeHeader = _settings.header ( name .. ".iconSizeHeader", frame, "Icon sizes")
-            iconSizeHeader:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT" , 0, 15)
+            iconSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT" , 0, 15)
 
             roleIconSize = _settings.slider (name .. ".roleIconSize", frame, "Role icon <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.iconSizes.role = newValue
@@ -219,8 +230,6 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
             combatIconSize:SetPrecision(1)
             combatIconSize:AdjustValue(thisSettings.iconSizes.combat)
 
-
-
             tierIconSize = _settings.slider (name .. ".tierIconSize", frame, "Tier icon <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.iconSizes.tier = newValue
                 _internal.uiFrameRedraw(unitType)
@@ -244,7 +253,7 @@ function _settings.uiConfigTabUF (name, parent, unitType, thisSettings)
             elseif unitType ~= "player.pet" then
                 buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT" , 0, 15)
             else
-                buffSizeHeader:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT" , 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT" , 0, 15)
             end
 
             buffWidth = _settings.slider (name .. ".buffWidth", frame, "Buff icon size <font color='#3399FF'>%d</font>", true, function (newValue)
