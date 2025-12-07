@@ -247,25 +247,30 @@ function _internal.processBuffs ()
 
     --- process groups
 
-    for idx = 1, 5, 1 do
-        local groupName = stringFormat("group%02d", idx)
+    local groupStatus, groupSize = EnKai.unit.getGroupStatus()
 
-        if EnKai.unit.GetUnitByIdentifier(groupName) then
+    if groupStatus == "group" then
 
-            local targetFrame = uiElements.frames[groupName]
+        for idx = 1, 5, 1 do
+            local groupName = stringFormat("group%02d", idx)
 
-            local targetBuffIcons = targetFrame:GetBuffIcons()
-            local targetDebuffIcons = targetFrame:GetDebuffIcons()
+            if EnKai.unit.GetUnitByIdentifier(groupName) then
 
-            for k, thisIcon in pairs (targetBuffIcons) do
-                if thisIcon.remaining then             
-                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                local targetFrame = uiElements.frames[groupName]
+
+                local targetBuffIcons = targetFrame:GetBuffIcons()
+                local targetDebuffIcons = targetFrame:GetDebuffIcons()
+
+                for k, thisIcon in pairs (targetBuffIcons) do
+                    if thisIcon.remaining then             
+                        thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                    end
                 end
-            end
 
-            for k, thisIcon in pairs (targetDebuffIcons) do
-                if thisIcon.remaining then
-                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                for k, thisIcon in pairs (targetDebuffIcons) do
+                    if thisIcon.remaining then
+                        thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                    end
                 end
             end
         end
