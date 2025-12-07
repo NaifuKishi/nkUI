@@ -268,7 +268,21 @@ function frameManager.get(unitType, unitFrameType, setup)
     planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
     planarText:SetLayer(2)
 
-    if unitFrameType == "raid" then planarText:SetVisible(false) end
+    local levelText = EnKai.uiCreateFrame("nkText", thisName .. ".kevekText", healthFrame)
+
+    if setup.reverse then
+        levelText:SetPoint("BOTTOMRIGHT", unitFrame, "BOTTOMRIGHT", -setup.margins.level, 10)
+    else
+        levelText:SetPoint("BOTTOMLEFT", unitFrame, "BOTTOMLEFT", setup.margins.level, 10)
+    end
+
+    levelText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    levelText:SetFontSize(setup.fontSizes.level)
+    levelText:SetFontColor(1, 1, 1, 1)
+    levelText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
+    levelText:SetLayer(2)
+
+    if unitFrameType == "raid" then levelText:SetVisible(false) end
 
     local combatIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
     combatIcon:SetLayer(99)
@@ -464,6 +478,27 @@ function frameManager.get(unitType, unitFrameType, setup)
         nameText:SetText(thisName)
     end
 
+    function unitFrame:SetLevel (newLevel)
+        
+        local playerLevel = EnKai.unit.getPlayerDetails().level
+        
+        if newLevel and unitFrame:GetUnitFrameType() ~= "raid" and newLevel ~= playerLevel then            
+            local color = "#009900"
+            if newLevel > playerLevel + 10 then
+                color = "#990000"
+            elseif newLevel > playerLevel + 5 then
+                color = "#FF8000"
+            elseif newLevel < playerLevel -10 then
+                color = "#DDDDDD"
+            end
+
+            levelText:SetText(stringFormat("Lvl <font color='%s'>%d</font>", color, newLevel), true) 
+            levelText:SetVisible(true)
+        else
+            levelText:SetVisible(false)
+        end
+    end
+
     function unitFrame:SetPlanar (planar) 
         if planar and unitFrame:GetUnitFrameType() ~= "raid" then
             planarText:SetText(stringFormat("%d", planar)) 
@@ -621,6 +656,7 @@ function _internal.updateUnit (frame, unitID, identifier)
     end
 
     frame:SetPlanar(details.planar)
+    frame:SetLevel(details.level)
 
     frame:SetRole(details.role)
     frame:SetTier(details.tier)

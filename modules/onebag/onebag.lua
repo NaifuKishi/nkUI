@@ -296,6 +296,8 @@ local function _getRealCategory (category, rarity)
 
     if stringFind(category, "consumable") then
         return "Consumable"
+    elseif stringFind(category, "armor") then
+        return "Armor"        
     elseif stringFind(category, "artifact") then
         return "Artifact"
     elseif stringFind(category, "quest") then
@@ -330,8 +332,6 @@ local function _getRealCategory (category, rarity)
         return "Dimension"
     elseif stringFind(category, "planar vessel") then
         return "Planar Fokus"
-    elseif stringFind(category, "armor") then
-        return "Armor"
     end
 
     return category
