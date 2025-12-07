@@ -312,6 +312,7 @@ function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifie
     icons[buffIdentifier].remaining = buffDetails.remaining
     icons[buffIdentifier].duration = buffDetails.duration
     icons[buffIdentifier].icon:SetBuff(unit, buffID, buffIdentifier)
+    icons[buffIdentifier].icon:SetTooltip(buffDetails.name, buffDetails.description)
 
     if buffDetails.remaining == nil or buffDetails.duration == nil then
         icons[buffIdentifier].start = InspectTimeReal()

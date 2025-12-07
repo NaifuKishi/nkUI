@@ -289,6 +289,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			EnKai.ui.attachItemTooltip (tooltipTarget, itemKey)
 		elseif thisItemType == "ability" then
 			EnKai.ui.attachAbilityTooltip (tooltipTarget, itemKey)
+			EnKai.ui.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 		else -- macro
 			EnKai.ui.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
 		end

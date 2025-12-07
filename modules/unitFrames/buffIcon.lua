@@ -74,6 +74,7 @@ function uiElements.icon (name, parent)
 	local activeEffect = 'none'
 	local scale = 1
 	local thisUnitId, thisBuffId, thisBuffType
+	local thisName, thisDescription
 		
 	icon:SetWidth(50)
 	icon:SetHeight(50)
@@ -325,24 +326,6 @@ function uiElements.icon (name, parent)
 		icon:SetVisible(false)
 	end
 
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In.Dive, function()
-		--dump (Inspect.Buff.List(thisUnitType))
-
-		--print (thisUnitType, thisBuffId, thisBuffType)
-		--local buffs = {}
-		--buffs [thisBuffId] = thisBuffType
-		--local details = InspectBuffDetail( thisUnitType, buffs) -- this is a workaround for a bug I need to figure out some time
-		--dump (details)
-		--if details then 
-			Command.Tooltip(thisUnitType, thisBuffId) 
-		--end
-
-    end, name .. ".UI.Input.Mouse.Cursor.In")
-
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out.Dive, function()
-        Command.Tooltip(nil)
-    end, name .. ".UI.Input.Mouse.Cursor.Out")
-
 	texture:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         Command.Buff.Cancel(thisBuffId)
     end, name .. ".UI.Input.Mouse.Right.Click")
@@ -350,7 +333,13 @@ function uiElements.icon (name, parent)
 	function icon:SetBuff(unitType, buffId, buffType)
 		thisUnitType, thisBuffId, thisBuffType = unitType, buffId, buffType
 	end
-	
+
+	function icon:SetTooltip(name, description)
+		thisName = name
+		thisDescription = description
+		EnKai.ui.attachGenericTooltip (texture, thisName, thisDescription)
+		EnKai.ui.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+	end	
 	
 	return icon
 	
