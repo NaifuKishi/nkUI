@@ -1,5 +1,11 @@
 V0.5.4
+    - updates: Added level to unit frames
+    - updates: changed font of ability tooltips
+    - updates: added own tooltip to buffs
+    - updates: added a new tool to update settings
+    - fixes: fixed cooldowns on role chaange
     - fixes: buff timers on group frames
+    - fixes: fix cloth armor category in onebag
 
 V0.5.3
     - fixes: Fixed action bar cooldown issue after role change
