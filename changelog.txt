@@ -222,10 +222,6 @@ bug reports
     Ihave pyroblade equipped now and it also doesnt show the other two weapons I have in my bag anymore
 (also displays wrong icon for pyroblade [showing one of my other items]) 
     
-xp percent still shows when disabling low bar module
-
-- Check with 2nd account. At least one user had problem with settings not being loaded
-
 On first load the bag was still its small ol self but I guess reload UI made it bigger.
 
 Unable to click on buffbar tab in settings
@@ -235,7 +231,6 @@ Percentages of health is not accurate.
 try to make EnKai tooltip smarter for onebag to not cause cpu spikes
 
 Opening bag doesn't show entire bag (need to click drag area to update it)
-
 
 Targeting self places buff on the target frame instead of creating a new batch to place on target frame.
 Untargeting also makes it so it keeps updating there too.

@@ -144,7 +144,10 @@ end
 
 function _events.abCooldownProcess (_, addon, info)
 
-	if addon ~= addonInfo.identifier then return end
+	--print (addon)
+	--dump (info)
+
+	--if addon ~= addonInfo.identifier then return end
 
 	local debugId
 	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.cooldownProcess") end
