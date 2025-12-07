@@ -1,3 +1,7 @@
+V0.5.5
+    - udpates: Made hard level red a bit better to read
+    - fixes: support ?? as level
+
 V0.5.4
     - updates: Added level to unit frames
     - updates: changed font of ability tooltips

@@ -482,10 +482,14 @@ function frameManager.get(unitType, unitFrameType, setup)
         
         local playerLevel = EnKai.unit.getPlayerDetails().level
         
-        if newLevel and unitFrame:GetUnitFrameType() ~= "raid" and newLevel ~= playerLevel then            
+        if newLevel == "??" then
+            color = "#FF3333"
+            levelText:SetText(stringFormat("Lvl <font color='%s'>??</font>", color), true) 
+            levelText:SetVisible(true)
+        elseif newLevel and unitFrame:GetUnitFrameType() ~= "raid" and newLevel ~= playerLevel then            
             local color = "#009900"
             if newLevel > playerLevel + 10 then
-                color = "#990000"
+                color = "#FF3333"
             elseif newLevel > playerLevel + 5 then
                 color = "#FF8000"
             elseif newLevel < playerLevel -10 then
