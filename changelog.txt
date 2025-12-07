@@ -1,3 +1,6 @@
+V0.5.4
+    - fixes: buff timers on group frames
+
 V0.5.3
     - fixes: Fixed action bar cooldown issue after role change
     - fixes: add a 1 second delay populating action bars on role change cause of a RIFT bug not providing Ability details properly

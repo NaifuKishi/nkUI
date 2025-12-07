@@ -244,6 +244,32 @@ function _internal.processBuffs ()
             end
         end
 	end
+
+    --- process groups
+
+    for idx = 1, 5, 1 do
+        local groupName = stringFormat("group%02d", idx)
+
+        if EnKai.unit.GetUnitByIdentifier(groupName) then
+
+            local targetFrame = uiElements.frames[groupName]
+
+            local targetBuffIcons = targetFrame:GetBuffIcons()
+            local targetDebuffIcons = targetFrame:GetDebuffIcons()
+
+            for k, thisIcon in pairs (targetBuffIcons) do
+                if thisIcon.remaining then             
+                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                end
+            end
+
+            for k, thisIcon in pairs (targetDebuffIcons) do
+                if thisIcon.remaining then
+                    thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
+                end
+            end
+        end
+    end
 end
 
 function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifier, buffDetails, displayList, icons)
