@@ -1,6 +1,7 @@
 V0.5.6
+    - udpates: Added tooltip to container slots in onebag
     - updates: Set Mouseover Unit on unitframes
-    - updates: Added level font size setting    
+    - updates: Added level font size setting
 
 V0.5.5
     - udpates: Made hard level red a bit better to read

@@ -34,12 +34,16 @@ local function _fctGetBagSlots ()
 
         local bagSlot = slots[stringFormat("sibg.%03d", idx)]
 
+        --dump (bagSlot)
+
         if bagSlot.icon == nil then
             uiElements.oneBagBagSlots:SetIcon(idx, addonInfo.identifier, "gfx/iconLockedBagSlot.png")
             uiElements.oneBagBagSlots:SetTint (idx, true)
+            uiElements.oneBagBagSlots:SetItem(idx, nil)
         else
             uiElements.oneBagBagSlots:SetIcon(idx, "Rift", bagSlot.icon)
             uiElements.oneBagBagSlots:SetTint (idx, false)
+            uiElements.oneBagBagSlots:SetItem(idx, bagSlot.id)
         end
     end    
 
@@ -220,6 +224,7 @@ end
 local function _fctBagSlots ()
 
     local bagSlots = {}
+    local thisItemID
 
     local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(365 * data.uiScale)
@@ -274,8 +279,21 @@ local function _fctBagSlots ()
         tint:SetVisible(false)
 
         thisSlot.tint = tint
+
+        icon:EventAttach( Event.UI.Input.Mouse.Cursor.In, function (self)	
+            Command.Tooltip(thisSlot.itemID)
+        end, "nkUIBagSlotIcon".. idx .. "Event.UI.Input.Mouse.Cursor.In")
+
+        icon:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function (self)	
+            Command.Tooltip(nil)
+        end, "nkUIBagSlotIcon"..idx .. "Event.UI.Input.Mouse.Cursor.Out")
     
         bagSlots[stringFormat("sibg.%03d", idx)] = thisSlot        
+    end
+
+    function bagSlotsFrame:SetItem (index, itemID)
+        local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
+        thisSlot.itemID = itemID
     end
 
     function bagSlotsFrame:SetIcon (index, addonID, icon)

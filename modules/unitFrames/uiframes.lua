@@ -318,6 +318,15 @@ function frameManager.get(unitType, unitFrameType, setup)
     tierIcon:SetWidth(setup.iconSizes.tier)
     tierIcon:SetVisible(false) 
     tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.tierIcon, 0)
+
+    local rareIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".rareIcon", unitFrame)
+    rareIcon:SetLayer(99)
+    rareIcon:SetHeight(setup.iconSizes.tier)
+    rareIcon:SetWidth(setup.iconSizes.tier)
+    rareIcon:SetVisible(false) 
+    rareIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconRare.png")
+    rareIcon:SetPoint("CENTERRIGHT", tierIcon, "CENTERLEFT", -setup.margins.tierIcon, 0)
+
     
     function unitFrame:Redraw()        
         unitFrame:SetWidth(setup.width)
@@ -449,6 +458,14 @@ function frameManager.get(unitType, unitFrameType, setup)
             tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconBoss.png")
         else
             tierIcon:SetVisible(false)
+        end
+    end
+
+    function unitFrame:SetRare(flag)        
+        if flag == nil then            
+            rareIcon:SetVisible(false)
+        else
+            rareIcon:SetVisible(flag)        
         end
     end
 
@@ -679,6 +696,7 @@ function _internal.updateUnit (frame, unitID, identifier)
 
     frame:SetRole(details.role)
     frame:SetTier(details.tier)
+    frame:SetRare(details.guaranteedLoot)
 
     frame:ClearBuffs()
 

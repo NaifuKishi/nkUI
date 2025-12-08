@@ -195,6 +195,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
 
+		frame:SetOOR(false)
 		frame:SetUsable(true)
 
 		if macroFrame then

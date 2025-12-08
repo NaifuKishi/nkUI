@@ -7,6 +7,8 @@ local uiElements  = privateVars.uiElements
 local _internal   = privateVars.internal
 local _events     = privateVars.events
 
+local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+
 ---------- init local variables ---------
 
 local stanceBuff = nil
@@ -69,7 +71,7 @@ function _events.abAbilityUnusable(_, info)
 	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.abilityUnusable") end
 	
 	for key, v in pairs(info) do
-		local details = Inspect.Ability.New.Detail(key)
+		local details = InspectAbilityNewDetail(key)
 	
 		if data.abilityMap[key] ~= nil then
 			for k, v in pairs(data.abilityMap[key]) do
@@ -134,8 +136,7 @@ function _events.abAbilityInRange (_, info)
 			for _, frame in pairs(data.abilityMap[key]) do
 				frame:SetOOR(false)
 			end
-		 end
-		
+		 end		
 	end
 	
 	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.abilityInRange", debugId) end
