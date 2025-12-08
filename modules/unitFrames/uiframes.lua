@@ -324,7 +324,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     rareIcon:SetHeight(setup.iconSizes.tier)
     rareIcon:SetWidth(setup.iconSizes.tier)
     rareIcon:SetVisible(false) 
-    rareIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconRare.png")
+    rareIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconRare2.png")
     rareIcon:SetPoint("CENTERRIGHT", tierIcon, "CENTERLEFT", -setup.margins.tierIcon, 0)
 
     

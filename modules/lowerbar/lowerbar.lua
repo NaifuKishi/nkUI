@@ -211,7 +211,7 @@ function _internal.location()
     end
 
     local buttons = {}
-    local abilities = {["A3C5AEC64D3793518"] = true}
+    local abilities = {["A3C5AEC64D3793518"] = true, ["A665FDAC7EDD37636"] = true}
     local abilityDetails = InspectAbilityNewDetail(abilities)
     local parent = datasetLocation
 
@@ -233,6 +233,9 @@ function _internal.location()
         local macro = "cast " .. stringGSub(v.name, "\n", "")
         datasetLocationButtonTexture:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
         datasetLocationButtonTexture:SetVisible(true)
+
+        EnKai.ui.attachAbilityTooltip (datasetLocationButtonTexture, k)
+
         table.insert (buttons, datasetLocationButton)        
 
         parent = datasetLocationButton
