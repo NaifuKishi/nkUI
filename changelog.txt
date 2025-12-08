@@ -1,5 +1,7 @@
 V0.5.6
     - udpates: Added tooltip to container slots in onebag
+    - updates: Added fastpass to location ports
+    - updates: Added tooltip to teleport options
     - updates: Set Mouseover Unit on unitframes
     - updates: Added level font size setting
 
