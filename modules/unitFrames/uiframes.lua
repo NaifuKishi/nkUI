@@ -14,6 +14,7 @@ local InspectUnitDetail     = Inspect.Unit.Detail
 local InspectBuffDetail     = Inspect.Buff.Detail
 local InspectBuffList       = Inspect.Buff.List
 local InspectUnitLookup     = Inspect.Unit.Lookup
+local InspectSystemSecure   = Inspect.System.Secure
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
@@ -173,9 +174,10 @@ function frameManager.get(unitType, unitFrameType, setup)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
     secureFrame:SetBackgroundColor(0, 0, 0, 0)
+    secureFrame:SetSecureMode("restricted")
 
     function unitFrame:SetMacro (newMacro)
-        secureFrame:SetSecureMode("restricted")
+        --secureFrame:SetSecureMode("restricted")
         secureFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, newMacro)
     end
 
@@ -184,6 +186,12 @@ function frameManager.get(unitType, unitFrameType, setup)
         	function()
                 if thisUnitID then Command.Unit.Menu(thisUnitID) end
         	end
+    end
+
+    function unitFrame:MouseOverUnit(unitID)
+        if InspectSystemSecure() == false then
+            secureFrame:SetMouseoverUnit(unitID)
+        end
     end
 
     local healthFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
@@ -558,6 +566,9 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:ProcessUnitDetails (newUnitID)
         local details = InspectUnitDetail(newUnitID)
         if (details) then
+
+            unitFrame:MouseOverUnit(unitID)
+
             unitFrame:SetCalling(details.calling)
             unitFrame:SetHealthMax(details.healthMax)
             unitFrame:SetHealth(details.health)
@@ -639,6 +650,7 @@ function _internal.updateUnit (frame, unitID, identifier)
 
     frame:SetUnitID(unitID)
     frame:ContextMenu(unitID)
+    frame:MouseOverUnit(unitID)
 
     frame:SetName(details.name)
     frame:SetCalling(details.calling)
