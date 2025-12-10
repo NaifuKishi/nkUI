@@ -29,7 +29,7 @@ local function _moveFrame (moveFrame, label, callBack)
     local x, y = info.x[0.5].offset, info.y[0.5].offset    
     local newX, newY
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextDialog)
+    local frame = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextTooltip)
     frame:SetWidth(width)
     frame:SetHeight(height)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
