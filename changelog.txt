@@ -1,4 +1,5 @@
 V0.5.7
+    - fixes: fix alpha of group buffs
     - fixes: Unit frames should now be again properly moveable
     - fixes: Prevented tooltip being shown when unitframe is hidden
     - fixes: Avoid rare condition where buff does not have a type identifier
@@ -273,8 +274,6 @@ and buffs can parent to your party member frame as well
 Action bar is being really weird. Not updating certain ability cooldown timers. Going out of combat should reenable main action bar macros which it doesnt, reloading ui doesn't do it either, even creating an entirely new macro still can't fire it off.
 
 --------------
-
-Unable to drag unit frames
 
 Buff timers do not show on group frames (also missing an icon) 
 

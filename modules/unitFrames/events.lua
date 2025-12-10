@@ -310,7 +310,6 @@ function _events.uiFramesInitEvents()
 		frame:SetVisible(true)
 	end
 
-
 	EnKai.unit.UpdateGroupUnit()
 
 end

@@ -19,6 +19,7 @@ local InspectSystemSecure   = Inspect.System.Secure
 
 local mathFloor             = math.floor
 local stringFormat          = string.format
+local stringFind            = string.find
 
 ---------- init global variables ---------
 
@@ -89,7 +90,9 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
                         
                         _internal.processNewBuff ("unit." .. unitId .. ".debuff.icon" .. buffIdentifier, unitId, buffUnit, k, buffIdentifier, v, unitDebuffDisplayList, unitDebuffIcons)                        
 
-                        if InspectSystemSecure() == false then unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
+                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                            unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
+                        end
 
                     end
                 else
@@ -97,7 +100,10 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
                         _internal.processNewBuff ("unit." .. unitId .. ".buff.icon" .. buffIdentifier, unitId, buffUnit, k, buffIdentifier, v, unitBuffDisplayList, unitBuffIcons)                        
                         
-                        if InspectSystemSecure() == false then unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) end
+                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                            unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
+                        end
+
                     end
                 end
                 

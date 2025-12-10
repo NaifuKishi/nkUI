@@ -772,6 +772,7 @@ function _internal.uiFrames()
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
         --_internal.updateUnit (group, data.playerID)
+
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
         from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", group, 0, setup.margins.group
