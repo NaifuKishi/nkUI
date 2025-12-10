@@ -177,7 +177,6 @@ function frameManager.get(unitType, unitFrameType, setup)
     secureFrame:SetSecureMode("restricted")
 
     function unitFrame:SetMacro (newMacro)
-        --secureFrame:SetSecureMode("restricted")
         secureFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, newMacro)
     end
 
@@ -437,15 +436,12 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
-    function unitFrame:GetBuffSetup() 
-        return setup.buffs
-        --[[
-        if unitFrameType == "group" then
-            return scale *.7
-        else
-            return scale
-        end
-        ]]
+    function unitFrame:GetBuffSetup() return setup.buffs end
+
+    local oSetVisible = unitFrame.SetVisible
+    function unitFrame:SetVisible (flag)    
+        oSetVisible(self, flag)
+        if flag == false then unitFrame:MouseOverUnit(nil) end
     end
 
     function unitFrame:SetTier(newTier)

@@ -1,4 +1,5 @@
 V0.5.7
+    - fixes: Prevented tooltip being shown when unitframe is hidden
     - fixes: Avoid rare condition where buff does not have a type identifier
     - fixes: Prevented a rare condition where an item category is reported as nil
     - fixes: Avoiding Secure error on actionbar macro save
@@ -275,8 +276,6 @@ Action bar is being really weird. Not updating certain ability cooldown timers. 
 Unable to drag unit frames
 
 Buff timers do not show on group frames (also missing an icon) 
-
-Hovering over target frame (even though its not visible) shows tooltip of the unit
 
 Buff timers on group frames are now minus values
 
