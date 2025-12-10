@@ -1,4 +1,5 @@
 V0.5.7
+    - fixes: Prevented a rare condition where an item category is reported as nil
     - fixes: Avoiding Secure error on actionbar macro save
     - fixes: Avoiding Secure error on location module
     - fixes: Avoiding Secure error on role module
@@ -287,17 +288,3 @@ stack traceback:
     nkUI/modules/unitFrames/buffBar.lua:80: in function 'addBuff'
     nkUI/modules/unitFrames/events.lua:130: in function <nkUI/modules/unitFrames/events.lua:122>
 
-Error: nkUI/modules/onebag/onebag.lua:315: bad argument #1 to 'stringFind' (string expected, got nil)
-    In nkUI / nkUI.EnKai.Text.38:Event.UI.Input.Mouse.Left.Click
-stack traceback:
-    [C]: ?
-    [C]: in function 'stringFind'
-    nkUI/modules/onebag/onebag.lua:315: in function '_getRealCategory'
-    nkUI/modules/onebag/onebag.lua:373: in function 'populateBag'
-    nkUI/modules/onebag/onebag.lua:580: in function 'oneBagInit'
-    nkUI/modules/lowerbar/lowerbar.lua:120: in function <nkUI/modules/lowerbar/lowerbar.lua:119>
-
- savign a macro during combat needs a safe guard too
- trying to change role during combat needs a safe guard
-
- 

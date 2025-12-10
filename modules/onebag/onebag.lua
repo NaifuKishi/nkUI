@@ -312,7 +312,9 @@ end
 
 local function _getRealCategory (category, rarity)
 
-    if stringFind(category, "consumable") then
+    if category == nil then
+         return "Various"
+    elseif stringFind(category, "consumable") then
         return "Consumable"
     elseif stringFind(category, "armor") then
         return "Armor"        
