@@ -7,6 +7,12 @@ local uiElements  = privateVars.uiElements
 local _internal   = privateVars.internal
 local _events     = privateVars.events
 
+local InspectSystemSecure		= Inspect.System.Secure
+local InspectCursor				= Inspect.Cursor
+local InspectItemDetail			= Inspect.Item.Detail
+local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
+
 ---------- init global variables ---------
 
 function _internal.macroEditDialog (editBar)
@@ -28,17 +34,17 @@ function _internal.macroEditDialog (editBar)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
 	
 	iconEdit:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
-		if Inspect.System.Secure() == true then return end
-		local cType, cHeld = Inspect.Cursor()
+		if InspectSystemSecure() == true then return end
+		local cType, cHeld = InspectCursor()
 		
 		contentType, contentKey = cType, cHeld
 		
 		if cType == 'item' then
-			local details = Inspect.Item.Detail(cHeld)
+			local details = InspectItemDetail(cHeld)
 			if details ~= nil then iconEdit:SetTexture("Rift", details.icon) end
 			icon = details.icon
 		elseif cType == 'ability' then			
-			local details = Inspect.Ability.New.Detail(cHeld)
+			local details = InspectAbilityNewDetail(cHeld)
 			if details ~= nil then iconEdit:SetTexture("Rift", details.icon) end
 			icon = details.icon
 		end
@@ -82,7 +88,10 @@ function _internal.macroEditDialog (editBar)
 	saveButton:SetScale(.7)
 	
 	Command.Event.Attach(EnKai.events[name .. ".saveButton"].Clicked, function (_, newValue)		
-		data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
+
+		if InspectSystemSecure() then return end
+
+		data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
 		macroEdit:Leave(true)
 		ui:SetVisible(false)
 		editBar:Populate()
@@ -91,9 +100,9 @@ function _internal.macroEditDialog (editBar)
 	function ui:SetButton (thisBarIndex, thisButtonIndex)
 		barIndex, buttonIndex = thisBarIndex, thisButtonIndex
 		
-		local button = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots[buttonIndex]
+		local button = data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex]
 		if button == nil then
-			table.insert(data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex].slots, {})
+			table.insert(data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots, {})
 			button = {}
 		end
 		
@@ -102,9 +111,9 @@ function _internal.macroEditDialog (editBar)
 			local details
 			
 			if button.itemType == 'ability' then
-				details = Inspect.Ability.New.Detail(button.itemKey)
+				details = InspectAbilityNewDetail(button.itemKey)
 			elseif button.itemKey ~= nil then
-				details = Inspect.Item.Detail(button.itemKey)
+				details = InspectItemDetail(button.itemKey)
 			end
 			
 			if details ~= nil then

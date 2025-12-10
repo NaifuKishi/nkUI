@@ -1,3 +1,8 @@
+V0.5.7
+    - fixes: Avoiding Secure error on actionbar macro save
+    - fixes: Avoiding Secure error on location module
+    - fixes: Avoiding Secure error on role module
+
 V0.5.6
     - udpates: Added tooltip to container slots in onebag
     - updates: Added fastpass to location ports
@@ -257,10 +262,42 @@ Having issues with tooltip of buff bar and unit frame buffs. Should I turn off t
 
 Gaps in player buff bar
 
-
 Main buff bar hovering over the icon does not always 100% guarantee a tooltip to show and as a result you cannot right click to remove buff (doesnt detect mousein)
 
 and buffs can parent to your party member frame as well
 
 Action bar is being really weird. Not updating certain ability cooldown timers. Going out of combat should reenable main action bar macros which it doesnt, reloading ui doesn't do it either, even creating an entirely new macro still can't fire it off.
 
+--------------
+
+Unable to drag unit frames
+
+Buff timers do not show on group frames (also missing an icon) 
+
+Hovering over target frame (even though its not visible) shows tooltip of the unit
+
+Buff timers on group frames are now minus values
+
+Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
+
+Error: nkUI/modules/unitFrames/buffBar.lua:80: attempt to concatenate local 'buffIdentifier' (a nil value)
+    In nkUI / nkUI.Buff.Add, event Event.Buff.Add
+stack traceback:
+    [C]: in function '__concat'
+    nkUI/modules/unitFrames/buffBar.lua:80: in function 'addBuff'
+    nkUI/modules/unitFrames/events.lua:130: in function <nkUI/modules/unitFrames/events.lua:122>
+
+Error: nkUI/modules/onebag/onebag.lua:315: bad argument #1 to 'stringFind' (string expected, got nil)
+    In nkUI / nkUI.EnKai.Text.38:Event.UI.Input.Mouse.Left.Click
+stack traceback:
+    [C]: ?
+    [C]: in function 'stringFind'
+    nkUI/modules/onebag/onebag.lua:315: in function '_getRealCategory'
+    nkUI/modules/onebag/onebag.lua:373: in function 'populateBag'
+    nkUI/modules/onebag/onebag.lua:580: in function 'oneBagInit'
+    nkUI/modules/lowerbar/lowerbar.lua:120: in function <nkUI/modules/lowerbar/lowerbar.lua:119>
+
+ savign a macro during combat needs a safe guard too
+ trying to change role during combat needs a safe guard
+
+ 

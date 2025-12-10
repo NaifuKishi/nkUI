@@ -241,7 +241,9 @@ function _internal.location()
         parent = datasetLocationButton
     end
 
-    datasetLocation:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()        
+    datasetLocation:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()
+        if InspectSystemSecure() then return end        
+
         if buttonShown == true then buttonShown = false else buttonShown = true end
         for k, v in pairs(buttons) do v:SetVisible(buttonShown) end
 	end, name .. "_Left_Click")
@@ -673,6 +675,7 @@ function _internal.lowerBarRoles()
     updateRoles()
 
     datasetRole:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()
+        if InspectSystemSecure() then return end
         if buttonShown == true then buttonShown = false else buttonShown = true end
         roleSwitch:SetVisible(buttonShown)
 	end, name .. "_Left_Click")
