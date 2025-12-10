@@ -1,4 +1,5 @@
 V0.5.7
+    - fixes: Avoid rare condition where buff does not have a type identifier
     - fixes: Prevented a rare condition where an item category is reported as nil
     - fixes: Avoiding Secure error on actionbar macro save
     - fixes: Avoiding Secure error on location module
@@ -281,10 +282,4 @@ Buff timers on group frames are now minus values
 
 Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
 
-Error: nkUI/modules/unitFrames/buffBar.lua:80: attempt to concatenate local 'buffIdentifier' (a nil value)
-    In nkUI / nkUI.Buff.Add, event Event.Buff.Add
-stack traceback:
-    [C]: in function '__concat'
-    nkUI/modules/unitFrames/buffBar.lua:80: in function 'addBuff'
-    nkUI/modules/unitFrames/events.lua:130: in function <nkUI/modules/unitFrames/events.lua:122>
 

@@ -72,13 +72,18 @@ function _internal.buffBar.addBuff(unit, buffs)
     for k, v in pairs(details) do
 
         local buffIdentifier = v.type
-        buffId2BuffType[k] = buffIdentifier        
 
-        if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-            _internal.processNewBuff ("buffbar.debuff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+        if buffIdentifier == nil then
+            EnKai.tools.error.display ("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
         else
-            _internal.processNewBuff ("buffbar.buff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
-        end					
+            buffId2BuffType[k] = buffIdentifier        
+
+            if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
+                _internal.processNewBuff ("buffbar.debuff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+            else
+                _internal.processNewBuff ("buffbar.buff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
+            end
+        end
     end
 end
 
