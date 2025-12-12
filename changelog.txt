@@ -276,7 +276,6 @@ Action bar is being really weird. Not updating certain ability cooldown timers. 
 --------------
 
 Buff timers do not show on group frames (also missing an icon) 
-
 Buff timers on group frames are now minus values
 
 Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
