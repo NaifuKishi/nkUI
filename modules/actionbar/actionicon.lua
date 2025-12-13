@@ -197,6 +197,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 		frame:SetOOR(false)
 		frame:SetUsable(true)
+		frame:SetCooldown(nil)
 
 		if macroFrame then
 			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)

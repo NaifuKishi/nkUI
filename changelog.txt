@@ -1,3 +1,7 @@
+V0.5.8
+    - update: OneBag will now open when regular bags open
+    - fixed: Clearing an action bar item on cooldown will now clear cooldown
+
 V0.5.7
     - fixes: fix alpha of group buffs
     - fixes: Unit frames should now be again properly moveable

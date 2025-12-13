@@ -173,7 +173,13 @@ local function _main(_, addon)
 
 						uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
 					end, "nkUI.OneBag.Native.Bank.Loaded")
-				end
+
+					UI.Native.BagInventory1:EventAttach(Event.UI.Native.Loaded, function()
+					if uiElements.oneBag == nil then _internal.oneBagInit() end
+
+						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
+					end, "nkUI.OneBag.Native.Bag.Loaded")
+				end				
 				
 			end
 
