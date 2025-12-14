@@ -1,48 +1,52 @@
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
-
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internal
-local _events     = privateVars.events
-
----------- init local variables ---------
+-- Initialize namespace
+local internalFunc  = privateVars.internalFunc
 
 -- Cache frequently used functions and values
-
 local stringLen     = string.len
 local stringSub     = string.sub
+local stringSplit   = EnKai.strings.split
 
-function _internal.shortenName (name, maxLen)
+function internalFunc.shortenName (name, maxLen)
 
-    local thisName
-
-    if stringLen (name) > maxLen then
-        local splitName = EnKai.strings.split(name, " ")
-
-        if #splitName == 1 then
-            splitName = EnKai.strings.split(name, "-")
-        end
-
-        if #splitName == 1 then
-            thisName = stringSub(name, 1, maxLen)
-        else
-            thisName = ""
-            for idx = 1, #splitName -1, 1 do                    
-                local tempName = stringSub(splitName[idx], 1, 1)                    
-                
-                if unitFrameType ~= "raid" then
-                    thisName = thisName .. tempName .. ". "                    
-                end
-            end
-
-            thisName = thisName .. splitName[#splitName]
-        end
-    else
-        thisName = name
+    if stringLen(name) <= maxLen then
+        return name
     end
-   
-   return thisName
 
+    local splitName = stringSplit(name, " ") or stringSplit(name, "-")
+
+    if #splitName == 1 then
+        return stringSub(name, 1, maxLen)
+    end
+
+    local thisName = ""
+    for idx = 1, #splitName - 1 do
+        local tempName = stringSub(splitName[idx], 1, 1)
+        if unitFrameType ~= "raid" then
+            thisName = thisName .. tempName .. ". "
+        end
+    end
+
+    return thisName .. splitName[#splitName]
+
+end
+
+-- Helper function to check if the unit is the player
+function internalFunc.isPlayerUnit(unit)
+    return unit == EnKai.unit.getPlayerDetails().id
+end
+
+
+function internalFunc.traceStart(eventName)
+    if nkDebug then
+        return nkDebug.traceStart(addonInfo.identifier, "events." .. eventName)
+    end
+    return nil
+end
+
+function internalFunc.traceEnd(eventName, debugId)
+    if nkDebug then
+        nkDebug.traceEnd(addonInfo.identifier, "events." .. eventName, debugId)
+    end
 end

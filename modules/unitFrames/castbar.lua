@@ -4,10 +4,9 @@ local addonInfo, privateVars = ...
 
 local data			= privateVars.data
 local uiElements	= privateVars.uiElements
-local _internal		= privateVars.internal
+local _internal		= privateVars.internalFunc
 local _events		= privateVars.events
 local _ui			= privateVars.ui
-local oFuncs		= privateVars.oFuncs
 
 ---------- init local variables ---------
 

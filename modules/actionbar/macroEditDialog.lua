@@ -2,25 +2,52 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internal
-local _events     = privateVars.events
+local data        	= privateVars.data
+local uiElements  	= privateVars.uiElements
+local internalFunc   = privateVars.internalFunc
 
-local InspectSystemSecure		= Inspect.System.Secure
-local InspectCursor				= Inspect.Cursor
-local InspectItemDetail			= Inspect.Item.Detail
-local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
-local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
+local inspectSystemSecure		= Inspect.System.Secure
+local inspectCursor				= Inspect.Cursor
+local inspectItemDetail			= Inspect.Item.Detail
+local inspectAbilityNewDetail	= Inspect.Ability.New.Detail
+local inspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 
----------- init global variables ---------
+-- Helper function to create and configure a UI button
+local function createButton(parent, name, width, height, x, y, text, iconPath)
+    local button = EnKai.uiCreateFrame("nkButtonMetro", name, parent)
+    button:SetWidth(width)
+    button:SetHeight(height)
+    button:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+    button:SetText(text)
+    button:SetIcon("EnKai", iconPath)
+    button:SetFont(addonInfo.id, "Montserrat")
+    button:SetScale(0.7)
+    return button
+end
 
-function _internal.macroEditDialog (editBar)
+-- Helper function to create and configure a text field
+local function createTextField(parent, name, width, height, x, y)
+    local textField = EnKai.uiCreateFrame("nkTextField", name, parent)
+    textField:SetWidth(width)
+    textField:SetHeight(height)
+    textField:SetMultiLine(true)
+    textField:SetRestoreOnExit(false)
+    textField:SetInnerColor({r = 0, g = 0, b = 0, a = 1})
+    textField:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+    return textField
+end
 
-	local name = "nkHelios.ui.macroEditDialog"
+-- Creates and manages the macro edit dialog for action bars
+-- @param editBar The action bar being edited
+-- @return The created UI frame for the macro edit dialog
+function internalFunc.macroEditDialog (editBar)
+
+	local name = "nkui.ui.macroEditDialog"
 	
+	-- Variables to store macro information
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
+	-- Create the main dialog window
 	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextDialog)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
@@ -28,28 +55,31 @@ function _internal.macroEditDialog (editBar)
 	ui:SetTitle("Macro edit")
     ui:SetTitleFont (addonInfo.id, "Montserrat")
 	
+	-- Create icon edit button for macro icon selection
 	local iconEdit = EnKai.uiCreateFrame("nkActionButtonMetro", name .. ".iconEdit", ui:GetContent())
 	iconEdit:SetWidth(48)
 	iconEdit:SetHeight(48)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
 	
+	-- Event handler for icon selection
 	iconEdit:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
-		if InspectSystemSecure() == true then return end
-		local cType, cHeld = InspectCursor()
+		if inspectSystemSecure() == true then return end
+		local cType, cHeld = inspectCursor()
 		
 		contentType, contentKey = cType, cHeld
 		
 		if cType == 'item' then
-			local details = InspectItemDetail(cHeld)
+			local details = inspectItemDetail(cHeld)
 			if details ~= nil then iconEdit:SetTexture("Rift", details.icon) end
 			icon = details.icon
 		elseif cType == 'ability' then			
-			local details = InspectAbilityNewDetail(cHeld)
+			local details = inspectAbilityNewDetail(cHeld)
 			if details ~= nil then iconEdit:SetTexture("Rift", details.icon) end
 			icon = details.icon
 		end
 	end, iconEdit:GetName() .. ".UI.Input.Mouse.Left.Up")
 	
+	-- Label for the icon edit section
 	local iconEditLabel = EnKai.uiCreateFrame("nkText", name .. ".iconEditLabel", ui:GetContent())
 	iconEditLabel:SetPoint("CENTERRIGHT", iconEdit, "CENTERLEFT")
 	iconEditLabel:SetWidth(75)
@@ -58,65 +88,62 @@ function _internal.macroEditDialog (editBar)
     iconEditLabel:SetTextFont(addonInfo.id, "Montserrat")
 	iconEditLabel:SetText("Macro icon")
 
-	local macroEdit = EnKai.uiCreateFrame("nkTextField", name .. ".macroEdit", ui:GetContent())
-	macroEdit:SetWidth(ui:GetWidth()-20)
-	macroEdit:SetHeight(100)
-	macroEdit:SetMultiLine(true)
-	macroEdit:SetRestoreOnExit(false)
-    macroEdit:SetInnerColor({r = 0, g = 0, b = 0, a = 1})
-	macroEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 10, 68)
+	-- Text field for macro editing
+    local macroEdit = createTextField(ui:GetContent(), name .. ".macroEdit", ui:GetWidth() - 20, 100, 10, 68)
 	
-	local cancelButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".cancelButton", ui:GetContent())
-	cancelButton:SetPoint("BOTTOMRIGHT", ui:GetContent(), "BOTTOMRIGHT", -10, -10)
-	cancelButton:SetText("Cancel macro")
-	cancelButton:SetIcon("EnKai", "gfx/icons/close.png")
-    cancelButton:SetFont(addonInfo.id, "Montserrat")
-	cancelButton:SetWidth(150)
-	cancelButton:SetScale(.7)
+	-- Cancel button for the dialog
+    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetHeight() - 40, "Cancel macro", "gfx/icons/close.png")
 	
+	-- Event handler for cancel button
 	Command.Event.Attach(EnKai.events[name .. ".cancelButton"].Clicked, function (_, newValue)
 		macroEdit:Leave(true)
 		ui:SetVisible(false)
 	end, name .. ".cancelButton.Clicked")
 	
-	local saveButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".saveButton", ui:GetContent())
-	saveButton:SetPoint("CENTERRIGHT", cancelButton, "CENTERLEFT", -10, 0)
-	saveButton:SetText("Save macro")
-	saveButton:SetIcon("EnKai", "gfx/icons/ok.png")
-    saveButton:SetFont(addonInfo.id, "Montserrat")
-	saveButton:SetWidth(150)
-	saveButton:SetScale(.7)
+	-- Save button for the dialog
+    local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetHeight() - 40, "Save macro", "gfx/icons/ok.png")
 	
+	-- Event handler for save button
 	Command.Event.Attach(EnKai.events[name .. ".saveButton"].Clicked, function (_, newValue)		
+		if inspectSystemSecure() then return end
 
-		if InspectSystemSecure() then return end
-
-		data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
+		data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
 		macroEdit:Leave(true)
 		ui:SetVisible(false)
 		editBar:Populate()
 	end, name .. ".saveButton.Clicked")
 	
+	-- Sets the button to edit in the dialog
+    -- @param thisBarIndex Index of the bar containing the button
+    -- @param thisButtonIndex Index of the button to edit
 	function ui:SetButton (thisBarIndex, thisButtonIndex)
 		barIndex, buttonIndex = thisBarIndex, thisButtonIndex
 		
-		local button = data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex]
-		if button == nil then
-			table.insert(data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots, {})
-			button = {}
-		end
+		local role = inspectTEMPORARYRole()
+        if not data.actionBarSetup.roles[role] then
+            data.actionBarSetup.roles[role] = { bars = {} }
+        end
+
+ 		if not data.actionBarSetup.roles[role].bars[barIndex] then
+            data.actionBarSetup.roles[role].bars[barIndex] = { slots = {} }
+        end
+
+		local button = data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex]
+        if not button then
+            button = {}
+            data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex] = button
+        end
 		
-		if button.itemType ~= 'macro' then
-			
+		if button.itemType ~= 'macro' then			
 			local details
 			
 			if button.itemType == 'ability' then
-				details = InspectAbilityNewDetail(button.itemKey)
+				details = inspectAbilityNewDetail(button.itemKey)
 			elseif button.itemKey ~= nil then
-				details = InspectItemDetail(button.itemKey)
+				details = inspectItemDetail(button.itemKey)
 			end
 			
-			if details ~= nil then
+			if details then
 				button.macroIcon = details.icon
 				button.macroCD = {  button.itemType, button.itemKey }
 				
@@ -133,19 +160,15 @@ function _internal.macroEditDialog (editBar)
 		
 		icon = button.macroIcon
 		
-		if button.macroIcon == nil then
+		if not button.macroIcon then
 			iconEdit:ClearTexture()
 		else	
 			iconEdit:SetTexture("Rift", button.macroIcon)
 		end
 		
-		if button.itemKey == nil then
-			macroEdit:SetText("")
-		else
-			macroEdit:SetText(button.itemKey)
-		end
+		macroEdit:SetText(button.itemKey or "")
 		
-		if button.macroCD ~= nil then		
+		if button.macroCD then	
 			contentType, contentKey = button.macroCD[1], button.macroCD[2]
 		end
 		

@@ -1,261 +1,216 @@
+-- @module events
+-- @description Event handlers for the action bar module
+-- @version 1.0
+
+--[[
+  This module handles various game events related to the action bar.
+  It manages buffs, ability states, cooldowns, and secure mode changes.
+]]
+
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
+-- Initialize namespace
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internal
-local _events     = privateVars.events
+local data         	= privateVars.data
+local uiElements   	= privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local events      	= privateVars.events
 
-local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+-- Cache frequently used functions and values
 
----------- init local variables ---------
+local inspectAbilityNewDetail = Inspect.Ability.New.Detail
+
+-- init local variables
 
 local stanceBuff = nil
 
----------- init variables ---------
+-- init global variables
 
 data.activeCooldowns = {}
 
----------- local function block ---------
 
-function _events.abBuffAdd (_, unit, info)
-
-	if unit ~= EnKai.unit.getPlayerDetails().id then return end
-	
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.buffAdd") end
-	
-	for key, v in pairs(info) do
-	
-		if v == 'B109B81E0E0F231CF' or v == 'B55F770C673BE8384' then
-			stanceBuff = key
-			_internal.stanceActive(true)
-			if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.buffRemove", debugId) end
-			return
-		end
-		
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.buffAdd", debugId) end
-
+-- Helper function to update ability states
+-- @param abilityId The ID of the ability to update
+-- @param updateFunc Function to apply to each ability frame
+local function updateAbilityStates(abilityId, updateFunc)
+    if data.abilityMap and data.abilityMap[abilityId] then
+        for _, frame in pairs(data.abilityMap[abilityId]) do
+            updateFunc(frame)
+        end
+    end
 end
 
-function _events.abBuffRemove (_, unit, info)
-
-	if unit ~= EnKai.unit.getPlayerDetails().id then return end
-	
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.buffRemove") end
-
-	for key, v in pairs(info) do
-		
-		if key == stanceBuff then
-			stanceBuff = nil
-			_internal.stanceActive(false)
-			if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.buffRemove", debugId) end
-			return
-		end
-		
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.buffRemove", debugId) end
-
+-- Event handler for when a buff is added to a unit
+-- @param unit The unit that gained the buff
+-- @param info Table containing buff information
+function events.abBuffAdd(_, unit, info)
+    if not internalFunc.isPlayerUnit(unit) then return end
+    
+    local debugId = internalFunc.traceStart("buffAdd")
+    
+    for key, v in pairs(info) do
+        if v == 'B109B81E0E0F231CF' or v == 'B55F770C673BE8384' then
+            stanceBuff = key
+            internalFunc.stanceActive(true)
+            internalFunc.traceEnd("buffAdd", debugId)
+            return
+        end
+    end
+    
+    internalFunc.traceEnd("buffAdd", debugId)
 end
 
-function _events.abAbilityUnusable(_, info)
-
-	if data.abilityMap == nil then return end
-
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.abilityUnusable") end
-	
-	for key, v in pairs(info) do
-		local details = InspectAbilityNewDetail(key)
-	
-		if data.abilityMap[key] ~= nil then
-			for k, v in pairs(data.abilityMap[key]) do
-				v:SetUsable(false)
-			end
-		 end
-		
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.abilityUnusable", debugId) end
-	
+-- Event handler for when a buff is removed from a unit
+-- @param unit The unit that lost the buff
+-- @param info Table containing buff information
+function events.abBuffRemove(_, unit, info)
+    if not internalFunc.isPlayerUnit(unit) then return end
+    
+    local debugId = internalFunc.traceStart("buffRemove")
+    
+    for key, v in pairs(info) do
+        if key == stanceBuff then
+            stanceBuff = nil
+            internalFunc.stanceActive(false)
+            internalFunc.traceEnd("buffRemove", debugId)
+            return
+        end
+    end
+    
+    internalFunc.traceEnd("buffRemove", debugId)
 end
 
-function _events.abAbilityUsable(_, info)
-
-	if data.abilityMap == nil then return end
-
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.abilityUsable") end
-	
-	for key, v in pairs(info) do
-		if data.abilityMap[key] ~= nil then
-			for k, v in pairs(data.abilityMap[key]) do
-				v:SetUsable(true)
-			end
-		end
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.abilityUsable", debugId) end
-	
+-- Event handler for abilities becoming unusable
+-- @param info Table containing ability information
+function events.abAbilityUnusable(_, info)
+    if not data.abilityMap then return end
+    
+    local debugId = internalFunc.traceStart("abilityUnusable")
+    
+    for key, v in pairs(info) do
+        updateAbilityStates(key, function(frame) frame:SetUsable(false) end)
+    end
+    
+    internalFunc.traceEnd("abilityUnusable", debugId)
 end
 
-function _events.abAbilityOutOfRange (_, info)
-
-	if data.abilityMap == nil then return end
-	
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.abilityOutOfRange") end
-
-	for key, v in pairs(info) do
-		if data.abilityMap[key] ~= nil then
-			for k, v in pairs(data.abilityMap[key]) do
-				v:SetOOR(true)
-			end
-		end
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.abilityOutOfRange", debugId) end
-
+-- Event handler for abilities becoming usable
+-- @param info Table containing ability information
+function events.abAbilityUsable(_, info)
+    if not data.abilityMap then return end
+    
+    local debugId = internalFunc.traceStart("abilityUsable")
+    
+    for key in pairs(info) do
+        updateAbilityStates(key, function(frame) frame:SetUsable(true) end)
+    end
+    
+    internalFunc.traceEnd("abilityUsable", debugId)
 end
 
+-- Event handler for abilities going out of range
+-- @param info Table containing ability information
+function events.abAbilityOutOfRange(_, info)
+    if not data.abilityMap then return end
 
-function _events.abAbilityInRange (_, info)
+    local debugId = internalFunc.traceStart("abilityOutOfRange")
 
-	if data.abilityMap == nil then return end
-	
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.abilityInRange") end
-	
-	for key, v in pairs(info) do
-		 if data.abilityMap[key] ~= nil then
-			for _, frame in pairs(data.abilityMap[key]) do
-				frame:SetOOR(false)
-			end
-		 end		
-	end
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.abilityInRange", debugId) end
-
-end
-
-function _events.abCooldownProcess (_, addon, info)
-
-	--print (addon)
-	--dump (info)
-
-	--if addon ~= addonInfo.identifier then return end
-
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.cooldownProcess") end
-
-	local percent
-  
-	for key, details in pairs (info) do
-	
-		if data.abilityMap ~= nil and data.abilityMap[key] ~= nil then
-			if details.remaining ~= nil then
-				percent  = 1 / details.duration * details.remaining
-
-				if details.remaining < 0 then
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown()  
-					end
-				elseif details.remaining <= 1 then
-					--for k, v in pairs(data.abilityMap[key]) do
-					--	v:Flicker()
-					--end
-					
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown(tostring(math.floor(details.remaining)), percent)
-					end
-				elseif details.remaining > 14400 then -- larger than 4h filter some stuff like stealth which has very loooooong cd
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown()  
-					end
-				elseif details.remaining > 3600 then
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown(tostring(math.floor(details.remaining / 3600)).."h", percent)
-					end
-				elseif details.remaining > 60 then
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown(tostring(math.floor(details.remaining / 60)).."m", percent)
-					end
-				else
-					for k, v in pairs(data.abilityMap[key]) do
-						v:SetCooldown(tostring(math.floor(details.remaining)), percent)
-					end
-				end
-			else
-				for k, v in pairs(data.abilityMap[key]) do
-					v:SetCooldown()  
-				end
-			end
-		end
-	end  
-  
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.cooldownProcess", debugId) end
-
-end
-
-function _events.abSecureEnter (_, info)
-
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.secureEnter") end
-
-	_internal.combatHandler (false)
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.secureEnter", debugId) end
-
-end
-
-function _events.abSecureLeave (_, info)
-
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_events.secureLeave") end
-
-	for k, v in pairs(data.insecure) do
-		v()
-	end
-	
-	data.insecure = {}
-
-	_internal.combatHandler (true)
-	
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_events.secureLeave", debugId) end
-
-end
-
-function _events.abGcdStart (_, info)
-
-	for key, remaining in pairs(info) do
-		if data.abilityMap ~= nil and data.abilityMap[key] ~= nil then
-			if remaining <= 1.5 then
-				data.gcdActive = { flag = true, key = key}
-				for k, v in pairs(data.abilityMap[key]) do
-					v:SetGCD(remaining)
-				end
-			end
-		end
-	end
-end
-
-function _events.abSecureEnter()
-
-	for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
+    for key in pairs(info) do
+        updateAbilityStates(key, function(frame) frame:SetOOR(true) end)
     end
 
+    internalFunc.traceEnd("abilityOutOfRange", debugId)
 end
 
-function _events.abSecureLeave()
-	
-	for k, v in pairs (uiElements.actionbars) do
-        v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
+-- Event handler for abilities coming into range
+-- @param info Table containing ability information
+function events.abAbilityInRange(_, info)
+    if not data.abilityMap then return end
+    
+    local debugId = internalFunc.traceStart("abilityInRange")
+
+    for key in pairs(info) do
+        updateAbilityStates(key, function(frame) frame:SetOOR(false) end)
     end
 
+    internalFunc.traceEnd("abilityInRange", debugId)
+end
+
+-- Event handler for ability cooldown progress
+-- @param addon The addon triggering the event
+-- @param info Table containing cooldown information
+function events.abCooldownProcess(_, addon, info)
+    local debugId = internalFunc.traceStart("cooldownProcess")
+    
+    for key, details in pairs(info) do
+        if data.abilityMap and data.abilityMap[key] then
+            local percent = details.duration and details.remaining and (1 / details.duration * details.remaining) or nil
+
+            if not details.remaining or details.remaining < 0 then
+                updateAbilityStates(key, function(frame) frame:SetCooldown() end)
+            elseif details.remaining <= 1 then
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining)), percent) end)
+            elseif details.remaining > 14400 then
+                updateAbilityStates(key, function(frame) frame:SetCooldown() end)
+            elseif details.remaining > 3600 then
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining / 3600)) .. "h", percent) end)
+            elseif details.remaining > 60 then
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining / 60)) .. "m", percent) end)
+            else
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining)), percent) end)
+            end
+        end
+    end
+
+    internalFunc.traceEnd("cooldownProcess", debugId)
+end
+
+-- Event handler for entering secure mode
+-- @param info Table containing secure mode information
+function events.abSecureEnter(_, info)
+    local debugId = internalFunc.traceStart("secureEnter")
+
+    internalFunc.combatHandler(false)
+
+    internalFunc.traceEnd("secureEnter", debugId)
+end
+
+-- Event handler for leaving secure mode
+-- @param info Table containing secure mode information
+function events.abSecureLeave(_, info)
+    local debugId = internalFunc.traceStart("secureLeave")
+
+    for _, callback in pairs(data.insecure) do
+        callback()
+    end
+
+    data.insecure = {}
+    internalFunc.combatHandler(true)
+
+    internalFunc.traceEnd("secureLeave", debugId)
+end
+
+-- Event handler for GCD (Global Cooldown) start
+-- @param info Table containing GCD information
+function events.abGcdStart(_, info)
+    for key, remaining in pairs(info) do
+        if data.abilityMap and data.abilityMap[key] and remaining <= 1.5 then
+            data.gcdActive = { flag = true, key = key }
+            updateAbilityStates(key, function(frame) frame:SetGCD(remaining) end)
+        end
+    end
+end
+
+-- Adjusts action bar transparency when entering secure mode
+function events.abSecureEnter()
+    for _, actionBar in pairs(uiElements.actionbars) do
+        actionBar:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
+    end
+end
+
+-- Adjusts action bar transparency when leaving secure mode
+function events.abSecureLeave()
+    for _, actionBar in pairs(uiElements.actionbars) do
+        actionBar:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
+    end
 end

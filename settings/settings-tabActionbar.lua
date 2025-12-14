@@ -2,7 +2,7 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internal
+local _internal = privateVars.internalFunc
 local _settings = privateVars.settings
 
 local stringFormat = string.format

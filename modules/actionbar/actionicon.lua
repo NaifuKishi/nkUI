@@ -1,12 +1,21 @@
+--[[
+  @module actionicon
+  @description Creates and manages action icons for the action bar module
+  @version 1.0
+
+  This module handles the creation and management of individual action icons
+  that appear on the action bars. It manages visual states, tooltips, and
+  interactions with items, abilities, and macros.
+]]
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
+-- Initialize namespace
+local data        	= privateVars.data
+local uiElements  	= privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local events     	= privateVars.events
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internal
-local _events     = privateVars.events
-
+-- Cache frequently used functions and values
 local inspectTimeFrame 			= Inspect.Time.Frame
 local InspectItemDetail			= Inspect.Item.Detail
 local InspectSystemSecure		= Inspect.System.Secure
@@ -14,55 +23,75 @@ local InspectCursor				= Inspect.Cursor
 local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
 
-local stringGSub        = string.gsub
+local stringGSub        		= string.gsub
 
----------- init global variables ---------
+-- Predefined constants
+local DEFAULT_SCALE = 1
+local DEFAULT_DESIGN = 'default'
+local EMPTY_FRAME_TEXTURE = "gfx/emptyFrame.png"
+local BLANK_TEXTURE = "gfx/equipslot_blank"
 
-
----------- init local variables ---------
-
+--[[
+  Main action icon function
+  @param {string} name - The name of the icon
+  @param {frame} parent - The parent frame
+  @param {number} barIndex - The index of the bar
+  @param {number} buttonIndex - The index of the button
+  @return {frame} The created action icon frame
+]]
 function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
+	-- Create the main frame for the action icon
 	local frame = EnKai.uiCreateFrame("nkCanvas", name, parent)
 	
+	-- Local variables for the icon components and state
 	local texture, oorTint, cooldownTint, cooldown, macroFrame, overlay
 	local thisItemKey, thisItemType, thisMacroIcon, thisMacroCDType, thisMacroCDKey
 
 	local cooldownActive = false
 	local interactive = false
 	local oor, usable = false, true
-	
+
+	-- Shape path for the icon	
 	local path = {{xProportional = 0.5, yProportional = 0}, 
                   {xProportional = 1, yProportional = 0.5, xControlProportional = (61/64), yControlProportional = (3/64)},
                   {xProportional = 0.5, yProportional = 1, xControlProportional = (61/64), yControlProportional = (61/64)},
                   {xProportional = 0, yProportional = 0.5, xControlProportional = (3/64), yControlProportional = (61/64)},
                   {xProportional = 0.5, yProportional = 0, xControlProportional = (3/64), yControlProportional = (3/64)}}
+	
+	-- Fill color for the icon
 	local fill = {type = 'solid', r = 0.078, g = 0.188, b = 0.306, a = 1}
 	local thisScale = 1
 	
+	-- Set the shape and border of the frame
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 1 })
 
+	-- Create the texture for the icon
 	texture = EnKai.uiCreateFrame("nkTexture", name .. '.texture', frame)  
 	texture:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	texture:SetLayer(1)
 	texture:SetMouseMasking("limited")
 	
+	 -- Create the overlay for the icon
 	overlay = EnKai.uiCreateFrame("nkCanvas", name .. ".overlay", frame)
 	overlay:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	overlay:SetShape(path, nil, {r = 0, g = 0, b = 0, a = 1, thickness = 5 })
 	overlay:SetLayer(2)
     overlay:SetVisible(false)
 	
+	-- Create the out-of-range tint
 	oorTint = EnKai.uiCreateFrame("nkCanvas", name .. ".oorTint", frame)
 	oorTint:SetVisible(false)
 	oorTint:SetPoint("CENTER", overlay, "CENTER")
 	oorTint:SetLayer(4)
 	
+	-- Create the cooldown tint
 	cooldownTint = EnKai.uiCreateFrame("nkCanvas", name .. ".cooldownTint", frame)
 	cooldownTint:SetVisible(false)
 	cooldownTint:SetPoint("CENTER", overlay, "CENTER")
 	cooldownTint:SetLayer(5)
 	
+	-- Create the cooldown text
 	cooldown = EnKai.uiCreateFrame("nkText", name .. '.cooldown', frame)
 	cooldown:SetVisible(false)
 	cooldown:SetFontSize(18)
@@ -71,14 +100,25 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	cooldown:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
 	cooldown:SetLayer(6)
 	
+	--[[
+      Function to show/hide cooldown
+      @param {boolean} flag - Whether to show the cooldown
+    ]]
 	function frame:ShowCooldown(flag) cooldown:SetVisible(flag) end
 	
+	--[[
+      Function to make the icon flicker
+      This could be improved for better visual feedback
+    ]]
 	function frame:Flicker()
-		-- könnte man verbessern
 		cooldownTint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
 		cooldownTint:SetVisible(true)		
 	end
 
+	--[[
+      Function to set GCD (Global Cooldown)
+      @param {number} duration - The duration of the GCD
+    ]]
 	function frame:SetGCD (duration)
 
 		if duration == nil or cooldownActive == true then return end
@@ -102,6 +142,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		EnKai.coroutines.add ({ func = gcdCoRoutine, counter = 100, active = true })
 	end	
 
+	--[[
+      Function to set cooldown
+      @param {string|number} timer - The cooldown timer text or number
+      @param {number} percent - The percentage of cooldown remaining
+    ]]
 	function frame:SetCooldown(timer, percent)
 	
 		if timer == nil then
@@ -125,6 +170,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end		
 	end
 	
+	--[[
+      Function to set out-of-range state
+      @param {boolean} flag - Whether the ability is out of range
+    ]]
 	function frame:SetOOR (flag)
 	
 		oor = flag
@@ -141,6 +190,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 	end
 	
+	--[[
+      Function to set usable state
+      @param {boolean} flag - Whether the ability is usable
+    ]]
 	function frame:SetUsable (flag)
 	
 		usable = flag
@@ -157,7 +210,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 	end
 	
-	local function _checkDrop ()
+	--[[
+      Function to check for dropped items/abilities
+      Handles the dropping of items or abilities onto the action icon
+    ]]
+	local function fctCheckDrop ()
 	
 		if InspectSystemSecure() == true then return end
 		local cType, cHeld = InspectCursor()
@@ -171,6 +228,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	end
 	
+	--[[
+      Function to clear the current item
+      Clears the current item, ability, or macro from the action icon
+    ]]
 	function frame:ClearItem()
 		
 		EnKai.ui.attachItemTooltip (texture, nil)
@@ -203,10 +264,18 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)
 		end
 
-        texture:SetTextureAsync("nkUI", "gfx/emptyFrame.png")  
+        texture:SetTextureAsync("nkUI", EMPTY_FRAME_TEXTURE)
 		
 	end
 	
+	--[[
+      Function to set an item/ability/macro
+      @param {string} itemType - The type of item ('item', 'ability', or 'macro')
+      @param {string} itemKey - The key of the item or ability
+      @param {string} macroIcon - The icon for the macro
+      @param {string} macroCDType - The cooldown type for the macro
+      @param {string} macroCDKey - The cooldown key for the macro
+    ]]
 	function frame:SetItem(itemType, itemKey, macroIcon, macroCDType, macroCDKey)
 
 		if thisItemType ~= nil then frame:ClearItem() end
@@ -248,7 +317,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				macro = "cast " .. stringGSub(data.name, "\n", "")
 			end
 		else -- macro
-			macro = string.gsub(thisItemKey, "\r", "\n")
+			macro = stringGSub(thisItemKey, "\r", "\n")
 			err = true
 			data = { icon = macroIcon }
 		end
@@ -256,7 +325,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if err and data ~= nil and data.icon ~= nil then
 			texture:SetTextureAsync("Rift", data.icon)  
 		else
-			texture:SetTextureAsync("nkUI", "gfx/equipslot_blank")  
+			texture:SetTextureAsync("nkUI", BLANK_TEXTURE)
 		end
 
 		if interactive then
@@ -266,14 +335,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
-				--macroFrame:SetBackgroundColor(1,0,0,1)
 				
 				local thisSize = frame:GetWidth() -2
 				macroFrame:SetWidth(thisSize)
 				macroFrame:SetHeight(thisSize)
 				
 				macroFrame:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
-					_checkDrop()
+					fctCheckDrop()
 				end, macroFrame:GetName() .. ".UI.Input.Mouse.Left.Up")
 			end
 
@@ -297,23 +365,38 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 	end
 	
+	--[[
+      Function to get the cooldown frame
+      @return {frame} The cooldown frame
+    ]]
 	function frame:GetCooldown() return cooldown end
 
+	--[[
+      Function to set interactive state
+      @param {boolean} flag - Whether the icon is interactive
+      @param {boolean} doUpdate - Whether to update the item
+    ]]
 	function frame:SetInteractive(flag, doUpdate) 
 		interactive = flag 
 		if doUpdate then frame:SetItem(thisItemType, thisItemKey, nil) end
 	end
 	
+	--[[
+      Function to scale the icon
+      @param {number} newScale - The new scale value
+    ]]
     function frame:Scale (newScale)
-
 		thisScale = newScale
-		frame:SetDesign('default')
-
+		frame:SetDesign(DEFAULT_DESIGN)
 	end
 
+	--[[
+      Function to set the design
+      @param {string} design - The design to apply
+    ]]
 	function frame:SetDesign (design)
 
-		if design == nil then design = 'default' end
+		if design == nil then design = DEFAULT_DESIGN end
 		local setup = data.actionBarDesigns[design] 
 		
 		path = setup[4]
@@ -356,7 +439,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		overlay:SetVisible(setup[7])	
 				
 	end
-		
+	
+	--[[
+      Function to destroy the frame
+      Cleans up resources and removes the frame from the UI
+    ]]
 	function frame:destroy()
 	
 		local target = texture
@@ -374,11 +461,15 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		EnKai.uiAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
-	local function _editMacro () 
+	--[[
+	Function to edit macro
+	Opens the macro editor dialog for the current action icon
+	]]
+	local function fctEditMacro () 
 	
 		if InspectSystemSecure() == true then return end
 		if uiElements.macroEdit == nil then
-			uiElements.macroEdit = _internal.macroEditDialog(parent)			
+			uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
 		end
 		
 		uiElements.macroEdit:SetVisible(true)
@@ -386,18 +477,22 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	end
 	
+	--[[
+	Attach event handlers
+	Sets up mouse event handlers for the action icon
+	]]
 	texture:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
-		_checkDrop()
+		fctCheckDrop()
 	end, texture:GetName() .. ".UI.Input.Mouse.Left.Up")
 
 	texture:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
 		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
-			_editMacro()
+			fctEditMacro()
 		else
 			EnKai.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
-				_editMacro()
+				fctEditMacro()
 			end)
 		end
 	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")

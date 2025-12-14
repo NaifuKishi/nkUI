@@ -1,37 +1,53 @@
+-- @module ActionBar
+--
+-- This module handles the creation and management of action bars in the UI.
+-- It provides functionality for creating different types of action bars, managing their visibility,
+-- and handling various events related to abilities and buffs.
+
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
+-- init namespace
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internal
-local _events     = privateVars.events
+local data = privateVars.data
+local uiElements = privateVars.uiElements
+local internalFunc = privateVars.internalFunc
+local events = privateVars.events
 
-local InspectRoleList = Inspect.Role.List
+-- Cache frequently used functions and values
 
----------- init global variables ---------
+local inspectRoleList = Inspect.Role.List
+local inspectTimeFrame = Inspect.Time.Frame
+
+local stringFormat = string.format
+
+-- init global variables
 
 data.actionBarsBuild = false
-uiElements.actionbars = {}
 data.abilityMap = {}
 data.abilityList = {}
 data.gcdActive = false
 
-local InspectTimeFrame      = Inspect.Time.Frame
-
-local stringFormat				= string.format
-
----------- init local variables ---------
-
-local name = "uiActionBar"
-
 data.actionBarDesigns = {
-	default     = { "", "", 40, {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}, {type = 'solid', r = 0, g = 0, b = 0, a = 1}, {r = 0.153, g = 0.314, b = 0.490, a = 1, thickness = 2 }, false, 0}
+    default = { "", "", 40, {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}, {type = 'solid', r = 0, g = 0, b = 0, a = 1}, {r = 0.153, g = 0.314, b = 0.490, a = 1, thickness = 2 }, false, 0}
 }
 
 data.actionBarColors = { mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = .5} }
 
-local function _actionBar (thisName, rows, cols, scale, barIndex)
+uiElements.actionbars = {}
+
+-- init local variables
+
+local name = "uiActionBar"
+
+-- @function createActionBar
+-- @desc Creates a new action bar with the specified parameters
+-- @param thisName (string) The name of the action bar
+-- @param rows (number) Number of rows in the action bar
+-- @param cols (number) Number of columns in the action bar
+-- @param scale (number) Scale factor for the action bar
+-- @param barIndex (number) Index of the action bar
+-- @return (table) The created action bar object
+local function createActionBar(thisName, rows, cols, scale, barIndex)
 
     local actionButtons = {}
     local buttonSize = data.actionBarDesigns.default[3]
@@ -41,14 +57,15 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
 
     local actionBar = EnKai.uiCreateFrame("nkFrame", thisName, uiElements.contextLowest)
     
-    actionBar:SetWidth (width)
-    actionBar:SetHeight (height)
+    actionBar:SetWidth(width)
+    actionBar:SetHeight(height)
     actionBar:SetBackgroundColor(0,0,0,0)
     actionBar:SetLayer(1)
     actionBar:SetVisible(true)
 
     local from, object, to, x, y = "TOPLEFT", actionBar, "TOPLEFT", 0, 0
 
+    -- Create action buttons in a grid layout
     for rowIndex = 1, rows, 1 do
         local thisRow = {}
         local firstIcon
@@ -57,34 +74,37 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
 
             local buttonIndex = ((rowIndex -1) * cols + colIndex)
 
-            local actionButton =  uiElements.actionIcon(stringFormat("%s.%d.%d", thisName, rowIndex, colIndex), actionBar, barIndex, buttonIndex)
+            local actionButton = uiElements.actionIcon(stringFormat("%s.%d.%d", thisName, rowIndex, colIndex), actionBar, barIndex, buttonIndex)
 
             if colIndex == 1 then firstIcon = actionButton end
 
             actionButton:SetPoint(from, object, to, x, y)
             actionButton:SetUsable(true)
-			actionButton:SetCooldown()
-          	actionButton:SetInteractive(interactive, false)
+            actionButton:SetCooldown()
+            actionButton:SetInteractive(interactive, false)
             actionButton:SetDesign("default")
             actionButton:Scale(scale)
             actionButton:SetVisible(true)
 
-            table.insert (thisRow, actionButton)
+            table.insert(thisRow, actionButton)
 
             to, object, x, y = "TOPRIGHT", actionButton, spacing, 0
         end
 
         to, object, x, y = "BOTTOMLEFT", firstIcon, 0, spacing
 
-        table.insert (actionButtons, thisRow)
+        table.insert(actionButtons, thisRow)
     end
 
+    -- @function actionBar:Populate
+    -- @desc Populates the action bar with abilities from the setup
     function actionBar:Populate()
         local barSetup = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex]
         
         if barSetup ~= nil then
             local slots = barSetup.slots
 
+            -- Iterate through each button and set its item based on the setup
             for rowIndex = 1, rows, 1 do
                 local thisRow = actionButtons[rowIndex]
 
@@ -108,6 +128,8 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
         end
     end
 
+    -- @function actionBar:Clear
+    -- @desc Clears all items from the action bar
     function actionBar:Clear()
         for rowIndex = 1, rows, 1 do
             local thisRow = actionButtons[rowIndex]
@@ -119,6 +141,10 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
         end
     end
 
+    -- @function actionBar:SetInteractive
+    -- @desc Sets the interactive state of the action bar
+    -- @param flag (boolean) Whether the action bar should be interactive
+    -- @param doUpdate (boolean) Whether to update the UI immediately
     function actionBar:SetInteractive(flag, doUpdate)
 
         interactive = flag
@@ -136,10 +162,13 @@ local function _actionBar (thisName, rows, cols, scale, barIndex)
 
 end
 
-function _internal.stanceActive (flag)
+-- @function internalFunc.stanceActive
+-- @desc Handles the visibility of action bars based on stance
+-- @param flag (boolean) Whether to show the stance action bar
+function internalFunc.stanceActive(flag)
 
-	local debugId
-	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "_internal.stanceActive") end
+    local debugId
+    if nkDebug then debugId = nkDebug.traceStart(addonInfo.identifier, "internalFunc.stanceActive") end
 
 	if flag then
         uiElements.actionbars.main:SetVisible(false)
@@ -149,23 +178,26 @@ function _internal.stanceActive (flag)
         uiElements.actionbars.stance:SetVisible(false)
     end
 
-	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "_internal.stanceActive", debugId) end
-	
+    if nkDebug then nkDebug.traceEnd(addonInfo.identifier, "internalFunc.stanceActive", debugId) end
+
 end
 
-function _internal.uiActionBarInit(flag)
+-- @function internalFunc.uiActionBarInit
+-- @desc Initializes the action bars
+-- @param flag (boolean) Whether to initialize the action bars
+function internalFunc.uiActionBarInit(flag)
 
     if flag then
         if data.unitFramesBuild then
-            for k, v in pairs (uiElements.actionbars) do
+            for _, v in pairs(uiElements.actionbars) do
                 v:SetVisible(true)
             end
         else
-            _internal.uiActionBars()
+            internalFunc.uiActionBars()
         end
     else
         if data.unitFramesBuild then
-            for k, v in pairs (uiElements.actionbars) do
+            for _, v in pairs(uiElements.actionbars) do
                 v:SetVisible(false)
             end
         end
@@ -173,7 +205,9 @@ function _internal.uiActionBarInit(flag)
 
 end
 
-function _internal.uiActionBars()
+-- @function internalFunc.uiActionBars
+-- @desc Creates and initializes all action bars
+function internalFunc.uiActionBars()
 
     if data.unitFramesBuild then return end
     if nkUISetup.modules.actionBars.activate == false then return end
@@ -183,63 +217,66 @@ function _internal.uiActionBars()
     data.actionBarSetup = nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name]
 
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
-    local _roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }
+    local roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }
 
+    -- Ensure we have enough role designs for all roles
     local count = 0
-	
-	for k, v in pairs(InspectRoleList()) do
-		count = count + 1
-	end
+    
+    for _ in pairs(inspectRoleList()) do
+        count = count + 1
+    end
 
-	if count > #data.actionBarSetup.roles then
-		for idx = #data.actionBarSetup.roles + 1, count, 1 do
-			local temp = EnKai.tools.table.copy(_roleDesign)
-			table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- main bar
+    if count > #data.actionBarSetup.roles then
+        for idx = #data.actionBarSetup.roles + 1, count, 1 do
+            local temp = EnKai.tools.table.copy(roleDesign)
+            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- main bar
             table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- stance bar
             table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- left bar
             table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- right bar
             table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- right screen bar
 
-			table.insert(data.actionBarSetup.roles, temp)
-		end
-	end
-	
-	if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()] == nil then return end    
+            table.insert(data.actionBarSetup.roles, temp)
+        end
+    end
+    
+    if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()] == nil then return end
 
-    local mainActionBar = _actionBar("nkUI.mainActionBar", 2, 12, 1, 1)
-    mainActionBar:SetPoint ("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.x, nkUISetup.modules.actionBars.y)
+    -- Create and position all action bars
+    local mainActionBar = createActionBar("nkUI.mainActionBar", 2, 12, 1, 1)
+    mainActionBar:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.x, nkUISetup.modules.actionBars.y)
     mainActionBar:Populate()
     uiElements.actionbars.main = mainActionBar
-    
-    local stanceActionBar = _actionBar("nkUI.mainActionBarStance", 2, 12, 1, 2)
-    stanceActionBar:SetPoint ("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.x, nkUISetup.modules.actionBars.y)
+
+    local stanceActionBar = createActionBar("nkUI.mainActionBarStance", 2, 12, 1, 2)
+    stanceActionBar:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.x, nkUISetup.modules.actionBars.y)
     stanceActionBar:Populate()
     stanceActionBar:SetVisible(false)
     uiElements.actionbars.stance = stanceActionBar    
 
-    local leftActionBar = _actionBar("nkUI.leftActionBar", 2, 3, .8, 3)
-    leftActionBar:SetPoint ("CENTERRIGHT", mainActionBar, "CENTERLEFT", -nkUISetup.modules.actionBars.spacing, 0)
+    local leftActionBar = createActionBar("nkUI.leftActionBar", 2, 3, .8, 3)
+    leftActionBar:SetPoint("CENTERRIGHT", mainActionBar, "CENTERLEFT", -nkUISetup.modules.actionBars.spacing, 0)
     leftActionBar:SetInteractive(true)
     leftActionBar:Populate()
     uiElements.actionbars.left = leftActionBar
 
-    local rightActionBar = _actionBar("nkUI.rightActionBar", 2, 3, .8, 4)
-    rightActionBar:SetPoint ("CENTERLEFT", mainActionBar, "CENTERRIGHT", nkUISetup.modules.actionBars.spacing, 0)
+    local rightActionBar = createActionBar("nkUI.rightActionBar", 2, 3, .8, 4)
+    rightActionBar:SetPoint("CENTERLEFT", mainActionBar, "CENTERRIGHT", nkUISetup.modules.actionBars.spacing, 0)
     rightActionBar:SetInteractive(true)
     rightActionBar:Populate()
     uiElements.actionbars.right = rightActionBar
 
-    local rightScreenBar = _actionBar("nkUI.rightScreenBar", 12, 1, 1, 5)
-    rightScreenBar:SetPoint ("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.rightBarX, nkUISetup.modules.actionBars.rightBarY)
+    local rightScreenBar = createActionBar("nkUI.rightScreenBar", 12, 1, 1, 5)
+    rightScreenBar:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.rightBarX, nkUISetup.modules.actionBars.rightBarY)
     rightScreenBar:SetInteractive(true)
     rightScreenBar:Populate()
     uiElements.actionbars.rightScreen = rightScreenBar
 
     local bars = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars
-		
-	_internal.stanceActive (false)
-	
-    Command.Event.Attach(Event.TEMPORARY.Role, function ()
+    
+    internalFunc.stanceActive(false)
+    
+    -- Attach event handlers for role changes
+    Command.Event.Attach(Event.TEMPORARY.Role, function()
 
         -- add a 1 second delay cause of a RIFT bug not providing Ability details properly
         data.abilityMap = {}
@@ -251,7 +288,7 @@ function _internal.uiActionBars()
         rightActionBar:Clear()
         rightScreenBar:Clear()
 
-        local function populateActionBars ()
+        local function populateActionBars()
             mainActionBar:Populate()
             stanceActionBar:Populate()
             leftActionBar:Populate()
@@ -259,30 +296,32 @@ function _internal.uiActionBars()
             rightScreenBar:Populate()
         end
 
-        EnKai.events.addInsecure(populateActionBars, InspectTimeFrame(), 2)
+        EnKai.events.addInsecure(populateActionBars, inspectTimeFrame(), 2)
     end, "nkUI.TEMPORARY.Role")
 
-    for k, v in pairs (uiElements.actionbars) do
+    -- Set initial alpha for all action bars
+    for _, v in pairs(uiElements.actionbars) do
         v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
     end
 
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Start")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Update")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, _events.abCooldownProcess, "nkUI.EnKai.CDManager.Stop")
+    -- Attach event handlers for various game events
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, events.abCooldownProcess, "nkUI.EnKai.CDManager.Start")
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, events.abCooldownProcess, "nkUI.EnKai.CDManager.Update")
+    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, events.abCooldownProcess, "nkUI.EnKai.CDManager.Stop")
 
-    Command.Event.Attach(Event.Buff.Add, _events.abBuffAdd, "nkUI.Buff.Add")
-	Command.Event.Attach(Event.Buff.Remove, _events.abBuffRemove, "nkUI.Buff.Remove")
+    Command.Event.Attach(Event.Buff.Add, events.abBuffAdd, "nkUI.Buff.Add")
+    Command.Event.Attach(Event.Buff.Remove, events.abBuffRemove, "nkUI.Buff.Remove")
 
-    Command.Event.Attach(Event.Ability.New.Usable.False, _events.abAbilityUnusable, "nkUI.Ability.New.Usable.False")
-    Command.Event.Attach(Event.Ability.New.Usable.True, _events.abAbilityUsable, "nkUI.Ability.New.Usable.True")
+    Command.Event.Attach(Event.Ability.New.Usable.False, events.abAbilityUnusable, "nkUI.Ability.New.Usable.False")
+    Command.Event.Attach(Event.Ability.New.Usable.True, events.abAbilityUsable, "nkUI.Ability.New.Usable.True")
 
-    Command.Event.Attach(Event.Ability.New.Range.False, _events.abAbilityOutOfRange, "nkUI.Ability.New.Range.False")
-    Command.Event.Attach(Event.Ability.New.Range.True, _events.abAbilityInRange, "nkUI.Ability.New.Range.True")
+    Command.Event.Attach(Event.Ability.New.Range.False, events.abAbilityOutOfRange, "nkUI.Ability.New.Range.False")
+    Command.Event.Attach(Event.Ability.New.Range.True, events.abAbilityInRange, "nkUI.Ability.New.Range.True")
 
-    Command.Event.Attach(Event.Ability.New.Cooldown.Begin , _events.abGcdStart, "nkUI.Ability.New.Cooldown.Begin")
+    Command.Event.Attach(Event.Ability.New.Cooldown.Begin, events.abGcdStart, "nkUI.Ability.New.Cooldown.Begin")
 
-    Command.Event.Attach(Event.System.Secure.Enter, _events.abSecureEnter, "nkUI.System.Secure.Enter")
-    Command.Event.Attach(Event.System.Secure.Leave, _events.abSecureLeave, "nkUI.System.Secure.Leave")
+    Command.Event.Attach(Event.System.Secure.Enter, events.abSecureEnter, "nkUI.System.Secure.Enter")
+    Command.Event.Attach(Event.System.Secure.Leave, events.abSecureLeave, "nkUI.System.Secure.Leave")
 
     data.unitFramesBuild = true
 
