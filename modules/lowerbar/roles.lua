@@ -10,6 +10,7 @@ local lowerBar    = privateVars.lowerBar
 
 local inspectRoleList      = Inspect.Role.List
 local inspectTEMPORARYRole = Inspect.TEMPORARY.Role
+local inspectSystemSecure  = Inspect.System.Secure
 
 local stringFormat         = string.format
 
@@ -37,6 +38,8 @@ function lowerBar.lowerBarRoles()
     local roleDisplay = {}
     
     local function updateRoles()
+        if inspectSystemSecure() == true then return end
+
         local roles = inspectRoleList()
         local curRole = inspectTEMPORARYRole()
         

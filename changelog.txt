@@ -1,8 +1,9 @@
 V0.5.8
+    - update: A couple of SCT improvements        
+    - update: Some small SCT performance improvements
     - update: added a slight gradiant to lowerbar for better readability
     - update: OneBag will now open when regular bags open
-    - update: Items within a OneBag category are now sorted by name
-    - update: Some small SCT performance improvements
+    - update: Items within a OneBag category are now sorted by name    
     - update: A lot of code refactoring
     - fixed: Clearing an action bar item on cooldown will now clear cooldown
 

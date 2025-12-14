@@ -40,8 +40,8 @@ local TEXT_PARRY = "<font color='#ffffff'>Parry</font>"
 local TEXT_MISS = "<font color='#ffffff'>Miss</font>"
 local TEXT_IMMUNE = "<font color='#ffffff'>Immune</font>"
 local TEXT_DODGE = "<font color='#ffffff'>Dodge</font>"
-local TEXT_OVERHEAL = "Overheal: <font color='#00FF00'>%d</font>"
-local TEXT_HEAL = "+<font color='#00FF00'>%d</font>"
+local TEXT_OVERHEAL = "[%s] <font color='#00FF00'>%d OVERHEAL</font>"
+local TEXT_HEAL = "[%s] <font color='#00FF00'>%d</font>"
 local TEXT_DAMAGE = "<font color='%s'>%d</font>"
 local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font> %s"
 
@@ -329,7 +329,7 @@ end
 -- @return Whether the event is valid, whether it's from a pet, and whether it's incoming
 local function validEvent(info)
     if info.caster == EnKai.unit.getPlayerDetails().id then return true, false, false end
-    
+
     if petID ~= nil and info.caster == petID then
         if info.target == EnKai.unit.getPlayerDetails().id then
             return true, true, true
@@ -428,6 +428,7 @@ end
 -- Handles combat heal events
 -- @param info The combat heal information
 local function handleCombatHeal(self, info)
+
     local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
     
@@ -436,13 +437,15 @@ local function handleCombatHeal(self, info)
     local icon = getAbilityIcon(info)
     local healText
 
+    --dump (info)
+
     if info.overheal then
-        healText = string.format(TEXT_OVERHEAL, info.overheal)
+        healText = string.format(TEXT_OVERHEAL, internalFunc.shortenName(info.casterName, 10), info.overheal)
     else
-        healText = string.format(TEXT_HEAL, info.heal)
+        healText = string.format(TEXT_HEAL, internalFunc.shortenName(info.casterName, 10), info.heal)
     end
     
-    displayText(healText, icon, isPet, isIncoming, "heal")
+    displayText(healText, icon, isPet, true, "heal")
 end
 
 local function handleCooldownStart (_, info)
