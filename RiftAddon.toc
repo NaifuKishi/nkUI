@@ -16,8 +16,20 @@ RunOnStartup = {
 	"locales/localizationDE.lua",
 
 	"modules/lowerbar/lowerbar.lua",
+	"modules/lowerbar/currency.lua",
+	"modules/lowerbar/experience.lua",
+	"modules/lowerbar/faction.lua",
+	"modules/lowerbar/fps.lua",
+	"modules/lowerbar/location.lua",
+	"modules/lowerbar/roles.lua",
+	"modules/lowerbar/social.lua",
+	"modules/lowerbar/timeDate.lua",
 
 	"modules/onebag/onebag.lua",
+	"modules/onebag/bagUI.lua",
+	"modules/onebag/itemCategories.lua",
+	"modules/onebag/itemIcons.lua",
+	"modules/onebag/bagSlots.lua",
 
 	"modules/unitFrames/events.lua",
 	"modules/unitFrames/statevents.lua",
