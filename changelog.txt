@@ -1,5 +1,7 @@
 V0.5.8
     - update: OneBag will now open when regular bags open
+    - update: Some small SCT performance improvements
+    - update: A lot of code refactoring
     - fixed: Clearing an action bar item on cooldown will now clear cooldown
 
 V0.5.7

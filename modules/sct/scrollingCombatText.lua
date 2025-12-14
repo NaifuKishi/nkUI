@@ -2,10 +2,12 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local data        = privateVars.data
+local uiElements  = privateVars.uiElements
+local internalFunc = privateVars.internalFunc
+local events      = privateVars.events
+
+---------- init local variables ---------
 
 local InspectTimeFrame          = Inspect.Time.Frame
 local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
@@ -20,28 +22,54 @@ local stringFormat      = string.format
 
 local mathRandom        = math.random
 local mathCos           = math.cos
-local mathSin          = mathSin
+local mathSin           = math.sin
 local mathRad           = math.rad
 
----------- init local variables ---------
+---------- init variables ---------
 
 local name = "scrollingcombattext"
+
+local DEFAULT_FONTSIZE = 24
+local DEFAULT_CRIT_FONTSIZE = 30
+
+local PET_FONTSIZE = 18
+local PET_CRIT_FONTSIZE = 24
+
+local TEXT_RESIST = "<font color='#ffffff'>Resist</font>"
+local TEXT_PARRY = "<font color='#ffffff'>Parry</font>"
+local TEXT_MISS = "<font color='#ffffff'>Miss</font>"
+local TEXT_IMMUNE = "<font color='#ffffff'>Immune</font>"
+local TEXT_DODGE = "<font color='#ffffff'>Dodge</font>"
+local TEXT_OVERHEAL = "Overheal: <font color='#00FF00'>%d</font>"
+local TEXT_HEAL = "+<font color='#00FF00'>%d</font>"
+local TEXT_DAMAGE = "<font color='%s'>%d</font>"
+local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font>"
+
+local COLOR_LIFE = "#4CAF50"
+local COLOR_DEATH = "#9C27B0"
+local COLOR_AIR = "#B0BEC5"
+local COLOR_EARTH = "#795548"
+local COLOR_FIRE = "#FF5722"
+local COLOR_WATER = "#1976D2"    
+
 local framePool = {}
 local activeFrames = {}
 local sctInit = false
 
-local defaultSize = 24
-local critSize = 32
-local petID, petName   
 local lastMessage, messageY = nil, 0
+local petID, petName   
 local lastAccumulated = 0
 
 local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
 
-local function getAbilityIcon(info)
+---------- local functions ---------
 
+-- Gets the ability icon for a given ability
+-- @param info Table containing ability information
+-- @return The ability icon path
+local function getAbilityIcon(info)
     local icon
     local abilityNew = info.abilityNew
     local ability = info.ability
@@ -56,7 +84,7 @@ local function getAbilityIcon(info)
                 icon = details.icon
             end
         else
-            icon = iconCache[info.abilityNew]
+            icon = iconCache[abilityNew]
         end
     else
         if iconCache[ability] == nil then
@@ -71,10 +99,10 @@ local function getAbilityIcon(info)
     end
 
     return icon
-
 end
 
-
+-- Creates a new text frame for displaying combat text
+-- @return The created text frame
 local function createTextFrame()
     local name = EnKai.tools.uuid()
 
@@ -95,8 +123,9 @@ local function createTextFrame()
     return frame
 end
 
+-- Gets a frame from the pool or creates a new one
+-- @return A text frame for displaying combat text
 local function getFrame()
-
     if #framePool > 0 then
         return table.remove(framePool)        
     else
@@ -104,22 +133,24 @@ local function getFrame()
     end
 end
 
+-- Releases a frame back to the pool
+-- @param frame The frame to release
 local function releaseFrame(frame)
-    
     frame:SetVisible(false)
-    frame.icon:SetVisible(false) -- Hide the icon when releasing the frame
+    frame.icon:SetVisible(false)
     table.insert(framePool, frame)
-
 end
 
+-- Displays a message at the top center of the screen
+-- @param message The message to display
+-- @param duration How long to display the message
 local function displayMessageAtTopCenter(message, duration)
-    
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
     frame:SetFontSize(28)
-    frame:SetFontColor(1, 1, 1, 1) -- White color
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (nkUISetup.modules.sct.messageOffset) + messageY) -- Position at top center
+    frame:SetFontColor(1, 1, 1, 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (nkUISetup.modules.sct.messageOffset) + messageY)
     frame:SetVisible(true)
 
     lastMessage = frame:GetName()
@@ -134,8 +165,7 @@ local function displayMessageAtTopCenter(message, duration)
                 return 9999
             end
             coroutine.yield(idx)
-        end    
-        
+        end
     end)
 
     local callBack = function()
@@ -143,31 +173,33 @@ local function displayMessageAtTopCenter(message, duration)
             lastMessage = nil
             messageY = 0
         end
-
         releaseFrame(frame)
     end
 
     EnKai.coroutines.add({
         func = animationCoroutine,
         callBack = callBack,
-        counter = duration * 100, -- Adjust counter based on duration
+        counter = duration * 100,
         active = true
     })
 end
 
+-- Displays a moving message on the screen
+-- @param message The message to display
+-- @param duration How long to display the message
 local function displayMovingMessage(message, duration)
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
     frame:SetFontSize(28)
-    frame:SetFontColor(0.678, 0.847, 0.902, 1) -- Light blue color (RGB: 173, 215, 230)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0) -- Start at center
+    frame:SetFontColor(0.678, 0.847, 0.902, 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     frame:SetVisible(true)
 
     local start = InspectTimeFrame()
     local startY = -200
-    local endY = -400  -- Move upward (negative Y)
-
+    local endY = -400
+    
     local animationCoroutine = coroutine.create(function()
         for idx = 1, duration * 100, 1 do
             local elapsed = InspectTimeFrame() - start
@@ -175,7 +207,6 @@ local function displayMovingMessage(message, duration)
                 return 9999
             end
             local t = elapsed / duration
-            -- Move the frame upward
             local currentY = startY + (endY - startY) * t
             frame:SetPoint("CENTER", UIParent, "CENTER", 0, currentY)
             coroutine.yield(idx)
@@ -194,8 +225,14 @@ local function displayMovingMessage(message, duration)
     })
 end
 
+-- Animates a frame with combat text
+-- @param frame The frame to animate
+-- @param text The text to display
+-- @param icon The icon to display
+-- @param x The x position
+-- @param y The y position
+-- @param inComing Whether the damage is incoming
 local function animateFrame(frame, text, icon, x, y, inComing)
-
     frame:SetText(text, true)
     frame:SetVisible(true)
 
@@ -206,50 +243,57 @@ local function animateFrame(frame, text, icon, x, y, inComing)
 
     local start = InspectTimeFrame()
     local duration = 1.5
-    local startX, startY = x, y -100  -- Center of the screen
-    local startAngle = mathRad(45)  -- Start at lower-left
-    local endAngle = mathRad(-45)     -- End at upper-right
-
+    local startX, startY = x, y - 100
+    local startAngle = mathRad(45)
+    local endAngle = mathRad(-45)
+    
     if inComing == true then
-        startAngle = mathRad(135)  -- Start at lower-right
-        endAngle = mathRad(225)    -- End at upper-left
+        startAngle = mathRad(135)
+        endAngle = mathRad(225)
     end
 
     local radius = 200
-
-    local animationCoroutine = coroutine.create(function ()
+    
+    local animationCoroutine = coroutine.create(function()
         for idx = 1, 200, 1 do
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
                 return 9999
             end
             local t = elapsed / duration
-            -- Interpolate the angle
             local currentAngle = startAngle + (endAngle - startAngle) * t
-            -- Calculate offsets using the interpolated angle
             local currentXOffset = radius * mathCos(currentAngle)
             local currentYOffset = radius * mathSin(currentAngle)
-            -- Apply the arc movement relative to the center of the screen, starting at Y = 100
             frame:SetPoint("CENTER", UIParent, "CENTER", startX + currentXOffset, startY + currentYOffset + 100)
             coroutine.yield(idx)
         end
     end)
-    local callBack = function ()
+    
+    local callBack = function()
         releaseFrame(frame)
     end
-    EnKai.coroutines.add({ func = animationCoroutine, callBack = callBack, counter = 200, active = true })
+    
+    EnKai.coroutines.add({
+        func = animationCoroutine,
+        callBack = callBack,
+        counter = 200,
+        active = true
+    })
 end
 
-
+-- Displays combat text on the screen
+-- @param sctText The text to display
+-- @param icon The icon to display
+-- @param isPet Whether the damage is from a pet
+-- @param inComing Whether the damage is incoming
+-- @param crit Whether the damage is a critical hit
 local function displayText(sctText, icon, isPet, inComing, crit)
-
     local xVariation = mathRandom(0, 50)
-    if inComing then xVariation = mathRandom(0, -50) end 
-
+    if inComing then xVariation = mathRandom(0, -50) end
+    
     local yVariation = mathRandom(-50, 50)
 
     local text = sctText
-
 
     if isPet and not inComing then
         xVariation = xVariation + 100 
@@ -262,56 +306,56 @@ local function displayText(sctText, icon, isPet, inComing, crit)
         frame:SetTextFont(addonInfo.id, "MontserratBold")
         
         if isPet then
-            frame:SetFontSize(critSize * .8)
+            frame:SetFontSize(PET_CRIT_FONTSIZE)
         else
-            frame:SetFontSize(critSize)
+            frame:SetFontSize(DEFAULT_CRIT_FONTSIZE)
         end
     else
         frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
+        
         if isPet then
-            frame:SetFontSize(defaultSize * .8)
+            frame:SetFontSize(PET_FONTSIZE)
         else
-            frame:SetFontSize(defaultSize)
+            frame:SetFontSize(DEFAULT_FONTSIZE)
         end
     end
 
     animateFrame(frame, text, icon, xVariation, yVariation, inComing)
 end
 
-local function _validEvent (info)
-
-    --- check outgoing
-
-    if info.caster == data.playerID then return true, false, false end    
-    if petID ~= nil and info.caster == petID then 
-        if info.target == data.playerID then 
+-- Validates combat events
+-- @param info The combat event information
+-- @return Whether the event is valid, whether it's from a pet, and whether it's incoming
+local function validEvent(info)
+    if info.caster == data.playerID then return true, false, false end
+    
+    if petID ~= nil and info.caster == petID then
+        if info.target == data.playerID then
             return true, true, true
         else
             return true, true, false 
         end
     end
-
-    localUnitsTypes = EnKai.unit.getUnitTypes (info.caster) 
     
-    if EnKai.tools.table.isMember (localUnitsTypes, "player.pet") then
+    local localUnitsTypes = EnKai.unit.getUnitTypes(info.caster)
+    
+    if EnKai.tools.table.isMember(localUnitsTypes, "player.pet") then
         petID = info.caster
-        petName = _internal.shortenName (info.casterName, 10)
+        petName = internalFunc.shortenName(info.casterName, 10)
         return true, true, false
     end
-
-    --- check incoming
 
     if info.target == data.playerID then return true, false, true end
     
     return false, false, false
-
 end
 
-local function _fctEventCombatDamage(_, info)
-
+-- Handles combat damage events
+-- @param info The combat damage information
+local function handleCombatDamage(self, info)
     if info.damage == nil then return end
-
-    local valid, isPet, isIncoming = _validEvent (info)
+    
+    local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
 
     local icon = getAbilityIcon(info)
@@ -319,124 +363,86 @@ local function _fctEventCombatDamage(_, info)
     local damageText = ""
 
     if info.type == "life" then
-        damageText = stringFormat("<font color='#4CAF50'>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage)
     elseif info.type == "death" then
-        damageText = stringFormat("<font color='#9C27B0'>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage)
     elseif info.type == "air" then
-        damageText = stringFormat("<font color='#B0BEC5'>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage)
     elseif info.type == "earth" then
-        damageText = stringFormat("<font color='#795548'>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage)
     elseif info.type == "fire" then
-        damageText = stringFormat("<font color='#FF5722 '>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage)
     elseif info.type == "water" then
-        damageText = stringFormat("<font color='#1976D2'>%d</font>", info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage)
     elseif info.damage ~= nil then
         damageText = stringFormat("%d", info.damage)
     end
-
-    -- Check for critical hit
-    if info.crit then
-        damageText = damageText .. " (Crit)"
-    end
-
-    -- Check for additional damage information
+    
+    --if info.crit then
+    --    damageText = stringFormat("%s (CRIT)", damageText)
+    --end
+    
     if info.damageAbsorbed then
-        damageText = damageText .. string.format(" [%d Absorbed]", info.damageAbsorbed)
+        damageText = stringFormat("%s [%d Absorbed]",damageText, info.damageAbsorbed)
     end
 
     if info.damageBlocked then
-        damageText = damageText .. string.format(" [%d Blocked]", info.damageBlocked)
+        damageText = stringFormat("%s [%d Blocked]", damageText, info.damageBlocked)
     end
 
     if info.damageIntercepted then
-        damageText = damageText .. string.format(" [%d Intercepted]", info.damageIntercepted)
+        damageText = stringFormat("%s [%d Intercepted]", damageText, info.damageIntercepted)
     end
 
     if info.damageModified then
-        damageText = damageText .. string.format(" [%d Modified]", info.damageModified)
+        damageText = stringFormat("%s [%d Modified]", damageText, info.damageModified)
     end
 
     if info.overkill then
-        damageText = damageText .. string.format(" [%d Overkill]", info.overkill)
+        damageText = stringFormat("%s [%d Overkill]", damageText, info.overkill)
     end
 
     if isIncoming == true then
-        damageText = stringFormat("<font color='#FF0000'>[%s]</font> %s", _internal.shortenName (EnKaiUnitGetUnitDetail (info.caster).name, 10), damageText)
+        damageText = stringFormat(TEXT_INCOMING, internalFunc.shortenName(EnKaiUnitGetUnitDetail(info.caster).name, 10), damageText)
     end
-
-    -- If it's a critical hit, make the font larger and yellow
-    if info.crit then        
-        displayText(damageText, icon, isPet, isIncoming, string.format("damage.%s.crit", true))
+    
+    if info.crit then
+        displayText(stringFormat("%s (CRIT)", damageText), icon, isPet, isIncoming, true)
     else
-        displayText(damageText, icon, isPet, isIncoming, string.format("damage.%s", false))
+        displayText(damageText, icon, isPet, isIncoming, false)
     end
-    
 end
 
-local function _fctEventCombatDodge(_, info)
-
-   local valid, isPet, isIncoming = _validEvent (info)
+-- Handles combat events
+-- @param info The combat information
+-- @param text The text to display
+local function handleCombatEvent(info, text)
+    local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
-
-    local dodgeText = "<font color='#ffffff'>Dodge</font>"
-    displayText(dodgeText, nil, isPet, isIncoming)
+    displayText(text, nil, isPet, isIncoming)
 end
 
-local function _fctEventCombatImmune(_, info)
-    local valid, isPet, isIncoming = _validEvent (info)
-    if valid == false then return end
-
-    local immuneText = "<font color='#ffffff'>Immune</font>"
-
-    displayText(immuneText, nil, isPet, isIncoming)
-end
-
-local function _fctEventCombatMiss(_, info)
-    local valid, isPet, isIncoming = _validEvent (info)
-    if valid == false then return end
-
-    local missText = "<font color='#ffffff'>Miss</font>"
-    displayText(missText, nil, isPet, isIncoming)
-end
-
-local function _fctEventCombatParry(_, info)
-    local valid, isPet, isIncoming = _validEvent (info)
-    if valid == false then return end
-
-    local parryText = "<font color='#ffffff'>Parry</font>"
-    displayText(parryText, nil, isPet, isIncoming)
-end
-
-local function _fctEventCombatResist(_, info)
-    local valid, isPet, isIncoming = _validEvent (info)
-    if valid == false then return end
-
-    local resistText = "<font color='#ffffff'>Resist</font>"
-    displayText(resistText, nil, isPet, isIncoming)
-end
-
-local function _fctEventCombatHeal(_, info)
-
-    local valid, isPet, isIncoming = _validEvent (info)
-
+-- Handles combat heal events
+-- @param info The combat heal information
+local function handleCombatHeal(self, info)
+    local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
     
-    if info.heal == nil and info.overheal == nil then  return end
-
+    if info.heal == nil and info.overheal == nil then return end
+    
     local icon = getAbilityIcon(info)
-
-    local healText 
+    local healText
 
     if info.overheal then
-        healText = string.format("Overheal: <font color='#00FF00'>%d</font>", info.overheal)
+        healText = string.format(TEXT_OVERHEAL, info.overheal)
     else
-        healText = string.format("+<font color='#00FF00'>%d</font>", info.heal)
+        healText = string.format(TEXT_HEAL, info.heal)
     end
     
     displayText(healText, icon, isPet, isIncoming, "heal")
 end
 
-function _fctEventCooldownStart (_, info)
+local function handleCooldownStart (_, info)
 
     local abilities = {}
     local newAbilities = false
@@ -462,7 +468,7 @@ function _fctEventCooldownStart (_, info)
 
 end
 
-function _fctEventCooldownEnd (_, info)
+local function handleCooldownEnd (_, info)
 
     for key, details in pairs (info) do
         if abilityCache[key] ~= nil and abilityTimer[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
@@ -473,21 +479,21 @@ function _fctEventCooldownEnd (_, info)
 
 end
 
-function _internal.sctInit()
+function internalFunc.sctInit()
     
     local experience = InspectExperience()
     lastAccumulated = experience.accumulated    
 
-    Command.Event.Attach(Event.Combat.Damage, _fctEventCombatDamage, "nkUI.SCT.Combat.Damage")
-    Command.Event.Attach(Event.Combat.Dodge, _fctEventCombatDodge, "nkUI.SCT.Combat.Dodge")
-    Command.Event.Attach(Event.Combat.Immune, _fctEventCombatImmune, "nkUI.SCT.Combat.Immune")
-    Command.Event.Attach(Event.Combat.Miss, _fctEventCombatMiss, "nkUI.SCT.Combat.Miss")
-    Command.Event.Attach(Event.Combat.Parry, _fctEventCombatParry, "nkUI.SCT.Combat.Parry")
-    Command.Event.Attach(Event.Combat.Resist, _fctEventCombatResist, "nkUI.SCT.Combat.Resist")
-    Command.Event.Attach(Event.Combat.Heal, _fctEventCombatHeal, "nkUI.SCT.Combat.Heal")
+    Command.Event.Attach(Event.Combat.Damage, handleCombatDamage, "nkUI.SCT.Combat.Damage")
+    Command.Event.Attach(Event.Combat.Dodge, function( _, info ) handleCombatEvent(info, TEXT_DODGE) end, "nkUI.SCT.Combat.Dodge")
+    Command.Event.Attach(Event.Combat.Immune, function( _, info ) handleCombatEvent(info, TEXT_IMMUNE) end, "nkUI.SCT.Combat.Immune")
+    Command.Event.Attach(Event.Combat.Miss, function( _, info ) handleCombatEvent(info, TEXT_MISS) end, "nkUI.SCT.Combat.Miss")
+    Command.Event.Attach(Event.Combat.Parry, function( _, info ) handleCombatEvent(info, TEXT_PARRY) end, "nkUI.SCT.Combat.Parry")
+    Command.Event.Attach(Event.Combat.Resist, function( _, info ) handleCombatEvent(info, TEXT_RESIST) end, "nkUI.SCT.Combat.Resist")
+    Command.Event.Attach(Event.Combat.Heal, handleCombatHeal, "nkUI.SCT.Combat.Heal")
 
-    Command.Event.Attach(Event.Ability.New.Cooldown.Begin, _fctEventCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
-    Command.Event.Attach(Event.Ability.New.Cooldown.End, _fctEventCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
+    Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
+    Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
 
     Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
         if lastAccumulated == nil then lastAccumulated = accumulated end
@@ -501,11 +507,11 @@ function _internal.sctInit()
 end
 
 
-function _internal.sctToggle(value)
+function internalFunc.sctToggle(value)
 
     if value then
         if sctInit then return end
-        _internal.sctInit()
+        internalFunc.sctInit()
     else
         if sctInit == false then return end
 

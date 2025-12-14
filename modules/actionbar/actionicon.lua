@@ -24,7 +24,7 @@ local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
 
 local stringGSub        		= string.gsub
-local mathFloor					= mathFloor
+local mathFloor					= math.floor
 
 -- Predefined constants
 local DEFAULT_SCALE = 1
