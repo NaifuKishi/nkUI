@@ -14,6 +14,9 @@ local _tooltip = {}
 local displayDelay = nil
 local tooltipPos = nil
 
+local mathFloor    = math.floor
+local mathpi       = math.pi
+
 ---------- init variables ---------
 
 ---------- init local function ---------
@@ -93,7 +96,7 @@ function _tooltip.ui ()
                   {xProportional = 0, yProportional = 0}
                   }
     local fill = {  type = "gradientLinear", 
-                    transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), 
+                    transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), 
                     color = {   { r = 0, g = .7, b = .0, a = 1, position = 0},  
                                 { r =.5, g = .5, b = .5, a = 1, position = .2 },  
                                 { r = 0.5, g = .5, b = .5, a = 1, position = 1 }
@@ -222,7 +225,7 @@ function _tooltip.ui ()
             else
                 local healthPercent = health / healthMax
                 healthBar:SetWidth(healthPercent * healthBarBG:GetWidth() -2)
-                healthText:SetText(string.format("%d", math.floor(healthPercent * 100)))
+                healthText:SetText(string.format("%d", mathFloor(healthPercent * 100)))
             end
         end
 
@@ -397,8 +400,8 @@ function _tooltip.item(iteminfo)
 
     -- Item Sell Price
     if itemDetail.sell then
-        local platin = math.floor(itemDetail.sell / 10000)
-        local gold = math.floor((itemDetail.sell - (platin * 10000)) / 100)
+        local platin = mathFloor(itemDetail.sell / 10000)
+        local gold = mathFloor((itemDetail.sell - (platin * 10000)) / 100)
         local silver = itemDetail.sell - (platin * 10000) - (gold * 100) 
 
         local sellPrice = nil
@@ -510,8 +513,8 @@ function _tooltip.ability(abilityInfo)
 
     -- Ability Cooldown
     if abilityDetail.cooldown then
-        local minutes = math.floor(abilityDetail.cooldown / 60)
-        local seconds = math.floor(abilityDetail.cooldown % 60)
+        local minutes = mathFloor(abilityDetail.cooldown / 60)
+        local seconds = mathFloor(abilityDetail.cooldown % 60)
         local cooldownText = ""
 
         if minutes > 0 then

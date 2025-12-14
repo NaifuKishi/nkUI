@@ -12,6 +12,7 @@ local _events   = privateVars.events
 local InspectMouse  = Inspect.Mouse
 
 local stringFormat  = string.format
+local mathFloor     = math.floor
 
 local gridFrames = {}
 local moveFrames = {}
@@ -183,7 +184,7 @@ function _internal.initMove ()
                   {xProportional = 0, yProportional = 0}
                   }  
 
-    for idx = 1, math.floor((height / 2) / 25), 1 do
+    for idx = 1, mathFloor((height / 2) / 25), 1 do
         local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * 25)
         thisGrid:SetShape(path, nil, stroke)
@@ -193,7 +194,7 @@ function _internal.initMove ()
         table.insert(gridFrames, thisGrid)
     end
 
-    for idx = 1, math.floor((height / 2) / 25), 1 do
+    for idx = 1, mathFloor((height / 2) / 25), 1 do
         local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * -25)
         thisGrid:SetShape(path, nil, stroke)
@@ -203,7 +204,7 @@ function _internal.initMove ()
         table.insert(gridFrames, thisGrid)
     end    
 
-    for idx = 1, math.floor((width / 2) / 25), 1 do
+    for idx = 1, mathFloor((width / 2) / 25), 1 do
         local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * 25, 0)
         thisGrid:SetShape(path, nil, stroke)
@@ -213,7 +214,7 @@ function _internal.initMove ()
         table.insert(gridFrames, thisGrid)
     end
 
-    for idx = 1, math.floor((width / 2) / 25), 1 do
+    for idx = 1, mathFloor((width / 2) / 25), 1 do
         local thisGrid = EnKai.uiCreateFrame("nkCanvas", EnKai.tools.uuid(), uiElements.contextLowestRestricted)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * -25, 0)
         thisGrid:SetShape(path, nil, stroke)

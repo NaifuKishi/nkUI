@@ -17,6 +17,7 @@ local InspectUnitLookup     = Inspect.Unit.Lookup
 local InspectSystemSecure   = Inspect.System.Secure
 
 local mathFloor     = math.floor
+local mathpi        = math.pi
 local stringFormat  = string.format
 local stringLen     = string.len
 local stringSub     = string.sub
@@ -34,12 +35,12 @@ local name = "uiFrames"
 ---------- init variables ---------
 
 local callingColor = {
-    rogue = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    warrior = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = .79, g = .61, b = .43, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    cleric = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 1, g = 1, b = 1, a = 1, position = 0},  { r =1, g = 1, b = 1, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    mage = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 0.25, g = .78, b = .92, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    primalist = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 0, g = .44, b = .87, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = .4, g = .67, b = .05, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+    rogue = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    warrior = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .79, g = .61, b = .43, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    cleric = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = 1, b = 1, a = 1, position = 0},  { r =1, g = 1, b = 1, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    mage = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0.25, g = .78, b = .92, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    primalist = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0, g = .44, b = .87, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .4, g = .67, b = .05, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
 }
 
 ---------- local function block ---------

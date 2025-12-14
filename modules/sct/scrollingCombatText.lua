@@ -18,6 +18,11 @@ local stringFind        = string.find
 local stringMatch       = string.match
 local stringFormat      = string.format
 
+local mathRandom        = math.random
+local mathCos           = math.cos
+local mathSin          = mathSin
+local mathRad           = math.rad
+
 ---------- init local variables ---------
 
 local name = "scrollingcombattext"
@@ -202,12 +207,12 @@ local function animateFrame(frame, text, icon, x, y, inComing)
     local start = InspectTimeFrame()
     local duration = 1.5
     local startX, startY = x, y -100  -- Center of the screen
-    local startAngle = math.rad(45)  -- Start at lower-left
-    local endAngle = math.rad(-45)     -- End at upper-right
+    local startAngle = mathRad(45)  -- Start at lower-left
+    local endAngle = mathRad(-45)     -- End at upper-right
 
     if inComing == true then
-        startAngle = math.rad(135)  -- Start at lower-right
-        endAngle = math.rad(225)    -- End at upper-left
+        startAngle = mathRad(135)  -- Start at lower-right
+        endAngle = mathRad(225)    -- End at upper-left
     end
 
     local radius = 200
@@ -222,8 +227,8 @@ local function animateFrame(frame, text, icon, x, y, inComing)
             -- Interpolate the angle
             local currentAngle = startAngle + (endAngle - startAngle) * t
             -- Calculate offsets using the interpolated angle
-            local currentXOffset = radius * math.cos(currentAngle)
-            local currentYOffset = radius * math.sin(currentAngle)
+            local currentXOffset = radius * mathCos(currentAngle)
+            local currentYOffset = radius * mathSin(currentAngle)
             -- Apply the arc movement relative to the center of the screen, starting at Y = 100
             frame:SetPoint("CENTER", UIParent, "CENTER", startX + currentXOffset, startY + currentYOffset + 100)
             coroutine.yield(idx)
@@ -238,10 +243,10 @@ end
 
 local function displayText(sctText, icon, isPet, inComing, crit)
 
-    local xVariation = math.random(0, 50)
-    if inComing then xVariation = math.random(0, -50) end 
+    local xVariation = mathRandom(0, 50)
+    if inComing then xVariation = mathRandom(0, -50) end 
 
-    local yVariation = math.random(-50, 50)
+    local yVariation = mathRandom(-50, 50)
 
     local text = sctText
 

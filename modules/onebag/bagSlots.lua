@@ -107,8 +107,6 @@ function oneBag.getBagSlots ()
 
         local bagSlot = slots[stringFormat("sibg.%03d", idx)]
 
-        --dump (bagSlot)
-
         if bagSlot.icon == nil then
             uiElements.oneBagBagSlots:SetIcon(idx, addonInfo.identifier, "gfx/iconLockedBagSlot.png")
             uiElements.oneBagBagSlots:SetTint (idx, true)

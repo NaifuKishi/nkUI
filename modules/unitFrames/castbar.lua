@@ -8,6 +8,8 @@ local _internal		= privateVars.internalFunc
 local _events		= privateVars.events
 local _ui			= privateVars.ui
 
+local mathpi		= math.pi
+
 ---------- init local variables ---------
 
 local _eventHandlers = {}
@@ -45,7 +47,7 @@ function _internal.createCastBar (unitType, setup)
                   {xProportional = 0, yProportional = 0}
                   }  
 
-	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 0, g = .40, b = .80, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0, g = .40, b = .80, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
 	castbarFill:SetShape (path, color, stroke)
 
 	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)

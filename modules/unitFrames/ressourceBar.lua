@@ -16,6 +16,7 @@ local InspectBuffDetail     = Inspect.Buff.Detail
 local InspectUnitLookup     = Inspect.Unit.Lookup
 
 local mathFloor     = math.floor
+local mathpi        = math.pi
 local stringFormat  = string.format
 
 ---------- init global variables ---------
@@ -23,12 +24,12 @@ local stringFormat  = string.format
 local name = "uiRessourceBar"
 
 local ressourceColor = {
-    energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
     focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 1, 0, 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
-    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
 }
 
 -- ressource bar function

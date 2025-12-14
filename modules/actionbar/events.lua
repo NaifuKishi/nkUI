@@ -18,7 +18,9 @@ local events      	= privateVars.events
 
 -- Cache frequently used functions and values
 
-local inspectAbilityNewDetail = Inspect.Ability.New.Detail
+local inspectAbilityNewDetail  = Inspect.Ability.New.Detail
+
+local mathFloor                = math.floor
 
 -- init local variables
 
@@ -149,15 +151,15 @@ function events.abCooldownProcess(_, addon, info)
             if not details.remaining or details.remaining < 0 then
                 updateAbilityStates(key, function(frame) frame:SetCooldown() end)
             elseif details.remaining <= 1 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining)), percent) end)
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining)), percent) end)
             elseif details.remaining > 14400 then
                 updateAbilityStates(key, function(frame) frame:SetCooldown() end)
             elseif details.remaining > 3600 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining / 3600)) .. "h", percent) end)
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining / 3600)) .. "h", percent) end)
             elseif details.remaining > 60 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining / 60)) .. "m", percent) end)
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining / 60)) .. "m", percent) end)
             else
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(math.floor(details.remaining)), percent) end)
+                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining)), percent) end)
             end
         end
     end

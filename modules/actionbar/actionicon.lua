@@ -24,6 +24,7 @@ local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
 
 local stringGSub        		= string.gsub
+local mathFloor					= mathFloor
 
 -- Predefined constants
 local DEFAULT_SCALE = 1
@@ -129,7 +130,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			for idx = 1, 100, 1 do		
 				local remaining = duration - (inspectTimeFrame() - start)
 				if inspectTimeFrame() - start > duration then return 9999 end
-				cooldown:SetText(tostring(math.floor(remaining * 10) / 10))
+				cooldown:SetText(tostring(mathFloor(remaining * 10) / 10))
 				coroutine.yield(idx)
 			end
 		end)
@@ -137,7 +138,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		cooldownActive = true		
 		cooldown:SetVisible(true)
 		cooldownTint:SetVisible(true)
-		cooldown:SetText(tostring(math.floor(duration * 10) / 10))
+		cooldown:SetText(tostring(mathFloor(duration * 10) / 10))
 
 		EnKai.coroutines.add ({ func = gcdCoRoutine, counter = 100, active = true })
 	end	
