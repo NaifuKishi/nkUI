@@ -126,7 +126,7 @@ function oneBag.createItemIcon(name, parent)
                 movedItem = thisItemID
             end
         else
-            Command.Item.Standard.Right(thisItemID)
+            if thisItemID then Command.Item.Standard.Right(thisItemID) end
         end
     end, name .. "Event.Right.Down")
     

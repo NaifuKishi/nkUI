@@ -48,11 +48,13 @@ function internalFunc.oneBagInit()
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
         Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].SlotUpdate, function(_, slots)
+            --dump (slots)
+
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
                         if v == false then
-                            cachedItems[k] = nil
+                            cachedItems[k] = nil -- hier scheint es das problem zu geben bei item use
                         else
                             cachedItems[k] = EnKai.inventory.GetItemByKey(v)
                         end
@@ -94,6 +96,23 @@ function oneBag.populateBag(forceCacheUpdate)
         categories[realCategory][k] = v
     end
 
+    -- Sort items within each category by item name
+    for category, items in pairs(categories) do
+        local sortedItems = {}
+        for slot, itemDetails in pairs(items) do
+            table.insert(sortedItems, {slot = slot, details = itemDetails})
+        end
+
+        table.sort(sortedItems, function(a, b)
+            return a.details.name < b.details.name
+        end)
+
+        categories[category] = {
+            original = items,
+            sorted = sortedItems
+        }
+    end
+
     local sortedCategories = EnKai.tools.table.getSortedKeys (categories)
 
     for k, v in pairs(categoryLabels) do
@@ -119,7 +138,7 @@ function oneBag.populateBag(forceCacheUpdate)
     --    for category, content in pairs(categories) do
 
         local category = sortedCategories[idx]
-        local content = categories[category]
+        local content = categories[category].sorted
         local thisCategory = categoryLabels[category]
 
         if thisCategory == nil then
@@ -135,7 +154,11 @@ function oneBag.populateBag(forceCacheUpdate)
         firstIcon = thisCategory
         local cols, rows = 0, 1
 
-        for slot, itemDetails in pairs(content) do
+        for idx =1, #content, 1 do
+        --for slot, itemDetails in pairs(content) do
+            local slot = content[idx].slot
+            local itemDetails = content[idx].details
+
             local thisIcon = itemIcons[slot]
 
             if itemIcons[slot] == nil then
@@ -238,5 +261,6 @@ function oneBag.itemSlot (_, slots)
 end
 
 function oneBag.itemUpdate (_, a, b)
-    --print "Hossa"
+    --dump (a)
+    --dump (b)
 end

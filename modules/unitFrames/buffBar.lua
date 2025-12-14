@@ -78,9 +78,9 @@ function internalFunc.buffBar.addBuff(unit, buffs)
             buffId2BuffType[k] = buffIdentifier
             
             if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                _internal.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+                internalFunc.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
             else
-                _internal.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
+                internalFunc.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
             end
         end
     end
