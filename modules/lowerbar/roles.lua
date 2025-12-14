@@ -4,18 +4,19 @@ local addonInfo, privateVars = ...
 
 local data        = privateVars.data
 local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local lowerBar    = privateVars.lowerBar
 
 ---------- init local variables ---------
 
 local inspectRoleList      = Inspect.Role.List
 local inspectTEMPORARYRole = Inspect.TEMPORARY.Role
+
 local stringFormat         = string.format
 
 ---------- local functions ---------
 
 -- Creates and manages the role selection display
-function internalFunc.lowerBarRoles()
+function lowerBar.lowerBarRoles()
     local name = "lowerbar.roles"
     
     local datasetRole = EnKai.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)

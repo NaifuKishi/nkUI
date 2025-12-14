@@ -13,6 +13,8 @@ local oneBag        = privateVars.oneBag
 local InspectTimeReal = Inspect.Time.Real
 
 local stringFormat      = string.format
+local stringFind        = string.find
+local stringMatch       = string.match
 
 ---------- init variables ---------
 
@@ -215,7 +217,7 @@ function oneBag.itemSlot (_, slots)
         
         if stringFind(thisSlot, "sibg.") then
             doBatSlotsUpdate = true
-        elseif string.find(thisSlot, "si") then
+        elseif stringFind(thisSlot, "si") then
             doInventoryUpdate = true
         end
 

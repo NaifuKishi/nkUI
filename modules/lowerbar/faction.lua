@@ -4,20 +4,21 @@ local addonInfo, privateVars = ...
 
 local data        = privateVars.data
 local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local lowerBar      = privateVars.lowerBar
 
 ---------- init local variables ---------
 
 local inspectFactionList   = Inspect.Faction.List
 local inspectFactionDetail = Inspect.Faction.Detail
 local inspectTimeFrame     = Inspect.Time.Frame
+
 local stringFormat         = string.format
 local mathFloor            = math.floor
 
 ---------- local functions ---------
 
 -- Creates and manages the faction reputation display
-function internalFunc.faction()
+function lowerBar.faction()
     local notorietyLevels = {
         {label = "neutral", required = 0},
         {label = "friendly", required = 3000},

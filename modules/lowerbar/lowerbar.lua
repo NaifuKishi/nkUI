@@ -2,10 +2,12 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
+privateVars.lowerBar    = {}
+
 local data        = privateVars.data
 local uiElements  = privateVars.uiElements
 local internalFunc = privateVars.internalFunc
-local events      = privateVars.events
+local lowerBar      = privateVars.lowerBar
 
 ---------- init variables ---------
 
@@ -14,7 +16,7 @@ uiElements.lowerBarModules = {}
 ---------- local functions ---------
 
 -- Initializes the lower bar and loads all modules
-function internalFunc.lowerBar()
+function lowerBar.build()
 
     local parentWidth = UIParent:GetWidth()
     local halfWidth = parentWidth / 2
@@ -22,21 +24,21 @@ function internalFunc.lowerBar()
     data.aFourth = halfWidth / 4
 
     -- Load all modules
-    internalFunc.timeDate()
-    internalFunc.currency()
-    internalFunc.fps()
-    internalFunc.location()
-    internalFunc.experience()
-    internalFunc.faction()
-    internalFunc.social()
-    internalFunc.lowerBarRoles()
+    lowerBar.timeDate()
+    lowerBar.currency()
+    lowerBar.fps()
+    lowerBar.location()
+    lowerBar.experience()
+    lowerBar.faction()
+    lowerBar.social()
+    lowerBar.lowerBarRoles()
 end
 
 -- Initializes the lower bar
 function internalFunc.lowerBarInit(value)
     if #uiElements.lowerBarModules == 0 then
         EnKai.events.addInsecure(function()
-            internalFunc.lowerBar()
+            lowerBar.build()
         end, nil, nil)
     else
         EnKai.events.addInsecure(function()

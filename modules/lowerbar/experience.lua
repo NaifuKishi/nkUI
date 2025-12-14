@@ -4,7 +4,7 @@ local addonInfo, privateVars = ...
 
 local data        = privateVars.data
 local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local lowerBar      = privateVars.lowerBar
 
 ---------- init local variables ---------
 
@@ -14,7 +14,7 @@ local stringFormat      = string.format
 ---------- local functions ---------
 
 -- Creates and manages the experience bar display
-function internalFunc.experience()
+function lowerBar.experience()
     local datasetExpBarBG = EnKai.uiCreateFrame('nkFrame', "lowerBar.experienceFrameBG", uiElements.contextLowestRestricted)
     datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth, -9)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)

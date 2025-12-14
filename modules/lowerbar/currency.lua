@@ -4,7 +4,7 @@ local addonInfo, privateVars = ...
 
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
-local internalFunc  = privateVars.internalFunc
+local lowerBar      = privateVars.lowerBar
 
 ---------- init local variables ---------
 
@@ -15,7 +15,7 @@ local mathFloor             = math.floor
 ---------- local functions ---------
 
 -- Creates and manages the currency display
-function internalFunc.currency()
+function lowerBar.currency()
     local currencyText = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font> (%d)'
     local freeBagCount = 0
     

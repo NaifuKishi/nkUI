@@ -2,9 +2,9 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data          = privateVars.data
-local uiElements    = privateVars.uiElements
-local internalFunc  = privateVars.internalFunc
+local data        = privateVars.data
+local uiElements  = privateVars.uiElements
+local lowerBar    = privateVars.lowerBar
 
 ---------- init local variables ---------
 
@@ -15,7 +15,7 @@ local osDate            = os.date
 ---------- local functions ---------
 
 -- Creates and manages the time and date display
-function internalFunc.timeDate()
+function lowerBar.timeDate()
     local datasetTime = EnKai.uiCreateFrame("nkText", "lowerBar.datasettime", uiElements.contextLowestRestricted)
     datasetTime:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", 0, 0)
     datasetTime:SetText("00:00:00")

@@ -4,20 +4,22 @@ local addonInfo, privateVars = ...
 
 local data        = privateVars.data
 local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local lowerBar    = privateVars.lowerBar
 
 ---------- init local variables ---------
 
 local inspectSystemSecure       = Inspect.System.Secure
 local inspectUnitDetail         = Inspect.Unit.Detail
 local inspectAbilityNewDetail   = Inspect.Ability.New.Detail
+
 local stringGSub                = string.gsub
 local stringFormat              = string.format
 
 ---------- local functions ---------
 
 -- Creates and manages the location display with teleport buttons
-function internalFunc.location()
+function lowerBar.location()
+    
     local buttonShown = false
     
     local datasetLocation = EnKai.uiCreateFrame('nkText', "lowerBar.location", uiElements.contextLowestRestricted)
@@ -70,12 +72,7 @@ function internalFunc.location()
     end, "lowerBar.location.Left_Click")
     
     local function updateLocation(_, loc)
-        if playerID == nil then
-            local playerDetails = inspectUnitDetail('player')
-            if playerDetails == nil then return end
-            playerID = playerDetails.id
-            if playerID == nil then return end
-        end
+        local playerID = EnKai.unit.getPlayerDetails().id
         
         if loc[playerID] == nil or loc[playerID] == false then return end
         
@@ -85,7 +82,6 @@ function internalFunc.location()
     local function unitAvailable(_, info)
         for unit, data in pairs(info) do
             if data == "player" then
-                playerID = unit
                 local details = inspectUnitDetail(unit)
                 datasetLocation:SetText(details.locationName)
                 return
@@ -93,6 +89,9 @@ function internalFunc.location()
         end
     end
     
+    local details = inspectUnitDetail(EnKai.unit.getPlayerDetails().id)
+    datasetLocation:SetText(details.locationName)
+
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")
     Command.Event.Attach(Event.Unit.Availability.Full, unitAvailable, "nkUI.lowerbar.location.Unit.Availability.Full")
     

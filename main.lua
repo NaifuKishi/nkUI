@@ -112,7 +112,7 @@ local function initializeAddon(_, addon)
 				end
 
 				if nkUISetup.modules.lowerBar and nkUISetup.modules.lowerBar.activate then
-					internalFunc.lowerBar()
+					internalFunc.lowerBarInit()
 				end
 				
 				if nkUISetup.modules.unitFrames and nkUISetup.modules.unitFrames.activate then
