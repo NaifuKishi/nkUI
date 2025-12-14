@@ -137,7 +137,9 @@ local function initializeAddon(_, addon)
 
 						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
 					end, "nkUI.OneBag.Native.Bag.Loaded")
-				end				
+				end
+
+				--internalFunc.chat ()
 				
 			end
 

@@ -25,6 +25,8 @@ RunOnStartup = {
 	"modules/lowerbar/social.lua",
 	"modules/lowerbar/timeDate.lua",
 
+	"modules/chat/chat.lua",
+
 	"modules/onebag/onebag.lua",
 	"modules/onebag/bagUI.lua",
 	"modules/onebag/itemCategories.lua",

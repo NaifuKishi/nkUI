@@ -29,10 +29,10 @@ local mathRad           = math.rad
 
 local name = "scrollingcombattext"
 
-local DEFAULT_FONTSIZE = 24
+local DEFAULT_FONTSIZE = 20
 local DEFAULT_CRIT_FONTSIZE = 30
 
-local PET_FONTSIZE = 18
+local PET_FONTSIZE = 14
 local PET_CRIT_FONTSIZE = 24
 
 local TEXT_RESIST = "<font color='#ffffff'>Resist</font>"
@@ -43,8 +43,9 @@ local TEXT_DODGE = "<font color='#ffffff'>Dodge</font>"
 local TEXT_OVERHEAL = "Overheal: <font color='#00FF00'>%d</font>"
 local TEXT_HEAL = "+<font color='#00FF00'>%d</font>"
 local TEXT_DAMAGE = "<font color='%s'>%d</font>"
-local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font>"
+local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font> %s"
 
+local COLOR_CRIT = "#FFA500"
 local COLOR_LIFE = "#4CAF50"
 local COLOR_DEATH = "#9C27B0"
 local COLOR_AIR = "#B0BEC5"
@@ -362,7 +363,9 @@ local function handleCombatDamage(self, info)
 
     local damageText = ""
 
-    if info.type == "life" then
+    if info.crit then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage)
+    elseif info.type == "life" then
         damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage)
     elseif info.type == "death" then
         damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage)
@@ -394,9 +397,9 @@ local function handleCombatDamage(self, info)
         damageText = stringFormat("%s [%d Intercepted]", damageText, info.damageIntercepted)
     end
 
-    if info.damageModified then
-        damageText = stringFormat("%s [%d Modified]", damageText, info.damageModified)
-    end
+    --if info.damageModified then
+    --    damageText = stringFormat("%s [%d Modified]", damageText, info.damageModified)
+    --end
 
     if info.overkill then
         damageText = stringFormat("%s [%d Overkill]", damageText, info.overkill)
@@ -406,11 +409,11 @@ local function handleCombatDamage(self, info)
         damageText = stringFormat(TEXT_INCOMING, internalFunc.shortenName(EnKaiUnitGetUnitDetail(info.caster).name, 10), damageText)
     end
     
-    if info.crit then
-        displayText(stringFormat("%s (CRIT)", damageText), icon, isPet, isIncoming, true)
-    else
-        displayText(damageText, icon, isPet, isIncoming, false)
-    end
+    --if info.crit then
+    --    displayText(stringFormat("%s (CRIT)", damageText), icon, isPet, isIncoming, true)
+    --else
+        displayText(damageText, icon, isPet, isIncoming, info.crit)
+    --end
 end
 
 -- Handles combat events
