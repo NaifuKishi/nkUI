@@ -1,13 +1,9 @@
 local addonInfo, privateVars = ...
 
----------- init namespace ---------
+-- init namespace
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
-
----------- init local variables ---------
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
 
 -- Cache frequently used functions and values
 local InspectBuffDetail     = Inspect.Buff.Detail
@@ -17,31 +13,34 @@ local InspectTimeReal       = Inspect.Time.Real
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
+-- Buff and debuff icons and display lists
 local buffIcons         = {}
 local buffDisplayList   = {}
 local debuffIcons       = {}
 local debuffDisplayList = {}
 local buffId2BuffType   = {}
 
----------- init global variables ---------
+internalFunc.buffBar = {}
 
 ---------- addon internal function block ---------
 
-_internal.buffBar = {}
-
-function _internal.buffBar.GetBuffIcons ()
+-- Gets the current buff icons
+-- @return Table of buff icons
+function internalFunc.buffBar.GetBuffIcons()
     return buffIcons
 end
 
-function _internal.buffBar.GetDebuffIcons ()
+-- Gets the current debuff icons
+-- @return Table of debuff icons
+function internalFunc.buffBar.GetDebuffIcons()
     return debuffIcons
 end
 
-function _internal.buffBar.UpdateBuffDisplay()
-
+-- Updates the display of buff and debuff icons
+function internalFunc.buffBar.UpdateBuffDisplay()
     local x = 0
-
-    for k, v in pairs (buffDisplayList) do        
+    
+    for k, v in pairs(buffDisplayList) do
         if buffIcons[k].lastX ~= x then
             local icon = buffIcons[k].icon
             icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, 0)
@@ -52,8 +51,8 @@ function _internal.buffBar.UpdateBuffDisplay()
     end
 
     x = 0
-
-    for k, v in pairs (debuffDisplayList) do
+    
+    for k, v in pairs(debuffDisplayList) do
         if debuffIcons[k].lastX ~= x then
             local icon = debuffIcons[k].icon
             icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, (nkUISetup.modules.buffBar.buffs.height + 12))
@@ -64,33 +63,34 @@ function _internal.buffBar.UpdateBuffDisplay()
     end
 end
 
-
-function _internal.buffBar.addBuff(unit, buffs)
-
+-- Adds a buff to the display
+-- @param unit The unit ID
+-- @param buffs The buffs to add
+function internalFunc.buffBar.addBuff(unit, buffs)
     local details = InspectBuffDetail(unit, buffs)
 
     for k, v in pairs(details) do
-
         local buffIdentifier = v.type
 
         if buffIdentifier == nil then
-            EnKai.tools.error.display ("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
+            EnKai.tools.error.display("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
         else
-            buffId2BuffType[k] = buffIdentifier        
-
+            buffId2BuffType[k] = buffIdentifier
+            
             if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                _internal.processNewBuff ("buffbar.debuff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+                _internal.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
             else
-                _internal.processNewBuff ("buffbar.buff.icon" .. buffIdentifier, data.playerID, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
+                _internal.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
             end
         end
     end
 end
 
-function _internal.buffBar.removeBuff (unit, buffs)
-    
+-- Removes a buff from the display
+-- @param unit The unit ID
+-- @param buffs The buffs to remove
+function internalFunc.buffBar.removeBuff(unit, buffs)
     for id, v in pairs(buffs) do
-
         local buffType = buffId2BuffType[id]
 
         if buffIcons[buffType] then
@@ -109,54 +109,38 @@ function _internal.buffBar.removeBuff (unit, buffs)
     end
 end
 
---[[
-   _internal.buffBar.clearAllBuffs
-    Description:
-        Clears all active buff icons. This function is used to reset the UI state for all buffs.
-    Process:
-        1. Iterates through all active buff icons
-        2. Hides each buff icon
-        3. Removes each buff icon from the display list
-        4. Clears the buff icons collection
-    Notes:
-        - This function is useful for resetting the UI state for all buffs
-        - All buff icons are hidden and removed from the display list
-        - The buff icons collection is emptied after processing
-]]
-function _internal.buffBar.clearAllBuffs()
+-- Clears all active buff icons
+function internalFunc.buffBar.clearAllBuffs()
+    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
+    internalFunc.buffBar.removeBuff(EnKai.unit.getPlayerDetails().id, buffs)
+end
 
-    local buffs = InspectBuffList(data.playerID)
-   _internal.buffBar.removeBuff(data.playerID, buffs)
+-- Loads all buffs for the player
+function internalFunc.buffBar.loadAllBuffs()
+    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
+    internalFunc.buffBar.addBuff(EnKai.unit.getPlayerDetails().id, buffs)
+    internalFunc.buffBar.UpdateBuffDisplay()
+end
+
+-- Redraws the buff bar
+function internalFunc.buffBar.Redraw()
+    local newSetup = {
+        width   = nkUISetup.modules.buffBar.buffs.width,
+        height  = nkUISetup.modules.buffBar.buffs.height,
+        label   = nkUISetup.modules.buffBar.buffs.label,
+        timer   = nkUISetup.modules.buffBar.buffs.timer,
+        stack   = nkUISetup.modules.buffBar.buffs.stack
+    }
     
-end
-
-function _internal.buffBar.loadAllBuffs()
-
-   local buffs = InspectBuffList(data.playerID)
-   _internal.buffBar.addBuff(data.playerID, buffs)
-   _internal.buffBar.UpdateBuffDisplay() 
-
-end
-
-function _internal.buffBar.Redraw()
-   
-    local newSetup = {  width   = nkUISetup.modules.buffBar.buffs.width,
-                        height  = nkUISetup.modules.buffBar.buffs.height,
-                        label   = nkUISetup.modules.buffBar.buffs.label,
-                        timer   = nkUISetup.modules.buffBar.buffs.timer,
-                        stack   = nkUISetup.modules.buffBar.buffs.stack
-                    }
-
-    local buffs = _internal.buffBar.GetBuffIcons ()
-    for k, v in pairs (buffs) do
+    local buffs = internalFunc.buffBar.GetBuffIcons()
+    for k, v in pairs(buffs) do
         v.icon:Setup(newSetup)
-	end
-
-    local debuffs = _internal.buffBar.GetDebuffIcons ()
-    for k, v in pairs (debuffs) do
-         v.icon:Setup(newSetup)
     end
 
-    EnKai.ui.reloadDialog ("nkUI")
-
+    local debuffs = internalFunc.buffBar.GetDebuffIcons()
+    for k, v in pairs(debuffs) do
+        v.icon:Setup(newSetup)
+    end
+    
+    EnKai.ui.reloadDialog("nkUI")
 end

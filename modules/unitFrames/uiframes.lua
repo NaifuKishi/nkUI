@@ -772,7 +772,7 @@ function _internal.uiFrames()
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
-        --_internal.updateUnit (group, data.playerID)
+        --_internal.updateUnit (group, EnKai.unit.getPlayerDetails().id)
 
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
@@ -793,7 +793,7 @@ function _internal.uiFrames()
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
-            --_internal.updateUnit (raid, data.playerID)
+            --_internal.updateUnit (raid, EnKai.unit.getPlayerDetails().id)
             uiElements.frames[stringFormat("raid%02d", index)] = raid
 
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
@@ -805,7 +805,7 @@ function _internal.uiFrames()
     end
 
     function playerRessourceBar:update (unitID)
-        if (unitID == data.playerID) then
+        if (unitID == EnKai.unit.getPlayerDetails().id) then
             local details = EnKai.unit.GetUnitDetail(unitID)
 
             if details.combo then playerRessourceBar:SetCombo(details.combo) end
@@ -884,8 +884,8 @@ end
 
 function _internal.uiFramesRemoveBuffs()
 
-    local buffs = InspectBuffList(data.playerID)
-    if (buffs) then uiElements.frames["player"]:removeBuff(data.playerID, buffs) end
+    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:removeBuff(EnKai.unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
     local targetID = EnKai.unit.GetUnitByIdentifier("player.target")
@@ -907,8 +907,8 @@ end
 
 function _internal.uiFramesLoadAllBuffs()
 
-    local buffs = InspectBuffList(data.playerID)
-    if (buffs) then uiElements.frames["player"]:addBuff(data.playerID, buffs) end
+    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:addBuff(EnKai.unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
 

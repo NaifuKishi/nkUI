@@ -2,46 +2,40 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
 
 ---------- init local variables ---------
 
-local name = "nkUI.tooltip"
-local _tooltip = {}
-local displayDelay = nil
-local tooltipPos = nil
+local TOOLTIP_NAME = "nkUI.tooltip"
+
+local InspectUnitDetail   = Inspect.Unit.Detail
 
 local mathFloor    = math.floor
 local mathpi       = math.pi
 
----------- init variables ---------
+local stringFormat  = string.format
+local stringSub     = string.sub
+local stringUpper   = string.upper
 
 ---------- init local function ---------
 
-function _tooltip.ui ()
+local function tooltipUI()
 
-    --local tooltipWidth = UI.Native.Tooltip:GetWidth() + 6
-    --local tooltipHeight = UI.Native.Tooltip:GetHeight() + 6
     local tooltipWidth, tooltipHeight = 250, 100
 
     UI.Native.Tooltip:SetLayer(1)
-    --UI.Native.Tooltip:SetStrata("hud")
 
-    local tooltip = EnKai.uiCreateFrame("nkFrame", name .. ".tooltip", uiElements.contextTooltip)
+    local tooltip = EnKai.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip", uiElements.contextTooltip)
     tooltip:SetLayer(99)
     tooltip:SetVisible(false)
     tooltip:SetWidth(tooltipWidth)
     tooltip:SetHeight(tooltipHeight)
-    --tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "TOPLEFT")
-    --tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT")
 
     tooltip:SetBackgroundColor(0, 0, 0, 1)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.TooltipAnchor, "BOTTOMRIGHT")
 
-    local title = EnKai.uiCreateFrame("nkText", name .. ".tooltip.title", tooltip)
+    local title = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.title", tooltip)
     title:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 2, 2)
     title:SetFontSize(16)
     title:SetAlpha(1)
@@ -52,12 +46,11 @@ function _tooltip.ui ()
     local lastObject, x = title, 2
 
     for idx = 1, 10, 1 do
-        local line = EnKai.uiCreateFrame("nkText", name .. ".tooltip.line" .. idx, tooltip)
+        local line = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.line" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT",x , -5)
         line:SetWordwrap(true)
         line:SetFontSize(14)
         line:SetTextFont(addonInfo.id, "Montserrat")        
-        --line:SetBackgroundColor(1, 0, 0, 1)
        
         lastObject, x = line, 0
        
@@ -67,24 +60,23 @@ function _tooltip.ui ()
     local y = 5
 
     for idx = 1, 10, 1 do
-        local line = EnKai.uiCreateFrame("nkText", name .. ".tooltip.stats" .. idx, tooltip)
+        local line = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.stats" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT", 0 ,y)
         line:SetWordwrap(true)
         line:SetFontSize(12)
         line:SetTextFont(addonInfo.id, "FiraMono")
-        --line:SetBackgroundColor(0, 1, 0, 1)
-
+        
         lastObject, y = line, -5
        
         table.insert (stats, line)
     end
 
-    healthBarBG = EnKai.uiCreateFrame("nkFrame", name .. ".tooltip.healthBarBG", tooltip)
+    healthBarBG = EnKai.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
     healthBarBG:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT", 0, 2)
     healthBarBG:SetPoint("BOTTOMRIGHT", tooltip, "BOTTOMRIGHT", 0, 12)
     healthBarBG:SetVisible(false)
 
-    healthBar = EnKai.uiCreateFrame("nkCanvas", name .. ".tooltip.healthBar", healthBarBG)
+    healthBar = EnKai.uiCreateFrame("nkCanvas", TOOLTIP_NAME .. ".tooltip.healthBar", healthBarBG)
     healthBar:SetPoint("TOPLEFT", healthBarBG, "TOPLEFT", 1, 1)
     healthBar:SetHeight(8)
     
@@ -105,7 +97,7 @@ function _tooltip.ui ()
 
     healthBar:SetShape (path, fill, stroke)
 
-    healthText = EnKai.uiCreateFrame("nkText", name .. ".tooltip.healthText", healthBar)
+    healthText = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.healthText", healthBar)
     healthText:SetPoint("CENTER", healthBarBG, "CENTER", 0, 0)
     healthText:SetFontSize(14)
     healthText:SetFontColor(1,1,1,1)
@@ -128,7 +120,6 @@ function _tooltip.ui ()
             if lines[idx]:GetVisible() then
                 if lines[idx]:GetWidth() > tooltipWidth then
                     lines[idx]:SetWidth(tooltipWidth)
-                    --lines[idx]:SetHeight(lines[idx]:GetHeight())                    
                 end
 
                 height = height + lines[idx]:GetHeight() -5
@@ -141,7 +132,6 @@ function _tooltip.ui ()
             if stats[idx]:GetVisible() then
                  if stats[idx]:GetWidth() > tooltipWidth then
                     stats[idx]:SetWidth(tooltipWidth)
-                    --stats[idx]:SetHeight(stats[idx]:GetHeight() -2)
                 end
 
                 height = height + stats[idx]:GetHeight()
@@ -225,7 +215,7 @@ function _tooltip.ui ()
             else
                 local healthPercent = health / healthMax
                 healthBar:SetWidth(healthPercent * healthBarBG:GetWidth() -2)
-                healthText:SetText(string.format("%d", mathFloor(healthPercent * 100)))
+                healthText:SetText(stringFormat("%d", mathFloor(healthPercent * 100)))
             end
         end
 
@@ -236,9 +226,9 @@ function _tooltip.ui ()
 
 end
 
-function _tooltip.unit (unitInfo)
+local function tooltipUnit (unitInfo)
 
-    local unitDetail = Inspect.Unit.Detail(unitInfo)
+    local unitDetail = InspectUnitDetail(unitInfo)
 
     if unitDetail == nil then return end
 
@@ -268,10 +258,10 @@ function _tooltip.unit (unitInfo)
         color = relationColors[unitDetail.relation] or "#FFFFFF"
     end
 
-    uiElements.tooltip:SetTitle(string.format('<font color="%s">%s</font>', color, unitDetail.name))
+    uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, unitDetail.name))
 
     if unitDetail.nameSecondary then
-        table.insert(infoLines, string.format('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
+        table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
     end
 
     local playerDetail = EnKai.unit.getPlayerDetails()
@@ -295,7 +285,7 @@ function _tooltip.unit (unitInfo)
                 color = levelColor.trivial
             end
 
-            levelLine = string.format('<font color="%s">Level %d</font>', color, level)
+            levelLine = stringFormat('<font color="%s">Level %d</font>', color, level)
         end
 
         if unitDetail.tagName then
@@ -310,9 +300,9 @@ function _tooltip.unit (unitInfo)
     end
 
     if unitDetail.calling then
-        local firstChar = string.sub(unitDetail.calling, 1, 1)
-        local restOfString = string.sub(unitDetail.calling, 2)
-        table.insert(infoLines, string.format('<font color="%s">%s%s</font>', callingColor[unitDetail.calling],string.upper(firstChar), restOfString))
+        local firstChar = stringSub(unitDetail.calling, 1, 1)
+        local restOfString = stringSub(unitDetail.calling, 2)
+        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColor[unitDetail.calling], stringUpper(firstChar), restOfString))
     end
 
     if unitDetail.locationName then
@@ -320,7 +310,7 @@ function _tooltip.unit (unitInfo)
     end
 
     if unitDetail.publicSize then
-        table.insert(infoLines, string.format('Public group : %d member(s)', unitDetail.publicSize) )
+        table.insert(infoLines, stringFormat('Public group : %d member(s)', unitDetail.publicSize) )
     end
 
     uiElements.tooltip:SetBody(infoLines)    
@@ -335,6 +325,34 @@ function _tooltip.unit (unitInfo)
 
 end
 
+local function tooltipEvent (_, tooltipType, tooltipInfo)
+
+    if nkUISetup.modules.tooltip.activate == false then return end
+
+    if (tooltipType == nil) then
+        uiElements.tooltip:SetVisible(false)
+        return
+    end
+
+    if (tooltipType == "unit") then
+        tooltipUnit(tooltipInfo)
+        uiElements.tooltip:SetVisible(true)
+    end
+
+end
+
+function internalFunc.tooltip()
+
+    if uiElements.tooltip ~= nil then return end
+
+    uiElements.tooltip = tooltipUI()
+
+    Command.Event.Attach(Event.Tooltip, tooltipEvent, "nkUI.Event.tooltip")
+
+end
+
+
+--[[
 function _tooltip.item(iteminfo)
 
     local itemDetail = Inspect.Item.Detail(iteminfo)
@@ -358,9 +376,9 @@ function _tooltip.item(iteminfo)
     end
     
     if (itemDetail.stack) then        
-        uiElements.tooltip:SetTitle(string.format('<font color="%s">%s (%d)</font>', color, itemDetail.name, itemDetail.stack))
+        uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s (%d)</font>', color, itemDetail.name, itemDetail.stack))
     else
-        uiElements.tooltip:SetTitle(string.format('<font color="%s">%s</font>', color, itemDetail.name))
+        uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, itemDetail.name))
     end
 
     if (itemDetail.category) then
@@ -380,7 +398,7 @@ function _tooltip.item(iteminfo)
     end
 
     if itemDetail.bound then
-        table.insert(infoLines, string.format("%s (Bound)", bound))
+        table.insert(infoLines, stringFormat("%s (Bound)", bound))
     else
         table.insert(infoLines, bound)
     end
@@ -390,12 +408,12 @@ function _tooltip.item(iteminfo)
         for idx = 1, #callings, 1 do
             local tmpCalling = EnKai.strings.Capitalize(callings[idx])
             if callings[idx] == playerDetail.calling then
-                callings[idx] = string.format("<font color='#00FF00'>%s</font>", tmpCalling)
+                callings[idx] = stringFormat("<font color='#00FF00'>%s</font>", tmpCalling)
             else
                 callings[idx] = tmpCalling
             end
         end
-        table.insert(infoLines, string.format("Required Calling: %s",table.concat(callings, " ")))
+        table.insert(infoLines, stringFormat("Required Calling: %s",table.concat(callings, " ")))
     end
 
     -- Item Sell Price
@@ -405,16 +423,16 @@ function _tooltip.item(iteminfo)
         local silver = itemDetail.sell - (platin * 10000) - (gold * 100) 
 
         local sellPrice = nil
-        if platin > 0 then sellPrice = string.format('<font color="#efebff">%dp</font>', platin) end
+        if platin > 0 then sellPrice = stringFormat('<font color="#efebff">%dp</font>', platin) end
         if gold > 0 then 
             if sellPrice then sellPrice = sellPrice .. " " else sellPrice = "" end
-            sellPrice = sellPrice .. string.format('<font color="#eed234">%dg</font>', gold)
+            sellPrice = sellPrice .. stringFormat('<font color="#eed234">%dg</font>', gold)
         end
         if sellPrice then sellPrice = sellPrice .. " " else sellPrice = "" end
-        sellPrice = sellPrice .. string.format('<font color="#a7aba7">%ds</font>', silver)
+        sellPrice = sellPrice .. stringFormat('<font color="#a7aba7">%ds</font>', silver)
         
         table.insert(infoLines, " ")
-        table.insert(infoLines, string.format('Sell Price: %s', sellPrice))
+        table.insert(infoLines, stringFormat('Sell Price: %s', sellPrice))
     end
 
      local statLines = {}
@@ -434,7 +452,7 @@ function _tooltip.item(iteminfo)
             local statName = EnKai.strings.Capitalize(k)
             -- Calculate the number of spaces needed to align values
             local spaces = string.rep(" ", maxNameLength - string.len(statName) + 2)
-            table.insert(statLines, string.format('%s%s%s', statName, spaces, v))
+            table.insert(statLines, stringFormat('%s%s%s', statName, spaces, v))
         end
     end
 
@@ -469,7 +487,7 @@ function _tooltip.ability(abilityInfo)
         color = qualityColors[abilityDetail.rarity] or "#FFFFFF"
     end
 
-    uiElements.tooltip:SetTitle(string.format('<font color="%s">%s</font>', color, abilityDetail.name))
+    uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, abilityDetail.name))
 
     -- Ability Flags
     if abilityDetail.autoattack then
@@ -508,7 +526,7 @@ function _tooltip.ability(abilityInfo)
 
     -- Ability Casting Time
     if abilityDetail.castingTime then
-        table.insert(infoLines, string.format('Casting Time: %d sec', abilityDetail.castingTime))
+        table.insert(infoLines, stringFormat('Casting Time: %d sec', abilityDetail.castingTime))
     end
 
     -- Ability Cooldown
@@ -518,52 +536,52 @@ function _tooltip.ability(abilityInfo)
         local cooldownText = ""
 
         if minutes > 0 then
-            cooldownText = string.format('%d min', minutes)
+            cooldownText = stringFormat('%d min', minutes)
             if seconds > 0 then
-                cooldownText = cooldownText .. string.format(' %d sec', seconds)
+                cooldownText = cooldownText .. stringFormat(' %d sec', seconds)
             end
         elseif seconds > 0 then
-            cooldownText = string.format('%d sec', seconds)
+            cooldownText = stringFormat('%d sec', seconds)
         end
 
         if cooldownText ~= "" then
-            table.insert(infoLines, string.format('Cooldown: %s', cooldownText))
+            table.insert(infoLines, stringFormat('Cooldown: %s', cooldownText))
         end
     end
 
     -- Ability Costs
     if abilityDetail.costMana then
-        table.insert(infoLines, string.format('Mana Cost: %d', abilityDetail.costMana))
+        table.insert(infoLines, stringFormat('Mana Cost: %d', abilityDetail.costMana))
     end
 
     if abilityDetail.costEnergy then
-        table.insert(infoLines, string.format('Energy Cost: %d', abilityDetail.costEnergy))
+        table.insert(infoLines, stringFormat('Energy Cost: %d', abilityDetail.costEnergy))
     end
 
     if abilityDetail.costPower then
-        table.insert(infoLines, string.format('Power Cost: %d', abilityDetail.costPower))
+        table.insert(infoLines, stringFormat('Power Cost: %d', abilityDetail.costPower))
     end
 
     if abilityDetail.costCharge then
-        table.insert(infoLines, string.format('Charge Cost: %d', abilityDetail.costCharge))
+        table.insert(infoLines, stringFormat('Charge Cost: %d', abilityDetail.costCharge))
     end
 
     if abilityDetail.costPlanarCharge then
-        table.insert(infoLines, string.format('Planar Charge Cost: %d', abilityDetail.costPlanarCharge))
+        table.insert(infoLines, stringFormat('Planar Charge Cost: %d', abilityDetail.costPlanarCharge))
     end
 
     -- Ability Range
     if abilityDetail.rangeMin and abilityDetail.rangeMax then
-        table.insert(infoLines, string.format('Range: %d-%d meters', abilityDetail.rangeMin, abilityDetail.rangeMax))
+        table.insert(infoLines, stringFormat('Range: %d-%d meters', abilityDetail.rangeMin, abilityDetail.rangeMax))
     elseif abilityDetail.rangeMin then
-        table.insert(infoLines, string.format('Range: %d meters (minimum)', abilityDetail.rangeMin))
+        table.insert(infoLines, stringFormat('Range: %d meters (minimum)', abilityDetail.rangeMin))
     elseif abilityDetail.rangeMax then
-        table.insert(infoLines, string.format('Range: %d meters (maximum)', abilityDetail.rangeMax))
+        table.insert(infoLines, stringFormat('Range: %d meters (maximum)', abilityDetail.rangeMax))
     end
 
     
     if abilityDetail.weapon then
-        table.insert(infoLines, string.format('Weapon: %s', EnKai.strings.Capitalize(abilityDetail.weapon)))
+        table.insert(infoLines, stringFormat('Weapon: %s', EnKai.strings.Capitalize(abilityDetail.weapon)))
     end
 
     -- Ability Stats
@@ -582,7 +600,7 @@ function _tooltip.ability(abilityInfo)
             local statName = EnKai.strings.Capitalize(k)
             -- Calculate the number of spaces needed to align values
             local spaces = string.rep(" ", maxNameLength - string.len(statName) + 2)
-            table.insert(statLines, string.format('%s%s%s', statName, spaces, v))
+            table.insert(statLines, stringFormat('%s%s%s', statName, spaces, v))
         end
     end
 
@@ -590,57 +608,4 @@ function _tooltip.ability(abilityInfo)
     uiElements.tooltip:SetStats(statLines, false)
     uiElements.tooltip:SetHealth(nil, nil, false)
 end
-
-function _events.tooltip (_, tooltipType, tooltipInfo)
-
-    if nkUISetup.modules.tooltip.activate == false then return end
-
-    if (tooltipType == nil) then
-        uiElements.tooltip:SetVisible(false)
-        return
-    end
-
-    --local left, top, right, bottom = UI.Native.Tooltip:GetBounds()
-    --uiElements.tooltip:SetTooltipSize(right - left, bottom - top)
-
-    if (tooltipType == "unit") then
-        _tooltip.unit(tooltipInfo)
-        uiElements.tooltip:SetVisible(true)
-    end
-   
-
-    --displayDelay = Inspect.Time.Real()
-    
-
-end
-
---function _fctUpdateHandler ()
-
---    if displayDelay == nil then return end
-
---    local _curTime = Inspect.Time.Real()
---    if _curTime - displayDelay > .1 then
---        uiElements.tooltip:SetVisible(true)
---        displayDelay = nil
---    end
-
---end
-
-function _events.mouseMove(_, x, y)
-    
-end
-
-function _internal.tooltip()
-
-    if uiElements.tooltip ~= nil then return end
-
-    uiElements.tooltip = _tooltip.ui()
-
-    Command.Event.Attach(Event.Tooltip, _events.tooltip, "nkUI.Event.tooltip")
-
-    --Command.Event.Attach(Event.Mouse.Move, _events.mouseMove, "nkUI.Event.tooltip.Mouse.Move")
-
-    --UI.Native.Tooltip:EventAttach(Event.UI.Native.Loaded, function() print ("event2") end, "")
-    --Command.Event.Attach(Event.System.Update.Begin, _fctUpdateHandler, "nkUI.System.updateHandler")
-
-end
+]]

@@ -18,20 +18,6 @@ local mathFloor		= math.floor
 -- Cache frequently used functions and values
 local _eventHandlers = {}
 
----------- init variables ---------
-
----------- local function block ---------
-
----------- addon internal function block ---------
-
-privateVars.effects = {
-	gloss = { alpha = 0.6, texturePath = 'gfx/iconDesignGloss.png', replaceBorder = false },
-	round = { alpha = 0.6, texturePath = 'gfx/iconDesignRound.png', replaceBorder = false },
-	basic = { alpha = 0.5, texturePath = 'gfx/iconDesignBasic.png', replaceBorder = false },
-	chrome = { alpha = 1, texturePath = 'gfx/iconDesignChrome.png', replaceBorder = true, border = 7},
-	roundedCorners = { alpha = 1, texturePath = 'gfx/iconDesignRoundedCorners.png', replaceBorder = true, border = 1},
-}
-
 function uiElements.icon (name, parent)
 	
 	local icon = EnKai.uiCreateFrame('nkFrame', name, parent)

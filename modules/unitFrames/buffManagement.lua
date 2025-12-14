@@ -23,6 +23,8 @@ local stringFind            = string.find
 
 ---------- init global variables ---------
 
+local EFFECT_GLOSS = { alpha = 0.6, texturePath = 'gfx/iconDesignGloss.png', replaceBorder = false }
+
 -- Buff management function
 
 function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
@@ -86,7 +88,7 @@ function _internal.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
 
                     local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
 
-                    if unitId ~= targetID or (unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == data.playerID) then
+                    if unitId ~= targetID or (unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == EnKai.unit.getPlayerDetails().id) then
                         
                         _internal.processNewBuff ("unit." .. unitId .. ".debuff.icon" .. buffIdentifier, unitId, buffUnit, k, buffIdentifier, v, unitDebuffDisplayList, unitDebuffIcons)                        
 
@@ -291,7 +293,7 @@ function _internal.processNewBuff (iconName, unitID, unit, buffID, buffIdentifie
             local icon = _internal.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
             
-            icons[buffIdentifier].icon:SetEffect(privateVars.effects.gloss)
+            icons[buffIdentifier].icon:SetEffect(EFFECT_GLOSS)
             icons[buffIdentifier].icon:ShowBorder(true)
             icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
             icons[buffIdentifier].icon:SetTexture("Rift", buffDetails.icon)

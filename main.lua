@@ -93,9 +93,6 @@ local function initializeAddon(_, addon)
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
 			EnKai.unit.init()
 			
-			local id = EnKai.unit.getPlayerDetails().id
-			data.playerID = id
-
 			EnKai.BuffManager.init()
             EnKai.inventory.init(false)				
 

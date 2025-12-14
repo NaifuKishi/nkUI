@@ -126,7 +126,7 @@ local function _eventBuffAdd(_, unit, buffs)
 	if nkUISetup.modules.unitFrames.activate == false then return end
 
 	-- Handle player buffs
-	if unit == data.playerID and nkUISetup.modules.buffBar.activate then
+	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then
 		_internal.buffBar.addBuff(unit, buffs)
 		_internal.buffBar.UpdateBuffDisplay()
 	end
@@ -155,7 +155,7 @@ local function _eventBuffRemove (_, unit, buffs)
 
 	--if nkUISetup.modules.unitFrames.activate == false then return end
 
-	if unit == data.playerID and nkUISetup.modules.buffBar.activate then 
+	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
 		_internal.buffBar.removeBuff(unit, buffs) 
 		_internal.buffBar.UpdateBuffDisplay()
 	end
@@ -178,7 +178,7 @@ end
 local function _fctZoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
-		if k == data.playerID then
+		if k == EnKai.unit.getPlayerDetails().id then
 			_internal.updateUnit (playerFrame, playerID, "player")
 			_internal.processBuffs ()
 			break
