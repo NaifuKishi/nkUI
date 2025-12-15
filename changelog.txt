@@ -289,4 +289,4 @@ Buff timers on group frames are now minus values
 
 Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
 
-
+tooltip not working on some bars

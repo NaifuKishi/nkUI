@@ -27,27 +27,29 @@ function lowerBar.build()
 
     -- Create a canvas behind the lower bar
 
-    local canvas = EnKai.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", uiElements.contextLowest)
-    canvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
-    canvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
+    if not uiElements.lowerBarCanvas then
+        uiElements.lowerBarCanvas = EnKai.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", uiElements.contextLowest)
+        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
+        uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
 
-    local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
+        local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
 
-    local path = {  {xProportional = 0, yProportional = 0},
-                  {xProportional = 1, yProportional = 0},
-                  {xProportional = 1, yProportional = 1},
-                  {xProportional = 0, yProportional = 1},
-                  {xProportional = 0, yProportional = 0}
-                  }
+        local path = {  {xProportional = 0, yProportional = 0},
+                    {xProportional = 1, yProportional = 0},
+                    {xProportional = 1, yProportional = 1},
+                    {xProportional = 0, yProportional = 1},
+                    {xProportional = 0, yProportional = 0}
+                    }
 
-    local fill = {  type = "gradientLinear", 
-                    transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), 
-                    color = {   { r = 0.678, g = 0.847, b = 0.902, a = 0, position = 0 },
-                                { r = 0.678, g = 0.847, b = 0.902, a = .6, position = 1 }
-                            }
-                }
+        local fill = {  type = "gradientLinear", 
+                        transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), 
+                        color = {   { r = 0.678, g = 0.847, b = 0.902, a = 0, position = 0 },
+                                    { r = 0.678, g = 0.847, b = 0.902, a = .6, position = 1 }
+                                }
+                    }
 
-    canvas:SetShape (path, fill, nil)
+        uiElements.lowerBarCanvas:SetShape (path, fill, nil)
+    end
 
     -- Load all modules
     lowerBar.timeDate()
@@ -72,6 +74,8 @@ function internalFunc.lowerBarInit(value)
                 v:SetVisible(value)
             end
         end, nil, nil)
+
+        uiElements.lowerBarCanvas:SetVisible(value)
     end
 end
 
