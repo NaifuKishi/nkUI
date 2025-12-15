@@ -6,7 +6,7 @@ Description = "Naifu's user interface"
 Author = "Naifu"
 Email = "naifukishi@gmail.com"
 
-Version = "0.5.7"
+Version = "0.5.8"
 Environment = "4.0"
 
 RunOnStartup = {
