@@ -227,7 +227,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     nameText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     nameText:SetFontSize(setup.fontSizes.name)
     nameText:SetFontColor(1, 1, 1, 1)
-    nameText:SetEffectGlow({ strength = 1})
+    nameText:SetEffectGlow({ strength = 5})    
     nameText:SetLayer(2)
 
     local healthText = EnKai.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
@@ -241,8 +241,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     healthText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     healthText:SetFontSize(setup.fontSizes.health)
     healthText:SetFontColor(1, 1, 1, 1)
-    healthText:SetEffectGlow({ offsetX = 1, offsetY = 1})
-    
+    healthText:SetEffectGlow({ strength = 5})      
 
     if unitFrameType == "raid" then healthText:SetVisible(false) end
 
@@ -257,7 +256,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     energyText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     energyText:SetFontSize(setup.fontSizes.energy)
     energyText:SetFontColor(1, 1, 1, 1)
-    energyText:SetEffectGlow({ offsetX = 1, offsetY = 1})
+    energyText:SetEffectGlow({ strength = 5})  
     energyText:SetLayer(2)
 
     if unitFrameType == "raid" then energyText:SetVisible(false) end
@@ -273,7 +272,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     planarText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     planarText:SetFontSize(setup.fontSizes.planar)
     planarText:SetFontColor(1, 1, 1, 1)
-    planarText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
+    planarText:SetEffectGlow({ strength = 5})  
     planarText:SetLayer(2)
 
     local levelText = EnKai.uiCreateFrame("nkText", thisName .. ".kevekText", healthFrame)
@@ -287,7 +286,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     levelText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     levelText:SetFontSize(setup.fontSizes.level)
     levelText:SetFontColor(1, 1, 1, 1)
-    levelText:SetEffectGlow({ colorR = 0, colorG = 0, colorB = 0, strength = 3, })
+    levelText:SetEffectGlow({ strength = 5})  
     levelText:SetLayer(2)
 
     if unitFrameType == "raid" then levelText:SetVisible(false) end

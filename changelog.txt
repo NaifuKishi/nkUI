@@ -1,5 +1,6 @@
 V0.5.9
     - update: changed title of OneBag to show player's name
+    - update: added icons to lowerbar modules
 
 V0.5.8
     - update: A couple of SCT improvements        
