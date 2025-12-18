@@ -24,11 +24,17 @@ function lowerBar.social()
     local _friendlist, _guildList = {}, {}
     
     local datasetSocial = EnKai.uiCreateFrame("nkText", "lowerBar.datasetsocial", uiElements.contextLowestRestricted)
-    datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, -5)
+    datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 21, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")
     datasetSocial:SetEffectGlow({ strength = 1})
+
+    local datasetSocialIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
+    datasetSocialIcon:SetPoint("CENTERRIGHT", datasetSocial, "CENTERLEFT", -5, 0)
+    datasetSocialIcon:SetHeight(16)
+    datasetSocialIcon:SetWidth(16)
+    datasetSocialIcon:SetTextureAsync("nkUI", "gfx/lowerbarGuild.png")
     
     function datasetSocial:Redraw()
         datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)

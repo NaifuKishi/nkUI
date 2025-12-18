@@ -29,7 +29,7 @@ function lowerBar.currency()
     end
     
     local datasetCurrency = EnKai.uiCreateFrame("nkText", "lowerBar.currency", uiElements.contextLowestRestricted)
-    datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird, -5)
+    datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird - 10, -5)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetCurrency:SetTextFont(addonInfo.id, "Montserrat")
@@ -38,6 +38,12 @@ function lowerBar.currency()
     datasetCurrency:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
         internalFunc.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")
+
+    local datasetCurrencyIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
+    datasetCurrencyIcon:SetPoint("CENTERRIGHT", datasetCurrency, "CENTERLEFT", -5, 0)
+    datasetCurrencyIcon:SetHeight(16)
+    datasetCurrencyIcon:SetWidth(16)
+    datasetCurrencyIcon:SetTextureAsync("nkUI", "gfx/lowerbarGold.png")
     
     function datasetCurrency:Redraw()
         datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)

@@ -1,3 +1,6 @@
+V0.5.9
+    - update: changed title of OneBag to show player's name
+
 V0.5.8
     - update: A couple of SCT improvements        
     - update: Some small SCT performance improvements
@@ -290,3 +293,9 @@ Buff timers on group frames are now minus values
 Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
 
 tooltip not working on some bars
+
+onebag: selling items doesn't reset the bag position properly
+
+optionally add a third action bar
+
+add icons to lower bar

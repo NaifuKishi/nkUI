@@ -16,7 +16,7 @@ local stringFormat      = string.format
 -- Creates and manages the experience bar display
 function lowerBar.experience()
     local datasetExpBarBG = EnKai.uiCreateFrame('nkFrame', "lowerBar.experienceFrameBG", uiElements.contextLowestRestricted)
-    datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth, -9)
+    datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth + 10, -9)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
@@ -33,6 +33,12 @@ function lowerBar.experience()
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetExp:SetTextFont(addonInfo.id, "Montserrat")
     datasetExp:SetEffectGlow({ strength = 1})
+
+    local datasetExpBarBGIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.experienceFrameBG.icon", datasetExpBarBG)
+    datasetExpBarBGIcon:SetPoint("CENTERRIGHT", datasetExpBarBG, "CENTERLEFT", -5, 0)
+    datasetExpBarBGIcon:SetHeight(16)
+    datasetExpBarBGIcon:SetWidth(16)
+    datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
     
     function datasetExpBarBG:Redraw()
         datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)

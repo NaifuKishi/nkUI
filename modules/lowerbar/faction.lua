@@ -41,7 +41,7 @@ function lowerBar.faction()
     end
     
     local datasetFactionBarBG = EnKai.uiCreateFrame('nkFrame', "lowerBar.factionFrameBG", uiElements.contextLowestRestricted)
-    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aThird, -9)
+    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aThird - 10, -9)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
@@ -64,6 +64,12 @@ function lowerBar.faction()
     datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
     datasetFactionName:SetFontColor(0, 0, 0, 1)
     datasetFactionName:SetTextFont(addonInfo.id, "Montserrat")
+
+    local datasetFactionBarBGIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
+    datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -5, 0)
+    datasetFactionBarBGIcon:SetHeight(16)
+    datasetFactionBarBGIcon:SetWidth(16)
+    datasetFactionBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarFaction.png")
     
     function datasetFactionBarBG:Redraw()
         datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)

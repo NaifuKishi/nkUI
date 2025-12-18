@@ -33,6 +33,12 @@ function lowerBar.location()
     function datasetLocation:Redraw()
         datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
+
+    local datasetLocationIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.location.icon", datasetLocation)
+    datasetLocationIcon:SetPoint("CENTERRIGHT", datasetLocation, "CENTERLEFT", -5, 0)
+    datasetLocationIcon:SetHeight(16)
+    datasetLocationIcon:SetWidth(16)
+    datasetLocationIcon:SetTextureAsync("nkUI", "gfx/lowerbarLocation.png")
     
     local buttons = {}
     local abilities = {"A3C5AEC64D3793518", "A665FDAC7EDD37636"}

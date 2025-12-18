@@ -21,12 +21,18 @@ function lowerBar.lowerBarRoles()
     local name = "lowerbar.roles"
     
     local datasetRole = EnKai.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
-    datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth * 2, -5)
+    datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", (-data.aFourth * 2) - 10, -5)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetRole:SetTextFont(addonInfo.id, "Montserrat")
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
+
+    local datasetRoleIcon = EnKai.uiCreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
+    datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)
+    datasetRoleIcon:SetHeight(16)
+    datasetRoleIcon:SetWidth(16)
+    datasetRoleIcon:SetTextureAsync("nkUI", "gfx/lowerbarRole.png")
     
     local roleSwitch = EnKai.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
     roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
