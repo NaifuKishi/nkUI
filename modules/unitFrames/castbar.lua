@@ -47,14 +47,15 @@ function _internal.createCastBar (unitType, setup)
                   {xProportional = 0, yProportional = 0}
                   }  
 
-	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0, g = .40, b = .80, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.1, g = 0.5, b = 0.8, a = 1, position = 0},  { r = 0.1, g = 0.4, b = 0.6, a = 1, position = 1 }}}
+	
 	castbarFill:SetShape (path, color, stroke)
 
 	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
 	castBarText:SetPoint("CENTER", castbar, "CENTER")
 	castBarText:SetFontSize(setup.fontSizes.text)
 	castBarText:SetFontColor (1, 1, 1, 1)
-	castBarText:SetEffectGlow({ strength = 1})
+	castBarText:SetEffectGlow({ strength = 3})
 	castBarText:SetTextFont(addonInfo.id, "Montserrat")
 	castBarText:SetLayer(2)
 
@@ -62,7 +63,7 @@ function _internal.createCastBar (unitType, setup)
 	castBarTimer:SetPoint("CENTERRIGHT", castbar, "CENTERRIGHT")
 	castBarTimer:SetFontSize(setup.fontSizes.timer)
 	castBarTimer:SetFontColor (1, 1, 1, 1)
-	castBarTimer:SetEffectGlow({ strength = 1})
+	castBarTimer:SetEffectGlow({ strength = 3})
 	castBarTimer:SetTextFont(addonInfo.id, "Montserrat")
 	castBarTimer:SetLayer(2)
 	

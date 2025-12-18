@@ -24,12 +24,12 @@ local stringFormat  = string.format
 local name = "uiRessourceBar"
 
 local ressourceColor = {
-    energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
-    mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}},
+    energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r = 1, g = .8, b = .2, a = 1, position = 1 }}},
+    power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r = .9, g = .4, b = .1, a = 1, position = 1 }}},
+    charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r = .5, g = .8, b = .7, a = 1, position = 1 }}},
+    mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r = 0, g = 0.6, b = 0.8, a = 1, position = 1 }}},
     focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 1, 0, 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
-    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r =.5, g = .5, b = .5, a = 1, position = .2 },  { r = 0.5, g = .5, b = .5, a = 1, position = 1 }}}
+    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
 }
 
 -- ressource bar function
@@ -68,7 +68,7 @@ function _internal.ressourcBar (unit, setup)
     ressourceText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     ressourceText:SetFontSize(setup.fontSizes.ressource)
     ressourceText:SetFontColor(1, 1, 1, 1)
-    ressourceText:SetEffectGlow({ strength = 1})
+    ressourceText:SetEffectGlow({ strength = 3})
 
     local chargeBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceChargeBGFrame", ressourceBGFrame)
     chargeBGFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
@@ -89,7 +89,7 @@ function _internal.ressourcBar (unit, setup)
     chargeText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     chargeText:SetFontSize(setup.fontSizes.charge)
     chargeText:SetFontColor(1, 1, 1, 1)
-    chargeText:SetEffectGlow({ strength = 1})
+    chargeText:SetEffectGlow({ strength = 3})
 
     local comboFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceComboFrame", ressourceBGFrame)
     comboFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)

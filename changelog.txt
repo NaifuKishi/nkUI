@@ -1,4 +1,7 @@
 V0.5.9
+    - new: mainbar can now bet set to have between 1 to 3 rows
+    - new: right screen bar can be deactivated
+    - update: improved readability of a couple of texts
     - update: changed title of OneBag to show player's name
     - update: added icons to lowerbar modules
 

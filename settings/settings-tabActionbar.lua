@@ -2,8 +2,9 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
+local uiElements	= privateVars.uiElements
 
 local stringFormat = string.format
 
@@ -12,7 +13,7 @@ local stringFormat = string.format
 function _settings.uiConfigTabActionBar (name, parent)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
-    local activateCheckbox, combatAlphaSlider, nonCombatAlphaSlider, offsetSlider, spacingSlider
+    local activateCheckbox, combatAlphaSlider, nonCombatAlphaSlider, offsetSlider, spacingSlider, noOfMainBarsSlider, rightBarCheckbox
 
     function frame:build()
 
@@ -23,7 +24,7 @@ function _settings.uiConfigTabActionBar (name, parent)
             if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
             if offsetSlider then offsetSlider:SetActive(newValue) end
 
-            _internal.uiActionBarInit (newValue)        
+            internalFunc.uiActionBarInit (newValue)
         end)
 
         local moduleActive = nkUISetup.modules.actionBars.activate
@@ -43,7 +44,7 @@ function _settings.uiConfigTabActionBar (name, parent)
 
         nonCombatAlphaSlider = _settings.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha <font color='#3399FF'>%d</font>%%", moduleActive, function (newValue)
             nkUISetup.modules.actionBars.nonCombatAlpha = newValue / 100
-            _internal.actionBarToggleAlpha()
+            internalFunc.actionBarToggleAlpha()
         end)
         
         nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 10)
@@ -52,27 +53,25 @@ function _settings.uiConfigTabActionBar (name, parent)
         nonCombatAlphaSlider:SetPrecision(5)    
         nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.nonCombatAlpha * 100)
 
-        --[[offsetSlider = _settings.slider(name .. ".offsetSlider", frame, "Offset <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
-            nkUISetup.modules.actionBars.offset = newValue
+        noOfMainBarsSlider = _settings.slider(name .. ".noOfMainBarsSlider", frame, "Number of main bars <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+            nkUISetup.modules.actionBars.mainbars = newValue
+            EnKai.ui.reloadDialog ("nkUI")
         end)
         
-        offsetSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
-        offsetSlider:SetRange(-1000, 1000)
-        offsetSlider:SetMidValue(0)
-        offsetSlider:SetPrecision(5)    
-        offsetSlider:AdjustValue(nkUISetup.modules.actionBars.offset)
-       
+        noOfMainBarsSlider:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 10)
+        noOfMainBarsSlider:SetRange(1, 3)
+        --noOfMainBarsSlider:SetMidValue(1.5)
+        noOfMainBarsSlider:AdjustValue(nkUISetup.modules.actionBars.mainbars)
 
-        spacingSlider = _settings.slider(name .. ".spacingSlider", frame, "Spacing 3x2 elements: <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
-            nkUISetup.modules.actionBars.spacing = newValue
+        rightBarCheckbox = _settings.checkbox(name .. ".rightBarCheckbox", frame, "Activate right side bar", true, function(newValue)        
+            nkUISetup.modules.actionBars.rightbar = newValue
+            uiElements.actionbars.rightScreen:SetVisible(newValue)
         end)
-        
-        spacingSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 15)
-        spacingSlider:SetRange(0, 50)
-        spacingSlider:SetMidValue(22)
-        spacingSlider:SetPrecision(5)    
-        spacingSlider:AdjustValue(nkUISetup.modules.actionBars.spacing)        
- ]]
+
+        rightBarCheckbox:SetPoint("TOPLEFT", noOfMainBarsSlider, "BOTTOMLEFT", 0, 10)
+        rightBarCheckbox:SetChecked(nkUISetup.modules.actionBars.rightbar, true)
+
+
     end
 
     return frame

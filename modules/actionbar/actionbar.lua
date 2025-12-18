@@ -242,7 +242,7 @@ function internalFunc.uiActionBars()
     if data.actionBarSetup.roles[Inspect.TEMPORARY.Role()] == nil then return end
 
     -- Create and position all action bars
-    local mainActionBar = createActionBar("nkUI.mainActionBar", 2, 12, 1, 1)
+    local mainActionBar = createActionBar("nkUI.mainActionBar", nkUISetup.modules.actionBars.mainbars, 12, 1, 1)
     mainActionBar:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.x, nkUISetup.modules.actionBars.y)
     mainActionBar:Populate()
     uiElements.actionbars.main = mainActionBar
@@ -269,6 +269,9 @@ function internalFunc.uiActionBars()
     rightScreenBar:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.actionBars.rightBarX, nkUISetup.modules.actionBars.rightBarY)
     rightScreenBar:SetInteractive(true)
     rightScreenBar:Populate()
+
+    rightScreenBar:SetVisible(nkUISetup.modules.actionBars.rightbar)
+
     uiElements.actionbars.rightScreen = rightScreenBar
 
     local bars = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars

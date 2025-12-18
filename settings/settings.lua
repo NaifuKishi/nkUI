@@ -86,6 +86,8 @@ local _defaults = {
                         rightBarY = 0,
                         offset = 550,
                         spacing = 15,
+                        mainbars = 2,
+                        rightbar = true
                     },
         lowerBar    = { activate = true,                         
                         fontSize = 15,

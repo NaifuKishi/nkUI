@@ -108,7 +108,7 @@ local function createTextFrame()
     local name = EnKai.tools.uuid()
 
     local frame = EnKai.uiCreateFrame("nkText", name, uiElements.contextLowest)
-    frame:SetEffectGlow({ strength = 1 })
+    frame:SetEffectGlow({ strength = 3 })
     frame:SetVisible(false)
 
     -- Create an icon frame for the text frame
