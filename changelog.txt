@@ -1,3 +1,6 @@
+V0.6.1
+    - fixes: item qty updates are now processed properly in one bag
+
 V0.6.0
     - new: mainbar can now bet set to have between 1 to 3 rows
     - new: right screen bar can be deactivated

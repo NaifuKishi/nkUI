@@ -94,7 +94,7 @@ local function initializeAddon(_, addon)
 			EnKai.unit.init()
 			
 			EnKai.BuffManager.init()
-            EnKai.inventory.init(false)				
+            EnKai.inventory.init(false, false)
 
 			internalFunc.setupDefaults()
 

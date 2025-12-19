@@ -84,6 +84,8 @@ function oneBag.populateBag(forceCacheUpdate)
         lastCacheUpdate = InspectTimeReal()
     end
 
+    --dump (cachedItems)
+
     local categories = {}
 
     for k, v in pairs(cachedItems) do
@@ -235,6 +237,8 @@ end
 
 function oneBag.itemSlot (_, slots)
 
+    --dump (slots)
+
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
 
@@ -260,7 +264,29 @@ function oneBag.itemSlot (_, slots)
 
 end
 
-function oneBag.itemUpdate (_, a, b)
-    --dump (a)
-    --dump (b)
+function oneBag.itemUpdate (_, slots)
+    
+    local doInventoryUpdate = false
+    local doBatSlotsUpdate = false
+
+    for thisSlot, state in pairs (slots) do
+        
+        if stringFind(thisSlot, "sibg.") then
+            doBatSlotsUpdate = true
+        elseif stringFind(thisSlot, "si") then
+            doInventoryUpdate = true
+        end
+
+        if doBatSlotsUpdate and doInventoryUpdate then break end
+    end
+
+    --print (doInventoryUpdate)
+
+    if doInventoryUpdate then 
+        EnKai.inventory.updateDB()
+        oneBag.populateBag(true) 
+    end
+
+    if doBatSlotsUpdate then  oneBag.getBagSlots() end
+
 end
