@@ -1,4 +1,7 @@
 V0.6.1
+    - updates: moved lowerbar social dataset a bit to the right
+    - updates: moving items to bank now support bank bags
+    - fixes: fixed duplicate combat events of action bar
     - fixes: item qty updates are now processed properly in one bag
 
 V0.6.0

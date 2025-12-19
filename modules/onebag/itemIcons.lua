@@ -124,6 +124,12 @@ function oneBag.createItemIcon(name, parent)
             if vaultSlot then
                 Command.Item.Move(thisSlot, vaultSlot)
                 movedItem = thisItemID
+            else
+                local bankSlot = EnKai.inventory.findFreeBankSlot()
+                if bankSlot then
+                    Command.Item.Move(thisSlot, bankSlot)
+                    movedItem = thisItemID
+                end
             end
         else
             if thisItemID then Command.Item.Standard.Right(thisItemID) end
