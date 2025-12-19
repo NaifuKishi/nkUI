@@ -24,7 +24,7 @@ function lowerBar.social()
     local _friendlist, _guildList = {}, {}
     
     local datasetSocial = EnKai.uiCreateFrame("nkText", "lowerBar.datasetsocial", uiElements.contextLowestRestricted)
-    datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 21, -5)
+    datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 31, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")

@@ -174,6 +174,10 @@ function events.abSecureEnter(_, info)
 
     internalFunc.combatHandler(false)
 
+    for _, actionBar in pairs(uiElements.actionbars) do
+        actionBar:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
+    end
+
     internalFunc.traceEnd("secureEnter", debugId)
 end
 
@@ -189,6 +193,10 @@ function events.abSecureLeave(_, info)
     data.insecure = {}
     internalFunc.combatHandler(true)
 
+    for _, actionBar in pairs(uiElements.actionbars) do
+        actionBar:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
+    end
+
     internalFunc.traceEnd("secureLeave", debugId)
 end
 
@@ -203,6 +211,7 @@ function events.abGcdStart(_, info)
     end
 end
 
+--[[
 -- Adjusts action bar transparency when entering secure mode
 function events.abSecureEnter()
     for _, actionBar in pairs(uiElements.actionbars) do
@@ -216,3 +225,4 @@ function events.abSecureLeave()
         actionBar:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
     end
 end
+]]
