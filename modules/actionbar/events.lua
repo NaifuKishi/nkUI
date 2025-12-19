@@ -174,6 +174,7 @@ function events.abSecureEnter(_, info)
 
     for _, actionBar in pairs(uiElements.actionbars) do
         actionBar:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
+        actionBar:ResetStates()
     end
 
     internalFunc.traceEnd("secureEnter", debugId)

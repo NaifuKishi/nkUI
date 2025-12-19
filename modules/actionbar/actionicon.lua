@@ -247,6 +247,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		elseif thisItemKey ~= nil and thisItemKey ~= 'macro' then
 			EnKai.cdManager.unsubscribe(thisItemType, thisItemKey)
 
+			if not data.abilityMap then data.abilityMap = {} end
+			if not data.abilityList then data.abilityList = {} end
+
 			data.abilityMap[thisItemKey] = nil
 			data.abilityList[thisItemKey] = nil
 		end	
@@ -267,6 +270,17 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
         texture:SetTextureAsync("nkUI", EMPTY_FRAME_TEXTURE)
 		
+	end
+	
+	function frame:CheckState()
+		if thisItemType ~= "ability" then return end
+
+		err, data = pcall(InspectAbilityNewDetail, itemKey)
+
+		if err and data ~= nil then
+			frame:SetOOR(data.outOfRange)
+			frame:SetUsable(not data.unusable)
+		end
 	end
 	
 	--[[

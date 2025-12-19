@@ -158,6 +158,24 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
         end
 	end
 
+    function actionBar:ResetStates()
+
+        local barSetup = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex]
+        
+        if barSetup ~= nil then
+            local slots = barSetup.slots
+
+            -- Iterate through each button and set its item based on the setup
+            for rowIndex = 1, rows, 1 do
+                local thisRow = actionButtons[rowIndex]
+
+                for colIndex = 1, cols, 1 do
+                    thisRow[colIndex]:CheckState()
+                end
+            end
+        end
+    end
+
     return actionBar
 
 end
