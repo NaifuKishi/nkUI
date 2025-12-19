@@ -172,8 +172,6 @@ end
 function events.abSecureEnter(_, info)
     local debugId = internalFunc.traceStart("secureEnter")
 
-    internalFunc.combatHandler(false)
-
     for _, actionBar in pairs(uiElements.actionbars) do
         actionBar:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
     end
@@ -184,14 +182,8 @@ end
 -- Event handler for leaving secure mode
 -- @param info Table containing secure mode information
 function events.abSecureLeave(_, info)
+    
     local debugId = internalFunc.traceStart("secureLeave")
-
-    for _, callback in pairs(data.insecure) do
-        callback()
-    end
-
-    data.insecure = {}
-    internalFunc.combatHandler(true)
 
     for _, actionBar in pairs(uiElements.actionbars) do
         actionBar:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)

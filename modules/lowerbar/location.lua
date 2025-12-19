@@ -63,7 +63,7 @@ function lowerBar.location()
         datasetLocationButtonTexture:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
         datasetLocationButtonTexture:SetVisible(true)
         
-        EnKai.ui.attachAbilityTooltip(datasetLocationButtonTexture, k)
+        EnKai.ui.attachAbilityTooltip(datasetLocationButtonTexture, v.id)
         
         table.insert(buttons, datasetLocationButton)
         

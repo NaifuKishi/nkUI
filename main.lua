@@ -152,6 +152,12 @@ local function initializeAddon(_, addon)
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
 
+		local testFrame = EnKai.uiCreateFrame("nkFrame", "test", uiElements.contextTooltip)
+		testFrame:SetPoint("CENTER", UI.Native.MechanicTarget, "CENTER")
+		testFrame:SetWidth (100)
+		testFrame:SetHeight (100)
+		testFrame:SetBackgroundColor(1, 0, 0, 1)
+
 		EnKai.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
 	end  
 end
