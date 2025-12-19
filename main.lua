@@ -26,7 +26,7 @@ local stringFind	= string.find
 -- Initialize variables
 data.colors = {
     primary	= { r = 1, g = 1, b = 1, a = 1 },
-    accent	= { r = .24, g = .68, b = .91, a = 1 }
+    accent	= { r = 0.1176, g = 0.7490, b = 1, a = 1 }
 }
 				
 data.uiScale = 1

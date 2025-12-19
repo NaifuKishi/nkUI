@@ -49,27 +49,30 @@ function lowerBar.social()
     
     local function processGuildMember(memberName)
         local details = inspectGuildRosterDetail(memberName)
-        
+
         if details == nil then return end
         
         if findGuildEntry(memberName) ~= nil then
             table.remove(_guildList, findGuildEntry(memberName), 1)
         end
+
         table.insert(_guildList, { name = details.name })
     end
     
     local function loadGuildRoster()
         local glist = inspectGuildRosterList()
-        
+
         if glist ~= nil then
-            for k, v in pairs(glist) do
+            for k, v in pairs(glist) do                
                 if v == "online" then processGuildMember(k) end
             end
         end
         
+        datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+
         lastGuildUpdate = inspectTimeFrame()
     end
-    
+   
     local function processFriend(friendName)
         local details = inspectSocialFriendDetail(friendName)
         
@@ -79,6 +82,20 @@ function lowerBar.social()
             calling = EnKai.unit.getCallingText(details.calling),
             zone = ""
         })
+    end
+
+    local function loadFriendRoster()
+        local flist = inspectSocialFriendList()
+
+        if flist then
+            local details = inspectSocialFriendDetail(flist)
+            for k, v in pairs(details) do
+                if v.status == "online" then processFriend(k) end
+            end
+        end
+
+        datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+
     end
     
     local function friendChange()
@@ -149,6 +166,9 @@ function lowerBar.social()
     Command.Event.Attach(Event.Guild.Roster.Detail.Status, guildStatusChange, "nkUI.lowerbar.Guild.Roster.Status")
     Command.Event.Attach(Event.Guild.Roster.Detail.Zone, guildZoneChange, "nkUI.lowerbar.Guild.Roster.Zone")
     Command.Event.Attach(Event.Unit.Availability.Full, checkPlayer, "nkUI.lowerbar.Unit.Availability.Full")
+
+    loadGuildRoster()
+    loadFriendRoster()
     
     table.insert(uiElements.lowerBarModules, datasetSocial)
 end
