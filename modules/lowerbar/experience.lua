@@ -31,7 +31,7 @@ function lowerBar.experience()
     datasetExp:SetPoint("BOTTOMCENTER", datasetExpBarBG, "TOPCENTER", 0, 0)
     datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
-    datasetExp:SetTextFont(addonInfo.id, "Montserrat")
+    datasetExp:SetTextFont(addonInfo.id, "MontserratSemiBold")
     datasetExp:SetEffectGlow({ strength = 1})
 
     local datasetExpBarBGIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.experienceFrameBG.icon", datasetExpBarBG)
