@@ -18,6 +18,8 @@ local stringFormat  = string.format
 local stringSub     = string.sub
 local stringUpper   = string.upper
 
+local EnKaiGetPlayerDetails = EnKai.unit.getPlayerDetails
+
 ---------- init local function ---------
 
 local function tooltipUI()
@@ -245,13 +247,17 @@ local function tooltipUnit (unitInfo)
         trivial = "#9D9D9D",        
     }
 
-    local callingColor = {
-        rogue = "#FFF569",
-        warrior = "#C79C6E",
-        cleric = "#FFFFFF",
-        primalist = "#0070DE",
-        mage = "#69CCF0"
-    }
+    local callingColor = { rift = { rogue = "#FFFFFF",
+                                    warrior = "#FFFFFF",
+                                    cleric = "#FFFFFF",
+                                    primalist = "#FFFFFF",
+                                    mage = "#FFFFFF"},
+                            wow = { rogue = "#FFF569",
+                                    warrior = "#C79C6E",
+                                    cleric = "#FFFFFF",
+                                    primalist = "#0070DE",
+                                    mage = "#69CCF0"}
+    }    
     
     local color = "#FFFFFF"
     if unitDetail.relation then
@@ -264,7 +270,11 @@ local function tooltipUnit (unitInfo)
         table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
     end
 
-    local playerDetail = EnKai.unit.getPlayerDetails()
+    local playerDetail = EnKaiGetPlayerDetails()
+
+    if unitDetail.guild then
+        table.insert(infoLines, unitDetail.guild)
+    end
 
     if unitDetail.level then
         local levelLine
@@ -302,7 +312,10 @@ local function tooltipUnit (unitInfo)
     if unitDetail.calling then
         local firstChar = stringSub(unitDetail.calling, 1, 1)
         local restOfString = stringSub(unitDetail.calling, 2)
-        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColor[unitDetail.calling], stringUpper(firstChar), restOfString))
+
+        local callingColors = callingColor[nkUISetup.modules.unitFrames.colorScheme]
+
+        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColors[unitDetail.calling], stringUpper(firstChar), restOfString))
     end
 
     if unitDetail.locationName then
@@ -310,7 +323,7 @@ local function tooltipUnit (unitInfo)
     end
 
     if unitDetail.publicSize then
-        table.insert(infoLines, stringFormat('Public group : %d member(s)', unitDetail.publicSize) )
+        table.insert(infoLines, stringFormat('Public group size: %d', unitDetail.publicSize) )
     end
 
     uiElements.tooltip:SetBody(infoLines)    
@@ -356,7 +369,7 @@ end
 function _tooltip.item(iteminfo)
 
     local itemDetail = Inspect.Item.Detail(iteminfo)
-    local playerDetail = EnKai.unit.getPlayerDetails()
+    local playerDetail = EnKaiGetPlayerDetails()
 
     local infoLines = {}
 
@@ -467,7 +480,7 @@ function _tooltip.ability(abilityInfo)
     
     if abilityDetail == nil then return end
     
-    local playerDetail = EnKai.unit.getPlayerDetails()
+    local playerDetail = EnKaiGetPlayerDetails()
 
     local infoLines = {}
     local statLines = {}
