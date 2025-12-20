@@ -1,9 +1,9 @@
 Identifier = "nkUI"
-Name = "Naifu's UI Suite"
+Name = "Naifukishi's UI Suite"
 NameShort ="nkUI"
-Description = "Naifu's user interface"
+Description = "nkUI is a UI suite for Rift in the style of modern WoW addons. It's heavily inspired by ndUI, ToxiUI, Parrot and ElvUI in general.\n\nYou can open the settings by entering /nkUI in the chat. Within the settings you can change a couple of things of the UI. The most important part is that you can activate and deactivate each module of nkUI.\n\nAlso in the settings you can activate the mode to move things around the screen."
 
-Author = "Naifu"
+Author = "NaifuKishi"
 Email = "naifukishi@gmail.com"
 
 Version = "0.6.0"
