@@ -276,11 +276,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	function frame:CheckState()
 		if thisItemType ~= "ability" then return end
 
-		err, data = pcall(InspectAbilityNewDetail, itemKey)
+		local err, thisDetails = pcall(InspectAbilityNewDetail, itemKey)
 
-		if err and data ~= nil then
-			frame:SetOOR(data.outOfRange)
-			frame:SetUsable(not data.unusable)
+		if err and thisDetails ~= nil then
+			frame:SetOOR(thisDetails.outOfRange)
+			frame:SetUsable(not thisDetails.unusable)
 		end
 	end
 	
@@ -318,29 +318,29 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			table.insert(data.abilityList, itemKey)
 		end
 		
-		local err, data, macro
+		local err, thisDetails, macro
 		
 		if thisItemType == 'item' then
-			err, data = pcall(InspectItemDetail, itemKey)
-			if err and data ~= nil then
-				macro = "use " .. stringGSub(data.name, "\n", "")
+			err, thisDetails = pcall(InspectItemDetail, itemKey)
+			if err and thisDetails ~= nil then
+				macro = "use " .. stringGSub(thisDetails.name, "\n", "")
 			end
 		elseif thisItemType == "ability" then
-			err, data = pcall(InspectAbilityNewDetail, itemKey)
+			err, thisDetails = pcall(InspectAbilityNewDetail, itemKey)
 
-			if err and data ~= nil then
-				frame:SetOOR(data.outOfRange)
-				frame:SetUsable(not data.unusable)
-				macro = "cast " .. stringGSub(data.name, "\n", "")
+			if err and thisDetails ~= nil then
+				frame:SetOOR(thisDetails.outOfRange)
+				frame:SetUsable(not thisDetails.unusable)
+				macro = "cast " .. stringGSub(thisDetails.name, "\n", "")
 			end
 		else -- macro
 			macro = stringGSub(thisItemKey, "\r", "\n")
 			err = true
-			data = { icon = macroIcon }
+			thisDetails = { icon = macroIcon }
 		end
 			
-		if err and data ~= nil and data.icon ~= nil then
-			texture:SetTextureAsync("Rift", data.icon)  
+		if err and thisDetails ~= nil and thisDetails.icon ~= nil then
+			texture:SetTextureAsync("Rift", thisDetails.icon)  
 		else
 			texture:SetTextureAsync("nkUI", BLANK_TEXTURE)
 		end
