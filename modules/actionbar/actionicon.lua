@@ -98,7 +98,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	cooldown:SetFontSize(18)
 	cooldown:SetPoint("CENTER", frame, "CENTER")
 	cooldown:SetFontColor (1, 1, 1, 1)
-	cooldown:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
+	--cooldown:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
+	cooldown:SetEffectGlow({ strength = 3 })
 	cooldown:SetLayer(6)
 	
 	--[[

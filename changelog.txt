@@ -4,6 +4,7 @@ V0.6.1
     - updates: lowerbar social dataset now updates immediately on ui load
     - updates: Some small font updates on lowerbar
     - updates: reset action bars on combat start
+    - fixes: fixed an issue when adding skills to action bars
     - fixes: fixed tooltip on lowerbar location ports
     - fixes: fixed duplicate combat events of action bar
     - fixes: item qty updates are now processed properly in one bag
