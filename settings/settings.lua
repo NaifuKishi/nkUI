@@ -98,7 +98,8 @@ local _defaults = {
                         timeSize = 36,
                         dateSize = 15
 		            },
-        oneBag      = { activate = true },
+        oneBag      = { activate = true,
+                        windowColor = { r = 0, g = 0, b = 0, a = 0.3} },
         buffBar     = { activate = true,
                         x = -1690, y = -690,
                         buffs = { width = 40, height = 40, timer = 14, stack = 12, label = 10}            

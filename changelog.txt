@@ -1,5 +1,6 @@
 V0.7.0
     - new: added a new setting to change the color scheme
+    - new: added a new setting to change color of bag window
     - update: added guild to tooltip
 
 V0.6.1

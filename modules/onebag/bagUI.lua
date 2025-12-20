@@ -23,6 +23,9 @@ function oneBag.createBagUI()
     bagWindow:SetShadow(true)
     bagWindow:SetLayer(1)
     bagWindow:SetPoint("CENTER", UIParent, "CENTER", 1000 * data.uiScale, 000 * data.uiScale)
+    bagWindow:SetColor(nil, 
+     { type = "solid", r = nkUISetup.modules.oneBag.windowColor.r, g  = nkUISetup.modules.oneBag.windowColor.g, b = nkUISetup.modules.oneBag.windowColor.b, a = nkUISetup.modules.oneBag.windowColor.a} 
+    )
     
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         Command.Cursor(nil)
