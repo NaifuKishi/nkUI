@@ -50,6 +50,7 @@ RunOnStartup = {
 	"modules/tooltip/tooltip.lua",
 
 	"settings/settings.lua",
+	"settings/settings-tabTheme.lua",
 	"settings/settings-tabUF.lua",
 	"settings/settings-tabActionbar.lua",
 	"settings/settings-tabBuffbar.lua",

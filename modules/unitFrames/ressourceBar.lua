@@ -23,18 +23,13 @@ local stringFormat  = string.format
 
 local name = "uiRessourceBar"
 
-local ressourceColor = {
-    energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r = 1, g = .8, b = .2, a = 1, position = 1 }}},
-    power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r = .9, g = .4, b = .1, a = 1, position = 1 }}},
-    charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r = .5, g = .8, b = .7, a = 1, position = 1 }}},
-    mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r = 0, g = 0.6, b = 0.8, a = 1, position = 1 }}},
-    focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 1, 0, 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
-    default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
-}
+local ressourceColor = {}
 
 -- ressource bar function
 
 function _internal.ressourcBar (unit, setup)
+
+    ressourceColor = data.colors.ressource[nkUISetup.modules.unitFrames.colorScheme]
 
     local thisName = name .. ".ressourceBar." .. unit
     local ressourceMax
@@ -98,13 +93,8 @@ function _internal.ressourcBar (unit, setup)
     comboFrame:SetVisible(false)
 
     local from, to, object, x, y = "TOPLEFT", "TOPLEFT", comboFrame, 0, 0
-    local color = {
-        {r = 1, g = .4, b = 0, a = 1},
-        {r = .97, g = .38, b = 0, a = 1},
-        {r = .94, g = .36, b = 0, a = 1},
-        {r = .91, g = .34, b = 0, a = 1},
-        {r = .88, g = .32, b = 0, a = 1}
-    }
+    
+    local color = data.colors.combo[nkUISetup.modules.unitFrames.colorScheme]
 
     for idx = 1, 5, 1 do
         local combo = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx, comboFrame)

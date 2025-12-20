@@ -22,6 +22,7 @@ local _defaults = {
                         nonCombatAlpha = .2, 
                         showBuffs = true,
                         buffDuration = 60,
+                        colorScheme = "wow",
                         frames = {  player          = { x = -300, y = 300, width = 250, height = 35, 
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12, level = 12}, 
@@ -222,6 +223,24 @@ function _settings.checkbox (name, parent, text, active, callBack)
 
 end
 
+function _settings.combobox (name, parent, text, active, callBack)
+
+    local thisCombobox = EnKai.uiCreateFrame("nkCombobox", name, parent)
+    
+    thisCombobox:SetText(text, true)
+    thisCombobox:SetActive(active)
+    thisCombobox:SetLabelWidth(200)
+	thisCombobox:SetWidth(300)    
+    thisCombobox:SetFont(addonInfo.id, "Montserrat")    
+
+    Command.Event.Attach(EnKai.events[name].ComboChanged, function (_, newValue)		
+        callBack(newValue.value)
+    end, name .. ".CheckboxChanged")
+
+    return thisCombobox
+
+end
+
 function _settings.slider (name, parent, text, active, callBack)
 
     local thisSlider = EnKai.uiCreateFrame("nkSlider", name, parent)
@@ -285,6 +304,7 @@ function _internal.setupUI ()
     tabPane:SetVertical(true)
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
 
+    local paneTabTheme = _settings.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
     local paneTabActionBar = _settings.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
     local paneTabLowerBar = _settings.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
     local paneTabSCT = _settings.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
@@ -363,6 +383,7 @@ function _internal.setupUI ()
     tabPane:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -50)
     tabPane:SetLayer(1)
 
+    tabPane:AddPane( { label = "Theme", frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
     tabPane:AddPane( { label = "Action bar", frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
     tabPane:AddPane( { label = "Lower bar", frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
     tabPane:AddPane( { label = "SCT", frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
