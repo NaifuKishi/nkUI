@@ -13,6 +13,8 @@ local InspectTimeReal       = Inspect.Time.Real
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
+local EnKaiGetPlayerDetails = EnKai.unit.getPlayerDetails
+
 -- Buff and debuff icons and display lists
 local buffIcons         = {}
 local buffDisplayList   = {}
@@ -78,9 +80,9 @@ function internalFunc.buffBar.addBuff(unit, buffs)
             buffId2BuffType[k] = buffIdentifier
             
             if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                internalFunc.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+                internalFunc.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKaiGetPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
             else
-                internalFunc.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKai.unit.getPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
+                internalFunc.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKaiGetPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
             end
         end
     end
@@ -111,14 +113,14 @@ end
 
 -- Clears all active buff icons
 function internalFunc.buffBar.clearAllBuffs()
-    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
-    internalFunc.buffBar.removeBuff(EnKai.unit.getPlayerDetails().id, buffs)
+    local buffs = InspectBuffList(EnKaiGetPlayerDetails().id)
+    internalFunc.buffBar.removeBuff(EnKaiGetPlayerDetails().id, buffs)
 end
 
 -- Loads all buffs for the player
 function internalFunc.buffBar.loadAllBuffs()
-    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
-    internalFunc.buffBar.addBuff(EnKai.unit.getPlayerDetails().id, buffs)
+    local buffs = InspectBuffList(EnKaiGetPlayerDetails().id)
+    internalFunc.buffBar.addBuff(EnKaiGetPlayerDetails().id, buffs)
     internalFunc.buffBar.UpdateBuffDisplay()
 end
 

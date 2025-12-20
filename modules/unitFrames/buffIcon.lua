@@ -321,6 +321,7 @@ function uiElements.icon (name, parent)
 	end
 
 	function icon:SetTooltip(name, description)
+		--print (name)
 		thisName = name
 		thisDescription = description
 		EnKai.ui.attachGenericTooltip (texture, thisName, thisDescription)
