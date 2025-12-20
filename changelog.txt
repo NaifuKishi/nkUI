@@ -6,6 +6,7 @@ V0.6.1
     - updates: reset action bars on combat start
     - updates: slightly changed cooldown display on action bars
     - updates: slightly changed the size of the bag slots in One Bag    
+    - fixes: tooltip now works on interactive action bars
     - fixes: fixed an issue when adding skills to action bars
     - fixes: fixed tooltip on lowerbar location ports
     - fixes: fixed duplicate combat events of action bar

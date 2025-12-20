@@ -371,6 +371,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 
         local tooltipTarget = texture
+		if interactive then tooltipTarget = macroFrame end
 						
 		if thisItemType == 'item' then
 			EnKai.ui.attachItemTooltip (tooltipTarget, itemKey)
