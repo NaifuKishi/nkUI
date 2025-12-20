@@ -311,6 +311,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			table.insert(data.abilityList, macroCDKey)
 		else
 			EnKai.cdManager.subscribe(thisItemType, thisItemKey)
+			if data.abilityMap == nil then data.abilityMap = {} end
 			if data.abilityMap[itemKey] == nil then data.abilityMap[itemKey] = {} end
 			table.insert(data.abilityMap[itemKey], frame)
 			table.insert(data.abilityList, itemKey)
