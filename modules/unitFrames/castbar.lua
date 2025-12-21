@@ -47,9 +47,11 @@ function _internal.createCastBar (unitType, setup)
                   {xProportional = 0, yProportional = 0}
                   }  
 
-	local color = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.1, g = 0.5, b = 0.8, a = 1, position = 0},  { r = 0.1, g = 0.4, b = 0.6, a = 1, position = 1 }}}
+	local color = { interruptible 	= {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.1, g = 0.5, b = 0.8, a = 1, position = 0},  { r = 0.1, g = 0.4, b = 0.6, a = 1, position = 1 }}},
+				  	uninterruptible = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.8, g = 0.6, b = 0.2, a = 1, position = 0},  { r = 0.6, g = 0.4, b = 0.1, a = 1, position = 1 }}}
+				}
 	
-	castbarFill:SetShape (path, color, stroke)
+	--castbarFill:SetShape (path, color, stroke)
 
 	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
 	castBarText:SetPoint("CENTER", castbar, "CENTER")
@@ -79,6 +81,14 @@ function _internal.createCastBar (unitType, setup)
 
 		if castBarText:GetWidth() > setup.width then
 			castBarText:SetText(_internal.shortenName (spellname, 10))
+		end
+	end
+
+	function castbar:SetInterruptible(flag)
+		if flag then
+			castbarFill:SetShape (path, color.interruptible, stroke)
+		else
+			castbarFill:SetShape (path, color.uninterruptible, stroke)
 		end
 	end
 

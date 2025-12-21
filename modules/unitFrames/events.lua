@@ -70,11 +70,13 @@ local function _eventCastBar(_, units)
 
 					thisFrame:SetSpell (details.abilityName)
 					thisFrame:SetTimer (details.duration, details.duration)
+					thisFrame:SetInterruptible (not details.uninterruptible)
 					thisFrame:SetVisible(true)					
 
 					data[castBarName] = {
 						abilityName = details.abilityName,
 						duration = details.duration,
+						uninterruptible = details.uninterruptible,
 						start = InspectTimeReal()
 					}
 				else
