@@ -5,6 +5,7 @@ V0.7.0
     - new: cast interrupts are now announced
     - update: added guild to tooltip
     - update: A lot of code refactoring
+    - update: Adjusted ressource coloring
 
 V0.6.1
     - updates: moved lowerbar social dataset a bit to the right

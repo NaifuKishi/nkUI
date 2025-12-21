@@ -45,20 +45,20 @@ data.colors = {
 					default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .4, g = .67, b = .05, a = 1, position = 0},  { r = .3, g = .5, b = 0, a = 1, position = 1 }}}
 				}},
 	ressource = { rift = {
-					energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.8235, g = 0.3059, b = 0.8627, a = 1, position = 0 },{ r = 0.7, g = 0.2, b = 0.7, a = 1, position = 1 }}},
-					power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.9098, g = 0.8902, b = 0.2196, a = 1, position = 0 }, { r = 0.7, g = 0.6, b = 0.1, a = 1, position = 1 }}},
-					charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.2824, g = 0.7333, b = 0.6118, a = 1, position = 0 }, { r = 0.15, g = 0.5, b = 0.4, a = 1, position = 1 }}},
-					mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0.2353, g = 0.4784, b = 0.8078, a = 1, position = 0 }, { r = 0.15, g = 0.3, b = 0.5, a = 1, position = 1 }}},
-					focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
-					default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
+					energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 0.8235, g = 0.3059, b = 0.8627, a = 1, position = 0 },{ r = 0.7, g = 0.2, b = 0.7, a = 1, position = 1 }}},
+					power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 0.9098, g = 0.8902, b = 0.2196, a = 1, position = 0 }, { r = 0.7, g = 0.6, b = 0.1, a = 1, position = 1 }}},
+					charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 0.2824, g = 0.7333, b = 0.6118, a = 1, position = 0 }, { r = 0.15, g = 0.5, b = 0.4, a = 1, position = 1 }}},
+					mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 0.2353, g = 0.4784, b = 0.8078, a = 1, position = 0 }, { r = 0.15, g = 0.3, b = 0.5, a = 1, position = 1 }}},
+					focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
+					default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
 				},
 				  wow = {
-					energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r = 1, g = .8, b = .2, a = 1, position = 1 }}},
-					power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r = .9, g = .4, b = .1, a = 1, position = 1 }}},
-					charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r = .5, g = .8, b = .7, a = 1, position = 1 }}},
-					mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r = 0, g = 0.6, b = 0.8, a = 1, position = 1 }}},
-					focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
-					default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
+					energy = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 1, g = .96, b = .41, a = 1, position = 0},  { r = 0.9, g = 0.5, b = 0.2, a = 1, position = 1 }}},
+					power = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 1, g = .5, b = .25, a = 1, position = 0},  { r = .9, g = .4, b = .1, a = 1, position = 1 }}},
+					charge = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = .71, g = 1, b = .92, a = 1, position = 0},  { r = .5, g = .8, b = .7, a = 1, position = 1 }}},
+					mana = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 0, g = 0.82, b = 1, a = 1, position = 0},  { r = 0, g = 0.6, b = 0.8, a = 1, position = 1 }}},
+					focus = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = 1, g = 0, b = 0, a = 1, position = 0}, { r = 0, g = .82, b = 1, a = 1, position = 1 }}},
+					default = {type = "gradientLinear", transform = Utility.Matrix.Create(2, 2, (mathpi / 4), 0, 0), color = {{ r = .1, g = .1, b = .1, a = 1, position = 0},  { r = .2, g = .2, b = .2, a = 1, position = 1 }}}
 				}},
 	combo = { 	rift = {{r = 1, g = 1, b = 1, a = 1},
 						{r = 1, g = 1, b = 1, a = 1},
