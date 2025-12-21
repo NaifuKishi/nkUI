@@ -6,6 +6,7 @@ V0.7.0
     - update: added guild to tooltip
     - update: A lot of code refactoring
     - update: Adjusted ressource coloring
+    - fixes: Fixed putting a new bag in a bag slot
 
 V0.6.1
     - updates: moved lowerbar social dataset a bit to the right

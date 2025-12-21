@@ -2,9 +2,9 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
 
 ---------- local functions ---------
@@ -54,18 +54,7 @@ function oneBag.createBagSlots()
         icon:SetPoint("CENTER", thisSlot, "CENTER")
         icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
         icon:SetLayer(1)
-        
-        icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-            if isLocked then return end
-            if draggedItem == nil or draggedSlot == nil then return end
-            
-            local type, held = Inspect.Cursor()
-            local target = stringFormat("sibg.%03d", idx)
-            local source = draggedSlot
-            Command.Item.Move(target, source)
-            Command.Cursor(nil)
-        end, "nkUIBagSlotIcon" .. idx .. ".Left.Up")
-        
+                
         thisSlot.icon = icon
         
         local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint" .. idx, bagSlotsFrame)
@@ -85,6 +74,19 @@ function oneBag.createBagSlots()
         icon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
             Command.Tooltip(nil)
         end, "nkUIBagSlotIcon" .. idx .. "Event.UI.Input.Mouse.Cursor.Out")
+
+        icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+            if not oneBag.dragItem then return end
+            
+            local sourceSlot = oneBag.dragItem.draggedSlot
+            if sourceSlot == nil then return end
+            
+            local type, held = Inspect.Cursor()
+            local target = stringFormat("sibg.%03d", idx)
+            
+            Command.Item.Move(target, sourceSlot)
+            Command.Cursor(nil)
+        end, "nkUIBagSlotIcon" .. idx .. "Event.Left.Up")
         
         bagSlots[stringFormat("sibg.%03d", idx)] = thisSlot
     end

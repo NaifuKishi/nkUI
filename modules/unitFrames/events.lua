@@ -70,6 +70,8 @@ local function _eventCastBar(_, units)
 				if state == true then					
 					local details = InspectUnitCastbar(unitID)
 
+					--dump(details)
+
 					thisFrame:SetSpell (details.abilityName)
 					thisFrame:SetTimer (details.duration, details.duration)
 					thisFrame:SetInterruptible (not details.uninterruptible)

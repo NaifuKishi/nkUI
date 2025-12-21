@@ -112,12 +112,14 @@ function oneBag.createItemIcon(name, parent)
     end, name .. "Event.UI.Input.Mouse.Cursor.Out")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function()
-        draggedItem = thisItemID
-        draggedSlot = thisSlot
+        oneBag.dragItem = {
+            draggedItem = thisItemID,
+            draggedSlot = thisSlot
+        }
         Command.Item.Standard.Left(thisItemID)
         Command.Cursor(thisItemID)
     end, name .. "Event.Left.Down")
-    
+   
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
         if UI.Native.Bank:GetLoaded() then
             local vaultSlot = EnKai.inventory.findFreeVaultSlot()

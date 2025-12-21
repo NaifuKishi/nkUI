@@ -23,10 +23,14 @@ local mathFloor         = math.floor
 local name = "onebag"
 local itemIcons = {}
 local categoryLabels = {}
-local draggedItem, draggedSlot
 local movedItem
 local cachedItems
 local lastCacheUpdate
+
+oneBag.dragItem = {
+    draggedItem = nil,
+    draggedSlot = nil
+}
 
 ---------- local functions ---------
 
@@ -289,4 +293,4 @@ function oneBag.itemUpdate (_, slots)
 
     if doBatSlotsUpdate then  oneBag.getBagSlots() end
 
-end
+endoneBag
