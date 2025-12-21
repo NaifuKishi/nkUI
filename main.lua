@@ -183,6 +183,8 @@ local function initializeAddon(_, addon)
 					end, "nkUI.OneBag.Native.Bag.Loaded")
 				end
 
+				-- internalFunc.questrackerInit()
+
 				--internalFunc.chat ()
 				
 			end

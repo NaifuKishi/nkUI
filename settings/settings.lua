@@ -17,6 +17,10 @@ local stringFind = string.find
 
 local _defaults = {
     modules = {
+        questtracker = {activate = true,
+                        x = 2048,
+                        y = 1000
+        },
         unitFrames  = { activate = true, 
                         combatAlpha = 1, 
                         nonCombatAlpha = .2, 
@@ -117,6 +121,9 @@ local function _scaleUI ()
     if parentWidth == 3440 then return end
 
     data.uiScale = parentWidth / 3440
+
+    nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
+    nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
 
     nkUISetup.modules.actionBars.x = nkUISetup.modules.actionBars.x * data.uiScale
     nkUISetup.modules.actionBars.y = nkUISetup.modules.actionBars.y * data.uiScale

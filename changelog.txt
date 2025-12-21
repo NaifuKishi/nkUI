@@ -1,3 +1,7 @@
+V0.7.1
+    - update: Tweaked castbar design
+    - update: Resized One Bag header fontsize
+
 V0.7.0
     - new: added a new setting to change the color scheme
     - new: added a new setting to change color of bag window

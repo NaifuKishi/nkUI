@@ -270,7 +270,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     planarText:SetEffectGlow({ strength = 5})  
     planarText:SetLayer(2)
 
-    local levelText = EnKai.uiCreateFrame("nkText", thisName .. ".kevekText", healthFrame)
+    local levelText = EnKai.uiCreateFrame("nkText", thisName .. ".levelText", healthFrame)
 
     if setup.reverse then
         levelText:SetPoint("BOTTOMRIGHT", unitFrame, "BOTTOMRIGHT", -setup.margins.level, 10)
