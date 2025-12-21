@@ -2,8 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
 
 local stringFormat = string.format
 
@@ -23,7 +23,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         widthSlider = _settings.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.width = newValue
-            _internal.uiFrameRedraw("player.ressourcebar")
+            internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 10)
@@ -34,7 +34,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         
         heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.height = newValue
-            _internal.uiFrameRedraw("player.ressourcebar")
+            internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         heightSlider:SetPoint("TOPLEFT", widthSlider, "TOPRIGHT", 30, 0)
@@ -50,7 +50,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         comboWidthSlider = _settings.slider (name .. ".comboWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.combo.width = newValue
-             _internal.uiFrameRedraw("player.ressourcebar")
+             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         comboWidthSlider:SetPoint("TOPLEFT", comboHeader, "BOTTOMLEFT", 0, 15)
@@ -61,7 +61,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         
         comboHeightSlider = _settings.slider (name .. ".comboHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.combo.height = newValue
-             _internal.uiFrameRedraw("player.ressourcebar")
+             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         comboHeightSlider:SetPoint("TOPLEFT", comboWidthSlider, "TOPRIGHT", 30, 0)
@@ -77,7 +77,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         
         chargeWidthSlider = _settings.slider (name .. ".chargeWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.charge.width = newValue
-             _internal.uiFrameRedraw("player.ressourcebar")
+             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         chargeWidthSlider:SetPoint("TOPLEFT", chargeHeader, "BOTTOMLEFT", 0, 15)
@@ -88,7 +88,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         
         chargeHeightSlider = _settings.slider (name .. ".chargeHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.charge.height = newValue
-            _internal.uiFrameRedraw("player.ressourcebar")
+            internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         chargeHeightSlider:SetPoint("TOPLEFT", chargeWidthSlider, "TOPRIGHT", 30, 0)
@@ -123,7 +123,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         chargeFontSize = _settings.slider (name .. ".chargeFontSize", frame, "Charge <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.charge = newValue
-            _internal.uiFrameRedraw("player.ressourcebar")
+            internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         chargeFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, 10)
@@ -134,7 +134,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         
         ressourceFontSize = _settings.slider (name .. ".ressourceFontSize", frame, "Ressource <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.ressource = newValue
-            _internal.uiFrameRedraw("player.ressourcebar")
+            internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
         ressourceFontSize:SetPoint("TOPLEFT", chargeFontSize, "TOPRIGHT", 30, 0)

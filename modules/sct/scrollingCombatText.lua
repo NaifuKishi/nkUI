@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
-local events      = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local events        = privateVars.events
 
 ---------- init local variables ---------
 
@@ -145,7 +145,7 @@ end
 -- Displays a message at the top center of the screen
 -- @param message The message to display
 -- @param duration How long to display the message
-local function displayMessageAtTopCenter(message, duration)
+function internalFunc.displayMessageAtTopCenter(message, duration)
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -479,7 +479,7 @@ local function handleCooldownEnd (_, info)
     for key, details in pairs (info) do
         if abilityCache[key] ~= nil and abilityTimer[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
             abilityTimer[key] = nil
-            displayMessageAtTopCenter(stringFormat("%s ready", abilityCache[key].name), 1.5)
+            internalFunc.displayMessageAtTopCenter(stringFormat("%s ready", abilityCache[key].name), 1.5)
         end
     end
 

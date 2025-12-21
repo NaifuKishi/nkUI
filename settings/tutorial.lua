@@ -5,7 +5,7 @@
     Date of Last Modification: 22.11.2025
     Description: This file contains the settings module for the nkUI addon, which handles various UI configurations and tutorial functionality.
     Public Functions:
-        - _internal.tutorial(): Creates and displays the tutorial window for nkUI settings
+        - internalFunc.tutorial(): Creates and displays the tutorial window for nkUI settings
     Version History:
         - [Version 1.0] - Initial release
 ]]
@@ -14,10 +14,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 ---------- init local variables ---------
 
@@ -269,7 +269,7 @@ local function _createTutorialWindow()
 end
 
 --[[
-    _internal.tutorial
+    internalFunc.tutorial
     Description:
         Creates and displays the tutorial window for nkUI settings. This function initializes the tutorial interface
         and handles navigation between different tutorial steps.
@@ -284,7 +284,7 @@ end
     Available Methods:
         - None (standalone function)
 ]]
-function _internal.tutorial()
+function internalFunc.tutorial()
 
    if uiElements.tutorialWindow == nil then
         uiElements.tutorialWindow = _createTutorialWindow()

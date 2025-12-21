@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
+local data        	= privateVars.data
+local uiElements  	= privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events     	= privateVars.events
 
 -- Cache frequently used functions and values
 local InspectBuffList     	= Inspect.Buff.List
@@ -34,7 +34,7 @@ local function _eventHealth (_, info)
 					realIdentifier = string.format("raid%02d", tonumber(groupID))
 				end
 
-				local frame = _internal.getFrameByIdentifier(realIdentifier)
+				local frame = internalFunc.getFrameByIdentifier(realIdentifier)
 
 				if frame then
 					frame:SetHealth(thisData)
@@ -59,7 +59,7 @@ local function _eventHealthMax (_, info)
 					realIdentifier = string.format("raid%02d", tonumber(groupID))
 				end
 
-				local frame = _internal.getFrameByIdentifier(realIdentifier)
+				local frame = internalFunc.getFrameByIdentifier(realIdentifier)
 
 				if frame then frame:SetHealthMax(thisData) end
 			end
@@ -72,7 +72,7 @@ local function _eventEnergy (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				if frame then frame:SetEnergy(thisData) end
 
@@ -90,7 +90,7 @@ local function _eventEnergyMax (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				if frame then frame:SetEnergyMax(thisData) end
 
@@ -107,7 +107,7 @@ local function _eventMana (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				if frame then frame:SetEnergy(thisData) end
 
@@ -124,7 +124,7 @@ local function _eventCharge (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				--local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				--local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				--if frame then frame:SetCharge(thisData) end
 
@@ -141,7 +141,7 @@ local function _eventPower (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				if frame then frame:SetEnergy(thisData) end
 
@@ -158,7 +158,7 @@ local function _eventPlanar (_, info)
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
-				local frame = _internal.getFrameByIdentifier(identifiers[idx])		
+				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
 
 				if frame then frame:SetPlanar(thisData) end
 			end

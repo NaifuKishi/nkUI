@@ -4,7 +4,7 @@ local addonInfo, privateVars = ...
 
 local data			= privateVars.data
 local uiElements	= privateVars.uiElements
-local _internal		= privateVars.internalFunc
+local internalFunc	= privateVars.internalFunc
 local _events		= privateVars.events
 local _ui			= privateVars.ui
 
@@ -22,7 +22,7 @@ local name = "uiCastBars"
 
 ---------- addon internal function block ---------
 
-function _internal.createCastBar (unitType, setup)
+function internalFunc.createCastBar (unitType, setup)
 
 	local thisName = name .. "." .. unitType
 
@@ -80,7 +80,7 @@ function _internal.createCastBar (unitType, setup)
 		castBarText:SetText(spellname)
 
 		if castBarText:GetWidth() > setup.width then
-			castBarText:SetText(_internal.shortenName (spellname, 10))
+			castBarText:SetText(internalFunc.shortenName (spellname, 10))
 		end
 	end
 

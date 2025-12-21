@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 ---------- init local variables ---------
 
@@ -82,7 +82,7 @@ local function _moveFrame (moveFrame, label, callBack)
 
 end
 
-function _internal.initMove ()
+function internalFunc.initMove ()
 
     if uiElements.frames["player"] then
         table.insert(moveFrames, _moveFrame (uiElements.frames["player"], "PLAYER FRAME", function (newX, newY)

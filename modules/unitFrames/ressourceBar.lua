@@ -3,10 +3,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 ---------- init local variables ---------
 
@@ -27,7 +27,7 @@ local ressourceColor = {}
 
 -- ressource bar function
 
-function _internal.ressourcBar (unit, setup)
+function internalFunc.ressourcBar (unit, setup)
 
     ressourceColor = data.colors.ressource[nkUISetup.modules.unitFrames.colorScheme]
 

@@ -2,8 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
 
 local stringFormat = string.format
 
@@ -18,7 +18,7 @@ function _settings.uiConfigTabSCT (name, parent)
 
         activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
              nkUISetup.modules.sct.activate = newValue
-            _internal.sctToggle(newValue)
+            internalFunc.sctToggle(newValue)
 
             --if messageOffsetSizeSlider then messageOffsetSizeSlider:SetActive(newValue) end
         end)

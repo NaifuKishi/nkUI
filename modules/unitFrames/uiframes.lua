@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 ---------- init local variables ---------
 
@@ -422,10 +422,10 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:SetDebuffDisplayList(list) unitDebuffDisplayList = list end
     function unitFrame:SetBuffId2BuffTypeList(list) unitBuffId2BuffType = list end
 
-    function unitFrame:addBuff(buffUnit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
-    function unitFrame:changeBuff(unit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end
-    function unitFrame:ClearBuffs() _internal.manageBuffs(self, unitType, thisUnitID, nil, nil, "clear") end
-    function unitFrame:removeBuff(buffUnit, buffs) _internal.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "remove") end
+    function unitFrame:addBuff(buffUnit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
+    function unitFrame:changeBuff(unit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end
+    function unitFrame:ClearBuffs() internalFunc.manageBuffs(self, unitType, thisUnitID, nil, nil, "clear") end
+    function unitFrame:removeBuff(buffUnit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "remove") end
 
     function unitFrame:SetUnitID (newId) thisUnitID = newId end
     function unitFrame:GetUnitID () return thisUnitID end
@@ -492,7 +492,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         local maxLen = 10
         if unitFrameType == "raid" then maxLen = 5 end
 
-        thisName = _internal.shortenName (name, maxLen)
+        thisName = internalFunc.shortenName (name, maxLen)
 
         nameText:SetText(thisName)
     end
@@ -646,7 +646,7 @@ function frameManager.clearAll()
 end
 
 
-function _internal.updateUnit (frame, unitID, identifier)
+function internalFunc.updateUnit (frame, unitID, identifier)
 
     if frame == nil then return end
 
@@ -654,7 +654,7 @@ function _internal.updateUnit (frame, unitID, identifier)
 
     if details == nil then return end
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_internal.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
 
     frame:SetUnitID(unitID)
     frame:ContextMenu(unitID)
@@ -701,7 +701,7 @@ function _internal.updateUnit (frame, unitID, identifier)
 end
 
 --[[
-   _internal.uiFrames
+   internalFunc.uiFrames
     Description:
         Initializes and sets up the unit frames for player, player pet, and target. This function creates and configures the main UI elements.
     Process:
@@ -719,7 +719,7 @@ end
         - The function ensures proper initialization of all UI components
         - Events are initialized to handle updates and interactions
 ]]
-function _internal.uiFrames()
+function internalFunc.uiFrames()
 
     callingColor = data.colors.callings[nkUISetup.modules.unitFrames.colorScheme]
 
@@ -737,8 +737,8 @@ function _internal.uiFrames()
 
     uiElements.frames["player"] = player
 
-    local playerRessourceBar = _internal.ressourcBar("player", nkUISetup.modules.unitFrames.frames.ressourceBar)
-    local playerCastbar = _internal.createCastBar("player", nkUISetup.modules.unitFrames.frames.playerCastBar)
+    local playerRessourceBar = internalFunc.ressourcBar("player", nkUISetup.modules.unitFrames.frames.ressourceBar)
+    local playerCastbar = internalFunc.createCastBar("player", nkUISetup.modules.unitFrames.frames.playerCastBar)
 
     uiElements.frames["player.castbar"] = playerCastbar
     uiElements.frames["player.ressourcebar"] = playerRessourceBar  
@@ -749,7 +749,7 @@ function _internal.uiFrames()
     uiElements.frames["player.pet"] = playerPet
 
     local target = frameManager.get("target", false, nkUISetup.modules.unitFrames.frames.target)
-    local targetCastbar = _internal.createCastBar("player.target", nkUISetup.modules.unitFrames.frames.targetCastBar)
+    local targetCastbar = internalFunc.createCastBar("player.target", nkUISetup.modules.unitFrames.frames.targetCastBar)
 
     uiElements.frames["player.target.castbar"] = targetCastbar
     uiElements.frames["player.target"] = target
@@ -768,7 +768,7 @@ function _internal.uiFrames()
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
-        --_internal.updateUnit (group, EnKai.unit.getPlayerDetails().id)
+        --internalFunc.updateUnit (group, EnKai.unit.getPlayerDetails().id)
 
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
@@ -789,7 +789,7 @@ function _internal.uiFrames()
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
-            --_internal.updateUnit (raid, EnKai.unit.getPlayerDetails().id)
+            --internalFunc.updateUnit (raid, EnKai.unit.getPlayerDetails().id)
             uiElements.frames[stringFormat("raid%02d", index)] = raid
 
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
@@ -842,14 +842,14 @@ function _internal.uiFrames()
 end
 
 --[[
-   _internal.uiFramesToggle
+   internalFunc.uiFramesToggle
     Description:
         Toggles the visibility of the unit frames. This function controls whether the UI elements are shown or hidden.
     Parameters:
         value (boolean): Whether to show or hide the frames
     Process:
         1. Checks if the frames need to be initialized
-        2. If initializing, calls _internal.uiFrames() to create the frames
+        2. If initializing, calls internalFunc.uiFrames() to create the frames
         3. Updates the player and resource bar with current unit details
         4. Iterates through all frames and sets their visibility based on the value parameter
         5. Ensures the player and target frames are always visible when toggled on
@@ -859,11 +859,11 @@ end
         - The function ensures proper visibility state for all frames
         - Player and target frames are always shown when toggled on
 ]]
-function _internal.uiFramesToggle(value)
+function internalFunc.uiFramesToggle(value)
 
     if value == true and not uiElements.frames["player"] then
-        _internal.uiFrames ()
-        _internal.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id, "player")
+        internalFunc.uiFrames ()
+        internalFunc.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id, "player")
         uiElements.frames["player.ressourcebar"]:update (EnKai.unit.getPlayerDetails().id)
     end
 
@@ -878,7 +878,7 @@ function _internal.uiFramesToggle(value)
 
 end
 
-function _internal.uiFramesRemoveBuffs()
+function internalFunc.uiFramesRemoveBuffs()
 
     local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
     if (buffs) then uiElements.frames["player"]:removeBuff(EnKai.unit.getPlayerDetails().id, buffs) end
@@ -901,7 +901,7 @@ function _internal.uiFramesRemoveBuffs()
 
 end
 
-function _internal.uiFramesLoadAllBuffs()
+function internalFunc.uiFramesLoadAllBuffs()
 
     local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
     if (buffs) then uiElements.frames["player"]:addBuff(EnKai.unit.getPlayerDetails().id, buffs) end
@@ -924,11 +924,11 @@ function _internal.uiFramesLoadAllBuffs()
     end
 end
 
-function _internal.getFrameByIdentifier(identifier)
+function internalFunc.getFrameByIdentifier(identifier)
     return uiElements.frames[identifier]
 end
 
-function _internal.uiFrameRedraw(bar)
+function internalFunc.uiFrameRedraw(bar)
 
     if bar == "group" then
         for idx = 1, 5, 1 do

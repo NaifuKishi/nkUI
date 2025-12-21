@@ -3,10 +3,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local InternalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 local InspectTimeReal   = Inspect.Time.Real
 
@@ -528,7 +528,7 @@ local function oneBag.itemUpdate (_, a, b)
     --print "Hossa"
 end
 
-function _internal.oneBagInit()
+function InternalFunc.oneBagInit()
 
     if uiElements.oneBag then 
         if uiElements.oneBag:GetVisible() then

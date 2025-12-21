@@ -2,8 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
 
 local stringFormat = string.format
 
@@ -23,9 +23,9 @@ function _settings.uiConfigTabBuffBar (name, parent)
             nkUISetup.modules.buffBar.activate = newValue
 
             if newValue then
-                _internal.buffBar.loadAllBuffs()
+                internalFunc.buffBar.loadAllBuffs()
             else
-                _internal.buffBar.clearAllBuffs() 
+                internalFunc.buffBar.clearAllBuffs() 
             end
 
             if widthSlider then widthSlider:SetActive(newValue) end
@@ -50,7 +50,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
             nkUISetup.modules.buffBar.buffs.width = newValue
             nkUISetup.modules.buffBar.buffs.height = newValue
 
-            _internal.buffBar.Redraw()
+            internalFunc.buffBar.Redraw()
         end)
 
         widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
@@ -77,7 +77,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
 
         timerFontSizeSlider = _settings.slider (name .. ".timerFontSizeSlider", frame, "Timer size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.timer = newValue
-            _internal.buffBar.Redraw()
+            internalFunc.buffBar.Redraw()
         end)
         
         timerFontSizeSlider:SetPoint("TOPLEFT", fontHeader, "BOTTOMLEFT", 0, 15)
@@ -88,7 +88,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
         
         stackFontSizeSlider = _settings.slider (name .. ".stackFontSizeSlider", frame, "Stack size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.stack = newValue
-            _internal.buffBar.Redraw()
+            internalFunc.buffBar.Redraw()
         end)
        
         stackFontSizeSlider:SetPoint("TOPLEFT", timerFontSizeSlider, "TOPRIGHT", 30, 0)

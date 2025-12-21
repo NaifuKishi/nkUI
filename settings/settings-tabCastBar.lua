@@ -2,8 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
 
 local stringFormat = string.format
 
@@ -23,7 +23,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
         widthSlider = _settings.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.width = newValue
-            _internal.uiFrameRedraw(unitType)
+            internalFunc.uiFrameRedraw(unitType)
         end)
 
         widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
@@ -34,7 +34,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
         
         heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.height = newValue
-            _internal.uiFrameRedraw(unitType)
+            internalFunc.uiFrameRedraw(unitType)
         end)
 
         heightSlider:SetPoint("TOPLEFT", widthSlider, "TOPRIGHT", 30, 0)
@@ -50,7 +50,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
         textFontSize = _settings.slider (name .. ".textFontSize", frame, "Spellname <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.text = newValue
-            _internal.uiFrameRedraw(unitType)
+            internalFunc.uiFrameRedraw(unitType)
         end)
 
         textFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, 10)
@@ -61,7 +61,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
         
         timerFontSize = _settings.slider (name .. ".timerFontSize", frame, "Timer <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.timer = newValue
-            _internal.uiFrameRedraw(unitType)
+            internalFunc.uiFrameRedraw(unitType)
         end)
 
         timerFontSize:SetPoint("TOPLEFT", textFontSize, "TOPRIGHT", 30, 0)

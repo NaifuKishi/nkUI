@@ -2,7 +2,9 @@ V0.7.0
     - new: added a new setting to change the color scheme
     - new: added a new setting to change color of bag window
     - new: uninterruptible casts have now a golden bar
+    - new: cast interrupts are now announced
     - update: added guild to tooltip
+    - update: A lot of code refactoring
 
 V0.6.1
     - updates: moved lowerbar social dataset a bit to the right
@@ -317,13 +319,4 @@ Buff timers on group frames are now minus values
 
 Health bar updating incorrectly (I know you have a delay before it updates but its wacky)
 
-tooltip not working on some bars
-
-onebag: selling items doesn't reset the bag position properly
-
-optionally add a third action bar
-
-add icons to lower bar
-
-color castbar different for interruptable spells
 make unitframe darker if out of range

@@ -2,8 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local _internal = privateVars.internalFunc
-local _settings = privateVars.settings
+local internalFunc  = privateVars.internalFunc
+local _settings     = privateVars.settings
 
 local stringFormat = string.format
 
@@ -24,12 +24,12 @@ function _settings.uiConfigTabUFBasic (name, parent)
             if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
             if buffDurationSlider then buffDurationSlider:SetActive(newValue) end
 
-            _internal.uiFramesToggle(newValue)
+            internalFunc.uiFramesToggle(newValue)
 
             if newValue == false then 
-                _internal.uiFramesRemoveBuffs()
+                internalFunc.uiFramesRemoveBuffs()
             else
-                _internal.uiFramesLoadAllBuffs()
+                internalFunc.uiFramesLoadAllBuffs()
             end
         end)
 
@@ -40,7 +40,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
-            __internal.toggleAlpha()
+            internalFunc.toggleAlpha()
         end)
 
         combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
@@ -51,7 +51,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         nonCombatAlphaSlider = _settings.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
-            _internal.toggleAlpha()
+            internalFunc.toggleAlpha()
         end)
         
         nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
@@ -64,9 +64,9 @@ function _settings.uiConfigTabUFBasic (name, parent)
             nkUISetup.modules.unitFrames.showBuffs = newValue            
 
             if newValue == false then 
-                _internal.uiFramesRemoveBuffs()
+                internalFunc.uiFramesRemoveBuffs()
             else
-                _internal.uiFramesLoadAllBuffs()
+                internalFunc.uiFramesLoadAllBuffs()
             end
         end)
 

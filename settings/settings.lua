@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data      = privateVars.data
-local uiElements= privateVars.uiElements
-local _internal = privateVars.internalFunc
-local _events   = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 privateVars.settings		= {}
 
@@ -169,7 +169,7 @@ end
         - Updates tutorial version and adds new configuration options
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
-function _internal.setupDefaults()
+function internalFunc.setupDefaults()
 
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults
@@ -189,7 +189,7 @@ function _internal.setupDefaults()
 
 end
 
-function _internal.toggleAlpha()
+function internalFunc.toggleAlpha()
     
     uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)    
     uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
@@ -198,7 +198,7 @@ function _internal.toggleAlpha()
 
 end
 
-function _internal.actionBarToggleAlpha()
+function internalFunc.actionBarToggleAlpha()
     
     for k, v in pairs (uiElements.actionbars) do
         v:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
@@ -286,7 +286,7 @@ function _settings.header (name, parent, text)
 
 end
 
-function _internal.setupUI ()
+function internalFunc.setupUI ()
     
     local name = "nkUI.config"
 
@@ -357,7 +357,7 @@ function _internal.setupUI ()
     tutorialButton:SetLayer(9)
 
     Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
-        _internal.tutorial()
+        internalFunc.tutorial()
     end, name .. ".tutorialButton.Clicked")
 
     local moveButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".moveButton", config:GetContent())
@@ -370,7 +370,7 @@ function _internal.setupUI ()
     moveButton:SetLayer(9)
 
     Command.Event.Attach(EnKai.events[name .. ".moveButton"].Clicked, function (_, newValue)
-        _internal.initMove()
+        internalFunc.initMove()
         config:SetVisible(false)
     end, name .. ".moveButton.Clicked")
 
@@ -408,9 +408,9 @@ function _internal.setupUI ()
 
 end
 
-function _internal.setupInit ()
+function internalFunc.setupInit ()
     if uiElements.settings == nil then
-        uiElements.settings = _internal.setupUI ()
+        uiElements.settings = internalFunc.setupUI ()
     else
         uiElements.settings:SetVisible(true)
     end

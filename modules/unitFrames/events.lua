@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
+local data        	= privateVars.data
+local uiElements  	= privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events     	= privateVars.events
 
 -- Cache frequently used functions and values
 local InspectBuffList     	= Inspect.Buff.List
@@ -21,7 +21,9 @@ local stringMatch	= string.match
 local stringFind	= string.find
 local stringSub		= string.sub
 
-local processBuffs	= _internal.processBuffs
+local EnKaiGetUnitTypes	= EnKai.unit.getUnitTypes
+
+local processBuffs	= internalFunc.processBuffs
 
 ------------------------------ combat functions ------------------------------
 
@@ -57,7 +59,7 @@ local function _eventCastBar(_, units)
 
 	for unitID, state in pairs (units) do			
 
-		local unitTypes = EnKai.unit.getUnitTypes(unitID)
+		local unitTypes = EnKaiGetUnitTypes(unitID)
 
 		for _, identifier in pairs (unitTypes) do
 
@@ -65,7 +67,7 @@ local function _eventCastBar(_, units)
 			local thisFrame = uiElements.frames[castBarName]
 
 			if thisFrame then
-				if state == true then
+				if state == true then					
 					local details = InspectUnitCastbar(unitID)
 
 					thisFrame:SetSpell (details.abilityName)
@@ -80,6 +82,15 @@ local function _eventCastBar(_, units)
 						start = InspectTimeReal()
 					}
 				else
+					if data[castBarName] and not data[castBarName].uninterruptible then 
+						if InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
+							local unitDetails = EnKai.unit.GetUnitDetail (unitID, true)
+							if unitDetails.health > 0 then
+								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)
+							end
+						end
+					end
+
 					thisFrame:SetVisible(false)
 					data[castBarName] = nil
 				end
@@ -129,18 +140,18 @@ local function _eventBuffAdd(_, unit, buffs)
 
 	-- Handle player buffs
 	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then
-		_internal.buffBar.addBuff(unit, buffs)
-		_internal.buffBar.UpdateBuffDisplay()
+		internalFunc.buffBar.addBuff(unit, buffs)
+		internalFunc.buffBar.UpdateBuffDisplay()
 	end
 
 	-- Handle unit frame buffs
 	if nkUISetup.modules.unitFrames.showBuffs then
-		local identifiers = EnKai.unit.getUnitTypes (unit)
+		local identifiers = EnKaiGetUnitTypes (unit)
 
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
 				if not stringFind(value, "group") or groupStatus ~= "raid" then
-					local frame = _internal.getFrameByIdentifier(value)
+					local frame = internalFunc.getFrameByIdentifier(value)
 					if frame then frame:addBuff(unit, buffs) end
 				end
 			end
@@ -158,16 +169,16 @@ local function _eventBuffRemove (_, unit, buffs)
 	--if nkUISetup.modules.unitFrames.activate == false then return end
 
 	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
-		_internal.buffBar.removeBuff(unit, buffs) 
-		_internal.buffBar.UpdateBuffDisplay()
+		internalFunc.buffBar.removeBuff(unit, buffs) 
+		internalFunc.buffBar.UpdateBuffDisplay()
 	end
 
 	if nkUISetup.modules.unitFrames.showBuffs then
-		local identifiers = EnKai.unit.getUnitTypes (unit)
+		local identifiers = EnKaiGetUnitTypes (unit)
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
 				if not stringFind(value, "group") or groupStatus ~= "raid" then
-					local frame = _internal.getFrameByIdentifier(value)
+					local frame = internalFunc.getFrameByIdentifier(value)
 					if frame then frame:removeBuff(unit, buffs) end
 				end
 			end
@@ -181,8 +192,8 @@ local function _fctZoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
 		if k == EnKai.unit.getPlayerDetails().id then
-			_internal.updateUnit (playerFrame, playerID, "player")
-			_internal.processBuffs ()
+			internalFunc.updateUnit (playerFrame, playerID, "player")
+			internalFunc.processBuffs ()
 			break
 		end
 	end
@@ -191,11 +202,11 @@ end
 local function _fctRoleEvent (_, thisData)
 	
 	for unitID, v in pairs(thisData) do
-		local unitTypes = EnKai.unit.getUnitTypes (unitID)
+		local unitTypes = EnKaiGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
-			local frame = _internal.getFrameByIdentifier(thisType)
+			local frame = internalFunc.getFrameByIdentifier(thisType)
 			EnKai.unit.GetUnitDetail(unitID, true)
-			_internal.updateUnit (frame, unitID, thisType)
+			internalFunc.updateUnit (frame, unitID, thisType)
 		end
 	end	
 end
@@ -221,7 +232,7 @@ local function _fctUpdateHandler()
 	-- run every 0.5 seconds	
 	
 	if (_lastUpdate2 == nil or _curTime - _lastUpdate2 >= .5) then		
-		_internal.processBuffs()	
+		internalFunc.processBuffs()	
 		_lastUpdate2 = _curTime
 	end
 	
@@ -257,8 +268,8 @@ function _events.uiFramesInitEvents()
 
 	--- in combat and out of combat alpha
 
-	Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkUI.Ssytem.Secure.Enter")
-	Command.Event.Attach(Event.System.Secure.Leave, _fctSecureLeave, "nkUI.Ssytem.Secure.Leave")
+	Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkUI.System.Secure.Enter")
+	Command.Event.Attach(Event.System.Secure.Leave, _fctSecureLeave, "nkUI.System.Secure.Leave")
 
 	--- stats changes
 
@@ -284,7 +295,7 @@ function _events.uiFramesInitEvents()
 	local playerID = EnKai.unit.GetUnitDetail ("player").id
 
 	local playerFrame = uiElements.frames["player"]
-	_internal.updateUnit (playerFrame, playerID, "player")
+	internalFunc.updateUnit (playerFrame, playerID, "player")
 	playerFrame:ContextMenu(playerID)
 
 	uiElements.frames["player.ressourcebar"]:update(playerID)
@@ -292,7 +303,7 @@ function _events.uiFramesInitEvents()
 	local petID = EnKai.unit.GetUnitByIdentifier ("player.pet")	
 	if (petID) then 
 		local frame = uiElements.frames["player.pet"]
-		_internal.updateUnit (frame, petID, "player.pet") 
+		internalFunc.updateUnit (frame, petID, "player.pet") 
 		frame:ContextMenu(petID)
 		frame:SetVisible(true)
 	end
@@ -300,7 +311,7 @@ function _events.uiFramesInitEvents()
 	local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
 	if (targetID) then 
 		local frame = uiElements.frames["player.target"]
-		_internal.updateUnit (frame, targetID, "player.target") 
+		internalFunc.updateUnit (frame, targetID, "player.target") 
 		--frame:ContextMenu(targetID)
 		frame:SetVisible(true)
 	end
@@ -308,7 +319,7 @@ function _events.uiFramesInitEvents()
 	local focusID = EnKai.unit.GetUnitByIdentifier ("focus")
 	if (focusID) then 
 		local frame = uiElements.frames["focus"]
-		_internal.updateUnit (frame, focusID, "focus") 
+		internalFunc.updateUnit (frame, focusID, "focus") 
 		frame:SetVisible(true)
 	end
 
@@ -336,7 +347,7 @@ function _events.groupStatus (_, groupType)
 		for idx = 1, 5, 1 do
 			local frame = uiElements.frames[stringFormat("group%02d", idx)]			
 			frame:SetVisible(false)
-			--_internal.manageBuffs(frame, stringFormat("group%02d", idx), nil, nil, nil, "clear")
+			--internalFunc.manageBuffs(frame, stringFormat("group%02d", idx), nil, nil, nil, "clear")
 		end
 	else
 		for idx = 1, 20, 1 do
@@ -376,7 +387,7 @@ function _events.available (_, units)
 		end		
 
 		if frame then
-			_internal.updateUnit (frame, unitID, identifier) 
+			internalFunc.updateUnit (frame, unitID, identifier) 
 			frame:SetVisible(true)
 		end
 	end
@@ -389,9 +400,9 @@ function _events.unavailable (_, units)
 
 	for unitId, _ in pairs (units) do
 	
-		local unitTypes = EnKai.unit.getUnitTypes (unitId)
+		local unitTypes = EnKaiGetUnitTypes (unitId)
 		for _, thisType in pairs (unitTypes) do
-			local frame = _internal.getFrameByIdentifier(thisType)
+			local frame = internalFunc.getFrameByIdentifier(thisType)
 			if frame then frame:SetVisible(false) end
 		end
 	end
@@ -428,7 +439,7 @@ function _events.change (_, unitID, identifier)
 			frame:ClearBuffs()
 		else		
 			if frame then
-				_internal.updateUnit (frame, unitID, identifier) 
+				internalFunc.updateUnit (frame, unitID, identifier) 
 				frame:SetVisible(true)
 			end
 		end

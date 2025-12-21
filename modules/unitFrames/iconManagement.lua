@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ----------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local _internal   = privateVars.internalFunc
-local _events     = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local _events       = privateVars.events
 
 ---------- init local variables ----------
 
@@ -185,4 +185,4 @@ function iconManager.clearUnitType(unitType)
 end
 
 -- Expose the icon manager to the internal namespace
-_internal.iconManager = iconManager
+internalFunc.iconManager = iconManager
