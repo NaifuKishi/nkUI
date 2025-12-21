@@ -293,4 +293,4 @@ function oneBag.itemUpdate (_, slots)
 
     if doBatSlotsUpdate then  oneBag.getBagSlots() end
 
-endoneBag
+end
