@@ -307,6 +307,6 @@ function questTracker.eventSystemUpdate()
 		lastQuestUpdate = inspectTimeReal()
 		forceUpdate = false
 
-		uiElements.questLog:SetTitle(string.format("%d Quests", uiElements.questLog:GetQuestCount()))
+		uiElements.questLog:SetTitle(string.format("Quests (%d)", uiElements.questLog:GetQuestCount()))
 	end
 end

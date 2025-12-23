@@ -146,7 +146,7 @@ function questTracker.questEntry (key, parent, counter)
 		end, name .. "Header.Left.Down")
 		
 		header:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)		
-			if uiElements.tooltip ~= nil then uiElements.tooltip:SetVisible(false) end
+			if uiElements.qtTooltip ~= nil then uiElements.qtTooltip:SetVisible(false) end
 		end, name .. "Header.Left.Down")
 	end
 	

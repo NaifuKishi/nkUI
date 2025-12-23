@@ -134,7 +134,7 @@ local function _fctShortenName (name, maxLen)
 end
 
 function questTracker.fillLog ()
-
+	
 	local list = inspectQuestList()
 	local flag, details = pcall(inspectQuestDetail, list)
 	

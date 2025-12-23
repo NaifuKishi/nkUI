@@ -13,6 +13,8 @@ local utilityItemSlotQuest		= Utility.Item.Slot.Quest
 local utilityItemSlotInventory	= Utility.Item.Slot.Inventory
 local inspectSystemSecure		= Inspect.System.Secure
 
+local mathFloor					= math.floor
+
 ---------- init local variables ---------
 
 local _useButtonQuestItemID = nil
@@ -22,78 +24,36 @@ local _itemCounter = 0
 
 ---------- local function block ---------
 
-local function setUseButton (useItem)
-
-	-- ***** return quest item to quest inventory *****
-
-	if _useButtonQuestItemID ~= nil and _useButtonQuestItemID ~= useItem:GetItemID() then
-		
-		local itemSlot = inspectItemFind(_useButtonQuestItemID)
-
-		if itemSlot ~= nil then
-			local slots = inspectItemList(utilityItemSlotQuest())
-
-			for slot, details in pairs (slots) do
-				if EnKai.strings.startsWith(slot, "sqst.") == true then
-					if details == false then
-						pcall (Command.Item.Move, itemSlot, slot)
-						break
-					end 
-				end
-			end
-		end
-	end
-
-	-- ***** move quest item to inventory *****
-
-	if _useButtonQuestItemID == nil or _useButtonQuestItemID ~= useItem:GetItemID() then
-
-		local availSlots = EnKai.inventory.getAvailableSlots()
-		
-		if #availSlots == 0 then
-			EnKai.tools.error.display (addonInfo.toc.Identifier, string.format("not enough space in bags to move quest item %s", useItem:GetName()), 3)
-			return
-		end 
-
-		local questSlot = EnKai.inventory.getQuestItemSlot (useItem:GetItemType())
-
-		pcall (Command.Item.Move, questSlot, availSlots[1])
-	end
-
-	-- ***** move set quest item button *****
-
-	_useButtonQuestItemID = useItem:GetItemID()
-
-	local button = uiElements.questLog:getUseItemButton()
-	local source, texture = useItem:GetTexture()
-
-	button:SetTexture(source, texture)
-	button:EventMacroSet(Event.UI.Input.Mouse.Left.Click, string.format("use %s", useItem:GetItemName()))
-
-	button:SetVisible(true)
-
-end
-
 local function useItem(name, parent)
 
-	local useItem = UI.CreateFrame("Texture", name, parent)
+	local useItem = EnKai.uiCreateFrame("nkFrame", name, parent)
 	useItem:SetWidth(25)
 	useItem:SetHeight(25)
 	useItem:SetSecureMode("restricted")
 	useItem:SetVisible(false)
+
+	local useItemTexture = EnKai.uiCreateFrame("nkTexture", name .. ".texture", useItem)
+	useItemTexture:SetPoint("CENTER", useItem, "CENTER")
+	useItemTexture:SetHeight(23)
+	useItemTexture:SetWidth(23)
+	useItemTexture:SetSecureMode("restricted")
 	
 	local questId = nil
 	local itemId = nil
 	local itemName = nil
 	local itemType = nil
 	
-	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.In, function ()
+	useItemTexture:EventAttach( Event.UI.Input.Mouse.Cursor.In, function ()
 		questTracker.showTooltip (useItem, questId, itemId, "personal", nil)
-	end, name)
+	end, name .. ".texture.UI.Input.Mouse.Cursor.In")
 	
-	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function ()
-		if uiElements.tooltip ~= nil then uiElements.tooltip:SetVisible(false) end
-	end, name)
+	useItemTexture:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function ()
+		if uiElements.qtTooltip ~= nil then uiElements.qtTooltip:SetVisible(false) end
+	end, name .. ".texture.UI.Input.Mouse.Cursor.Out")
+
+	useItemTexture:EventAttach( Event.UI.Input.Mouse.Right.Click, function ()
+		Command.Item.Standard.Right(itemId)
+	end, name .. ".texture.UI.Input.Mouse.Right.Click")
 	
 	function useItem:SetQuestID(newQuestId) questId = newQuestId end
 	function useItem:GetQuestID() return questId end
@@ -103,7 +63,8 @@ local function useItem(name, parent)
 	function useItem:GetItemName() return itemName end
 	function useItem:SetItemType(newItemType) itemType = newItemType end
 	function useItem:GetItemType() return itemType end
-	
+	function useItem:SetTextureAsync(addon, texture) useItemTexture:SetTextureAsync(addon, texture) end
+
 	return useItem
 
 end
@@ -111,14 +72,13 @@ end
 
 function questTracker.buildUseUI ()
 
-	local name = "nkQuestTracker.UseUI"
+	local name = "nkUI.QuestTracker.UseUI"
 
 	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.secureContext)
-	ui:SetPoint("TOPLEFT", uiElements.questLog, "TOPRIGHT", 5, 0)
+	ui:SetPoint("TOPRIGHT", uiElements.questLog, "TOPLEFT", -5, 25)
 	ui:SetWidth(50)
-	ui:SetHeight(300)
+	ui:SetHeight(uiElements.questLog:GetHeight()-20)
 	ui:SetSecureMode('restricted')
-	ui:SetVisible(true)
 
 	local useItems = {}
 	local useState = {}
@@ -126,11 +86,13 @@ function questTracker.buildUseUI ()
 	local from, to, object, x, y = "TOPLEFT", "TOPLEFT", ui, 0, 0
 	local lastUseItem = nil
 
+	local maxIcons = mathFloor((uiElements.questLog:GetHeight()-20) / 30)
+
 	for idx1 = 1, 4, 1 do
 		if idx1 ~= 1 then from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastUseItem, 5, 0 end
 		
-		for idx = 1, 10, 1 do			
-			local thisItem = useItem(name .. '.useItem.' .. idx, ui)
+		for idx = 1, maxIcons, 1 do			
+			local thisItem = useItem(name .. '.useItem.' .. idx1 .. "." .. idx, ui)
 			thisItem:SetPoint(from, object, to, x, y)
 			to, object, x, y = "BOTTOMLEFT", thisItem, 0, 5
 
@@ -141,21 +103,17 @@ function questTracker.buildUseUI ()
 		end
 	end
 
-	function ui:toggle()
-		if ui:GetVisible() == true then
-			ui:SetVisible(false)
-		else
-			ui:SetVisible(true)
-		end
-	end
-
 	local function _resize() 
-		local cols = math.floor(_itemCounter / 10) + 1
-		local rows = 10
-		if _itemCounter < 10 then rows = _itemCounter end
+		ui:SetHeight(uiElements.questLog:GetHeight()-25)
+		
+		local maxIcons = mathFloor((uiElements.questLog:GetHeight()-25) / 30)
+		if _itemCounter <= maxIcons then
+			cols = 1
+		else
+			cols = mathFloor(_itemCounter / maxIcons) + 1
+		end
 
-		ui:SetHeight(25 * rows + 5 * (rows - 1))
-		ui:SetWidth(25 * cols + 5 * (cols - 1))
+		ui:SetWidth(30 * cols)
 	end
 
 	function ui:GetUseItemByKey(key)
@@ -185,7 +143,7 @@ function questTracker.buildUseUI ()
 				
 				useItems[idx]:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
 					if inspectSystemSecure() == true then return end
-					setUseButton(useItems[idx])
+					--setUseButton(useItems[idx])
 				end, useItems[idx]:GetName() .. ".Mouse.Left.Down")
 
 				_itemCounter = _itemCounter + 1
@@ -262,7 +220,7 @@ function questTracker.buildUseUI ()
 		if #tempList == 0 then
        		uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
 		else
-		   uiElements.useUI:SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)
+		   uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
 		end
 
 		-- ***** add quest items *****
@@ -297,6 +255,10 @@ function questTracker.buildUseUI ()
 		end
 
 	end
+
+	function ui:Toggle()
+		ui:SetVisible(not ui:GetVisible())
+	end	
 	
 	return ui
 

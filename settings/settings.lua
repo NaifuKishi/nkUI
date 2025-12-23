@@ -18,14 +18,13 @@ local stringFind = string.find
 local _defaults = {
     modules = {
         questtracker = {activate = true,
-                        x = 2048,
-                        y = 1000,
+                        x = 2800,
+                        y = 400,
                         width = 300, 
                         height = 500, 
                         useXpos = 800, 
                         useYpos = 100, 
                         useUI = true,
-						bgAlpha = 0, 
                         categoryHeaderSize = 16,																
 						categoryShow = {crafting = true, world = true, daily = true, guild = true, ia = true, monthly = true, weekly = true, zone = true, area = true, instant = true, raid = true, story = true, personal = true, carnage = true, pvp = true},
 						categoryFontSize = { header = 15, subHeader = 14, body = 13 },

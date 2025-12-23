@@ -24,6 +24,8 @@ if ( EnKai.tools.lang.getLanguage()  == "German") then
 		sortBySelection			= {{label = "Name - Level - Gebiet", value = "name"}, {label="Level - Gebiet - Name", value = "lvl"}, { label="Gebiet - Level - Name", value = "zone"}},
 		txtVersion				= 'Version %s',
 		zoneFilter				= "Klicke hier um die Liste auf die aktuelle Zone zu filtern",
+		categoryFilter			= "Klicke hier um die Kategorien auszwählen die angezeigt werden sollen",
+		questItems				= "Klicke hier um die Quest Items anzuzeigen oder zu verstecken",
 		crafting				= "Klicke hier um eine Liste der benötigten Gegenstände für die Täglichen Handwerksquest anzuzeigen",
 		missingList				= "Klicke hier um eine Liste der fehlenden Quests in der aktuellen Zone zu erhalten",
 		useUseFrameCheckbox		= "Quest Gegenstand UI",

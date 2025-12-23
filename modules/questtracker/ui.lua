@@ -5,10 +5,9 @@ local addonInfo, privateVars = ...
 local questTracker	= privateVars.questTracker
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
-local events		= privateVars.events
 
-local oInspectMouse			= Inspect.Mouse
-local oInspectSystemSecure	= Inspect.System.Secure
+local inspectMouse			= Inspect.Mouse
+local inspectSystemSecure	= Inspect.System.Secure
 
 ---------- init local variables ---------
 
@@ -18,6 +17,43 @@ local categoryOrder = { "crafting", "daily", "weekly", "monthly", "guild", "ia",
 ---------- local function block ---------
 
 ---------- addon internal function block ---------
+
+local function showCategoryFilter (parent)
+
+	local name = "nkUI.QuestTracker.categoryFilter"
+
+	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
+	ui:SetLayer(2)
+	ui:SetBackgroundColor(0, 0, 0, 1)
+	ui:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
+
+	local from, object, to, x, y = "TOPLEFT", ui, "TOPLEFT", 5, 5
+	local height = 0
+
+	for _, v in pairs(categoryOrder) do
+		local checkbox = EnKai.uiCreateFrame("nkCheckbox", name.. "." .. v, ui)
+		checkbox:SetText(privateVars.langTexts.showCategoryCheckbox[v])
+		checkbox:SetChecked(nkUISetup.modules.questtracker.categoryShow[v])
+		checkbox:SetLabelWidth(150)
+		checkbox:SetFontSize(14)
+		checkbox:SetTextFont(addonInfo.id, "Montserrat")
+		checkbox:SetPoint(from, object, to, x, y)
+
+		height = height + checkbox:GetHeight() + 5
+
+		from, object, to, x, y = "TOPLEFT", checkbox, "BOTTOMLEFT", 0, 5
+
+		Command.Event.Attach(EnKai.events[name.. "." .. v].CheckboxChanged, function (_, newValue)		
+			nkUISetup.modules.questtracker.categoryShow[v] = newValue			
+		end, name.. "." .. v .. ".CheckboxChanged")
+	end
+
+	ui:SetHeight(height + 5)
+	ui:SetWidth(180)
+
+	return ui
+
+end
 
 function questTracker.buildUI ()
 
@@ -30,51 +66,50 @@ function questTracker.buildUI ()
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
 	ui:SetWidth(nkUISetup.modules.questtracker.width)
 	ui:SetHeight(nkUISetup.modules.questtracker.height)
-	ui:SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)
+	ui:SetBackgroundColor(0, 0, 0, 0)
 	ui:SetLayer(1)
 	ui:SetTitleFont(addonInfo.id, "MontserratSemiBold")	
 	ui:SetTitle(addonInfo.name)
 	ui:SetTitleEffectGlow({strength = 3})
-	
-	--ui:SetTitleColor(1, 1 ,1 ,1)
 	ui:SetTitleColor(colorR, colorG, colorB, colorA)
 
-	ui:SetTitleAlign("left", 40)
+	ui:SetTitleAlign("left", 0)
 	ui:SetCloseable(false)
-	ui:ShowMoveToggle(true)
+	ui:ShowMoveToggle(false)
 	ui:SetDragable(true)
-	ui:SetCollapseable(true)
-	--ui:SetAutoHideHeader(nkQuestTrackerSetup.autoHide, 2, 30)
+	ui:SetCollapseable(false)
 	ui:SetFontSize(16)
 
-	ui:GetHeader():SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)	
+	ui:GetHeader():SetBackgroundColor(0, 0, 0, 0)	
 	
-	ui:SetArrowTextures(addonInfo.identifier, "gfx/windowModernArrowRight.png", "gfx/windowModernArrowDown.png")
-	ui:GetMoveCheckbox():SetColor(colorR, colorG, colorB, colorA)
-	
-	Command.Event.Attach(EnKai.events[name].HeaderHide, function (_)
-	  EnKai.events.addInsecure(
-	    function()
-	      if uiElements.useUI ~= nil then uiElements.useUI:SetVisible(false) end
-    	  ui:getUseItemButton():SetAlpha(0.5)
-    	end)
-	end, name .. '.HeaderHide')
-	
-	Command.Event.Attach(EnKai.events[name].HeaderShown, function (_)
-		EnKai.events.addInsecure(
-			function() ui:getUseItemButton():SetAlpha(1) end
-		)
-	end, name .. '.HeaderShown')
-	 
+	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", ui:GetHeader())
+	headerLine:SetHeight(2)
+	headerLine:SetWidth(ui:GetWidth())
+	headerLine:SetPoint("TOPLEFT", ui:GetHeader(), "BOTTOMLEFT")
+
+    local path =  {  {xProportional = 0, yProportional = 0},
+                  {xProportional = 1, yProportional = 0},
+                  {xProportional = 1, yProportional = 1},
+                  {xProportional = 0, yProportional = 1},
+                  {xProportional = 0, yProportional = 0}
+                  }  
+	local fill = {
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
+		color = {
+			{ r = 0.9, g = 0.74, b = 0, a = 0, position = 0 },
+			{ r = 0.9, g = 0.74, b = 0, a = 1, position = 0.25 },
+			{ r = 0.9, g = 0.74, b = 0, a = 1, position = 0.75 },
+			{ r = 0.9, g = 0.74, b = 0, a = 0, position = 1 }
+		}
+	}
+
+	headerLine:SetShape(path, fill, nil)
+		 
 	Command.Event.Attach(EnKai.events[name].Moved, function (_, xpos, ypos)
 		nkUISetup.modules.questtracker.x = xpos
 		nkUISetup.modules.questtracker.y = ypos
 	end, name .. '.Moved')
-	
-	--Command.Event.Attach(EnKai.events[name].Dragable, function (_, dragable)
-	--	nkQuestTrackerSetup.moveable = dragable
-	--end, name .. '.Dragable')
-
 
 	-- ********* QUEST ITEM BUTTON
 		
@@ -89,79 +124,113 @@ function questTracker.buildUI ()
 	local checkAlpha = nil
 
 	useButton:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
-		if oInspectSystemSecure() == false then
+		if inspectSystemSecure() == false then
 			checkAlpha = useButton:GetAlpha()
 			useButton:SetAlpha(1)
 		end
 	end, name .. ".resizeIcon.Mouse.Cursor.In")
 
 	useButton:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
-		if oInspectSystemSecure() == false and checkAlpha ~= nil then
+		if inspectSystemSecure() == false and checkAlpha ~= nil then
 			useButton:SetAlpha(checkAlpha)
 		end
 	end, name .. ".resizeIcon.Mouse.Cursor.Out")
 
 	function ui:getUseItemButton () return useButton end
 
-	local questItemsIcon = UI.CreateFrame('Texture', name .. '.zoneFilterIcon', ui:GetHeader())
-	questItemsIcon:SetPoint("CENTERRIGHT", ui:GetHeader(), "CENTERRIGHT", -3, 0)	
-	questItemsIcon:SetTextureAsync(addonInfo.identifier, "gfx/items.png");
-	questItemsIcon:SetWidth(12)
-	questItemsIcon:SetHeight(12)
-	
-	questItemsIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		uiElements.useUI:toggle()		
-	end, name .. ".questItemsIcon.Mouse.Left.Down")
-
 	-- ********* ZONE FILTER BUTTON
 	
-	local zoneFilterIcon = UI.CreateFrame('Texture', name .. '.zoneFilterIcon', ui:GetHeader())
-	zoneFilterIcon:SetPoint("CENTERRIGHT", questItemsIcon, "CENTERLEFT", -5, 0)
-	zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOff.png");
-	zoneFilterIcon:SetWidth(12)
-	zoneFilterIcon:SetHeight(12)
+	local zoneFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui:GetHeader())
+	zoneFilterIcon:SetWidth(16)
+	zoneFilterIcon:SetHeight(16)
+	zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
+	zoneFilterIcon:SetPoint("CENTERRIGHT", ui:GetHeader(), "CENTERRIGHT", -3, 0)
 	
-	zoneFilterIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+	local zoneFilterText = EnKai.uiCreateFrame('nkText', name .. '.zoneFilterIcon.text', zoneFilterIcon)	
+	zoneFilterText:SetPoint("CENTER", zoneFilterIcon, "CENTER")
+	zoneFilterText:SetText("Z")
+	zoneFilterText:SetFontSize(14)
+	zoneFilterText:SetFontColor(colorR, colorG, colorB, 1)
+	zoneFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+	zoneFilterText:SetEffectGlow({strength = 3})
+	
+	zoneFilterText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+
 		if data.zoneFilter == true then data.zoneFilter = false else data.zoneFilter = true end
 		
 		if data.zoneFilter then
-			zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOn.png")
+			zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 1)
+			zoneFilterText:SetEffectGlow({strength = 0})
+			zoneFilterText:SetFontColor(0,0,0,1)
+			zoneFilterText:SetTextFont(addonInfo.id, "MontserratBold")
 		else
-			zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOff.png")
+			zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
+			zoneFilterText:SetFontColor(colorR, colorG, colorB, 1)
+			zoneFilterText:SetEffectGlow({strength = 3})
+			zoneFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
 		end
 		
 		ui:GetContent():SetVisible(false)
 		questTracker.clearLog( questTracker.fillLog )
 		
-	end, name .. ".zoneFilterIcon.Mouse.Left.Down")
+	end, name .. ".zoneFilterText.text.Mouse.Left.Down")
+
+	EnKai.ui.attachGenericTooltip (zoneFilterText, "nkUI Questtracker", privateVars.langTexts.zoneFilter)
+
+	-- ********* CATEGORY FILTER BUTTON
+	
+	local categoryFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui:GetHeader())
+	categoryFilterIcon:SetWidth(16)
+	categoryFilterIcon:SetHeight(16)
+	categoryFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
+	categoryFilterIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
+	
+	local categoryFilterText = EnKai.uiCreateFrame('nkText', name .. '.categoryFilterIcon.text', categoryFilterIcon)	
+	categoryFilterText:SetPoint("CENTER", categoryFilterIcon, "CENTER")
+	categoryFilterText:SetText("C")
+	categoryFilterText:SetFontSize(14)
+	categoryFilterText:SetFontColor(colorR, colorG, colorB, 1)
+	categoryFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+	categoryFilterText:SetEffectGlow({strength = 3})
+	
+	categoryFilterText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+		if uiElements.categoryFilter == nil then
+			uiElements.categoryFilter = showCategoryFilter (categoryFilterIcon)
+		end
+			
+		if uiElements.categoryFilter:GetVisible() then
+			questTracker.clearLog(questTracker.fillLog)
+		end
+
+		uiElements.categoryFilter:SetVisible(not uiElements.categoryFilter:GetVisible())
+	end, name .. ".categoryFilterIcon.text.Mouse.Left.Down")	
+
+	EnKai.ui.attachGenericTooltip (categoryFilterText, "nkUI Questtracker", privateVars.langTexts.categoryFilter)
 	 	
-	EnKai.ui.attachGenericTooltip (zoneFilterIcon, "nkQuestTracker", privateVars.langTexts.zoneFilter)
 	EnKai.ui.genericTooltipSetFont(addonInfo.id, "Montserrat")
 
-	local missingIcon = UI.CreateFrame('Texture', name .. '.missingIcon', ui:GetHeader())
-	missingIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
-	missingIcon:SetTextureAsync(addonInfo.identifier, "gfx/missingIcon.png");
-	missingIcon:SetWidth(12)
-	missingIcon:SetHeight(12)
+	-- ********* ITEM BUTTON
 	
-	missingIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		questTracker.missingList()
-	end, name .. ".missingIcon.Mouse.Left.Down")
+	local itemIcon = EnKai.uiCreateFrame("nkFrame", name .. '.itemIcon', ui:GetHeader())
+	itemIcon:SetWidth(16)
+	itemIcon:SetHeight(16)
+	itemIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
+	itemIcon:SetPoint("CENTERRIGHT", categoryFilterIcon, "CENTERLEFT", -5, 0)
 	
-	EnKai.ui.attachGenericTooltip (missingIcon, "nkQuestTracker", privateVars.langTexts.missingList)
+	local itemIconText = EnKai.uiCreateFrame('nkText', name .. '.itemIcon.text', itemIcon)	
+	itemIconText:SetPoint("CENTER", itemIcon, "CENTER")
+	itemIconText:SetText("I")
+	itemIconText:SetFontSize(14)
+	itemIconText:SetFontColor(colorR, colorG, colorB, 1)
+	itemIconText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+	itemIconText:SetEffectGlow({strength = 3})
 	
-	local refreshIcon = UI.CreateFrame('Texture', name .. '.refreshIcon', ui:GetHeader())
-	refreshIcon:SetPoint("CENTERRIGHT", missingIcon, "CENTERLEFT", -5, 0)
-	refreshIcon:SetTextureAsync(addonInfo.identifier, "gfx/refreshIcon.png");
-	refreshIcon:SetWidth(12)
-	refreshIcon:SetHeight(12)
-	
-	refreshIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		questTracker.clearLog(questTracker.fillLog)
-	end, name .. ".refreshIcon.Mouse.Left.Down")
-	
-	EnKai.ui.attachGenericTooltip (missingIcon, "nkQuestTracker", privateVars.langTexts.missingList)
-		
+	itemIconText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+		uiElements.useUI:Toggle()
+	end, name .. ".itemIcon.text.Mouse.Left.Down")	
+
+	EnKai.ui.attachGenericTooltip (itemIconText, "nkUI Questtracker", privateVars.langTexts.questItems)	 	
+
 	-- ********* RESIZE ICON
 	
 	local resizeIcon = UI.CreateFrame('Texture', name .. '.resizeIcon', ui:GetContent())
@@ -178,7 +247,7 @@ function questTracker.buildUI ()
 	resizeIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
 		self.leftDown = true		
 		
-		local mouse = oInspectMouse()
+		local mouse = inspectMouse()
 		
 		self.origX = mouse.x
 		self.origY = mouse.y
@@ -189,7 +258,7 @@ function questTracker.buildUI ()
 	resizeIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function (self, _, x, y)	
 		if self.leftDown ~= true then return end
 		
-		local mouse = oInspectMouse()
+		local mouse = inspectMouse()
 		
 		local newHeight = self.origHeight + (mouse.y - self.origY)
 		if newHeight < 100 then newHeight = 100 end
@@ -220,9 +289,9 @@ function questTracker.buildUI ()
 	-- ********* SCROLL PANE
 			
 	scrollPane = EnKai.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui:GetContent())
-	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 0, 0)
+	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 0, 10)
 	scrollPane:SetWidth(ui:GetContent():GetWidth())
-	scrollPane:SetHeight(ui:GetContent():GetHeight())
+	scrollPane:SetHeight(ui:GetContent():GetHeight() - 10)
 	
 	-- ***** Hide scrollbars by setting the color to transparent *****
 

@@ -96,7 +96,7 @@ function questTracker.questCategory(category, parent)
 	EnKai.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
 
 	local color = data.categoryColor[category]
-	headerText:SetFontColor(color[1], color[2], color[3], nkUISetup.modules.questtracker.bgAlpha)
+	headerText:SetFontColor(color[1], color[2], color[3], 0)
 
 	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)    
 		if subFrame:GetVisible() == true then
@@ -111,17 +111,29 @@ function questTracker.questCategory(category, parent)
 
 	header:SetHeight(headerText:GetHeight())
 
-	local headerLine = UI.CreateFrame("Canvas", name .. '.headerLine', frame)
+	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", frame)
+	headerLine:SetHeight(2)
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 
-	local canvas = {{xProportional = 0, yProportional = 1}, 
-	{xProportional = 1, yProportional = 1}}
-	local fill = {type = 'solid', r = color[1], g = color[2], b = color[3], a = 1}
-	local stroke =  { r = color[1], g = color[2], b = color[3], a = 1, thickness = 1}
+	--local stroke = {r = colorR, g = colorG, b = colorB, a = 1, thickness = 1 }
+    local path =  {  {xProportional = 0, yProportional = 0},
+                  {xProportional = 1, yProportional = 0},
+                  {xProportional = 1, yProportional = 1},
+                  {xProportional = 0, yProportional = 1},
+                  {xProportional = 0, yProportional = 0}
+                  }  
+	local fill = {
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
+		color = {
+		{ r = color[1], g = color[2], b = color[3], a = 0, position = 0 },
+        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.25 },
+        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.75 },
+        { r = color[1], g = color[2], b = color[3], a = 0, position = 1 }
+		}
+	}
 
-	headerLine:SetWidth(0)
-	headerLine:SetHeight(0)
-	headerLine:SetShape(canvas, fill, stroke)
+	headerLine:SetShape(path, fill, nil)
 
 	headerLine:SetWidth(header:GetWidth())
 	headerLine:SetHeight(1) 
@@ -334,7 +346,7 @@ function questTracker.questCategory(category, parent)
 		headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
 
 		local color = data.categoryColor[category]
-		headerText:SetFontColor(color[1], color[2], color[3], nkUISetup.modules.questtracker.bgAlpha)
+		headerText:SetFontColor(color[1], color[2], color[3], 0)
 
 		fill = {type = 'solid', r = color[1], g = color[2], b = color[3], a = 1}
 		stroke =  { r = color[1], g = color[2], b = color[3], a = 1, thickness = 1}
