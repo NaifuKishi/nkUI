@@ -12,6 +12,7 @@ local inspectItemList			= Inspect.Item.List
 local utilityItemSlotQuest		= Utility.Item.Slot.Quest
 local utilityItemSlotInventory	= Utility.Item.Slot.Inventory
 local inspectSystemSecure		= Inspect.System.Secure
+local inspectQuestDetail		= Inspect.Quest.Detail
 
 local mathFloor					= math.floor
 
@@ -30,6 +31,7 @@ local function useItem(name, parent)
 	useItem:SetWidth(25)
 	useItem:SetHeight(25)
 	useItem:SetSecureMode("restricted")
+	useItem:SetBackgroundColor(.843, .796, 0, 1)
 	useItem:SetVisible(false)
 
 	local useItemTexture = EnKai.uiCreateFrame("nkTexture", name .. ".texture", useItem)
@@ -75,7 +77,7 @@ function questTracker.buildUseUI ()
 	local name = "nkUI.QuestTracker.UseUI"
 
 	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.secureContext)
-	ui:SetPoint("TOPRIGHT", uiElements.questLog, "TOPLEFT", -5, 25)
+	ui:SetPoint("TOPRIGHT", uiElements.questLog, "TOPLEFT", 20, 25)
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questLog:GetHeight()-20)
 	ui:SetSecureMode('restricted')
@@ -83,18 +85,18 @@ function questTracker.buildUseUI ()
 	local useItems = {}
 	local useState = {}
 
-	local from, to, object, x, y = "TOPLEFT", "TOPLEFT", ui, 0, 0
+	local from, to, object, x, y = "TOPRIGHT", "TOPLEFT", ui, 0, 0
 	local lastUseItem = nil
 
 	local maxIcons = mathFloor((uiElements.questLog:GetHeight()-20) / 30)
 
-	for idx1 = 1, 4, 1 do
-		if idx1 ~= 1 then from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastUseItem, 5, 0 end
+	for idx1 = 1, 2, 1 do
+		if idx1 ~= 1 then from, to, object, x, y = "TOPRIGHT", "TOPLEFT", lastUseItem, -5, 0 end
 		
 		for idx = 1, maxIcons, 1 do			
 			local thisItem = useItem(name .. '.useItem.' .. idx1 .. "." .. idx, ui)
 			thisItem:SetPoint(from, object, to, x, y)
-			to, object, x, y = "BOTTOMLEFT", thisItem, 0, 5
+			to, object, x, y = "BOTTOMRIGHT", thisItem, 0, 5
 
 			if idx == 1 then lastUseItem = thisItem end
 			
@@ -168,7 +170,7 @@ function questTracker.buildUseUI ()
 					_resize()
 					return
 				else
-					hasItems = true
+					hasItems = trueSetVisible(true)
 					_itemCounter = 0
 					_resize()
 				end
@@ -188,24 +190,24 @@ function questTracker.buildUseUI ()
 	
 		-- go through quest item space, identify usable quest items and move them to the bag 
 	
-		local itemList = EnKai.inventory.getQuestItems()		
+		local itemList = EnKai.inventory.getQuestItems()
+
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_questTracker.buildUseUI", "quest items", itemList) end
+	
 		local bagItemList = EnKai.inventory.queryByCategory ('misc quest')
 
 		local completeList = EnKai.tools.table.copy (itemList)
 		
-		if bagItemList and itemList then
+		if bagItemList and itemList then			
+
 			for key, v in pairs (bagItemList) do
 				local found = false
 
 				for slot, details in pairs(itemList) do
-					if details.id == key then
-						found = true
-					end
+					if details.id == key then found = true end
 				end
 				
-				if found == false then
-					completeList.key = v
-				end
+				if found == false then completeList.key = v end
 			end
 		end
 
@@ -213,19 +215,30 @@ function questTracker.buildUseUI ()
 		
 		for k, v in pairs (completeList) do
 			local questInfo = nkQuestBase.query.questItemByKey (v.type)
-			if questInfo ~= nil then v.qKey = questInfo.qKey  end
-			table.insert(tempList, v)
+			local addItem = true
+
+			if questInfo ~= nil then 
+				v.qKey = questInfo.qKey 
+				local qDetails = inspectQuestDetail(v.qKey)				
+				addItem = not qDetails.complete
+			end
+
+			if addItem then table.insert(tempList, v) end
 		end
 
-		if #tempList == 0 then
+		--if #tempList == 0 then
        		uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
-		else
-		   uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
-		end
+		--else
+		--	uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
+		--end
 
 		-- ***** add quest items *****
 				
 		for idx = 1, #tempList, 1 do
+				v.qKey = questInfo.qKey 
+				local qDetails = inspectQuestDetail(v.qKey)				
+				addItem = not qDetails.complete
+			end
 			local thisItem = tempList[idx]
 			local useItem = ui:GetUseItemByKey(thisItem.id)
 

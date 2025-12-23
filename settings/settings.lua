@@ -325,6 +325,8 @@ function internalFunc.setupUI ()
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
 
     local paneTabTheme = _settings.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
+
+    local paneTabQuestTracker = _settings.uiConfigTabQuestTracker (name .. ".tab.QuestTracker", tabPane)
     local paneTabActionBar = _settings.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
     local paneTabLowerBar = _settings.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
     local paneTabSCT = _settings.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
@@ -404,6 +406,8 @@ function internalFunc.setupUI ()
     tabPane:SetLayer(1)
 
     tabPane:AddPane( { label = "Theme", frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
+    tabPane:AddPane( { label = "Quest Tracker", frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
+
     tabPane:AddPane( { label = "Action bar", frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
     tabPane:AddPane( { label = "Lower bar", frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
     tabPane:AddPane( { label = "SCT", frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
@@ -434,4 +438,5 @@ function internalFunc.setupInit ()
         uiElements.settings:SetVisible(true)
     end
 end
+
 

@@ -190,7 +190,7 @@ local function initializeAddon(_, addon)
 				end
 
 				if nkUISetup.modules.questtracker and nkUISetup.modules.questtracker.activate then
-					internalFunc.questTrackerInit()
+					internalFunc.questTrackerInit(true)
 				end
 
 				--internalFunc.chat ()

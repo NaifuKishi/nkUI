@@ -20,6 +20,8 @@ local stringLen				= string.len
 local stringSub				= string.sub
 local stringSplit			= string.split
 
+local EnKaiGetLanguageShort	= EnKai.tools.lang.getLanguageShort
+
 ---------- init local variables ---------
 
 local colorR, colorG, colorB, colorA = 0.9, 0.74, 0, 1
@@ -59,7 +61,24 @@ data.categoryColor 		= { guild = { 0, 0.58, 1 },
 
 ---------- local function block ---------
 
-function internalFunc.questTrackerInit()
+function internalFunc.questTrackerInit(flag)
+
+	 if flag then
+        if isInit then
+            uiElements.questLog:SetVisible(true)
+			uiElements.useUI:Toggle()
+        else
+            internalFunc.uiQuestTracker()
+        end
+    else
+        if uiElements.questLog then
+            uiElements.questLog:SetVisible(false)
+			uiElements.useUI:Toggle()
+        end
+    end    
+end
+
+function internalFunc.uiQuestTracker()
 
 	if isInit then return end
 
@@ -91,17 +110,14 @@ function internalFunc.questTrackerInit()
 		Command.Event.Attach(Event.Quest.Change, questTracker.eventQuestChange, "nkUI.questtracker.Quest.Change")
 		Command.Event.Attach(Event.Quest.Complete, questTracker.eventQuestComplete, "nkUI.questtracker.Quest.Complete")
 		Command.Event.Attach(Event.System.Update.Begin, questTracker.eventSystemUpdate, "nkUI.questtracker.System.Update.Begin")
-	
-		--Command.Event.Attach(Event.Unit.Availability.None, events.unitNotAvaiable, "nkQuestTracker.Unit.Availability.None")
-		--Command.Event.Attach(Event.Unit.Availability.Partial, events.unitNotAvaiable, "nkQuestTracker.Unit.Availability.None")
-		
+			
 		Command.Event.Attach(Event.Unit.Detail.Level, questTracker.eventUnitLevel, "nkUI.questtracker.Unit.Detail.Level")
 		
 		Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, questTracker.eventInventoryUpdate, "nkUI.questtracker.EnKai.InventoryManager.update")
 
 	end
 
-	uiElements.questLog:SetTitle(stringFormat("%d Quests", uiElements.questLog:GetQuestCount()))
+	uiElements.questLog:SetTitle(stringFormat("Quests (%d)", uiElements.questLog:GetQuestCount()))
 
 	isInit = true
 
@@ -312,7 +328,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	if uiElements.qtTooltip == nil then
 		uiElements.qtTooltip = EnKai.uiCreateFrame("nkTooltip", 'nkUI.questtracker.tooltip', uiElements.contextTooltip)
 		uiElements.qtTooltip:SetLayer(2)
-		uiElements.qtTooltip:SetFont (addonInfo.id, "Montserrat")
+		uiElements.qtTooltip:SetFont (addonInfo.id, "MontserratSemiBold")
 	end
 	
 	local tooltip = uiElements.qtTooltip
@@ -328,6 +344,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	   if (questkey ~= nil) then
 		   flag, quest = pcall(inspectQuestDetail, questkey)
 		   if flag == false or quest == nil then return end
+	
 		   if quest.domain == nil then quest.domain = 'personal' end
 		   
 		   tooltip:SetTitle(quest.name)
@@ -337,8 +354,8 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   if (details == nil) then return end
 		   
 		   local dbDetails = nkQuestBase.query.questItemByKey(details.type)
-		   if dbDetails ~= nil and dbDetails['use_' .. EnKai.tools.lang.getLanguageShort()] ~= nil then
-		      message = dbDetails['use_' .. EnKai.tools.lang.getLanguageShort()]
+		   if dbDetails ~= nil and dbDetails['use_' .. EnKaiGetLanguageShort()] ~= nil then
+		      message = dbDetails['use_' .. EnKaiGetLanguageShort()]
 		   elseif details.flavor ~= nil then
           message = details.flavor
         else
@@ -368,7 +385,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	local lvl, libDetails = nil, nil
 	
 	if (questkey ~= nil ) then
-	 lvl, libDetails = nkQuestBase.query.byKey(questkey, true)
+		lvl, libDetails = nkQuestBase.query.byKey(questkey, true)
 	end
 	
 	if libDetails ~= nil then
@@ -378,17 +395,17 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		if libDetails.giver ~= nil then
 			npc = nkQuestBase.query.NPC (libDetails.giver)
 			if npc ~= nil then
-				if npc.scene ~= nil then scene = npc.scene[EnKai.tools.lang.getLanguageShort()] end
+				if npc.scene ~= nil then scene = npc.scene[EnKaiGetLanguageShort()] end
 				table.insert (lines, { text = "", height = 10})
-				table.insert (lines, { text = stringFormat(privateVars.langTexts.questGiver, npc[EnKai.tools.lang.getLanguageShort()]), wordwrap = true, fontsize=13})
+				table.insert (lines, { text = stringFormat(privateVars.langTexts.questGiver, npc[EnKaiGetLanguageShort()]), wordwrap = true, fontsize=13})
 			end
 		end
 	
 		if scene ~= nil then
 			local sceneInfo = EnKai.location.getSceneInfo(scene)
 			if sceneInfo ~= nil then
-				if sceneInfo[EnKai.tools.lang.getLanguageShort()] ~= nil then
-					scene = sceneInfo[EnKai.tools.lang.getLanguageShort()]
+				if sceneInfo[EnKaiGetLanguageShort()] ~= nil then
+					scene = sceneInfo[EnKaiGetLanguageShort()]
 				end
 			end
 			
@@ -403,7 +420,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		
 		for k, v in pairs(quest.objective) do
 			if v.complete ~= true then		
-				table.insert(lines, {text = stringFormat("<font color='%s'>%s</font>", "#FFFFFF", v.description), wordwrap = true, fontsize = 13 })
+				table.insert(lines, {text = stringFormat("<font color='%s'>%s</font>", "#cccccc", v.description), wordwrap = true, fontsize = 13 })
 			end
 		end
 	end
@@ -418,9 +435,9 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	local mouse = inspectMouse()
 	
 	if mouse.x + tooltip:GetWidth() > UIParent:GetWidth() then
-	 tooltip:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -(UIParent:GetWidth()-mouse.x), mouse.y)
+		tooltip:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -(UIParent:GetWidth()-mouse.x), mouse.y)
 	else
-	 tooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
+		tooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
 	end
 		
 	tooltip:SetVisible(true)
