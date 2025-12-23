@@ -2,7 +2,7 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local internal		= privateVars.internal
+local questTracker	= privateVars.questTracker
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 local events		= privateVars.events
@@ -13,23 +13,24 @@ local oInspectSystemSecure	= Inspect.System.Secure
 ---------- init local variables ---------
 
 local colorR, colorG, colorB, colorA = 0.9, 0.74, 0, 1
+local categoryOrder = { "crafting", "daily", "weekly", "monthly", "guild", "ia", "pvp", "world", "zone", "area", "instant", "raid", "story", "personal", "carnage"}
 
 ---------- local function block ---------
 
 ---------- addon internal function block ---------
 
-function internal.buildUI ()
+function questTracker.buildUI ()
 
 	local name = "nkQuestTrackerUI"
 	local scrollPane, content	
 
-	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.context)
+	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextLowest)
 	
 	ui:SetReverseAtBorder(false)
-	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkQuestTrackerSetup.xpos, nkQuestTrackerSetup.ypos)
-	ui:SetWidth(nkQuestTrackerSetup.width)
-	ui:SetHeight(nkQuestTrackerSetup.height)
-	ui:SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)
+	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
+	ui:SetWidth(nkUISetup.modules.questtracker.width)
+	ui:SetHeight(nkUISetup.modules.questtracker.height)
+	ui:SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)
 	ui:SetLayer(1)
 	ui:SetTitleFont(addonInfo.id, "MontserratSemiBold")	
 	ui:SetTitle(addonInfo.name)
@@ -41,14 +42,14 @@ function internal.buildUI ()
 	ui:SetTitleAlign("left", 40)
 	ui:SetCloseable(false)
 	ui:ShowMoveToggle(true)
-	ui:SetDragable(nkQuestTrackerSetup.moveable)
+	ui:SetDragable(true)
 	ui:SetCollapseable(true)
-	ui:SetAutoHideHeader(nkQuestTrackerSetup.autoHide, 2, 30)
+	--ui:SetAutoHideHeader(nkQuestTrackerSetup.autoHide, 2, 30)
 	ui:SetFontSize(16)
 
-	ui:GetHeader():SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)	
+	ui:GetHeader():SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)	
 	
-	ui:SetArrowTextures("nkQuestTracker", "gfx/windowModernArrowRight.png", "gfx/windowModernArrowDown.png")
+	ui:SetArrowTextures(addonInfo.identifier, "gfx/windowModernArrowRight.png", "gfx/windowModernArrowDown.png")
 	ui:GetMoveCheckbox():SetColor(colorR, colorG, colorB, colorA)
 	
 	Command.Event.Attach(EnKai.events[name].HeaderHide, function (_)
@@ -66,13 +67,13 @@ function internal.buildUI ()
 	end, name .. '.HeaderShown')
 	 
 	Command.Event.Attach(EnKai.events[name].Moved, function (_, xpos, ypos)
-		nkQuestTrackerSetup.xpos = xpos
-		nkQuestTrackerSetup.ypos = ypos
+		nkUISetup.modules.questtracker.x = xpos
+		nkUISetup.modules.questtracker.y = ypos
 	end, name .. '.Moved')
 	
-	Command.Event.Attach(EnKai.events[name].Dragable, function (_, dragable)
-		nkQuestTrackerSetup.moveable = dragable
-	end, name .. '.Dragable')
+	--Command.Event.Attach(EnKai.events[name].Dragable, function (_, dragable)
+	--	nkQuestTrackerSetup.moveable = dragable
+	--end, name .. '.Dragable')
 
 
 	-- ********* QUEST ITEM BUTTON
@@ -104,7 +105,7 @@ function internal.buildUI ()
 
 	local questItemsIcon = UI.CreateFrame('Texture', name .. '.zoneFilterIcon', ui:GetHeader())
 	questItemsIcon:SetPoint("CENTERRIGHT", ui:GetHeader(), "CENTERRIGHT", -3, 0)	
-	questItemsIcon:SetTextureAsync("nkQuestTracker", "gfx/items.png");
+	questItemsIcon:SetTextureAsync(addonInfo.identifier, "gfx/items.png");
 	questItemsIcon:SetWidth(12)
 	questItemsIcon:SetHeight(12)
 	
@@ -116,7 +117,7 @@ function internal.buildUI ()
 	
 	local zoneFilterIcon = UI.CreateFrame('Texture', name .. '.zoneFilterIcon', ui:GetHeader())
 	zoneFilterIcon:SetPoint("CENTERRIGHT", questItemsIcon, "CENTERLEFT", -5, 0)
-	zoneFilterIcon:SetTextureAsync("nkQuestTracker", "gfx/zoneFilterOff.png");
+	zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOff.png");
 	zoneFilterIcon:SetWidth(12)
 	zoneFilterIcon:SetHeight(12)
 	
@@ -124,13 +125,13 @@ function internal.buildUI ()
 		if data.zoneFilter == true then data.zoneFilter = false else data.zoneFilter = true end
 		
 		if data.zoneFilter then
-			zoneFilterIcon:SetTextureAsync("nkQuestTracker", "gfx/zoneFilterOn.png")
+			zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOn.png")
 		else
-			zoneFilterIcon:SetTextureAsync("nkQuestTracker", "gfx/zoneFilterOff.png")
+			zoneFilterIcon:SetTextureAsync(addonInfo.identifier, "gfx/zoneFilterOff.png")
 		end
 		
 		ui:GetContent():SetVisible(false)
-		internal.clearLog( internal.fillLog )
+		questTracker.clearLog( questTracker.fillLog )
 		
 	end, name .. ".zoneFilterIcon.Mouse.Left.Down")
 	 	
@@ -139,24 +140,24 @@ function internal.buildUI ()
 
 	local missingIcon = UI.CreateFrame('Texture', name .. '.missingIcon', ui:GetHeader())
 	missingIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
-	missingIcon:SetTextureAsync("nkQuestTracker", "gfx/missingIcon.png");
+	missingIcon:SetTextureAsync(addonInfo.identifier, "gfx/missingIcon.png");
 	missingIcon:SetWidth(12)
 	missingIcon:SetHeight(12)
 	
 	missingIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		internal.missingList()
+		questTracker.missingList()
 	end, name .. ".missingIcon.Mouse.Left.Down")
 	
 	EnKai.ui.attachGenericTooltip (missingIcon, "nkQuestTracker", privateVars.langTexts.missingList)
 	
 	local refreshIcon = UI.CreateFrame('Texture', name .. '.refreshIcon', ui:GetHeader())
 	refreshIcon:SetPoint("CENTERRIGHT", missingIcon, "CENTERLEFT", -5, 0)
-	refreshIcon:SetTextureAsync("nkQuestTracker", "gfx/refreshIcon.png");
+	refreshIcon:SetTextureAsync(addonInfo.identifier, "gfx/refreshIcon.png");
 	refreshIcon:SetWidth(12)
 	refreshIcon:SetHeight(12)
 	
 	refreshIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		internal.clearLog(internal.fillLog)
+		questTracker.clearLog(questTracker.fillLog)
 	end, name .. ".refreshIcon.Mouse.Left.Down")
 	
 	EnKai.ui.attachGenericTooltip (missingIcon, "nkQuestTracker", privateVars.langTexts.missingList)
@@ -165,7 +166,7 @@ function internal.buildUI ()
 	
 	local resizeIcon = UI.CreateFrame('Texture', name .. '.resizeIcon', ui:GetContent())
 	resizeIcon:SetPoint("BOTTOMRIGHT", ui:GetContent(), "BOTTOMRIGHT")
-	resizeIcon:SetTextureAsync("nkQuestTracker", "gfx/resizeIcon.png")
+	resizeIcon:SetTextureAsync(addonInfo.identifier, "gfx/resizeIcon.png")
 	resizeIcon:SetWidth(20)
 	resizeIcon:SetHeight(20)
 	resizeIcon:SetAlpha(0)
@@ -199,8 +200,8 @@ function internal.buildUI ()
 		ui:SetHeight(newHeight)
 		ui:SetWidth(newWidth)
 		
-		nkQuestTrackerSetup.width = newWidth
-		nkQuestTrackerSetup.height = newHeight
+		nkUISetup.modules.questtracker.width = newWidth
+		nkUISetup.modules.questtracker.height = newHeight
 		
 		scrollPane:SetWidth(ui:GetContent():GetWidth())
 		scrollPane:SetHeight(ui:GetContent():GetHeight())
@@ -236,8 +237,8 @@ function internal.buildUI ()
 		
 	local questCategories = {}
 			
-	for idx = 1, #nkQuestTrackerSetup.categoryOrder, 1 do
-		local thisCategory = internal.questCategory(nkQuestTrackerSetup.categoryOrder[idx], content, ui)
+	for idx = 1, #categoryOrder, 1 do
+		local thisCategory = questTracker.questCategory(categoryOrder[idx], content, ui)
 		thisCategory:SetVisible(false)
 		thisCategory:SetHeight(0)
 		
@@ -247,7 +248,7 @@ function internal.buildUI ()
 			thisCategory:SetPoint("TOPLEFT", questCategories[idx-1], "BOTTOMLEFT")
 		end
 		
-		local categoryName = content:GetName() .. ".questCategory." .. nkQuestTrackerSetup.categoryOrder[idx]
+		local categoryName = content:GetName() .. ".questCategory." .. categoryOrder[idx]
 		
 		table.insert(questCategories, thisCategory)
 	end	
@@ -309,7 +310,7 @@ function internal.buildUI ()
 		for k, v in pairs(questCategories) do
 			if v:GetCategory() == questCategory then
 				v:AddQuest(key, title, objectives, complete, level, zone)
-				if nkQuestTrackerSetup.categoryShow[questCategory] == true then
+				if nkUISetup.modules.questtracker.categoryShow[questCategory] == true then
 					v:RecalcHeight() 
 					v:SetVisible(true)
 				else
@@ -356,7 +357,7 @@ function internal.buildUI ()
 	
 	function ui:UpdateDesign(updateContent)
 		for k, v in pairs(questCategories) do
-			if nkQuestTrackerSetup.categoryShow[v:GetCategory()] == true and v:GetQuestCount() > 0 then
+			if nkUISetup.modules.questtracker.categoryShow[v:GetCategory()] == true and v:GetQuestCount() > 0 then
 				v:SetVisible(true)
 				v:UpdateDesign(updateContent)
 			else
@@ -374,7 +375,7 @@ function internal.buildUI ()
 		EnKai.events.addInsecure( function() useButton:SetVisible(flag) end )
 	end
 	
-	ui:DisplayHeader(nkQuestTrackerSetup.displayHeader)
+	ui:DisplayHeader(true)
 	
 	return ui
 

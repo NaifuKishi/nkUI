@@ -28,6 +28,11 @@ RunOnStartup = {
 	"modules/chat/chat.lua",
 
 	"modules/questtracker/questtracker.lua",
+	"modules/questtracker/events.lua",
+	"modules/questtracker/ui-category.lua",
+	"modules/questtracker/ui-entry.lua",
+	"modules/questtracker/ui-useitems.lua",
+	"modules/questtracker/ui.lua",
 
 	"modules/onebag/onebag.lua",
 	"modules/onebag/bagUI.lua",

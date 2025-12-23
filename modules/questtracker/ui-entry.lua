@@ -2,12 +2,12 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local internal		= privateVars.internal
+local questTracker	= privateVars.questTracker
+local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
-local data			= privateVars.data
 
-local oInspectQuestDetail	= Inspect.Quest.Detail
-local oInspectMouse			= Inspect.Mouse
+local inspectQuestDetail	= Inspect.Quest.Detail
+local inspectMouse			= Inspect.Mouse
 
 ---------- init local variables ---------
 
@@ -17,21 +17,21 @@ local questMenuKey
 
 ---------- local function block ---------
 
-local function _fctTrackQuest()
+local function trackQuest()
 
 	pcall (Command.Quest.Track, questMenuKey)
 	uiElements.menu:SetVisible(false)
 
 end
 
-local function _fctShareQuest ()
+local function shareQuest ()
 
 	Command.Quest.Share(questMenuKey)
 	uiElements.menu:SetVisible(false)
 	
 end
 
-local function _fctAbandonQuest ()
+local function abandonQuest ()
 
 	local function noFunc ()
 		uiElements.menu:SetVisible(false)
@@ -42,7 +42,7 @@ local function _fctAbandonQuest ()
 		uiElements.menu:SetVisible(false)
 	end
 	
-	local flag, quest = pcall(oInspectQuestDetail, questMenuKey)
+	local flag, quest = pcall(inspectQuestDetail, questMenuKey)
 	if flag == false then return end
 	
 	local text = string.format(privateVars.langTexts.abandonQuestConfirm, quest.name)
@@ -51,7 +51,7 @@ local function _fctAbandonQuest ()
 	
 end
 
-local function _fctShowMenu (parent, key)
+local function showMenu (parent, key)
 
 	questMenuKey = key
 
@@ -59,22 +59,22 @@ local function _fctShowMenu (parent, key)
 		uiElements.menu = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menu', uiElements.context)
 		uiElements.menu:SetFont(addonInfo.id, "MontserratSemiBold")
 		uiElements.menu:SetLayer(3)
-		uiElements.menu:AddEntry({ label = privateVars.langTexts.track, callBack = _fctTrackQuest })
-		uiElements.menu:AddEntry({ label = privateVars.langTexts.abandon, callBack = _fctAbandonQuest })
-		uiElements.menu:AddEntry({ label = privateVars.langTexts.share, callBack = _fctShareQuest})
+		uiElements.menu:AddEntry({ label = privateVars.langTexts.track, callBack = trackQuest })
+		uiElements.menu:AddEntry({ label = privateVars.langTexts.abandon, callBack = abandonQuest })
+		uiElements.menu:AddEntry({ label = privateVars.langTexts.share, callBack = shareQuest})
 	end
 	
 	local menu = uiElements.menu
-	local mouse = oInspectMouse()
+	local mouse = inspectMouse()
 	
 	menu:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
 	menu:SetVisible(true)
 	
 end
 
----------- addon internal function block ---------
+---------- addon internalFunc function block ---------
 
-function internal.questEntry (key, parent, counter)
+function questTracker.questEntry (key, parent, counter)
 
 	local name = parent:GetName() .. ".questEntry." .. counter
 	local subFrame
@@ -127,7 +127,7 @@ function internal.questEntry (key, parent, counter)
 				collapsed = false
 			end
 			
-			nkQuestTrackerSetup.collapseState[key] = subFrame:GetVisible()
+			nkUISetup.modules.questtracker.collapseState[key] = subFrame:GetVisible()
 			
 			frame:RecalcHeight()
 			parent:RecalcHeight()
@@ -137,12 +137,12 @@ function internal.questEntry (key, parent, counter)
 			if uiElements.menu ~= nil and uiElements.menu:GetVisible() == true then
 				uiElements.menu:SetVisible(false)
 			else
-				_fctShowMenu(header, key)
+				showMenu(header, key)
 			end
 		end, name .. "Header.Left.Down")
 	
 		header:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)		
-				internal.showTooltip(header, key, nil, parent:GetCategory())
+				questTracker.showTooltip(header, key, nil, parent:GetCategory())
 		end, name .. "Header.Left.Down")
 		
 		header:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)		
@@ -154,8 +154,8 @@ function internal.questEntry (key, parent, counter)
 	subFrame:SetPoint("TOPLEFT", subHeader, "BOTTOMLEFT")
 	subFrame:SetWidth(frame:GetWidth())
 	
-	if nkQuestTrackerSetup.collapseState[key] == nil then nkQuestTrackerSetup.collapseState[key] = true end
-	subFrame:SetVisible(nkQuestTrackerSetup.collapseState[key])
+	if nkUISetup.modules.questtracker.collapseState[key] == nil then nkUISetup.modules.questtracker.collapseState[key] = true end
+	subFrame:SetVisible(nkUISetup.modules.questtracker.collapseState[key])
 
 	local anchor = subFrame	
 	
@@ -270,9 +270,9 @@ function internal.questEntry (key, parent, counter)
 		thisObjective.complete = complete
 		
 		if complete == true then
-			thisObjective:SetFontColor(nkQuestTrackerSetup.bodyCompleteColor[1], nkQuestTrackerSetup.bodyCompleteColor[2], nkQuestTrackerSetup.bodyCompleteColor[3], 1)		
+			thisObjective:SetFontColor(nkUISetup.modules.questtracker.bodyCompleteColor[1], nkUISetup.modules.questtracker.bodyCompleteColor[2], nkUISetup.modules.questtracker.bodyCompleteColor[3], 1)		
 		else
-			thisObjective:SetFontColor(nkQuestTrackerSetup.bodyColor[1], nkQuestTrackerSetup.bodyColor[2], nkQuestTrackerSetup.bodyColor[3], 1)			
+			thisObjective:SetFontColor(nkUISetup.modules.questtracker.bodyColor[1], nkUISetup.modules.questtracker.bodyColor[2], nkUISetup.modules.questtracker.bodyColor[3], 1)			
 		end
 		
 	end
@@ -294,7 +294,6 @@ function internal.questEntry (key, parent, counter)
 	
 	function frame:SetTitleFontSize(newFontSize)
 		header:SetFontSize(newFontSize)
-		--subHeader:SetFontSize(fontSize)
 	end
 	
 	function frame:SetBodyFontSize(newFontSize)

@@ -2,15 +2,16 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local internal		= privateVars.internal
+local questTracker	= privateVars.questTracker
+local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 
-local oInspectItemFind			= Inspect.Item.Find
-local oInspectItemList			= Inspect.Item.List
-local oUtilityItemSlotQuest		= Utility.Item.Slot.Quest
-local oUtilityItemSlotInventory	= Utility.Item.Slot.Inventory
-local oInspectSystemSecure		= Inspect.System.Secure
+local inspectItemFind			= Inspect.Item.Find
+local inspectItemList			= Inspect.Item.List
+local utilityItemSlotQuest		= Utility.Item.Slot.Quest
+local utilityItemSlotInventory	= Utility.Item.Slot.Inventory
+local inspectSystemSecure		= Inspect.System.Secure
 
 ---------- init local variables ---------
 
@@ -21,16 +22,16 @@ local _itemCounter = 0
 
 ---------- local function block ---------
 
-local function _fctSetUseButton (useItem)
+local function setUseButton (useItem)
 
 	-- ***** return quest item to quest inventory *****
 
 	if _useButtonQuestItemID ~= nil and _useButtonQuestItemID ~= useItem:GetItemID() then
 		
-		local itemSlot = oInspectItemFind(_useButtonQuestItemID)
+		local itemSlot = inspectItemFind(_useButtonQuestItemID)
 
 		if itemSlot ~= nil then
-			local slots = oInspectItemList(oUtilityItemSlotQuest())
+			local slots = inspectItemList(utilityItemSlotQuest())
 
 			for slot, details in pairs (slots) do
 				if EnKai.strings.startsWith(slot, "sqst.") == true then
@@ -54,7 +55,6 @@ local function _fctSetUseButton (useItem)
 			return
 		end 
 
-		--local slots= oInspectItemList(oUtilityItemSlotInventory())
 		local questSlot = EnKai.inventory.getQuestItemSlot (useItem:GetItemType())
 
 		pcall (Command.Item.Move, questSlot, availSlots[1])
@@ -74,7 +74,7 @@ local function _fctSetUseButton (useItem)
 
 end
 
-local function _fctUseItem(name, parent)
+local function useItem(name, parent)
 
 	local useItem = UI.CreateFrame("Texture", name, parent)
 	useItem:SetWidth(25)
@@ -88,7 +88,7 @@ local function _fctUseItem(name, parent)
 	local itemType = nil
 	
 	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.In, function ()
-		internal.showTooltip (useItem, questId, itemId, "personal", nil)
+		questTracker.showTooltip (useItem, questId, itemId, "personal", nil)
 	end, name)
 	
 	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function ()
@@ -107,9 +107,9 @@ local function _fctUseItem(name, parent)
 	return useItem
 
 end
----------- addon internal function block ---------
+---------- addon internalFunc function block ---------
 
-function internal.buildUseUI ()
+function questTracker.buildUseUI ()
 
 	local name = "nkQuestTracker.UseUI"
 
@@ -130,7 +130,7 @@ function internal.buildUseUI ()
 		if idx1 ~= 1 then from, to, object, x, y = "TOPLEFT", "TOPRIGHT", lastUseItem, 5, 0 end
 		
 		for idx = 1, 10, 1 do			
-			local thisItem = _fctUseItem(name .. '.useItem.' .. idx, ui)
+			local thisItem = useItem(name .. '.useItem.' .. idx, ui)
 			thisItem:SetPoint(from, object, to, x, y)
 			to, object, x, y = "BOTTOMLEFT", thisItem, 0, 5
 
@@ -177,7 +177,6 @@ function internal.buildUseUI ()
 				useState[idx] = key
 
 				useItems[idx]:SetTextureAsync("Rift", icon)
-				--useItems[idx]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, string.format("use %s", name))
 				useItems[idx]:SetVisible(true)
 				useItems[idx]:SetQuestID(questId)
 				useItems[idx]:SetItemID(key)
@@ -185,9 +184,8 @@ function internal.buildUseUI ()
 				useItems[idx]:SetItemType(itemType)
 				
 				useItems[idx]:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-					if oInspectSystemSecure() == true then return end
-					_fctSetUseButton(useItems[idx])
-					--ui:SetVisible(false)
+					if inspectSystemSecure() == true then return end
+					setUseButton(useItems[idx])
 				end, useItems[idx]:GetName() .. ".Mouse.Left.Down")
 
 				_itemCounter = _itemCounter + 1
@@ -223,7 +221,7 @@ function internal.buildUseUI ()
 	
 	function ui:Update()
 
-		if oInspectSystemSecure() == true then
+		if inspectSystemSecure() == true then
 			data.useUpdate = true 
 			return
 		end
@@ -264,7 +262,7 @@ function internal.buildUseUI ()
 		if #tempList == 0 then
        		uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
 		else
-		   uiElements.useUI:SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)
+		   uiElements.useUI:SetBackgroundColor(0, 0, 0, nkUISetup.modules.questtracker.bgAlpha)
 		end
 
 		-- ***** add quest items *****

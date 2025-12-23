@@ -19,7 +19,20 @@ local _defaults = {
     modules = {
         questtracker = {activate = true,
                         x = 2048,
-                        y = 1000
+                        y = 1000,
+                        width = 300, 
+                        height = 500, 
+                        useXpos = 800, 
+                        useYpos = 100, 
+                        useUI = true,
+						bgAlpha = 0, 
+                        categoryHeaderSize = 16,																
+						categoryShow = {crafting = true, world = true, daily = true, guild = true, ia = true, monthly = true, weekly = true, zone = true, area = true, instant = true, raid = true, story = true, personal = true, carnage = true, pvp = true},
+						categoryFontSize = { header = 15, subHeader = 14, body = 13 },
+						collapseState = {},
+						categoryCollapseState = {},
+                        bodyColor = { 1, 1, 1 },
+                        bodyCompleteColor = {.6, .6, .6}
         },
         unitFrames  = { activate = true, 
                         combatAlpha = 1, 

@@ -2,7 +2,8 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local internal		= privateVars.internal
+local questTracker	= privateVars.questTracker
+local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 
@@ -17,7 +18,7 @@ local categoryMenuCategory
 
 ---------- local function block ---------
 
-local function _fctAbandonQuestCategory ()
+local function abandonQuestCategory ()
 
 	local function noFunc ()
 		uiElements.menuCategory:SetVisible(false)
@@ -41,7 +42,7 @@ local function _fctAbandonQuestCategory ()
 
 end
 
-local function _fctShowMenuCategory (parent, category)
+local function showMenuCategory (parent, category)
 
 	categoryMenuCategory = category
 
@@ -49,7 +50,7 @@ local function _fctShowMenuCategory (parent, category)
 		uiElements.menuCategory = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.context)
 		uiElements.menuCategory:SetFont(addonInfo.id, "Montserrat")
 		uiElements.menuCategory:SetLayer(3)
-		uiElements.menuCategory:AddEntry({ label = privateVars.langTexts.abandonAll, callBack = _fctAbandonQuestCategory })
+		uiElements.menuCategory:AddEntry({ label = privateVars.langTexts.abandonAll, callBack = abandonQuestCategory })
 	end
 
 	local menuCategory = uiElements.menuCategory
@@ -60,9 +61,9 @@ local function _fctShowMenuCategory (parent, category)
 
 end
 
----------- addon internal function block ---------
+---------- addon internalFunc function block ---------
 
-function internal.questCategory(category, parent)
+function questTracker.questCategory(category, parent)
 
 	local name = parent:GetName() .. ".questCategory." .. category
 	local sortedQuestList = {}
@@ -80,46 +81,32 @@ function internal.questCategory(category, parent)
 		if uiElements.menuCategory ~= nil and uiElements.menuCategory:GetVisible() == true then
 			uiElements.menuCategory:SetVisible(false)
 		else
-			_fctShowMenuCategory(header, category)
+			showMenuCategory(header, category)
 		end
 	end, name .. "Header.Left.Down")
-
-	--[[local headerIndicator = UI.CreateFrame("Text", name .. '.headerIndicator', frame)
-	headerIndicator:SetPoint("CENTERLEFT", header, "CENTERLEFT", 8, 0)
-	headerIndicator:SetFontSize(nkQuestTrackerSetup.categoryHeaderSize)	
-	headerIndicator:SetText("-")
-	headerIndicator:SetWidth(15)
-	headerIndicator:SetEffectGlow ({ strength = 3 })	
-
-	EnKai.ui.setFont(headerIndicator, addonInfo.id, "MontserratSemiBold")]]
 
 	local headerText = UI.CreateFrame("Text", name .. '.headerText', frame)	
 	headerText:SetWordwrap(true)
 	headerText:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
-	headerText:SetFontSize(nkQuestTrackerSetup.categoryHeaderSize)
+	headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
 	headerText:SetText(privateVars.langTexts.showCategoryCheckbox[category])
 	headerText:SetWidth(header:GetWidth() - 15)
 	headerText:SetEffectGlow ({ strength = 3 })	
 
 	EnKai.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
 
-	local color = nkQuestTrackerSetup.categoryColor[category]
-	--headerIndicator:SetFontColor(color[1], color[2], color[3], nkQuestTrackerSetup.bgAlpha)
-	headerText:SetFontColor(color[1], color[2], color[3], nkQuestTrackerSetup.bgAlpha)
+	local color = data.categoryColor[category]
+	headerText:SetFontColor(color[1], color[2], color[3], nkUISetup.modules.questtracker.bgAlpha)
 
 	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)    
 		if subFrame:GetVisible() == true then
 			subFrame:SetVisible(false)
-			--headerIndicator:SetText("+")
-			--headerIndicator:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
 		else
 			subFrame:SetVisible(true)
-			--headerIndicator:SetText("-")
-			--headerIndicator:SetPoint("CENTERLEFT", header, "CENTERLEFT", 8, 0)
 		end
 		frame:RecalcHeight()
 		parent:RecalcHeight()
-		nkQuestTrackerSetup.categoryCollapseState[category] = subFrame:GetVisible()
+		nkUISetup.modules.questtracker.categoryCollapseState[category] = subFrame:GetVisible()
 	end, name .. "Header.Left.Down")  
 
 	header:SetHeight(headerText:GetHeight())
@@ -143,14 +130,9 @@ function internal.questCategory(category, parent)
 	subFrame:SetWidth(frame:GetWidth())
 	subFrame:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, 5)
 
-	if nkQuestTrackerSetup.categoryCollapseState[category] == nil then nkQuestTrackerSetup.categoryCollapseState[category] = true end
-	subFrame:SetVisible(nkQuestTrackerSetup.categoryCollapseState[category])
+	if nkUISetup.modules.questtracker.categoryCollapseState[category] == nil then nkUISetup.modules.questtracker.categoryCollapseState[category] = true end
+	subFrame:SetVisible(nkUISetup.modules.questtracker.categoryCollapseState[category])
 	
-	--[[if nkQuestTrackerSetup.categoryCollapseState[category] == false then 
-		headerIndicator:SetText("+") 
-		headerIndicator:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
-	end]]
-
 	local questEntries = {}
 	local questCount = 0
 
@@ -228,11 +210,10 @@ function internal.questCategory(category, parent)
 			thisEntry:SetKey(key);
 			table.remove(recycleBin, 1)
 		else    
-			thisEntry = internal.questEntry(key, subFrame, #questEntries+1)
-			--thisEntry:SetTitleColor (nkQuestTrackerSetup.categoryColor[category])
-			thisEntry:SetTitleFontSize (nkQuestTrackerSetup.categoryFontSize[category].header)
-			thisEntry:SetBodyFontSize (nkQuestTrackerSetup.categoryFontSize[category].body)
-			thisEntry:SetBodyColor (nkQuestTrackerSetup.bodyColor)        
+			thisEntry = questTracker.questEntry(key, subFrame, #questEntries+1)
+			thisEntry:SetTitleFontSize (nkUISetup.modules.questtracker.categoryFontSize.header)
+			thisEntry:SetBodyFontSize (nkUISetup.modules.questtracker.categoryFontSize.body)
+			thisEntry:SetBodyColor (nkUISetup.modules.questtracker.categoryFontSize.bodyColor)
 		end
 
 		local pos = -1
@@ -349,14 +330,11 @@ function internal.questCategory(category, parent)
 
 	function frame:UpdateDesign(updateContent)
 
-		--headerIndicator:SetFontSize(nkQuestTrackerSetup.categoryHeaderSize)
-
 		headerText:ClearHeight()
-		headerText:SetFontSize(nkQuestTrackerSetup.categoryHeaderSize)
+		headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
 
-		local color = nkQuestTrackerSetup.categoryColor[category]
-		--headerIndicator:SetFontColor(color[1], color[2], color[3], nkQuestTrackerSetup.bgAlpha)
-		headerText:SetFontColor(color[1], color[2], color[3], nkQuestTrackerSetup.bgAlpha)
+		local color = data.categoryColor[category]
+		headerText:SetFontColor(color[1], color[2], color[3], nkUISetup.modules.questtracker.bgAlpha)
 
 		fill = {type = 'solid', r = color[1], g = color[2], b = color[3], a = 1}
 		stroke =  { r = color[1], g = color[2], b = color[3], a = 1, thickness = 1}
@@ -369,10 +347,10 @@ function internal.questCategory(category, parent)
 			if oInspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
 
 			for idx = 1, #questEntries, 1 do
-				questEntries[idx]:SetTitleColor(nkQuestTrackerSetup.categoryColor[category])
-				questEntries[idx]:SetTitleFontSize(nkQuestTrackerSetup.categoryFontSize[category].header, true)
-				questEntries[idx]:SetBodyFontSize (nkQuestTrackerSetup.categoryFontSize[category].body, true)
-				questEntries[idx]:SetBodyColor (nkQuestTrackerSetup.bodyColor)
+				questEntries[idx]:SetTitleColor(nkUISetup.modules.questtracker.categoryColor[category])
+				questEntries[idx]:SetTitleFontSize(nkUISetup.modules.questtracker.categoryFontSize.header, true)
+				questEntries[idx]:SetBodyFontSize (nkUISetup.modules.questtracker.categoryFontSize.body, true)
+				questEntries[idx]:SetBodyColor (nkUISetup.modules.questtracker.categoryFontSize.bodyColor)
 				questEntries[idx]:RecalcHeight()
 			end
 		

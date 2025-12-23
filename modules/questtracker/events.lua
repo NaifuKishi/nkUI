@@ -2,15 +2,14 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local internal		= privateVars.internal
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
-local events		= privateVars.events
+local questTracker	= privateVars.questTracker
 
-local oInspectSystemSecure	= Inspect.System.Secure
-local oInspectTimeReal		= Inspect.Time.Real
-local oInspectQuestDetail	= Inspect.Quest.Detail
-local oInspectItemDetail	= Inspect.Item.Detail
+local inspectSystemSecure	= Inspect.System.Secure
+local inspectTimeReal		= Inspect.Time.Real
+local inspectQuestDetail	= Inspect.Quest.Detail
+local inspectItemDetail	= Inspect.Item.Detail
 
 ---------- init local variables ---------
 
@@ -19,15 +18,11 @@ local lastQuestUpdate	= nil
 local _addonInit		= false
 local _update			= false
 local updateQuestList	= {}
---local _useItemUpdates	= {}
 local _questCache		= {}
-local _internalMove		= {}
-
----------- init variables ---------
 
 ---------- local function block ---------
 
-local function _fctIsUpdate(cached, details)
+local function isUpdate(cached, details)
         
 	local isUpdate = false
 	
@@ -57,7 +52,7 @@ local function _fctIsUpdate(cached, details)
 
 end
 
-local function _fctQuestAdd(list)
+local function questAdd(list)
 	
 	local addCoRoutine = coroutine.create(
 		function ()
@@ -67,12 +62,12 @@ local function _fctQuestAdd(list)
 				
 				if key ~= nil then
 				
-					local flag, details = pcall(oInspectQuestDetail, key)
+					local flag, details = pcall(inspectQuestDetail, key)
 					if flag then
 
 						if details.categoryName ~= "Battle Pass" then
 
-							internal.processQuest(details, true)
+							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
 							if uiElements.areaQuestUI ~= nil and EnKai.tools.table.isMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
@@ -109,19 +104,19 @@ local function _fctQuestAdd(list)
 
 end
 
-local function _fctQuestChange(list)
+local function questChange(list)
 
 	local changeCoRoutine = coroutine.create(
 		function ()
 			for idx = 1, #list, 1 do
 				uiElements.progressBar:SetValue(idx)
 				local key = list[idx]
-				local flag, details = pcall( oInspectQuestDetail, key)
+				local flag, details = pcall( inspectQuestDetail, key)
 				if flag then 
-					internal.processQuest(details, true)
+					questTracker.processQuest(details, true)
 
 					if _questCache[key] ~= nil and details.name ~= "" then
-						local err, isUpdate = pcall(_fctIsUpdate, _questCache[key], details)
+						local err, isUpdate = pcall(isUpdate, _questCache[key], details)
 
 						if err == false then
 							if nkQuestTrackerSetup.debug == true then
@@ -163,7 +158,7 @@ local function _fctQuestChange(list)
 	
 end
 
-local function _fctQuestRemove(list)
+local function questRemove(list)
 	
 	local removeCoRoutine = coroutine.create(
 		function ()
@@ -206,7 +201,7 @@ end
 
 ---------- addon internal functions ---------
 
-function events.InventoryUpdate(_, items)
+function questTracker.eventInventoryUpdate(_, items)
 
 	for k, v in pairs(items) do
 		if k ~= useItemKey then
@@ -218,34 +213,21 @@ function events.InventoryUpdate(_, items)
 	end
 end
 
-function events.unitNotAvaiable(_, units)
+function questTracker.eventUnitLevel(_, units)
 
-	if data.playerUNID == nil then return end
-	if units[data.playerUNID] == nil then return end
+	local playerID = EnKai.unit.getPlayerDetails().id
+
+	if units[playerID] == nil or units[playerID] == false then return end
 	
-	data.playerAvailable = false
+	EnKai.unit.setPlayerDetails("level", units[playerID])
 	
-	if uiElements.questLog ~= nil then
-		--uiElements.questLog:SetTitle(addonInfo.name .. " (PAUSED)")
-		uiElements.questLog:SetTitle("Quests (PAUSED)")
-	end
-
-end
-
-function events.unitLevel(_, units)
-
-	if data.playerAvailable == false then return end
-	if units[data.playerUNID] == nil then return end
-	if units[data.playerUNID] == false then return end
-	
-	data.playerLevel = units[data.playerUNID]
 	if nkQuestTrackerSetup.colorByLevel == true then
-		internal.clearLog(internal.fillLog)
+		questTracker.clearLog(questTracker.fillLog)
 	end
 
 end
 
-function events.questAccept (_, quests)
+function questTracker.eventQuestAccept (_, quests)
 
 	for k, v in pairs (quests) do
 		table.insert(data.addQuestList, k)
@@ -253,7 +235,7 @@ function events.questAccept (_, quests)
 	
 end
 
-function events.questAbandon (_, quests)
+function questTracker.eventQuestAbandon (_, quests)
 
 	for k, v in pairs (quests) do
 		table.insert(data.removeQuestList, k)
@@ -261,7 +243,7 @@ function events.questAbandon (_, quests)
 
 end
 
-function events.questChange (_, quests)
+function questTracker.eventQuestChange (_, quests)
 
 	for k, v in pairs (quests) do
 		table.insert(updateQuestList, k)
@@ -269,7 +251,7 @@ function events.questChange (_, quests)
 
 end
 
-function events.questComplete (_, quests)
+function questTracker.eventQuestComplete (_, quests)
 
 	for k, v in pairs (quests) do
       table.insert(data.removeQuestList, k)
@@ -277,40 +259,28 @@ function events.questComplete (_, quests)
 
 end
 
-function events.systemUpdate()
+function questTracker.eventSystemUpdate()
 
-	if data.playerAvailable == false then return end
 	if nkQuestBase.query.isInit() == false then return end
 
-	if uiElements.useUI == nil and oInspectSystemSecure() == false then
+	if uiElements.useUI == nil and inspectSystemSecure() == false then
 		if EnKai.inventory.getAvailableSlots() ~= false then
-			uiElements.useUI = internal.buildUseUI ()
+			uiElements.useUI = questTracker.buildUseUI ()
 			uiElements.useUI:Update()
 		end
-	elseif oInspectSystemSecure() == false and data.useUpdate == true then
+	elseif inspectSystemSecure() == false and data.useUpdate == true then
 		uiElements.useUI:Update()
 		data.useUpdate = false
 	end
 
-	--if oInspectSystemSecure() == false and #_useItemUpdates > 0 then
-	--	for k, v in pairs(_useItemUpdates) do
-	--		if v.type == 'add' then
-	--			uiElements.useUI:AddUseItem(v.key, v.name, v.icon)
-	--		else
-	--			uiElements.useUI:RemoveUseItem(v.key)
-	--		end
-	--	end
-	--	_useItemUpdates = {}
-	--end
-	
 	if _update == true then return end
 
 	if forceUpdate ~= true then
 		if lastQuestUpdate == nil then
-			lastQuestUpdate = oInspectTimeReal()
+			lastQuestUpdate = inspectTimeReal()
 			forceUpdate = true
 		else
-			local tmpTime = oInspectTimeReal()
+			local tmpTime = inspectTimeReal()
 			if EnKai.tools.math.round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
 		end
 	end
@@ -319,22 +289,22 @@ function events.systemUpdate()
 
 		if #data.addQuestList > 0 then
 		
-			_fctQuestAdd(data.addQuestList)
+			questAdd(data.addQuestList)
 			data.addQuestList = {}
 
 		elseif #updateQuestList > 0 then
 
-			_fctQuestChange(updateQuestList)
+			questChange(updateQuestList)
 			updateQuestList = {}
 
 		elseif #data.removeQuestList > 0 then
 
-			_fctQuestRemove(data.removeQuestList)
+			questRemove(data.removeQuestList)
 			data.removeQuestList = {}
 
 		end
 
-		lastQuestUpdate = oInspectTimeReal()
+		lastQuestUpdate = inspectTimeReal()
 		forceUpdate = false
 
 		uiElements.questLog:SetTitle(string.format("%d Quests", uiElements.questLog:GetQuestCount()))
