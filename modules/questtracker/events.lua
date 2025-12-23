@@ -221,9 +221,7 @@ function questTracker.eventUnitLevel(_, units)
 	
 	EnKai.unit.setPlayerDetails("level", units[playerID])
 	
-	if nkQuestTrackerSetup.colorByLevel == true then
-		questTracker.clearLog(questTracker.fillLog)
-	end
+	questTracker.clearLog(questTracker.fillLog)
 
 end
 

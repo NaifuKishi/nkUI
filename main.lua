@@ -86,7 +86,7 @@ uiElements.contextDialog:SetStrata('dialog')
 uiElements.contextDialog:SetLayer(2)
 
 uiElements.contextTooltip = UI.CreateContext("nkUI.Tooltip")
-uiElements.contextTooltip:SetStrata('topmost')
+uiElements.contextTooltip:SetStrata('tooltip')
 uiElements.contextTooltip:SetLayer(99)
 
 uiElements.contextLowestRestricted = UI.CreateContext("nkUI.lowestRestricted")

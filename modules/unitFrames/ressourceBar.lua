@@ -80,7 +80,7 @@ function internalFunc.ressourcBar (unit, setup)
     --chargeFrame:SetVisible(false)
 
     local chargeText = EnKai.uiCreateFrame("nkText", thisName .. ".chargeText", chargeFrame)
-    chargeText:SetPoint("CENTER", chargeFrame, "CENTER", 0, -7)
+    chargeText:SetPoint("CENTER", chargeBGFrame, "CENTER", 0, -7)
     chargeText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     chargeText:SetFontSize(setup.fontSizes.charge)
     chargeText:SetFontColor(1, 1, 1, 1)

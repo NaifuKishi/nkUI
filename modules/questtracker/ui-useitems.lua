@@ -235,10 +235,6 @@ function questTracker.buildUseUI ()
 		-- ***** add quest items *****
 				
 		for idx = 1, #tempList, 1 do
-				v.qKey = questInfo.qKey 
-				local qDetails = inspectQuestDetail(v.qKey)				
-				addItem = not qDetails.complete
-			end
 			local thisItem = tempList[idx]
 			local useItem = ui:GetUseItemByKey(thisItem.id)
 
