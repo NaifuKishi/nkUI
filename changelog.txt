@@ -1,5 +1,6 @@
 V0.8.0
     - new: Quest tracker module
+    - updates: When hovering a action bar slot it will now be highlighted
     - fixes: Charge text is now properly aligned on charge bar
     - fixes: Player casts will no longer be recognized as interrupted if target dies
 
@@ -270,24 +271,3 @@ v0.0.4
     - added out of combat alpha
     - fixed buffs and debuffs out of combat alpha
 
-know bug list
-
-    - out of range indicator on weapon switch
-    - upon zone change the buff display is strange (did I fix that already?)
-    - retrieving items from mail doesn't update the bag display
-
-ToDo
-
-    - add key indicator to action bar (just for visual reference)
-    - onebag add compare tooltip to items
-    - check why the addbuff is called so often
-    - finish cooldown icons
-    - faction update in sct
-    - group update bug on death
-    - find a way to identify cast interrupts
-    - afk display on unit frame
-    - rift color settings for unit frames    
-    - Add Target of Target frame
-    - Macro for raid / group frames (click healing)
-    - Combined stats event with caching?
-    - add blocked handling? (only works for group members)

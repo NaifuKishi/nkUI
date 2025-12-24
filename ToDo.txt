@@ -1,3 +1,24 @@
+know bug list
+
+    - out of range indicator on weapon switch
+    - upon zone change the buff display is strange (did I fix that already?)
+    - retrieving items from mail doesn't update the bag display
+
+ToDo
+
+    - add key indicator to action bar (just for visual reference)
+    - onebag add compare tooltip to items
+    - check why the addbuff is called so often
+    - finish cooldown icons
+    - faction update in sct
+    - group update bug on death
+    - afk display on unit frame
+    - Add Target of Target frame
+    - Macro for raid / group frames (click healing)
+    - Combined stats event with caching?
+    - add blocked handling? (only works for group members)
+    
+
 bug reports
 
     - Also got a weird incorrect health bar stuck at 20% no idea why or how that happened.

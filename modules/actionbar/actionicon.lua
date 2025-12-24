@@ -494,6 +494,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		uiElements.macroEdit:SetButton(barIndex, buttonIndex)
 	
 	end
+
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
+		frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
+	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.In")
+
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
+		frame:SetDesign ()
+	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
 	
 	--[[
 	Attach event handlers
