@@ -85,18 +85,23 @@ function questTracker.questEntry (key, parent, counter)
 	local objectiveCount = 0
 	local use = nil
 	
-	local frame = UI.CreateFrame("Frame", name, parent)
+	local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
 	frame:SetWidth(parent:GetWidth() -  20)
 	
-	local level = UI.CreateFrame("Text", name .. '.level', frame)
+	local levelFrame = EnKai.uiCreateFrame("nkFrame", name .. ".levelFrame", frame)
+	levelFrame:SetWidth(20)
+	levelFrame:SetHeight(20)
+	levelFrame:SetPoint("TOPLEFT", frame, "TOPLEFT")
+
+	local level = EnKai.uiCreateFrame("nkText", name .. '.levelText', levelFrame)
 	level:SetPoint("TOPLEFT", frame, "TOPLEFT")		
 	level:SetFontSize(15)
 	level:SetFontColor(1, 1, 1, 1)
 	level:SetWordwrap(true)
 	level:SetEffectGlow({ strength = 3})
 
-	local header = UI.CreateFrame("Text", name .. '.Header', frame)
-	header:SetPoint("TOPLEFT", level, "TOPRIGHT", 5, 0)		
+	local header = EnKai.uiCreateFrame("nkText", name .. '.Header', frame)
+	header:SetPoint("TOPLEFT", levelFrame, "TOPRIGHT", 5, 0)		
 	header:SetFontSize(15)
 	header:SetFontColor(1, 1, 1, 1)
 	header:SetWordwrap(true)
@@ -106,7 +111,7 @@ function questTracker.questEntry (key, parent, counter)
 
 	header:SetWidth(frame:GetWidth())
 
-	local subHeader = UI.CreateFrame("Text", name .. '.subHeader', frame)
+	local subHeader = EnKai.uiCreateFrame("nkText", name .. '.subHeader', frame)
 	subHeader:SetPoint("TOPLEFT", header, "BOTTOMLEFT")		
 	subHeader:SetFontSize(fontSize)
 	subHeader:SetFontColor(1, 1, 1, 1)
@@ -150,7 +155,7 @@ function questTracker.questEntry (key, parent, counter)
 		end, name .. "Header.Left.Down")
 	end
 	
-	subFrame = UI.CreateFrame("Frame", name .. '.subFrame', parent)
+	subFrame = EnKai.uiCreateFrame("nkFrame", name .. '.subFrame', parent)
 	subFrame:SetPoint("TOPLEFT", subHeader, "BOTTOMLEFT")
 	subFrame:SetWidth(frame:GetWidth())
 	
