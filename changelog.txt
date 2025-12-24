@@ -1,3 +1,6 @@
+V0.8.1
+    - fixes: Fixed a rare error in lowerbar faction
+
 V0.8.0
     - new: Quest tracker module
     - updates: When hovering a action bar slot it will now be highlighted

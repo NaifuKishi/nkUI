@@ -94,7 +94,7 @@ function lowerBar.faction()
         
         if not updateTime or now - updateTime > 1 then
             updateTime = now
-            local percent = 0
+            local percent = 0.1
             local level = ""
             
             local faction = inspectFactionDetail(currentFaction)
