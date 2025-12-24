@@ -355,6 +355,8 @@ function internalFunc.setupUI ()
     versionText:SetPoint("BOTTOMRIGHT", tabPane, "BOTTOMRIGHT", -5, -5)
     versionText:SetLayer(99)
 
+    EnKai.ui.setFont(versionText, addonInfo.id, "Montserrat")
+
     local closeButton = EnKai.uiCreateFrame("nkButtonMetro", name .. ".closeButton", config:GetContent())
 
     closeButton:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -10)
@@ -363,6 +365,7 @@ function internalFunc.setupUI ()
     closeButton:SetIcon("EnKai", "gfx/icons/close.png")
     closeButton:SetScale(.8)
     closeButton:SetLayer(9)
+    closeButton:SetFont(addonInfo.id, "MontserratSemiBold")
 
     Command.Event.Attach(EnKai.events[name .. ".closeButton"].Clicked, function (_, newValue)
         uiElements.settings:SetVisible(false)   
@@ -376,6 +379,7 @@ function internalFunc.setupUI ()
     tutorialButton:SetIcon("EnKai", "gfx/icons/info.png")
     tutorialButton:SetScale(.8)
     tutorialButton:SetLayer(9)
+    tutorialButton:SetFont(addonInfo.id, "MontserratSemiBold")
 
     Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
         internalFunc.tutorial()
@@ -389,6 +393,7 @@ function internalFunc.setupUI ()
     moveButton:SetIcon("EnKai", "gfx/icons/circle.png")
     moveButton:SetScale(.8)
     moveButton:SetLayer(9)
+    moveButton:SetFont(addonInfo.id, "MontserratSemiBold")
 
     Command.Event.Attach(EnKai.events[name .. ".moveButton"].Clicked, function (_, newValue)
         internalFunc.initMove()
