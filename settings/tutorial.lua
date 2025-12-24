@@ -118,7 +118,7 @@ local function _createTutorialWindow()
         },
         {
             title = "Quest Tracker module",
-            description = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.",
+            description = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.\n\nYou can use a quest item by right clicking it.",
             image = "gfx/tutorialQuestTracker.png",
             width = 170,
             height = 350,
