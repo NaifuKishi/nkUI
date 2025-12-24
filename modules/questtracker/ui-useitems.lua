@@ -220,7 +220,7 @@ function questTracker.buildUseUI ()
 			if questInfo ~= nil then 
 				v.qKey = questInfo.qKey 
 				local qDetails = inspectQuestDetail(v.qKey)				
-				addItem = not qDetails.complete
+				if qDetails then addItem = not qDetails.complete end
 			end
 
 			if addItem then table.insert(tempList, v) end

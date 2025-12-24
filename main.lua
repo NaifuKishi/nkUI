@@ -74,7 +74,7 @@ data.colors = {
 }
 				
 data.uiScale = 1
-local thisTutorialVersion = 40
+local thisTutorialVersion = 80
 
 -- Generate UI context
 uiElements.contextLowest = UI.CreateContext("nkUI.lowest")

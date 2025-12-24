@@ -97,8 +97,8 @@ local function _createTutorialWindow()
     -- Create tutorial steps
     local steps = {
         {
-            title = "Welcome to nkUI",
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n\n- Made ui movable\n- Redesigned settings\n- New one bag module",
+            title = "Welcome to nkUI BETA 0.8.0",
+            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n\n- New Quest Tracker module\n- Made ui movable\n- Redesigned settings\n- New One bag module",
             image = "gfx/EnKaiLogo.png",
             width = 300,
             height = 79,
@@ -114,6 +114,14 @@ local function _createTutorialWindow()
             image = "gfx/tutorialDefaultUI.png",
             width = 170,
             height = 240,
+            position = "right",
+        },
+        {
+            title = "Quest Tracker module",
+            description = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.",
+            image = "gfx/tutorialQuestTracker.png",
+            width = 170,
+            height = 350,
             position = "right",
         },
         {
