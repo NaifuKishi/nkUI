@@ -226,11 +226,7 @@ function questTracker.buildUseUI ()
 			if addItem then table.insert(tempList, v) end
 		end
 
-		--if #tempList == 0 then
-       		uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
-		--else
-		--	uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
-		--end
+   		uiElements.useUI:SetBackgroundColor(0, 0, 0, 0)
 
 		-- ***** add quest items *****
 				

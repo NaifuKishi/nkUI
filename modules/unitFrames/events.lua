@@ -85,7 +85,7 @@ local function _eventCastBar(_, units)
 					}
 				else
 					if data[castBarName] and not data[castBarName].uninterruptible then 
-						if InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
+						if unitID ~= EnKai.unit.getPlayerDetails().id and InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
 							local unitDetails = EnKai.unit.GetUnitDetail (unitID, true)
 							if unitDetails.health > 0 then
 								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)

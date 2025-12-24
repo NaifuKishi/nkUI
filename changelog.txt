@@ -1,6 +1,7 @@
 V0.8.0
     - new: Quest tracker module
     - fixes: Charge text is now properly aligned on charge bar
+    - fixes: Player casts will no longer be recognized as interrupted if target dies
 
 V0.7.1
     - update: Tweaked castbar design
