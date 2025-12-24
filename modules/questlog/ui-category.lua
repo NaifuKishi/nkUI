@@ -2,7 +2,7 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local questTracker	= privateVars.questTracker
+local questLog		= privateVars.questLog
 local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
@@ -16,54 +16,9 @@ local categoryMenuCategory
 
 ---------- init variables ---------
 
----------- local function block ---------
-
-local function abandonQuestCategory ()
-
-	local function noFunc ()
-		uiElements.menuCategory:SetVisible(false)
-	end
-
-	local function yesFunc()
-
-		local uiCategory = uiElements.questTracker:GetCategory(categoryMenuCategory)
-		local questList = uiCategory:GetQuestList()
-
-		for k, v in pairs(questList) do
-			pcall (Command.Quest.Abandon, v)
-		end
-
-		uiElements.menuCategory:SetVisible(false)
-	end
-
-	local text = string.format(privateVars.langTexts.abandonAllQuestsConfirm, privateVars.langTexts.showCategoryCheckbox[categoryMenuCategory])
-
-	EnKai.ui.confirmDialog (text, yesFunc, noFunc) 
-
-end
-
-local function showMenuCategory (parent, category)
-
-	categoryMenuCategory = category
-
-	if uiElements.menuCategory == nil then
-		uiElements.menuCategory = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.context)
-		uiElements.menuCategory:SetFont(addonInfo.id, "Montserrat")
-		uiElements.menuCategory:SetLayer(3)
-		uiElements.menuCategory:AddEntry({ label = privateVars.langTexts.abandonAll, callBack = abandonQuestCategory })
-	end
-
-	local menuCategory = uiElements.menuCategory
-	local mouse = oInspectMouse()
-
-	menuCategory:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
-	menuCategory:SetVisible(true)  
-
-end
-
 ---------- addon internalFunc function block ---------
 
-function questTracker.questCategory(category, parent)
+function questLog.questCategory(category, parent)
 
 	local name = parent:GetName() .. ".questCategory." .. category
 	local sortedQuestList = {}
@@ -88,62 +43,27 @@ function questTracker.questCategory(category, parent)
 	local headerText = UI.CreateFrame("Text", name .. '.headerText', frame)	
 	headerText:SetWordwrap(true)
 	headerText:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
-	headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
-	headerText:SetText(privateVars.langTexts.showCategoryCheckbox[category])
+	headerText:SetFontSize(14)
+
+	local thisText = category
+	if privateVars.langTexts.showCategoryCheckbox[category] ~= nil then thisText = privateVars.langTexts.showCategoryCheckbox[category] end
+
+	headerText:SetText(thisText)
 	headerText:SetWidth(header:GetWidth() - 15)
 	headerText:SetEffectGlow ({ strength = 3 })	
 
 	EnKai.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
 
 	local color = data.categoryColor[category]
-	headerText:SetFontColor(color[1], color[2], color[3], 0)
-
-	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)    
-		if subFrame:GetVisible() == true then
-			subFrame:SetVisible(false)
-		else
-			subFrame:SetVisible(true)
-		end
-		frame:RecalcHeight()
-		parent:RecalcHeight()
-		nkUISetup.modules.questtracker.categoryCollapseState[category] = subFrame:GetVisible()
-	end, name .. "Header.Left.Down")  
+	headerText:SetFontColor(1, 1, 1, 1)
 
 	header:SetHeight(headerText:GetHeight())
-
-	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", frame)
-	headerLine:SetHeight(2)
-	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
-
-	--local stroke = {r = colorR, g = colorG, b = colorB, a = 1, thickness = 1 }
-    local path =  {  {xProportional = 0, yProportional = 0},
-                  {xProportional = 1, yProportional = 0},
-                  {xProportional = 1, yProportional = 1},
-                  {xProportional = 0, yProportional = 1},
-                  {xProportional = 0, yProportional = 0}
-                  }  
-	local fill = {
-		type = "gradientLinear",
-		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
-		color = {
-		{ r = color[1], g = color[2], b = color[3], a = 0, position = 0 },
-        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.25 },
-        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.75 },
-        { r = color[1], g = color[2], b = color[3], a = 0, position = 1 }
-		}
-	}
-
-	headerLine:SetShape(path, fill, nil)
-
-	headerLine:SetWidth(header:GetWidth())
-	headerLine:SetHeight(1) 
-
+	
 	subFrame = UI.CreateFrame('Frame', name .. '.subFrame', frame)
 	subFrame:SetWidth(frame:GetWidth())
 	subFrame:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, 5)
 
-	if nkUISetup.modules.questtracker.categoryCollapseState[category] == nil then nkUISetup.modules.questtracker.categoryCollapseState[category] = true end
-	subFrame:SetVisible(nkUISetup.modules.questtracker.categoryCollapseState[category])
+	subFrame:SetVisible(true)
 	
 	local questEntries = {}
 	local questCount = 0

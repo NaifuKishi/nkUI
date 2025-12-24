@@ -65,14 +65,14 @@ function internalFunc.questTrackerInit(flag)
 
 	 if flag then
         if isInit then
-            uiElements.questLog:SetVisible(true)
+            uiElements.questTracker:SetVisible(true)
 			uiElements.useUI:Toggle()
         else
             internalFunc.uiQuestTracker()
         end
     else
-        if uiElements.questLog then
-            uiElements.questLog:SetVisible(false)
+        if uiElements.questTracker then
+            uiElements.questTracker:SetVisible(false)
 			uiElements.useUI:Toggle()
         end
     end    
@@ -88,16 +88,16 @@ function internalFunc.uiQuestTracker()
 		
 	EnKai.inventory.init()
 	
-	if uiElements.questLog == nil then
+	if uiElements.questTracker == nil then
 		
-		uiElements.questLog = questTracker.buildUI ()
+		uiElements.questTracker = questTracker.buildUI ()
 		
 		questTracker.fillLog ()
 		
-		uiElements.progressBar = EnKai.uiCreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questLog)
-		uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questLog, "CENTERTOP", 0, 40)
+		uiElements.progressBar = EnKai.uiCreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
+		uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questTracker, "CENTERTOP", 0, 40)
 		
-		uiElements.progressBar:SetWidth(uiElements.questLog:GetWidth()-20)
+		uiElements.progressBar:SetWidth(uiElements.questTracker:GetWidth()-20)
 		uiElements.progressBar:SetHeight(20)
 		uiElements.progressBar:SetLayer(99)
 		uiElements.progressBar:SetVisible(false)
@@ -117,7 +117,7 @@ function internalFunc.uiQuestTracker()
 
 	end
 
-	uiElements.questLog:SetTitle(stringFormat("Quests (%d)", uiElements.questLog:GetQuestCount()))
+	uiElements.questTracker:SetTitle(stringFormat("Quests (%d)", uiElements.questTracker:GetQuestCount()))
 
 	isInit = true
 
@@ -177,13 +177,13 @@ function questTracker.fillLog ()
 	
 	nkUISetup.modules.questtracker.collapseState = newCollapseState
 	
-	if (#data.addQuestList == 0) then uiElements.questLog:GetContent():SetVisible(true) end
+	if (#data.addQuestList == 0) then uiElements.questTracker:GetContent():SetVisible(true) end
 		 
 end
 
 function questTracker.clearLog(callBack)
 
-	--uiElements.questLog:Collapse(true)
+	--uiElements.questTracker:Collapse(true)
 	
 	local list = inspectQuestList()
 
@@ -269,7 +269,7 @@ function questTracker.processQuest(details, processTitleFlag)
 		details.level = lvl
 		details.use = libDetails.use
 		
-		if libDetails.zoneId ~= nil and libDetails.zoneId ~= "UKNOWN_ZONE" then
+		if libDetails.zoneId ~= nil and libDetails.zoneId ~= "UNKNOWN_ZONE" then
 			if _zoneInfo[libDetails.zoneId] == nil then
 				local zoneInfo = inspectZoneDetail(libDetails.zoneId)
 				if zoneInfo ~= nil then _zoneInfo[libDetails.zoneId] = zoneInfo.name end

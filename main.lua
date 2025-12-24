@@ -194,6 +194,7 @@ local function initializeAddon(_, addon)
 				end
 
 				--internalFunc.chat ()
+				--internalFunc.questLogInit()
 				
 			end
 

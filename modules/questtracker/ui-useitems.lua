@@ -77,9 +77,9 @@ function questTracker.buildUseUI ()
 	local name = "nkUI.QuestTracker.UseUI"
 
 	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.secureContext)
-	ui:SetPoint("TOPRIGHT", uiElements.questLog, "TOPLEFT", 20, 25)
+	ui:SetPoint("TOPRIGHT", uiElements.questTracker, "TOPLEFT", 20, 25)
 	ui:SetWidth(50)
-	ui:SetHeight(uiElements.questLog:GetHeight()-20)
+	ui:SetHeight(uiElements.questTracker:GetHeight()-20)
 	ui:SetSecureMode('restricted')
 
 	local useItems = {}
@@ -88,7 +88,7 @@ function questTracker.buildUseUI ()
 	local from, to, object, x, y = "TOPRIGHT", "TOPLEFT", ui, 0, 0
 	local lastUseItem = nil
 
-	local maxIcons = mathFloor((uiElements.questLog:GetHeight()-20) / 30)
+	local maxIcons = mathFloor((uiElements.questTracker:GetHeight()-20) / 30)
 
 	for idx1 = 1, 2, 1 do
 		if idx1 ~= 1 then from, to, object, x, y = "TOPRIGHT", "TOPLEFT", lastUseItem, -5, 0 end
@@ -106,9 +106,9 @@ function questTracker.buildUseUI ()
 	end
 
 	local function _resize() 
-		ui:SetHeight(uiElements.questLog:GetHeight()-25)
+		ui:SetHeight(uiElements.questTracker:GetHeight()-25)
 		
-		local maxIcons = mathFloor((uiElements.questLog:GetHeight()-25) / 30)
+		local maxIcons = mathFloor((uiElements.questTracker:GetHeight()-25) / 30)
 		if _itemCounter <= maxIcons then
 			cols = 1
 		else
@@ -170,7 +170,7 @@ function questTracker.buildUseUI ()
 					_resize()
 					return
 				else
-					hasItems = trueSetVisible(true)
+					hasItems = useItems[idx]:SetVisible(true)
 					_itemCounter = 0
 					_resize()
 				end
@@ -256,7 +256,7 @@ function questTracker.buildUseUI ()
 				if found == false then 
 					ui:RemoveUseItem(key)
 					if _useButtonQuestItemID == key then 
-						local button = uiElements.questLog:getUseItemButton()
+						local button = uiElements.questTracker:getUseItemButton()
 						if button ~= nil then button:SetVisible(false) end
 					end
 				end

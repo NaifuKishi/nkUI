@@ -57,7 +57,7 @@ end
 
 function questTracker.buildUI ()
 
-	local name = "nkQuestTrackerUI"
+	local name = "nkUI.questTracker"
 	local scrollPane, content	
 
 	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextLowest)

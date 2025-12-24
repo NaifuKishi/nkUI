@@ -13,7 +13,7 @@ function privateVars.internal.craftinglist (internalFlag)
 		return
 	end
 
-	local category = privateVars.uiElements.questLog:GetCategory('crafting')
+	local category = privateVars.uiElements.questTracker:GetCategory('crafting')
 	if category == nil then return end
 	if category:GetQuestCount() == 0 then return end
 	
@@ -166,12 +166,12 @@ end
 function privateVars.internal.craftingUI ()
 	
 	local name = "nkQuestTracker.craftingUI"
-	local gridRows = math.floor(privateVars.uiElements.questLog:GetHeight() / 19)
+	local gridRows = math.floor(privateVars.uiElements.questTracker:GetHeight() / 19)
 	
-	local ui = UI.CreateFrame("Frame", name, privateVars.uiElements.questLog)
+	local ui = UI.CreateFrame("Frame", name, privateVars.uiElements.questTracker)
 	ui:SetWidth(300)
-	ui:SetHeight(privateVars.uiElements.questLog:GetHeight())
-	ui:SetPoint("TOPRIGHT", privateVars.uiElements.questLog, "TOPLEFT")
+	ui:SetHeight(privateVars.uiElements.questTracker:GetHeight())
+	ui:SetPoint("TOPRIGHT", privateVars.uiElements.questTracker, "TOPLEFT")
 	ui:SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)
 	ui:SetVisible(false)	
 	

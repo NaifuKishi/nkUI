@@ -76,7 +76,7 @@ local function questAdd(list)
 
 							--if string.find(details.name, "Das goldene Ticket") ~= nil then dump(details) end
 							
-							uiElements.questLog:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
+							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
 						end
 
 						coroutine.yield(idx)
@@ -89,7 +89,7 @@ local function questAdd(list)
 	local callBack = function ()
 		_update = false
 		if (_addonInit == false) then
-		   uiElements.questLog:GetContent():SetVisible(true)
+		   uiElements.questTracker:GetContent():SetVisible(true)
 		   _addonInit = true
 		end
 		uiElements.progressBar:SetVisible(false)
@@ -98,7 +98,7 @@ local function questAdd(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
@@ -132,7 +132,7 @@ local function questChange(list)
 								uiElements.areaQuestUI:UpdateQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
-							uiElements.questLog:UpdateQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level)
+							uiElements.questTracker:UpdateQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level)
 						end
 					end
 
@@ -152,7 +152,7 @@ local function questChange(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 	
@@ -175,7 +175,7 @@ local function questRemove(list)
 						uiElements.areaQuestUI:RemoveQuest(key)
 					end
 					
-					uiElements.questLog:RemoveQuest(key)
+					uiElements.questTracker:RemoveQuest(key)
 					_questCache[key] = nil
 				end
 				
@@ -193,7 +193,7 @@ local function questRemove(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
@@ -305,6 +305,6 @@ function questTracker.eventSystemUpdate()
 		lastQuestUpdate = inspectTimeReal()
 		forceUpdate = false
 
-		uiElements.questLog:SetTitle(string.format("Quests (%d)", uiElements.questLog:GetQuestCount()))
+		uiElements.questTracker:SetTitle(string.format("Quests (%d)", uiElements.questTracker:GetQuestCount()))
 	end
 end
