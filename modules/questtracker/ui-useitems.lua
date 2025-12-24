@@ -195,9 +195,8 @@ function questTracker.buildUseUI ()
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_questTracker.buildUseUI", "quest items", itemList) end
 	
 		local bagItemList = EnKai.inventory.queryByCategory ('misc quest')
-
 		local completeList = EnKai.tools.table.copy (itemList)
-		
+
 		if bagItemList and itemList then			
 
 			for key, v in pairs (bagItemList) do
@@ -213,14 +212,17 @@ function questTracker.buildUseUI ()
 
 		local tempList = {}
 		
-		for k, v in pairs (completeList) do
-			local questInfo = nkQuestBase.query.questItemByKey (v.type)
+		for slot, v in pairs (completeList) do
+			local questInfo = nkQuestBase.query.questItemByKey (v.type)			
+
 			local addItem = true
 
 			if questInfo ~= nil then 
 				v.qKey = questInfo.qKey 
 				local qDetails = inspectQuestDetail(v.qKey)				
-				if qDetails then addItem = not qDetails.complete end
+				if qDetails then 
+					addItem = not qDetails.complete 
+				end
 			end
 
 			if addItem then table.insert(tempList, v) end
@@ -243,7 +245,7 @@ function questTracker.buildUseUI ()
 
 		local useState = ui:GetUseState()
 		for idx = 1, #useState, 1 do
-			local key  = useState[idx]
+			local key = useState[idx]
 			if key ~= false then
 				local found = false
 				for idx2 = 1, #tempList, 1 do

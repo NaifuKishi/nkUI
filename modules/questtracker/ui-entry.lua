@@ -56,7 +56,7 @@ local function showMenu (parent, key)
 	questMenuKey = key
 
 	if uiElements.menu == nil then
-		uiElements.menu = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menu', uiElements.context)
+		uiElements.menu = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menu', uiElements.contextTooltip)
 		uiElements.menu:SetFont(addonInfo.id, "MontserratSemiBold")
 		uiElements.menu:SetLayer(3)
 		uiElements.menu:AddEntry({ label = privateVars.langTexts.track, callBack = trackQuest })

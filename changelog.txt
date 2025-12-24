@@ -1,6 +1,7 @@
 V0.8.1
     - fixes: Fixed a rare error in lowerbar faction
     - fixes: Headers in quest tracker are now aligned properly
+    - fixes: Fixed menu error in quest tracker
 
 V0.8.0
     - new: Quest tracker module
