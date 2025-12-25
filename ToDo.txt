@@ -1,5 +1,6 @@
 know bug list
 
+    - alpha of buffs of player in group takes the ones from the settings instead of 100%
     - out of range indicator on weapon switch
     - upon zone change the buff display is strange (did I fix that already?)
     - retrieving items from mail doesn't update the bag display

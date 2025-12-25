@@ -772,7 +772,7 @@ function internalFunc.uiFrames()
 
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
-        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", group, 0, setup.margins.group
+        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", group, 0, 100 * data.uiScale
     end
 
     setup = nkUISetup.modules.unitFrames.frames.raid

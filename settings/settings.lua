@@ -44,35 +44,35 @@ local _defaults = {
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12, level = 12}, 
                                                         margins = { name = 15, health = 15, energy = 12, planar = 4, combatIcon = 5, roleIcon = 5, tierIcon = 5, level = 4},
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
-                                                        buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10}                                                        
+                                                        buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10 }
                                                     },
                                     playerPet       = { x = -675, y = 400, width = 185, height = 25,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10, level = 10}, 
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, level = 3},
                                                         iconSizes = {combat = 0, role = 0, tier = 0 },
-                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}                                                        
+                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8 }
                                                     },
                                     target          = { x = 300, y = 300, width = 250, height = 35,
                                                         reverse = true,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12, level = 12}, 
                                                         margins = { name = 15, health = 15, energy = 12, planar = 4, combatIcon = 5, roleIcon = 5, tierIcon = 5, level = 4 },
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
-                                                        buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10}                      
+                                                        buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10 }
                                                     },
                                     focus           = { x = -900, y = 250, width = 185, height = 25,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10, level = 10},                     
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, level = 3 },
                                                         iconSizes = {combat = 22, role = 15, tier = 15 },
-                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}                                                                                                                
+                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8 }
                                                     },
                                     group           = { x = -900, y = -300, width = 250, height = 35,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10, level = 10},
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, group = 80, level = 3 },
                                                         iconSizes = {combat = 0, role = 15, tier = 0 },
-                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8}
+                                                        buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8 }
                                                     },
                                     raid            = { x = -1590, y = -500, width = 100, height = 45,
                                                         reverse = false,

@@ -44,7 +44,7 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
         
         local buffSetup = frame:GetBuffSetup()
         local x = 0
-        local y = - (buffSetup.height+30)        
+        local y = - (buffSetup.height + (30 * data.uiScale))
 
         for k, v in pairs (unitBuffDisplayList) do            
             if unitBuffIcons[k].lastX ~= x then
@@ -57,7 +57,7 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
             x = x + buffSetup.width + 2            
         end
 
-        x, y = 0, frame:GetHeight() + 20
+        x, y = 0, frame:GetHeight() + (10 * data.uiScale)
 
         for k, v in pairs (unitDebuffDisplayList) do
 
@@ -94,6 +94,8 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
 
                         if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
+                        else
+                            unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
                         end
 
                     end
@@ -104,6 +106,8 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
                         
                         if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
+                        else
+                            unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
                         end
 
                     end
