@@ -30,7 +30,7 @@ function _settings.uiConfigTabTheme (name, parent)
         themeComboBox:SetSelectedValue(currentTheme, false)
         themeComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
 
-        oneBagColor = EnKai.uiCreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
+        --[[oneBagColor = EnKai.uiCreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
 		oneBagColor:SetPoint("TOPLEFT", themeComboBox, "BOTTOMLEFT", 0, 10)
 		oneBagColor:SetText("Bag window color")
 		oneBagColor:SetFont(addonInfo.id, "Montserrat")
@@ -51,7 +51,7 @@ function _settings.uiConfigTabTheme (name, parent)
         oneBagAlphaSlider:SetMidValue(50)
         oneBagAlphaSlider:SetPrecision(1)
         oneBagAlphaSlider:AdjustValue(nkUISetup.modules.oneBag.windowColor.a * 100 )
-
+]]
     end
 
     return frame

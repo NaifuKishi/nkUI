@@ -212,14 +212,14 @@ function oneBag.populateBag(forceCacheUpdate)
 
         if firstCategory then
             firstCategory = false
-            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScale, 5* data.uiScale)
+            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.uiScale, 5* data.uiScale)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
             currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScale))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
             if iconsPerLine + cols >= 15 then
-                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 5* data.uiScale, currentYOffset)
+                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.uiScale, currentYOffset)
                 currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScale)))  -- Increased vertical spacing
                 iconsPerLine = cols
             else

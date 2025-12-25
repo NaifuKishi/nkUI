@@ -27,8 +27,8 @@ function oneBag.createBagSlots()
     local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(width)
     bagSlotsFrame:SetHeight(height)
-    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5 * data.uiScale, 8 * data.uiScale)
-    bagSlotsFrame:SetBackgroundColor(0, 0, 0, 0.5)
+    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.uiScale)
+    bagSlotsFrame:SetBackgroundColor(data.theme.windowStartColor.r, data.theme.windowStartColor.g, data.theme.windowStartColor.b, data.theme.windowStartColor.a)
     bagSlotsFrame:SetLayer(2)
     
     for idx = 1, 8, 1 do

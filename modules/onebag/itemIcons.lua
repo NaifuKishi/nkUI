@@ -18,8 +18,8 @@ function oneBag.createItemIcon(name, parent)
     itemFrame:SetHeight(40 * data.uiScale)
     
     local itemIcon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
-    itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 2, 2)
-    itemIcon:SetPoint("BOTTOMRIGHT", itemFrame, "BOTTOMRIGHT", -2, -2)
+    itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 1, 1)
+    itemIcon:SetPoint("BOTTOMRIGHT", itemFrame, "BOTTOMRIGHT", -1, -1)
     itemIcon:SetLayer(1)
     
     local quantityText = EnKai.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)

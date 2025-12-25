@@ -11,6 +11,7 @@ Environment = "4.0"
 
 RunOnStartup = {
 	"main.lua",
+	"theme.lua",
 	"tools.lua",
 	"locales/localizationEN.lua",
 	"locales/localizationDE.lua",
