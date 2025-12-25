@@ -19,6 +19,8 @@ function oneBag.createBagUI()
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
     bagWindow:SetTitleEffect({ strength = 3})
+    bagWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
     bagWindow:SetWidth(690 * data.uiScale)
     bagWindow:SetHeight(600 * data.uiScale)
     bagWindow:SetShadow(false)

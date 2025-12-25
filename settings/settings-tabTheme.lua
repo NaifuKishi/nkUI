@@ -3,14 +3,14 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 local uiElements	= privateVars.uiElements
 
 local stringFormat = string.format
 
 ---------- init local variables ---------
 
-function _settings.uiConfigTabTheme (name, parent)
+function settingsUI.uiConfigTabTheme (name, parent)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local themeComboBox, oneBagColor, oneBagAlphaSlider
@@ -19,7 +19,7 @@ function _settings.uiConfigTabTheme (name, parent)
 
         local themeList = {{ label = "Rift", value = "rift"}, { label = "WoW", value = "wow" }}
     
-        themeComboBox = _settings.combobox(name .. ".theme", frame, "Select coloring mode", true, function(newValue)        
+        themeComboBox = settingsUI.combobox(name .. ".theme", frame, "Select coloring mode", true, function(newValue)        
             nkUISetup.modules.unitFrames.colorScheme = newValue
             EnKai.ui.reloadDialog ("nkUI")
         end)
@@ -42,7 +42,7 @@ function _settings.uiConfigTabTheme (name, parent)
             nkUISetup.modules.oneBag.windowColor = { r = r, g = g, b = b, a = nkUISetup.modules.oneBag.windowColor.a}
 		end, name .. ".oneBagColor.ColorChanged")
 
-        oneBagAlphaSlider = _settings.slider (name .. ".oneBagAlphaSlider", frame, "Alpha <font color='#3399FF'>%d%%</font>", true, function (newValue)
+        oneBagAlphaSlider = settingsUI.slider (name .. ".oneBagAlphaSlider", frame, "Alpha <font color='#3399FF'>%d%%</font>", true, function (newValue)
             nkUISetup.modules.oneBag.windowColor.a = newValue / 100
         end)
 

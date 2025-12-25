@@ -3,13 +3,13 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 
 local stringFormat = string.format
 
 ---------- init local variables ---------
 
-function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
+function settingsUI.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, textFontSize, timerFontSize    
@@ -18,10 +18,10 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
     function frame:build()
 
-        sizeHeader = _settings.header ( name .. ".sizeHeader", frame, "Castbar size")
+        sizeHeader = settingsUI.header ( name .. ".sizeHeader", frame, "Castbar size")
         sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT" , 0, 5)
 
-        widthSlider = _settings.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
+        widthSlider = settingsUI.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -32,7 +32,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(thisSettings.width)
         
-        heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
+        heightSlider = settingsUI.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.height = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -45,10 +45,10 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
         -- font sizes
 
-        fontSizeHeader = _settings.header ( name .. ".fontSizeHeader", frame, "Text size")
+        fontSizeHeader = settingsUI.header ( name .. ".fontSizeHeader", frame, "Text size")
         fontSizeHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
 
-        textFontSize = _settings.slider (name .. ".textFontSize", frame, "Spellname <font color='#3399FF'>%d</font>", true, function (newValue)
+        textFontSize = settingsUI.slider (name .. ".textFontSize", frame, "Spellname <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.text = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -59,7 +59,7 @@ function _settings.uiConfigTabCastBar (name, parent, unitType, thisSettings)
         textFontSize:SetPrecision(1)
         textFontSize:AdjustValue(thisSettings.fontSizes.text)
         
-        timerFontSize = _settings.slider (name .. ".timerFontSize", frame, "Timer <font color='#3399FF'>%d</font>", true, function (newValue)
+        timerFontSize = settingsUI.slider (name .. ".timerFontSize", frame, "Timer <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.timer = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)

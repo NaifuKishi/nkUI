@@ -7,9 +7,9 @@ local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local _events       = privateVars.events
 
-privateVars.settings		= {}
+privateVars.settingsUI = {}
 
-local _settings = privateVars.settings
+local settingsUI = privateVars.settingsUI
 
 local stringFind = string.find
 
@@ -127,7 +127,7 @@ local _defaults = {
     }
 }
 
-local function _scaleUI ()
+local function scaleUI ()
        
     local parentWidth = UIParent:GetWidth()
 
@@ -196,7 +196,7 @@ function internalFunc.setupDefaults()
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name] = { roles = {} }
 
-        _scaleUI ()
+        scaleUI ()
     end
     
     -- check for new char
@@ -226,7 +226,7 @@ function internalFunc.actionBarToggleAlpha()
 
 end
 
-function _settings.checkbox (name, parent, text, active, callBack)
+function settingsUI.checkbox (name, parent, text, active, callBack)
 
     local thisCheckbox = EnKai.uiCreateFrame("nkCheckbox", name, parent)
     
@@ -234,8 +234,12 @@ function _settings.checkbox (name, parent, text, active, callBack)
     thisCheckbox:SetActive(active)
     thisCheckbox:SetLabelWidth(200)
     thisCheckbox:SetFontSize(14)
-    thisCheckbox:SetTextFont(addonInfo.id, "Montserrat")
-
+    thisCheckbox:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    thisCheckbox:SetLabelColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    thisCheckbox:SetColor(data.theme.formElementColorMain)
+    thisCheckbox:SetColorInner(data.theme.formElementColorSub)
+    thisCheckbox:SetEffectGlow({strength = 3})
+    
     Command.Event.Attach(EnKai.events[name].CheckboxChanged, function (_, newValue)		
         callBack(newValue)
     end, name .. ".CheckboxChanged")
@@ -244,7 +248,7 @@ function _settings.checkbox (name, parent, text, active, callBack)
 
 end
 
-function _settings.combobox (name, parent, text, active, callBack)
+function settingsUI.combobox (name, parent, text, active, callBack)
 
     local thisCombobox = EnKai.uiCreateFrame("nkCombobox", name, parent)
     
@@ -252,7 +256,13 @@ function _settings.combobox (name, parent, text, active, callBack)
     thisCombobox:SetActive(active)
     thisCombobox:SetLabelWidth(200)
 	thisCombobox:SetWidth(300)    
-    thisCombobox:SetFont(addonInfo.id, "Montserrat")    
+    thisCombobox:SetFont(addonInfo.id, "MontserratSemiBold")
+    thisCombobox:SetLabelColor(data.theme.labelColor)
+    thisCombobox:SetColorInner(0, 0, 0, .2)
+    thisCombobox:SetColor(1, 1, 1, 1)
+	thisCombobox:SetColorBorder(0, 0, 0, .2) 
+    thisCombobox:SetColorSelected(data.theme.labelColor)
+    thisCombobox:SetEffectGlow({strength = 3})
 
     Command.Event.Attach(EnKai.events[name].ComboChanged, function (_, newValue)		
         callBack(newValue.value)
@@ -262,16 +272,21 @@ function _settings.combobox (name, parent, text, active, callBack)
 
 end
 
-function _settings.slider (name, parent, text, active, callBack)
+function settingsUI.slider (name, parent, text, active, callBack)
 
     local thisSlider = EnKai.uiCreateFrame("nkSlider", name, parent)
 
     thisSlider:SetText(text, true)
     thisSlider:SetWidth(350)
     thisSlider:SetLabelWidth(200)
+    thisSlider:SetLabelColor(data.theme.labelColor)
     thisSlider:SetFontSize(14)
     thisSlider:SetActive(active)
-    thisSlider:SetFont(addonInfo.id, "Montserrat")
+    thisSlider:SetFont(addonInfo.id, "MontserratSemiBold")
+    thisSlider:SetColor(0, 0, 0, .2)
+    thisSlider:SetColorInner({ r = 0, g = 0, b = 0, a = .4})
+    thisSlider:SetColorHighlight(data.theme.formElementColorMain)    
+    thisSlider:SetEffectGlow({strength = 3})
 
     Command.Event.Attach(EnKai.events[name].SliderChanged, function (_, newValue)
         callBack(newValue)
@@ -282,25 +297,29 @@ function _settings.slider (name, parent, text, active, callBack)
 end
 
 
-function _settings.label (name, parent, text)
+function settingsUI.label (name, parent, text)
 
     local thisText = EnKai.uiCreateFrame("nkText", name, parent)
 
     thisText:SetText(text, true)
     thisText:SetWidth(350)
     thisText:SetFontSize(14)
-    thisText:SetFont(addonInfo.id, "Montserrat")
+    thisText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    thisText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    thisText:SetEffectGlow({strength = 3})
 
     return thisText
 
 end
 
-function _settings.header (name, parent, text)
+function settingsUI.header (name, parent, text)
 
     local thisHeader = EnKai.uiCreateFrame("nkText", name, parent)
-    thisHeader:SetFontSize(14)
+    thisHeader:SetFontSize(16)
     thisHeader:SetText(text)
     thisHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    thisHeader:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    thisHeader:SetEffectGlow({strength = 3})
 
     return thisHeader
 
@@ -315,33 +334,51 @@ function internalFunc.setupUI ()
     config:SetPoint("CENTER", UIParent, "CENTER")
     config:SetWidth(950)
     config:SetHeight(650)
-    config:SetTitle(addonInfo.toc.Identifier .. " ".. addonInfo.toc.Version)
-    config:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+    config:SetTitle(addonInfo.toc.Identifier .. " version ".. addonInfo.toc.Version)
+    config:SetTitleFont(addonInfo.id, "MontserratBold")
+    config:SetTitleFontSize(16)
+    config:SetTitleEffect ( {strength = 3})
     config:SetCloseable(true)
-    config:SetTitleFontColor(1, 1, 1, 1)
+    config:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
+    config:SetColor(nil, {
+        type = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+        color = {
+            data.theme.windowStartColor,
+            data.theme.windowEndColor
+            }
+    })
 
     local tabPane = EnKai.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", config:GetContent())
     tabPane:SetBorder(false)
     tabPane:SetVertical(true)
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
+    tabPane:SetColor(
+        {   thickness = 1, 
+            r = data.theme.windowEndColor.r, g = data.theme.windowEndColor.g, b = data.theme.windowEndColor.b, a = 0
+        }, 
+        {   type = 'solid', 
+            r = data.theme.windowEndColor.r, g = data.theme.windowEndColor.g, b = data.theme.windowEndColor.b, a = .3},
+     data.theme.labelColor, data.theme.labelColor)
+    --SetColor(stroke, fill, newFontColor, newFontColorSelected)
 
-    local paneTabTheme = _settings.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
+    local paneTabTheme = settingsUI.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
+    local paneTabQuestTracker = settingsUI.uiConfigTabQuestTracker (name .. ".tab.QuestTracker", tabPane)
+    local paneTabActionBar = settingsUI.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
+    local paneTabLowerBar = settingsUI.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
+    local paneTabSCT = settingsUI.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
+    local paneTabTooltip = settingsUI.uiConfigTabTooltip(name .. ".tab.Tooltip", tabPane)
+    local paneTabBuffBar = settingsUI.uiConfigTabBuffBar(name .. ".tab.BuffBar", tabPane)
 
-    local paneTabQuestTracker = _settings.uiConfigTabQuestTracker (name .. ".tab.QuestTracker", tabPane)
-    local paneTabActionBar = _settings.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
-    local paneTabLowerBar = _settings.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
-    local paneTabSCT = _settings.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
-    local paneTabTooltip = _settings.uiConfigTabTooltip(name .. ".tab.Tooltip", tabPane)
-    local paneTabBuffBar = _settings.uiConfigTabBuffBar(name .. ".tab.BuffBar", tabPane)
+    local paneTabRessourceBar = settingsUI.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
 
-    local paneTabRessourceBar = _settings.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
+    local paneTabPlayerCastbar = settingsUI.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "player.castbar", nkUISetup.modules.unitFrames.frames.playerCastBar)
+    local paneTabTargetCastbar = settingsUI.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "player.target.castbar", nkUISetup.modules.unitFrames.frames.targetCastBar)
 
-    local paneTabPlayerCastbar = _settings.uiConfigTabCastBar(name .. ".tab.PlayerCastbar", tabPane, "player.castbar", nkUISetup.modules.unitFrames.frames.playerCastBar)
-    local paneTabTargetCastbar = _settings.uiConfigTabCastBar(name .. ".tab.TargetCastbar", tabPane, "player.target.castbar", nkUISetup.modules.unitFrames.frames.targetCastBar)
+    local paneTabUnitFrameBasic = settingsUI.uiConfigTabUFBasic(name .. ".tab.UnitFrameBasic", tabPane)
 
-    local paneTabUnitFrameBasic = _settings.uiConfigTabUFBasic(name .. ".tab.UnitFrameBasic", tabPane)
-
-    local paneTabUnitFrames = _settings.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
+    local paneTabUnitFrames = settingsUI.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
 
     local EnKaiLogo = EnKai.uiCreateFrame("nkTexture", name .. ".EnKaiLogo", config)
     EnKaiLogo:SetTextureAsync(EnKai.art.GetThemeLogo()[1],EnKai.art.GetThemeLogo()[2])
@@ -349,10 +386,10 @@ function internalFunc.setupUI ()
     EnKaiLogo:SetWidth(125)
     EnKaiLogo:SetHeight(33)
 
-    local versionText = UI.CreateFrame("Text", name .. ".versionText", config)
+    local versionText = EnKai.uiCreateFrame("nkText", name .. ".versionText", config)
     versionText:SetFontSize(11)
     versionText:SetText(string.format("Version %s", addonInfo.toc.Version))
-    versionText:SetFontColor(236, 228, 189, 1)
+    versionText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
     versionText:SetPoint("BOTTOMRIGHT", tabPane, "BOTTOMRIGHT", -5, -5)
     versionText:SetLayer(99)
 
@@ -362,11 +399,13 @@ function internalFunc.setupUI ()
 
     closeButton:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -10)
     closeButton:SetText("Close")
-    closeButton:SetFontColor(1, 1, 1)
-    closeButton:SetIcon("EnKai", "gfx/icons/close.png")
     closeButton:SetScale(.8)
     closeButton:SetLayer(9)
     closeButton:SetFont(addonInfo.id, "MontserratSemiBold")
+    closeButton:SetFontColor(data.theme.labelColor)
+    closeButton:SetEffectGlow ({ strength = 3 })
+    closeButton:SetColor(0, 0, 0, .4)
+    closeButton:SetBorderColor(0, 0, 0, .7)
 
     Command.Event.Attach(EnKai.events[name .. ".closeButton"].Clicked, function (_, newValue)
         uiElements.settings:SetVisible(false)   
@@ -376,11 +415,13 @@ function internalFunc.setupUI ()
 
     tutorialButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
     tutorialButton:SetText("Tutorial")
-    tutorialButton:SetFontColor(1, 1, 1)
-    tutorialButton:SetIcon("EnKai", "gfx/icons/info.png")
     tutorialButton:SetScale(.8)
     tutorialButton:SetLayer(9)
     tutorialButton:SetFont(addonInfo.id, "MontserratSemiBold")
+    tutorialButton:SetFontColor(data.theme.labelColor)
+    tutorialButton:SetEffectGlow ({ strength = 3 })
+    tutorialButton:SetColor(0, 0, 0, .4)
+    tutorialButton:SetBorderColor(0, 0, 0, .7)
 
     Command.Event.Attach(EnKai.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
         internalFunc.tutorial()
@@ -390,11 +431,13 @@ function internalFunc.setupUI ()
 
     moveButton:SetPoint("CENTERRIGHT", tutorialButton, "CENTERLEFT", -10, 0)
     moveButton:SetText("Move UI")
-    moveButton:SetFontColor(1, 1, 1)
-    moveButton:SetIcon("EnKai", "gfx/icons/circle.png")
     moveButton:SetScale(.8)
     moveButton:SetLayer(9)
     moveButton:SetFont(addonInfo.id, "MontserratSemiBold")
+    moveButton:SetFontColor(data.theme.labelColor)
+    moveButton:SetEffectGlow ({ strength = 3 })
+    moveButton:SetColor(0, 0, 0, .4)
+    moveButton:SetBorderColor(0, 0, 0, .7)
 
     Command.Event.Attach(EnKai.events[name .. ".moveButton"].Clicked, function (_, newValue)
         internalFunc.initMove()
@@ -411,23 +454,23 @@ function internalFunc.setupUI ()
     tabPane:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -50)
     tabPane:SetLayer(1)
 
-    tabPane:AddPane( { label = "Theme", frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
-    tabPane:AddPane( { label = "Quest Tracker", frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
+    tabPane:AddPane( { label = "Theme", effect = { strength = 3 }, frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
+    tabPane:AddPane( { label = "Quest Tracker", effect = { strength = 3 }, frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
 
-    tabPane:AddPane( { label = "Action bar", frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
-    tabPane:AddPane( { label = "Lower bar", frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
-    tabPane:AddPane( { label = "SCT", frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
-    tabPane:AddPane( { label = "Tooltip", frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
-    tabPane:AddPane( { label = "Buff bar", frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
+    tabPane:AddPane( { label = "Action bar", effect = { strength = 3 }, frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
+    tabPane:AddPane( { label = "Lower bar", effect = { strength = 3 }, frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
+    tabPane:AddPane( { label = "SCT", effect = { strength = 3 }, frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
+    tabPane:AddPane( { label = "Tooltip", effect = { strength = 3 }, frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
+    tabPane:AddPane( { label = "Buff bar", effect = { strength = 3 }, frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
 
-    tabPane:AddPane( { label = "Ressource bar", frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
+    tabPane:AddPane( { label = "Ressource bar", effect = { strength = 3 }, frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
 
-    tabPane:AddPane( { label = "Player castbar", frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
-    tabPane:AddPane( { label = "Target castbar", frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
+    tabPane:AddPane( { label = "Player castbar", effect = { strength = 3 }, frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
+    tabPane:AddPane( { label = "Target castbar", effect = { strength = 3 }, frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
 
-    tabPane:AddPane( { label = "Unitframes", frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
+    tabPane:AddPane( { label = "Unitframes", effect = { strength = 3 }, frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
 
-    tabPane:AddPane( { label = "Units", frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
+    tabPane:AddPane( { label = "Units", effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
 
     --if EnKai.internal.checkEvents ("nkRadial", true) == false then return nil end
 

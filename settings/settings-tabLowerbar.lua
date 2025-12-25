@@ -3,13 +3,13 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 
 local stringFormat = string.format
 
 ---------- init local variables ---------
 
-function _settings.uiConfigTabLowerBar (name, parent)
+function settingsUI.uiConfigTabLowerBar (name, parent)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local fontSizeSlider, timeSizeSlider, dateSizeSlider, barHeightSlider, barWidthSlider, barTextSlider
@@ -18,7 +18,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
 
     function frame:build()
 
-        activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
             nkUISetup.modules.lowerBar.activate = newValue
 
             if fontSizeSlider then fontSizeSlider:SetActive(newValue) end
@@ -36,10 +36,10 @@ function _settings.uiConfigTabLowerBar (name, parent)
 
         local moduleActive = nkUISetup.modules.lowerBar.activate
 
-        fontHeader = _settings.header ( name .. ".fontHeader", frame, "Font sizes")
+        fontHeader = settingsUI.header ( name .. ".fontHeader", frame, "Font sizes")
         fontHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT" , 0, 15)
 
-        fontSizeSlider = _settings.slider (name .. ".fontSizeSlider", frame, "Text display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        fontSizeSlider = settingsUI.slider (name .. ".fontSizeSlider", frame, "Text display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.fontSize = newValue
             internalFunc.lowerBarRedraw()
         end)
@@ -50,7 +50,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
         fontSizeSlider:SetPrecision(1)
         fontSizeSlider:AdjustValue(nkUISetup.modules.lowerBar.fontSize)
 
-        timeSizeSlider = _settings.slider (name .. ".timeSizeSlider", frame, "Time display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        timeSizeSlider = settingsUI.slider (name .. ".timeSizeSlider", frame, "Time display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.timeSize = newValue
             internalFunc.lowerBarRedraw()
         end)
@@ -61,7 +61,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
         timeSizeSlider:SetPrecision(1)
         timeSizeSlider:AdjustValue(nkUISetup.modules.lowerBar.timeSize)
 
-        dateSizeSlider = _settings.slider (name .. ".dateSizeSlider", frame, "Date display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        dateSizeSlider = settingsUI.slider (name .. ".dateSizeSlider", frame, "Date display <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.dateSize = newValue
             internalFunc.lowerBarRedraw()
         end)
@@ -72,10 +72,10 @@ function _settings.uiConfigTabLowerBar (name, parent)
         dateSizeSlider:SetPrecision(1)
         dateSizeSlider:AdjustValue(nkUISetup.modules.lowerBar.dateSize)
 
-        barHeader = _settings.header ( name .. ".barHeader", frame, "Experience and notority datasets")
+        barHeader = settingsUI.header ( name .. ".barHeader", frame, "Experience and notority datasets")
         barHeader:SetPoint("TOPLEFT", timeSizeSlider, "BOTTOMLEFT" , 0, 15)
 
-        barTextSlider = _settings.slider (name .. ".barTextSlider", frame, "Text size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        barTextSlider = settingsUI.slider (name .. ".barTextSlider", frame, "Text size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.barText = newValue
             internalFunc.lowerBarRedraw()
         end)
@@ -86,7 +86,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
         barTextSlider:SetPrecision(1)
         barTextSlider:AdjustValue(nkUISetup.modules.lowerBar.barText)        
 
-        barHeightSlider = _settings.slider (name .. ".barHeightSlider", frame, "Bar height <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        barHeightSlider = settingsUI.slider (name .. ".barHeightSlider", frame, "Bar height <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.barHeight = newValue
             internalFunc.lowerBarRedraw()
         end)
@@ -97,7 +97,7 @@ function _settings.uiConfigTabLowerBar (name, parent)
         barHeightSlider:SetPrecision(1)
         barHeightSlider:AdjustValue(nkUISetup.modules.lowerBar.barHeight)
 
-        barWidthSlider = _settings.slider (name .. ".barWidthSlider", frame, "Bar width <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        barWidthSlider = settingsUI.slider (name .. ".barWidthSlider", frame, "Bar width <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.lowerBar.barWidth = newValue
             internalFunc.lowerBarRedraw()
         end)

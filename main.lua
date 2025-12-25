@@ -138,7 +138,7 @@ local function initializeAddon(_, addon)
         EnKai.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
         EnKai.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
-		EnKai.art.SetTheme("nkUI")
+		--EnKai.art.SetTheme("nkUI")
 
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
 			EnKai.unit.init()

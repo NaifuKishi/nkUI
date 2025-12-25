@@ -3,13 +3,13 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 
 local stringFormat = string.format
 
 ---------- init local variables ---------
 
-function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
+function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, comboWidthSlider, comboHeightSlider, chargeWidthSlider, chargeHeightSlider, marginRessourceSlider, chargeFontSize, ressourceFontSize    
@@ -18,10 +18,10 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
     function frame:build()
 
-        sizeHeader = _settings.header ( name .. ".sizeHeader", frame, "Ressource bar size")
+        sizeHeader = settingsUI.header ( name .. ".sizeHeader", frame, "Ressource bar size")
         sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT" , 0, 5)
 
-        widthSlider = _settings.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
+        widthSlider = settingsUI.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -32,7 +32,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(thisSettings.width)
         
-        heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
+        heightSlider = settingsUI.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.height = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -45,10 +45,10 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         -- combo display
         
-        comboHeader = _settings.header ( name .. ".comboHeader", frame, "Combo point size")
+        comboHeader = settingsUI.header ( name .. ".comboHeader", frame, "Combo point size")
         comboHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
 
-        comboWidthSlider = _settings.slider (name .. ".comboWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
+        comboWidthSlider = settingsUI.slider (name .. ".comboWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.combo.width = newValue
              internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -59,7 +59,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         comboWidthSlider:SetPrecision(1)
         comboWidthSlider:AdjustValue(thisSettings.combo.width)
         
-        comboHeightSlider = _settings.slider (name .. ".comboHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
+        comboHeightSlider = settingsUI.slider (name .. ".comboHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.combo.height = newValue
              internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -72,10 +72,10 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         -- charge display
         
-        chargeHeader = _settings.header ( name .. ".chargeHeader", frame, "Charge display size")
+        chargeHeader = settingsUI.header ( name .. ".chargeHeader", frame, "Charge display size")
         chargeHeader:SetPoint("TOPLEFT", comboWidthSlider, "BOTTOMLEFT" , 0, 15)
         
-        chargeWidthSlider = _settings.slider (name .. ".chargeWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
+        chargeWidthSlider = settingsUI.slider (name .. ".chargeWidthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.charge.width = newValue
              internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -86,7 +86,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         chargeWidthSlider:SetPrecision(1)
         chargeWidthSlider:AdjustValue(thisSettings.charge.width)
         
-        chargeHeightSlider = _settings.slider (name .. ".chargeHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
+        chargeHeightSlider = settingsUI.slider (name .. ".chargeHeightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.charge.height = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -105,7 +105,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         marginHeader:SetText("Offset")
         marginHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
 
-        marginRessourceSlider = _settings.slider (name .. ".marginRessourceSlider", frame, "Ressource offset <font color='#3399FF'>%d</font>", true, function (newValue)
+        marginRessourceSlider = settingsUI.slider (name .. ".marginRessourceSlider", frame, "Ressource offset <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.margins.ressource = newValue
         end)
         
@@ -118,10 +118,10 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
 ]]
         -- font sizes
 
-        fontSizeHeader = _settings.header ( name .. ".fontSizeHeader", frame, "Text sizes")
+        fontSizeHeader = settingsUI.header ( name .. ".fontSizeHeader", frame, "Text sizes")
         fontSizeHeader:SetPoint("TOPLEFT", chargeWidthSlider, "BOTTOMLEFT" , 0, 15)
 
-        chargeFontSize = _settings.slider (name .. ".chargeFontSize", frame, "Charge <font color='#3399FF'>%d</font>", true, function (newValue)
+        chargeFontSize = settingsUI.slider (name .. ".chargeFontSize", frame, "Charge <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.charge = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
@@ -132,7 +132,7 @@ function _settings.uiConfigTabRessourceBar (name, parent, thisSettings)
         chargeFontSize:SetPrecision(1)
         chargeFontSize:AdjustValue(thisSettings.fontSizes.charge)
         
-        ressourceFontSize = _settings.slider (name .. ".ressourceFontSize", frame, "Ressource <font color='#3399FF'>%d</font>", true, function (newValue)
+        ressourceFontSize = settingsUI.slider (name .. ".ressourceFontSize", frame, "Ressource <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.ressource = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)

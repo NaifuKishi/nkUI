@@ -3,7 +3,7 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 
 local stringFormat = string.format
 
@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 
 
-function _settings.uiConfigTabBuffBar (name, parent)
+function settingsUI.uiConfigTabBuffBar (name, parent)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local activateCheckBox, widthSlider, heightSlider, timerFontSizeSlider, stackFontSizeSlider, labelFontSizeSlider
@@ -19,7 +19,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
 
     function frame:build()
 
-        activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
             nkUISetup.modules.buffBar.activate = newValue
 
             if newValue then
@@ -40,13 +40,10 @@ function _settings.uiConfigTabBuffBar (name, parent)
 
         local moduleActive = nkUISetup.modules.buffBar.activate
 
-        sizeHeader = EnKai.uiCreateFrame("nkText", name .. ".sizeHeader", frame)
+        sizeHeader = settingsUI.header ( name .. ".sizeHeader", frame, "Size setup")
         sizeHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT" , 0, 15)
-        sizeHeader:SetFontSize(14)
-        sizeHeader:SetText("Size setup")
-        sizeHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
 
-        widthSlider = _settings.slider (name .. ".widthSlider", frame, "Buff size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        widthSlider = settingsUI.slider (name .. ".widthSlider", frame, "Buff size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.width = newValue
             nkUISetup.modules.buffBar.buffs.height = newValue
 
@@ -59,7 +56,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(nkUISetup.modules.buffBar.buffs.width)
         
-        --[[heightSlider = _settings.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        --[[heightSlider = settingsUI.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.height = newValue
         end)
 
@@ -69,13 +66,10 @@ function _settings.uiConfigTabBuffBar (name, parent)
         heightSlider:SetPrecision(1)
         heightSlider:AdjustValue(nkUISetup.modules.buffBar.buffs.height)]]
 
-        fontHeader = EnKai.uiCreateFrame("nkText", name .. ".fontHeader", frame)
+        fontHeader = settingsUI.header ( name .. "..fontHeader", frame, "Combo point setup")
         fontHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
-        fontHeader:SetFontSize(14)
-        fontHeader:SetText("Combo point setup")
-        fontHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
 
-        timerFontSizeSlider = _settings.slider (name .. ".timerFontSizeSlider", frame, "Timer size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        timerFontSizeSlider = settingsUI.slider (name .. ".timerFontSizeSlider", frame, "Timer size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.timer = newValue
             internalFunc.buffBar.Redraw()
         end)
@@ -86,7 +80,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
         timerFontSizeSlider:SetPrecision(1)
         timerFontSizeSlider:AdjustValue(nkUISetup.modules.buffBar.buffs.timer)
         
-        stackFontSizeSlider = _settings.slider (name .. ".stackFontSizeSlider", frame, "Stack size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        stackFontSizeSlider = settingsUI.slider (name .. ".stackFontSizeSlider", frame, "Stack size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.stack = newValue
             internalFunc.buffBar.Redraw()
         end)
@@ -97,7 +91,7 @@ function _settings.uiConfigTabBuffBar (name, parent)
         stackFontSizeSlider:SetPrecision(1)
         stackFontSizeSlider:AdjustValue(nkUISetup.modules.buffBar.buffs.stack)
         
-        --[[labelFontSizeSlider = _settings.slider (name .. ".labelFontSizeSlider", frame, "label font size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        --[[labelFontSizeSlider = settingsUI.slider (name .. ".labelFontSizeSlider", frame, "label font size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.buffBar.buffs.label = newValue
         end)
 

@@ -3,13 +3,13 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local _settings     = privateVars.settings
+local settingsUI     = privateVars.settingsUI
 
 local stringFormat = string.format
 
 ---------- init local variables ---------
 
-function _settings.uiConfigTabUFBasic (name, parent)
+function settingsUI.uiConfigTabUFBasic (name, parent)
 
     local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
     local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider
@@ -17,7 +17,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
     function frame:build()
 
-        activateCheckbox = _settings.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
             nkUISetup.modules.unitFrames.activate = newValue
             if buffsUnitBarCheckbox then buffsUnitBarCheckbox:SetActive(newValue) end
             if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
@@ -38,7 +38,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
 
         local moduleActive = nkUISetup.modules.unitFrames.activate
 
-        combatAlphaSlider = _settings.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
+        combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
             internalFunc.toggleAlpha()
         end)
@@ -49,7 +49,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
         combatAlphaSlider:SetPrecision(1)
         combatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.combatAlpha * 100)
 
-        nonCombatAlphaSlider = _settings.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
+        nonCombatAlphaSlider = settingsUI.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
             internalFunc.toggleAlpha()
         end)
@@ -60,7 +60,7 @@ function _settings.uiConfigTabUFBasic (name, parent)
         nonCombatAlphaSlider:SetPrecision(1)    
         nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)        
 
-        buffsUnitBarCheckbox = _settings.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
+        buffsUnitBarCheckbox = settingsUI.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
             nkUISetup.modules.unitFrames.showBuffs = newValue            
 
             if newValue == false then 
@@ -73,13 +73,10 @@ function _settings.uiConfigTabUFBasic (name, parent)
         buffsUnitBarCheckbox:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 30)
         buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs, true)
 
-        buffDurationLabel = EnKai.uiCreateFrame("nkText", name .. ".buffDurationLabel", frame)
-        buffDurationLabel:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 15)
-        buffDurationLabel:SetFontSize(14)
-        buffDurationLabel:SetTextFont(addonInfo.id, "Montserrat")
-        buffDurationLabel:SetText("Only show buffs with duration")
+        buffDurationLabel = settingsUI.label ( name .. ".buffDurationLabel", frame, "Only show buffs with duration")
+        buffDurationLabel:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT" , 0, 15)
 
-        buffDurationSlider = _settings.slider(name .. ".buffDurationSlider", frame, "less than %d sec", moduleActive, function (newValue)
+        buffDurationSlider = settingsUI.slider(name .. ".buffDurationSlider", frame, "less than %d sec", moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.buffDuration = newValue
         end)
 
