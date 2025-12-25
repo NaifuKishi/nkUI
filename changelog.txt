@@ -2,6 +2,7 @@ V0.8.2
     - updates: Completely changed UI theme
     - updates: Changed design of one bag to fit new theme
     - fixes: Lowered layer of quest item in quest tracker
+    - fixes: Hopefully fixed that error on faction change for good
 
 V0.8.1
     - fixes: Fixed a rare error in lowerbar faction

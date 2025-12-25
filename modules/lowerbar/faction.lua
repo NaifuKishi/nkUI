@@ -94,7 +94,7 @@ function lowerBar.faction()
         
         if not updateTime or now - updateTime > 1 then
             updateTime = now
-            local percent = 0.1
+            local percent = 0
             local level = ""
             
             local faction = inspectFactionDetail(currentFaction)
@@ -113,6 +113,8 @@ function lowerBar.faction()
                         break
                     end
                 end
+
+                if EnKai.tools.isNaN(percent) then percent = 0 end
                 
                 datasetFactionName:SetText(stringFormat("%s (%s)", faction.name, level))
                 datasetFaction:SetText(stringFormat("%d%%", percent))
