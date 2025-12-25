@@ -76,7 +76,7 @@ function questTracker.buildUseUI ()
 
 	local name = "nkUI.QuestTracker.UseUI"
 
-	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.secureContext)
+	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowestRestricted)
 	ui:SetPoint("TOPRIGHT", uiElements.questTracker, "TOPLEFT", 20, 25)
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questTracker:GetHeight()-20)

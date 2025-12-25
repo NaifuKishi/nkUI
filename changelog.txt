@@ -1,3 +1,6 @@
+V0.8.2
+    - fixes: Lowered layer of quest item in quest tracker
+
 V0.8.1
     - fixes: Fixed a rare error in lowerbar faction
     - fixes: Headers in quest tracker are now aligned properly
