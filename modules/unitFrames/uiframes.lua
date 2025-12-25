@@ -807,7 +807,6 @@ function internalFunc.uiFrames()
             if details.combo then playerRessourceBar:SetCombo(details.combo) end
 
             if details.focus then
-                data.processPlayerFocus = true
                 playerRessourceBar:SetRessourceType("focus")
                 playerRessourceBar:SetRessourceMax(200)
             end

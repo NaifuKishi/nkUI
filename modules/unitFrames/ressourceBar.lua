@@ -47,6 +47,7 @@ function internalFunc.ressourcBar (unit, setup)
     ressourceFrame:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", 1, 1)
     ressourceFrame:SetWidth(setup.width - 2)
     ressourceFrame:SetHeight(setup.height -2)    
+    ressourceFrame:SetLayer(1)
 
     local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     local path = {  {xProportional = 0, yProportional = 0},
@@ -58,12 +59,21 @@ function internalFunc.ressourcBar (unit, setup)
   
     local ressourceText = EnKai.uiCreateFrame("nkText", thisName .. ".ressourceText", ressourceFrame)
 
-    ressourceText:SetPoint("CENTER", ressourceBGFrame, "CENTER", 0, setup.margins.ressource)
+    local focusIndicator = EnKai.uiCreateFrame("nkFrame", thisName .. ".focusIndicator", ressourceBGFrame)
+    
+    focusIndicator:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", 0, -5)
+    focusIndicator:SetWidth(4)
+    focusIndicator:SetHeight(setup.height + 10)
+    focusIndicator:SetBackgroundColor(1, 0.84, 0, 1)
+    focusIndicator:SetVisible(false)
+    focusIndicator:SetLayer(2)
 
+    ressourceText:SetPoint("CENTER", ressourceBGFrame, "CENTER", 0, setup.margins.ressource)
     ressourceText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     ressourceText:SetFontSize(setup.fontSizes.ressource)
     ressourceText:SetFontColor(1, 1, 1, 1)
     ressourceText:SetEffectGlow({ strength = 3})
+    ressourceText:SetLayer(3)
 
     local chargeBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceChargeBGFrame", ressourceBGFrame)
     chargeBGFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
@@ -121,10 +131,16 @@ function internalFunc.ressourcBar (unit, setup)
 
         if ressourceType == "energy" then
             ressourceBGFrame:SetMaxCombo(5)
+            focusIndicator:SetVisible(false)
         elseif ressourceType == "power" then
             ressourceBGFrame:SetMaxCombo(3)
+            focusIndicator:SetVisible(false)
+        elseif ressourceType == "focus" then
+            focusIndicator:SetVisible(true)
+            comboFrame:SetVisible(false)
         else
             comboFrame:SetVisible(false)
+            focusIndicator:SetVisible(false)
         end
     end
 
@@ -135,6 +151,24 @@ function internalFunc.ressourcBar (unit, setup)
             chargeText:SetText(stringFormat("%d", mathFloor(chargePercent*100)))
             chargeFrame:SetWidth((setup.charge.width - 2) * chargePercent)
         end
+    end
+
+    function ressourceBGFrame:SetFocus(newFocus)
+        -- goes from 0 to 200 while 100 is the middle
+
+        local focus = newFocus or 0
+        if focus > 100 then 
+            focus = focus - 100 
+        else
+            focus = 100 - focus
+        end
+
+        local percent = newFocus / 200
+        local x = setup.width * percent
+
+        focusIndicator:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", x , -5)
+
+        ressourceText:SetText(stringFormat("%d", focus))
     end
 
     function ressourceBGFrame:SetRessourceMax(newMax)

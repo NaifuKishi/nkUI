@@ -266,7 +266,7 @@ function _events.uiFramesInitEvents()
 	Command.Event.Attach(EnKai.events["EnKai.Unit"].GroupStatus, _events.groupStatus, "nkUI.EnKai.Unit.GroupStatus")
 	Command.Event.Attach(EnKai.events["EnKai.Unit"].Available, _events.available, "nkUI.EnKai.Unit.Available")
 	Command.Event.Attach(EnKai.events["EnKai.Unit"].Unavailable, _events.unavailable, "nkUI.EnKai.Unit.Unavailable")
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].Change, _events.change, "nkUI.EnKai.Unit.Change")
+	Command.Event.Attach(EnKai.events["EnKai.Unit"].Change, _events.change, "nkUI.EnKai.Unit.Change")	
 
 	--- in combat and out of combat alpha
 

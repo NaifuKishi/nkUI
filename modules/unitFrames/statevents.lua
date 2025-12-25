@@ -85,7 +85,6 @@ local function _eventEnergy (_, info)
 end
 
 local function _eventEnergyMax (_, info)
-
 	for unit, thisData in pairs(info) do
 		local identifiers = EnKai.unit.getUnitTypes (unit)
 		if #identifiers > 0 then
@@ -180,6 +179,13 @@ local function _eventCombo (_, info)
 	end
 end
 
+function _events.focus (self, focus)
+
+	uiElements.frames["player.ressourcebar"]:SetFocus(focus)
+
+end
+
+
 function _events.uiFramesInitStatEvents()	
 
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitStatEvents", "", nil) end
@@ -196,5 +202,12 @@ function _events.uiFramesInitStatEvents()
 	Command.Event.Attach(Event.Unit.Detail.Charge, _eventCharge, "nkUI.playerFrame.Unit.Detail.Charge")    
     Command.Event.Attach(Event.Unit.Detail.Planar, _eventPlanar, "nkUI.playerFrame.Unit.Detail.Planar")
 	Command.Event.Attach(Event.Unit.Detail.Combo, _eventCombo, "nkUI.playerFrame.Unit.Detail.Combo")
+
+	local details = EnKai.unit.getPlayerDetails()
+	if details.calling == "primalist" then
+		EnKai.stat.init()
+		EnKai.stat.subscribe("focus")
+		Command.Event.Attach(EnKai.events["EnKai.Stat"].Focus, _events.focus, "nkUI.EnKai.Stat.Focus")	
+	end
 
 end
