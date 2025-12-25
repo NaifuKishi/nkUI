@@ -51,7 +51,20 @@ local function _createTutorialWindow()
     tutorialWindow:SetWidth(600)
     tutorialWindow:SetHeight(600)
     tutorialWindow:SetPoint("CENTER", UIParent, "CENTER")
-    tutorialWindow:SetShadow(true)
+    --tutorialWindow:SetShadow(false)
+    tutorialWindow:SetTitleFontSize(16)
+    tutorialWindow:SetTitleEffect ( {strength = 3})
+
+    tutorialWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
+    tutorialWindow:SetColor(nil, {
+        type = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+        color = {
+            data.theme.windowStartColor,
+            data.theme.windowEndColor
+            }
+    })
 
     -- Create content frame
     local content = tutorialWindow:GetContent()
@@ -64,13 +77,15 @@ local function _createTutorialWindow()
     titleText:SetPoint("TOPLEFT", content, "TOPLEFT", 20, 20)
     titleText:SetFontSize(20)
     titleText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    titleText:SetEffectGlow({strength = 3})
 
     local descriptionText = EnKai.uiCreateFrame("nkText", "tutorialDescription", content)
     descriptionText:SetPoint("TOPLEFT", titleText, "BOTTOMLEFT", 0, 20)
     descriptionText:SetWordwrap(true)
     descriptionText:SetWidth(560)
     descriptionText:SetFontSize(16)
-    descriptionText:SetTextFont(addonInfo.id, "Montserrat")
+    descriptionText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    descriptionText:SetEffectGlow({strength = 3})
 
     -- Create a frame for displaying subframes
     local subFrameContainer = EnKai.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
@@ -87,12 +102,21 @@ local function _createTutorialWindow()
     prevButton:SetText("Previous")
     prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
     prevButton:SetWidth(100)
+    prevButton:SetFontColor(data.theme.labelColor)
+    prevButton:SetEffectGlow ({ strength = 3 })
+    prevButton:SetColor(0, 0, 0, .4)
+    prevButton:SetBorderColor(0, 0, 0, .7)
 
     local nextButton = EnKai.uiCreateFrame("nkButtonMetro", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
     nextButton:SetText("Next")
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
     nextButton:SetWidth(100)
+    nextButton:SetFontColor(data.theme.labelColor)
+    nextButton:SetEffectGlow ({ strength = 3 })
+    nextButton:SetColor(0, 0, 0, .4)
+    nextButton:SetBorderColor(0, 0, 0, .7)
+
 
     -- Create tutorial steps
     local steps = {
