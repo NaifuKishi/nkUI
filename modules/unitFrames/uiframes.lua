@@ -420,7 +420,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:SetDebuffIcons(icons) unitDebuffIcons = icons end
     function unitFrame:SetBuffDisplayList(list) unitBuffDisplayList = list end
     function unitFrame:SetDebuffDisplayList(list) unitDebuffDisplayList = list end
-    function unitFrame:SetBuffId2BuffTypeList(list) unitBuffId2BuffType = list end
+    function unitFrame:SetBuffId2BuffTypeList(list) unitBuffId2BuffType = list end    
 
     function unitFrame:addBuff(buffUnit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
     function unitFrame:changeBuff(unit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end
@@ -484,6 +484,8 @@ function frameManager.get(unitType, unitFrameType, setup)
     end
 
     function unitFrame:SetCalling (calling)
+        if calling == "primalist" then energyText:SetVisible(false) end
+
         local fill = callingColor[calling or "default"]
         healthFrame:SetShape (path, fill, nil)            
     end

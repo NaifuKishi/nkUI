@@ -5,7 +5,7 @@ local addonInfo, privateVars = ...
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
-local _events       = privateVars.events
+local events       = privateVars.events
 
 privateVars.settingsUI = {}
 
