@@ -5,6 +5,7 @@ V0.8.3
     - updates: Trash items are now displayed at the bottom in One Bag
     - updates: slight change to primalist ressource bar coloring
     - fixes: tooltip should now be working propery on bag slots
+    - fixes: Slightly adjusted ressource text
 
 V0.8.2
     - new: proper Primalist ressource support
