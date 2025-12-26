@@ -22,7 +22,7 @@ local mathFloor         = math.floor
 
 local name = "onebag"
 local itemIcons = {}
-local categoryLabels = {}
+local bagCategories = {}
 local movedItem
 local cachedItems
 local lastCacheUpdate
@@ -33,6 +33,21 @@ oneBag.dragItem = {
 }
 
 ---------- local functions ---------
+
+local function sortItems (items)
+
+    local sortedItems = {}
+    for slot, itemDetails in pairs(items) do
+        table.insert(sortedItems, {slot = slot, details = itemDetails})
+    end
+
+    table.sort(sortedItems, function(a, b)
+        return a.details.name < b.details.name
+    end)
+
+    return sortedItems
+
+end
 
 -- Initializes the onebag and loads all modules
 function internalFunc.oneBagInit()
@@ -52,8 +67,6 @@ function internalFunc.oneBagInit()
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
         Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].SlotUpdate, function(_, slots)
-            --dump (slots)
-
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
@@ -91,37 +104,43 @@ function oneBag.populateBag(forceCacheUpdate)
     --dump (cachedItems)
 
     local categories = {}
+    local hasTrash = false
+    local trashItems = {}
 
     for k, v in pairs(cachedItems) do
         local realCategory = oneBag.getRealCategory(v.category, v.rarity)
 
-        if categories[realCategory] == nil then
-            categories[realCategory] = {}
+        if realCategory == "Trash" then
+            hasTrash = true
+            trashItems[k] = v
+        else
+            if categories[realCategory] == nil then
+                categories[realCategory] = {}
+            end
+            
+            categories[realCategory][k] = v
         end
-        
-        categories[realCategory][k] = v
     end
 
     -- Sort items within each category by item name
     for category, items in pairs(categories) do
-        local sortedItems = {}
-        for slot, itemDetails in pairs(items) do
-            table.insert(sortedItems, {slot = slot, details = itemDetails})
-        end
-
-        table.sort(sortedItems, function(a, b)
-            return a.details.name < b.details.name
-        end)
-
         categories[category] = {
             original = items,
-            sorted = sortedItems
+            sorted = sortItems (items)
         }
     end
 
     local sortedCategories = EnKai.tools.table.getSortedKeys (categories)
 
-    for k, v in pairs(categoryLabels) do
+    if hasTrash then
+        table.insert(sortedCategories, "Trash")
+        categories["Trash"] = {
+            original = trashItems,
+            sorted = sortItems (trashItems)
+        }
+    end
+
+    for k, v in pairs(bagCategories) do
         if EnKai.tools.table.isMember(sortedCategories, k) == false then
             v:SetVisible(false)
         end
@@ -143,15 +162,20 @@ function oneBag.populateBag(forceCacheUpdate)
 
     --    for category, content in pairs(categories) do
 
-        local category = sortedCategories[idx]
-        local content = categories[category].sorted
-        local thisCategory = categoryLabels[category]
+        local categoryLabel = sortedCategories[idx]
+
+        local content = categories[categoryLabel].sorted        
+        local thisCategory = bagCategories[categoryLabel]
 
         if thisCategory == nil then
-            thisCategory = oneBag.createItemCategory("nkUI.onebagCategory." .. category, uiElements.oneBag:GetContent())
-            thisCategory:SetText(category)
-            categoryLabels[category] = thisCategory
-        end
+            thisCategory = oneBag.createItemCategory("nkUI.onebagCategory." .. categoryLabel, uiElements.oneBag:GetContent())
+            thisCategory:SetText(categoryLabel)
+            bagCategories[categoryLabel] = thisCategory
+        else
+            for slot, icon in pairs (thisCategory.items) do
+                icon:SetVisible(false)
+            end            
+        end        
 
         thisCategory:SetVisible(true)
 
@@ -159,41 +183,55 @@ function oneBag.populateBag(forceCacheUpdate)
         local contentCounter = 0
         firstIcon = thisCategory
         local cols, rows = 0, 1
+        thisCategory.items = {}
+        local maxCols = 15
+        if categoryLabel == "Trash" then maxCols = 20 end
 
         for idx =1, #content, 1 do
-        --for slot, itemDetails in pairs(content) do
             local slot = content[idx].slot
             local itemDetails = content[idx].details
 
             local thisIcon = itemIcons[slot]
 
-            if itemIcons[slot] == nil then
+            if thisIcon == nil then
                 thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)
                 itemIcons[slot] = thisIcon
+            end            
+
+            thisIcon:SetSlot(slot)
+            thisIcon:SetIcon("Rift", itemDetails.icon)
+            thisIcon:SetRarity(itemDetails.rarity)
+            thisIcon:SetQuantity(stringFormat("%d", itemDetails.stack))
+            thisIcon:SetBound(itemDetails.bind, itemDetails.bound)
+            thisIcon:SetItem(itemDetails.id)
+            thisIcon:SetVisible(true)
+
+            if categoryLabel == "Trash" then
+                thisIcon:SetTrash(true)
             end
 
-            itemIcons[slot]:SetSlot(slot)
-            itemIcons[slot]:SetIcon("Rift", itemDetails.icon)
-            itemIcons[slot]:SetRarity(itemDetails.rarity)
-            itemIcons[slot]:SetQuantity(stringFormat("%d", itemDetails.stack))
-            itemIcons[slot]:SetBound(itemDetails.bind, itemDetails.bound)
-            itemIcons[slot]:SetItem(itemDetails.id)
-            itemIcons[slot]:SetVisible(true)
+            thisCategory.items[slot] = thisIcon
 
-            if counter == 1 then
+            -- position icons within category
+
+            if counter == 1 then -- first icon on row
                 if rows == 1 then
-                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20* data.uiScale)
+                    thisIcon:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20 * data.uiScale) -- first row
                 else
-                    itemIcons[slot]:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2)
+                    thisIcon:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2) -- nth row
                 end
                 firstIcon = thisIcon
             else
-                itemIcons[slot]:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5* data.uiScale, 0)
+                thisIcon:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5 * data.uiScale, 0) -- not first icon
             end
+
+            -- increase col count if still one line otherwise max icons are reached
 
             if rows == 1 then cols = cols + 1 end
 
-            if counter == 15 then
+            -- Check max icons per line is reached
+
+            if counter == maxCols then
                 counter = 0
                 rows = rows + 1
             end
@@ -202,9 +240,9 @@ function oneBag.populateBag(forceCacheUpdate)
             counter = counter + 1
         end
 
-        if rows > 1 and counter == 1 then rows = rows - 1 end -- preventing an extra line if a item line is exactly 15 items
+        if rows > 1 and counter == 1 then rows = rows - 1 end -- preventing an extra line if an item line is exactly 15 items
 
-        local checkTitleWidth = mathFloor(thisCategory:GetTextWidth() / 42) + 1
+        local checkTitleWidth = mathFloor(thisCategory:GetTextWidth() / 45)
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
         thisCategory:SetHeight(((20* data.uiScale) + (rows * (40* data.uiScale)) + ((rows-1) * (5* data.uiScale))))
@@ -229,7 +267,7 @@ function oneBag.populateBag(forceCacheUpdate)
         end
 
         lastCategory = thisCategory
-    end
+    end    
 
     if lastCategory then
         local bottom = lastCategory:GetBottom()

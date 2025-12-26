@@ -18,7 +18,7 @@ function oneBag.createItemCategory(name, parent)
     
     local categoryText = EnKai.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
     categoryText:SetFontSize(14 * data.uiScale)
-    categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT")
+    categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT", -3, 0)
     categoryText:SetFontColor(1, 1, 1, 1)
     categoryText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     categoryText:SetEffectGlow({ strength = 3})

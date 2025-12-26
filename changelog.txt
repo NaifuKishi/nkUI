@@ -1,6 +1,7 @@
 V0.8.3
     - new: Bags can now be moved onto the bag slots from inventory
     - new: started adding hint dialogs
+    - updates: Trash items are now displyed smaller and at the bottom in One Bag
     - updates: slight change to primalist ressource bar coloring
 
 V0.8.2
