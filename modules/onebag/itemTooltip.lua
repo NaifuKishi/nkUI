@@ -55,7 +55,7 @@ local function uiItemTooltip ()
         local details = inspectItemDetail (itemID)
         local qty = EnKai.inventory.queryQtyById (itemID)
 
-        if details.sell then 
+        if details and details.sell then 
             local platin = mathFloor(details.sell / 10000)
             local gold = mathFloor((details.sell - (platin * 10000)) / 100)
             local silver = details.sell - (platin * 10000) - (gold * 100)  

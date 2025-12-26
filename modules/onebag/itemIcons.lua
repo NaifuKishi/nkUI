@@ -114,14 +114,14 @@ function oneBag.createItemIcon(name, parent)
     end
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
+        oneBag.hideItemTooltip()
         Command.Tooltip(thisItemID)
-
         EnKai.events.addInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
-        Command.Tooltip(nil)
-        oneBag.hideItemTooltip()
+        oneBag.hideItemTooltip ()
+        Command.Tooltip(nil)        
     end, name .. "Event.UI.Input.Mouse.Cursor.Out")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function()
