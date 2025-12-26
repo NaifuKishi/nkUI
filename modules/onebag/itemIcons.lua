@@ -7,6 +7,8 @@ local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
 
+local inspectTimeFrame = Inspect.Time.Frame
+
 local stringFormat  = string.format
 
 ---------- local functions ---------
@@ -113,7 +115,8 @@ function oneBag.createItemIcon(name, parent)
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
         Command.Tooltip(thisItemID)
-        oneBag.showItemTooltip (thisItemID)
+
+        EnKai.events.addInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()

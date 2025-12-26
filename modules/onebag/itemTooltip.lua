@@ -112,6 +112,6 @@ end
 
 function oneBag.hideItemTooltip ()
 
-    uiElements.oneBagItemTooltip:SetVisible(false)
+    if uiElements.oneBagItemTooltip then uiElements.oneBagItemTooltip:SetVisible(false) end
 
 end
