@@ -1,4 +1,3 @@
-
 local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
