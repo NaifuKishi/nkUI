@@ -79,7 +79,6 @@ local function uiItemTooltip ()
             end
 
             if silver > 0 then
-            end
                 if currencyText then
                     currencyText = currencyText .. " " .. stringFormat(currencyTextSilver, silver)
                 else
@@ -91,6 +90,7 @@ local function uiItemTooltip ()
         else
             valueText:SetText("No price information")
         end
+        
         countText:SetText(stringFormat("Quantity you own: %d", qty))
     end
 
