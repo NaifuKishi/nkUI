@@ -6,6 +6,7 @@ V0.8.3
     - updates: slight change to primalist ressource bar coloring
     - fixes: tooltip should now be working propery on bag slots
     - fixes: Slightly adjusted ressource text
+    - fixes: Finally found the issue of empty icons in OneBag
 
 V0.8.2
     - new: proper Primalist ressource support

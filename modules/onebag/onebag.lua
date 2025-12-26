@@ -196,11 +196,13 @@ function oneBag.populateBag(forceCacheUpdate)
             local thisIcon = itemIcons[slot]
 
             if thisIcon == nil then
+                if nkDebug then nkDebug.logEntry (addonInfo.identifier, stringFormat("One Bag create slot icon %s", slot)) end
                 thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)
                 thisIcon:SetSlot(slot)
                 itemIcons[slot] = thisIcon
             end            
             
+            thisIcon:SetParent(thisCategory)
             thisIcon:SetIcon("Rift", itemDetails.icon)
             thisIcon:SetRarity(itemDetails.rarity)
             thisIcon:SetQuantity(stringFormat("%d", itemDetails.stack))
@@ -277,8 +279,7 @@ end
 
 function oneBag.itemSlot (_, slots)
 
-    --print ("itemSlot")
-    --dump (slots)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", "", slots) end
 
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
@@ -294,7 +295,7 @@ function oneBag.itemSlot (_, slots)
         if doBatSlotsUpdate and doInventoryUpdate then break end
     end
 
-    --print (doInventoryUpdate)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
         EnKai.inventory.updateDB()
@@ -307,8 +308,7 @@ end
 
 function oneBag.itemUpdate (_, slots)
 
-    --print ("itemUpdate")
-    --dump (slots)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemUpdate", "", slots) end
     
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
@@ -324,7 +324,7 @@ function oneBag.itemUpdate (_, slots)
         if doBatSlotsUpdate and doInventoryUpdate then break end
     end
 
-    --print (doInventoryUpdate)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
         EnKai.inventory.updateDB()

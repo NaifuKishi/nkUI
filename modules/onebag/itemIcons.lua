@@ -2,10 +2,12 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
+
+local stringFormat  = string.format
 
 ---------- local functions ---------
 
@@ -48,6 +50,12 @@ function oneBag.createItemIcon(name, parent)
     
     function itemFrame:SetSlot(slotID)
         thisSlot = slotID
+    end
+
+    local oSetVisible = itemFrame.SetVisible
+    function itemFrame:SetVisible(flag)
+        if nkDebug then nkDebug.logEntry (addonInfo.identifier, stringFormat("One Bag Set slot visibility %s", thisSlot), flag) end
+        oSetVisible(self, flag)
     end
     
     function itemFrame:Clear()
