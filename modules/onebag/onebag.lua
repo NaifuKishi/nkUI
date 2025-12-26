@@ -55,6 +55,7 @@ function internalFunc.oneBagInit()
     if uiElements.oneBag then
         if uiElements.oneBag:GetVisible() then
             uiElements.oneBag:SetVisible(false)
+            uiElements.oneBagItemTooltip:SetVisible(false)
         else
             uiElements.oneBag:SetVisible(true)
         end

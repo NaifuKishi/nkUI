@@ -43,6 +43,7 @@ RunOnStartup = {
 	"modules/onebag/itemCategories.lua",
 	"modules/onebag/itemIcons.lua",
 	"modules/onebag/bagSlots.lua",
+	"modules/onebag/itemTooltip.lua",
 
 	"modules/unitFrames/events.lua",
 	"modules/unitFrames/statevents.lua",

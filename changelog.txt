@@ -2,6 +2,7 @@ V0.8.3
     - new: Bags can now be moved betwen bag slots
     - new: Bags can now be moved onto the bag slots from inventory
     - new: started adding hint dialogs
+    - new: Additional info in One Bag item tooltip showing qty owned and price of item
     - updates: Trash items are now displayed at the bottom in One Bag
     - updates: slight change to primalist ressource bar coloring
     - fixes: tooltip should now be working propery on bag slots

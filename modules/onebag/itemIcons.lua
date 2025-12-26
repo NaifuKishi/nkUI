@@ -113,10 +113,12 @@ function oneBag.createItemIcon(name, parent)
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
         Command.Tooltip(thisItemID)
+        oneBag.showItemTooltip (thisItemID)
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
         Command.Tooltip(nil)
+        oneBag.hideItemTooltip()
     end, name .. "Event.UI.Input.Mouse.Cursor.Out")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function()
