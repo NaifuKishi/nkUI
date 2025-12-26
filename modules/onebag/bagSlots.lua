@@ -17,6 +17,7 @@ local ICONPADDING = 5
 local function bagSlot(name, parent, riftSlot)
 
     local isLocked = false
+    local thisItemID
 
     local thisSlot = EnKai.uiCreateFrame("nkCanvas", name, parent)
     thisSlot:SetWidth(ICONSIZE * data.uiScale)
@@ -55,14 +56,27 @@ local function bagSlot(name, parent, riftSlot)
     function thisSlot:SetLocked(newValue)
         isLocked = newValue
     end
+
+    function thisSlot:SetItemID(itemID)
+        thisItemID = itemID
+    end
     
     icon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
-        Command.Tooltip(thisSlot.itemID)
+        Command.Tooltip(thisItemID)
     end, name .. ".Event.UI.Input.Mouse.Cursor.In")
     
     icon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
         Command.Tooltip(nil)
     end, name .. ".Event.UI.Input.Mouse.Cursor.Out")
+
+    icon:EventAttach(Event.UI.Input.Mouse.Left.Down, function()
+        oneBag.dragItem = {
+            draggedItem = thisItemID,
+            draggedSlot = riftSlot
+        }
+        Command.Item.Standard.Left(thisItemID)
+        Command.Cursor(thisItemID)
+    end, name .. "Event.Left.Down")
 
     icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if not oneBag.dragItem then return end
@@ -76,6 +90,8 @@ local function bagSlot(name, parent, riftSlot)
         
         Command.Item.Move(sourceSlot, riftSlot)
         Command.Cursor(nil)
+
+        oneBag.dragItem = nil
     end, name .. ".Event.Mouse.Left.Up")
 
     icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
@@ -113,7 +129,7 @@ function oneBag.createBagSlots()
     
     function bagSlotsFrame:SetItem(index, itemID)
         local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
-        thisSlot.itemID = itemID
+        thisSlot:SetItemID(itemID)
     end
     
     function bagSlotsFrame:SetIcon(index, addonID, icon)

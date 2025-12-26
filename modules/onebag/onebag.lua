@@ -143,6 +143,10 @@ function oneBag.populateBag(forceCacheUpdate)
     for k, v in pairs(bagCategories) do
         if EnKai.tools.table.isMember(sortedCategories, k) == false then
             v:SetVisible(false)
+
+            for slot, icon in pairs (v.items) do
+                icon:SetVisible(false)
+            end
         end
     end
 
@@ -184,8 +188,6 @@ function oneBag.populateBag(forceCacheUpdate)
         firstIcon = thisCategory
         local cols, rows = 0, 1
         thisCategory.items = {}
-        local maxCols = 15
-        if categoryLabel == "Trash" then maxCols = 20 end
 
         for idx =1, #content, 1 do
             local slot = content[idx].slot
@@ -195,20 +197,16 @@ function oneBag.populateBag(forceCacheUpdate)
 
             if thisIcon == nil then
                 thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)
+                thisIcon:SetSlot(slot)
                 itemIcons[slot] = thisIcon
             end            
-
-            thisIcon:SetSlot(slot)
+            
             thisIcon:SetIcon("Rift", itemDetails.icon)
             thisIcon:SetRarity(itemDetails.rarity)
             thisIcon:SetQuantity(stringFormat("%d", itemDetails.stack))
             thisIcon:SetBound(itemDetails.bind, itemDetails.bound)
             thisIcon:SetItem(itemDetails.id)
             thisIcon:SetVisible(true)
-
-            if categoryLabel == "Trash" then
-                thisIcon:SetTrash(true)
-            end
 
             thisCategory.items[slot] = thisIcon
 
@@ -231,7 +229,7 @@ function oneBag.populateBag(forceCacheUpdate)
 
             -- Check max icons per line is reached
 
-            if counter == maxCols then
+            if counter == 15 then
                 counter = 0
                 rows = rows + 1
             end
@@ -279,6 +277,7 @@ end
 
 function oneBag.itemSlot (_, slots)
 
+    --print ("itemSlot")
     --dump (slots)
 
     local doInventoryUpdate = false
@@ -307,6 +306,9 @@ function oneBag.itemSlot (_, slots)
 end
 
 function oneBag.itemUpdate (_, slots)
+
+    --print ("itemUpdate")
+    --dump (slots)
     
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false

@@ -37,16 +37,6 @@ function oneBag.createItemIcon(name, parent)
     bindText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})
     bindText:SetLayer(2)
-    
-    function itemFrame:SetTrash(flag)
-        if flag then
-            itemFrame:SetWidth(30 * data.uiScale)
-            itemFrame:SetHeight(30 * data.uiScale)
-        else
-            itemFrame:SetWidth(40 * data.uiScale)
-            itemFrame:SetHeight(40 * data.uiScale)
-        end        
-    end
 
     function itemFrame:SetItem(itemID)
         thisItemID = itemID
