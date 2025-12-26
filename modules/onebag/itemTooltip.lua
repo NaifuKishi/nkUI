@@ -52,10 +52,12 @@ local function uiItemTooltip ()
     EnKai.ui.setFont(countText, addonInfo.id, "MontserratSemiBold")
 
     function tooltip:SetItem(itemID)
-        local details = inspectItemDetail (itemID)
-        local qty = EnKai.inventory.queryQtyById (itemID)
+        local flag, details = pcall(inspectItemDetail, itemID)        
+        local qty = 0
 
-        if details and details.sell then 
+        if flag and details and details.sell then 
+            qty = EnKai.inventory.queryQtyById (itemID)
+
             local platin = mathFloor(details.sell / 10000)
             local gold = mathFloor((details.sell - (platin * 10000)) / 100)
             local silver = details.sell - (platin * 10000) - (gold * 100)  
@@ -91,7 +93,7 @@ local function uiItemTooltip ()
             valueText:SetText("No price information")
         end
         
-        countText:SetText(stringFormat("Quantity you own: %d", qty))
+        if qty == 0 then countText:SetText(stringFormat("Quantity you own: %d", qty)) end
     end
 
     return tooltip
