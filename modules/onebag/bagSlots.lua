@@ -14,12 +14,85 @@ local stringFormat  = string.format
 local ICONSIZE = 30
 local ICONPADDING = 5
 
+local function bagSlot(name, parent, riftSlot)
+
+    local isLocked = false
+
+    local thisSlot = EnKai.uiCreateFrame("nkCanvas", name, parent)
+    thisSlot:SetWidth(ICONSIZE * data.uiScale)
+    thisSlot:SetHeight(ICONSIZE * data.uiScale)    
+    
+    local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1}
+    local path = {
+        {xProportional = 0, yProportional = 0},
+        {xProportional = 1, yProportional = 0},
+        {xProportional = 1, yProportional = 1},
+        {xProportional = 0, yProportional = 1},
+        {xProportional = 0, yProportional = 0}
+    }
+    
+    thisSlot:SetShape(path, nil, stroke)
+    
+    local icon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", parent)
+    icon:SetWidth((ICONSIZE-2) * data.uiScale)
+    icon:SetHeight((ICONSIZE-2) * data.uiScale)
+    icon:SetPoint("CENTER", thisSlot, "CENTER")
+    icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
+    icon:SetLayer(1)
+            
+    thisSlot.icon = icon
+    
+    local tint = EnKai.uiCreateFrame("nkFrame", name .. ".tint", parent)
+    tint:SetWidth((ICONSIZE-2) * data.uiScale)
+    tint:SetHeight((ICONSIZE-2) * data.uiScale)
+    tint:SetPoint("CENTER", thisSlot, "CENTER")
+    tint:SetBackgroundColor(1, 0, 0, 0.5)
+    tint:SetLayer(2)
+    tint:SetVisible(false)
+    
+    thisSlot.tint = tint
+
+    function thisSlot:SetLocked(newValue)
+        isLocked = newValue
+    end
+    
+    icon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
+        Command.Tooltip(thisSlot.itemID)
+    end, name .. ".Event.UI.Input.Mouse.Cursor.In")
+    
+    icon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
+        Command.Tooltip(nil)
+    end, name .. ".Event.UI.Input.Mouse.Cursor.Out")
+
+    icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        if not oneBag.dragItem then return end
+        --if isLocked then return end
+        
+        local sourceSlot = oneBag.dragItem.draggedSlot
+        if sourceSlot == nil then return end
+        
+        local type, held = Inspect.Cursor()
+        --local target = stringFormat("sibg.%03d", idx)
+        
+        Command.Item.Move(sourceSlot, riftSlot)
+        Command.Cursor(nil)
+    end, name .. ".Event.Mouse.Left.Up")
+
+    icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
+        if not isLocked then return end        
+        internalFunc.dialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
+    end, name .. ".Event.Mouse.Right.Click")
+    
+    return thisSlot
+
+end
+
+
 -- Creates the bag slots UI
 function oneBag.createBagSlots()
     
     local bagSlots = {}
     local thisItemID
-    local isLocked = true
 
     local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.uiScale
     local height = (10 + ICONSIZE) * data.uiScale
@@ -32,63 +105,10 @@ function oneBag.createBagSlots()
     bagSlotsFrame:SetLayer(2)
     
     for idx = 1, 8, 1 do
-        local thisSlot = EnKai.uiCreateFrame("nkCanvas", "nkUIBagSlot" .. idx, bagSlotsFrame)
-        thisSlot:SetWidth(ICONSIZE * data.uiScale)
-        thisSlot:SetHeight(ICONSIZE * data.uiScale)
+        local riftSlot = stringFormat("sibg.%03d", idx)
+        local thisSlot = bagSlot("nkUIBagSlot" .. idx, bagSlotsFrame, riftSlot)
         thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", (5 + ((idx - 1) * (ICONSIZE + ICONPADDING))) * data.uiScale, 5 * data.uiScale)
-        
-        local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1}
-        local path = {
-            {xProportional = 0, yProportional = 0},
-            {xProportional = 1, yProportional = 0},
-            {xProportional = 1, yProportional = 1},
-            {xProportional = 0, yProportional = 1},
-            {xProportional = 0, yProportional = 0}
-        }
-        
-        thisSlot:SetShape(path, nil, stroke)
-        
-        local icon = EnKai.uiCreateFrame("nkTexture", "nkUIBagSlotIcon" .. idx, bagSlotsFrame)
-        icon:SetWidth((ICONSIZE-2) * data.uiScale)
-        icon:SetHeight((ICONSIZE-2) * data.uiScale)
-        icon:SetPoint("CENTER", thisSlot, "CENTER")
-        icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
-        icon:SetLayer(1)
-                
-        thisSlot.icon = icon
-        
-        local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint" .. idx, bagSlotsFrame)
-        tint:SetWidth((ICONSIZE-2) * data.uiScale)
-        tint:SetHeight((ICONSIZE-2) * data.uiScale)
-        tint:SetPoint("CENTER", thisSlot, "CENTER")
-        tint:SetBackgroundColor(1, 0, 0, 0.5)
-        tint:SetLayer(2)
-        tint:SetVisible(false)
-        
-        thisSlot.tint = tint
-        
-        icon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
-            Command.Tooltip(thisSlot.itemID)
-        end, "nkUIBagSlotIcon" .. idx .. "Event.UI.Input.Mouse.Cursor.In")
-        
-        icon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
-            Command.Tooltip(nil)
-        end, "nkUIBagSlotIcon" .. idx .. "Event.UI.Input.Mouse.Cursor.Out")
-
-        icon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-            if not oneBag.dragItem then return end
-            
-            local sourceSlot = oneBag.dragItem.draggedSlot
-            if sourceSlot == nil then return end
-            
-            local type, held = Inspect.Cursor()
-            local target = stringFormat("sibg.%03d", idx)
-            
-            Command.Item.Move(target, sourceSlot)
-            Command.Cursor(nil)
-        end, "nkUIBagSlotIcon" .. idx .. "Event.Left.Up")
-        
-        bagSlots[stringFormat("sibg.%03d", idx)] = thisSlot
+        bagSlots[riftSlot] = thisSlot
     end
     
     function bagSlotsFrame:SetItem(index, itemID)
@@ -104,7 +124,7 @@ function oneBag.createBagSlots()
     function bagSlotsFrame:SetTint(index, newValue)
         local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
         thisSlot.tint:SetVisible(newValue)
-        isLocked = newValue
+        thisSlot:SetLocked(newValue)
     end
     
     return bagSlotsFrame

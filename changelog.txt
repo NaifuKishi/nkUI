@@ -1,3 +1,8 @@
+V0.8.3
+    - new: Bags can now be moved onto the bag slots from inventory
+    - new: started adding hint dialogs
+    - updates: slight change to primalist ressource bar coloring
+
 V0.8.2
     - new: proper Primalist ressource support
     - updates: Completely changed UI theme

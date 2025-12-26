@@ -2,6 +2,8 @@ local addonInfo, privateVars = ...
 
 -- Initialize namespace
 local internalFunc  = privateVars.internalFunc
+local uiElements    = privateVars.uiElements
+local data        	= privateVars.data
 
 -- Cache frequently used functions and values
 local stringLen     = string.len
@@ -49,4 +51,26 @@ function internalFunc.traceEnd(eventName, debugId)
     if nkDebug then
         nkDebug.traceEnd(addonInfo.identifier, "events." .. eventName, debugId)
     end
+end
+
+function internalFunc.dialog (messageText)
+
+    if uiElements.dialog == nil then
+        uiElements.dialog = EnKai.uiCreateFrame("nkDialogMetro", "nkUI.dialog", uiElements.contextDialog)        
+        uiElements.dialog:SetType("ok")
+        uiElements.dialog:SetWidth(400)
+        uiElements.dialog:SetHeight(100)
+        uiElements.dialog:SetFont(addonInfo.id, "MontserratSemiBold")
+        uiElements.dialog:SetEffectGlow({ strength = 3 })
+
+        uiElements.dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
+	    uiElements.dialog:SetButtonColor (0, 0, 0, .4)
+	    uiElements.dialog:SetButtonFontColor (data.theme.labelColor)
+	    uiElements.dialog:SetButtonBorderColor (0, 0, 0, .7)
+	    uiElements.dialog:SetButtonEffect ({ strength = 3 })
+    end
+    
+    uiElements.dialog:SetMessage(messageText)
+    uiElements.dialog:SetVisible(true)
+
 end
