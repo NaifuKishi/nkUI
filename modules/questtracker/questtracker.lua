@@ -180,7 +180,18 @@ function questTracker.fillLog ()
 	if (#data.addQuestList == 0) then uiElements.questTracker:GetContent():SetVisible(true) end
 		 
 end
-/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.luast, callBack) end
+
+function questTracker.clearLog(callBack)
+
+	--uiElements.questTracker:Collapse(true)
+	
+	local list = inspectQuestList()
+
+	for key, v in pairs(list) do
+		table.insert(data.removeQuestList, key)
+	end
+	
+	if callBack ~= nil then table.insert(data.removeQuestList, callBack) end
 
 end
 
@@ -222,7 +233,7 @@ function questTracker.processQuest(details, processTitleFlag)
 		elseif LibEKL.strings.find(details.tag, 'story') then
 			details.domain = 'story'
 			setDomain = true
-		elseif details.domain == nil then		
+				elseif details.domain == nil then		
 			if details.tag ~= nil then
 				if LibEKL.strings.find(details.tag, 'dungeon') then
 					details.domain = 'instant'
@@ -230,7 +241,27 @@ function questTracker.processQuest(details, processTitleFlag)
 				elseif LibEKL.strings.find(details.tag, 'monthly') then
 					details.domain = 'monthly'
 					setDomain = true
-				else/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
+				else
+					if nkDebug then nkDebug.logEntry (addonInfo.identifier, "questTracker.processQuest", "no domain 1", details) end
+					details.domain = 'personal'
+				end
+			elseif LibEKL.strings.find(details.name, privateVars.langTexts.identifierCarnage) then
+				details.domain = 'carnage'
+				setDomain = true
+			else
+				if nkDebug then nkDebug.logEntry (addonInfo.identifier, "questTracker.processQuest", "no domain 2", details) end
+				details.domain = 'personal'
+			end
+		end
+	end
+
+	local lvl, libDetails = nkQuestBase.query.byKey(details.id, true)
+
+	if libDetails ~= nil then
+
+		if libDetails.domain ~= nil then 
+			details.domain = libDetails.domain
+		elseif libDetails.type ~= nil then
 			if LibEKL.tools.table.isMember(libDetails.type, 9) then details.domain = "carnage" end
 		end
 
@@ -273,7 +304,11 @@ function questTracker.processQuest(details, processTitleFlag)
 			color = "#FF3333"
 		elseif lvl > playerLevel + 2 then
 			color = "#FF8000"
-		end/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
+		end
+
+		if color ~= nil and details.level ~= nil then
+			details.level = stringFormat("<font color='%s'>%s</font>", color, details.level)
+		end
 
 		if details.complete == true then details.name = stringFormat(privateVars.langTexts.completeInfo, details.name) end
 
@@ -331,7 +366,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   
 		end
 		
-		local color = data.categoryColor[category]/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
+		local color = data.categoryColor[category]/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/LibEKL/ui/tools/progressBar.lua
 		if color == nil then color = {1, 1, 1} end
 		tooltip:SetTitleColor(color[1], color[2], color[3])
 	end
@@ -388,7 +423,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 				table.insert(lines, {text = stringFormat("<font color='%s'>%s</font>", "#cccccc", v.description), wordwrap = true, fontsize = 13 })
 			end
 		end
-	end/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
+	end
 
 	if nkDebug then -- show quest key if nkDebug is enabled		
 		table.insert (lines, { text = "", height = 10})
