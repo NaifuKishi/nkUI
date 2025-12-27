@@ -39,6 +39,10 @@ function oneBag.createBagUI()
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         Command.Cursor(nil)
     end, "nkUI.bagWindow.Event.Left.Up")
+
+    bagWindow:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
+        oneBag.hideItemTooltip()
+    end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
     
     return bagWindow
 end
