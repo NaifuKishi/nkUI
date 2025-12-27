@@ -14,14 +14,17 @@ local inspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 
 -- Helper function to create and configure a UI button
 local function createButton(parent, name, width, height, x, y, text, iconPath)
-    local button = LibEKL.uiCreateFrame("nkButtonMetro", name, parent)
+    local button = LibEKL.uiCreateFrame("nkButton", name, parent)
     button:SetWidth(width)
     button:SetHeight(height)
     button:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
     button:SetText(text)
-    button:SetIcon("LibEKL", iconPath)
-    button:SetFont(addonInfo.id, "Montserrat")
+    button:SetFont(addonInfo.id, "MontserratSemiBold")
+	button:SetEffectGlow ({ strength = 3 })
     button:SetScale(0.7)
+	button:SetLabelColor(data.theme.labelColor)
+	button:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+    button:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
     return button
 end
 
@@ -33,6 +36,8 @@ local function createTextField(parent, name, width, height, x, y)
     textField:SetMultiLine(true)
     textField:SetRestoreOnExit(false)
     textField:SetInnerColor({r = 0, g = 0, b = 0, a = 1})
+	textField:SetFocusColor (data.theme.labelColor)
+	textField:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
     textField:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
     return textField
 end
@@ -60,6 +65,8 @@ function internalFunc.macroEditDialog (editBar)
 	iconEdit:SetWidth(48)
 	iconEdit:SetHeight(48)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
+	iconEdit:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = 1})
+    iconEdit:SetBorderColor({ r = 1, g = 1, b = 1, a = 1, thickness = 1})
 	
 	-- Event handler for icon selection
 	iconEdit:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
@@ -92,7 +99,7 @@ function internalFunc.macroEditDialog (editBar)
     local macroEdit = createTextField(ui:GetContent(), name .. ".macroEdit", ui:GetWidth() - 20, 100, 10, 68)
 	
 	-- Cancel button for the dialog
-    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetHeight() - 40, "Cancel macro", "gfx/icons/close.png")
+    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetHeight() - 50, "Cancel macro")
 	
 	-- Event handler for cancel button
 	Command.Event.Attach(LibEKL.events[name .. ".cancelButton"].Clicked, function (_, newValue)
@@ -101,7 +108,7 @@ function internalFunc.macroEditDialog (editBar)
 	end, name .. ".cancelButton.Clicked")
 	
 	-- Save button for the dialog
-    local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetHeight() - 40, "Save macro", "gfx/icons/ok.png")
+    local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetHeight() - 50, "Save macro")
 	
 	-- Event handler for save button
 	Command.Event.Attach(LibEKL.events[name .. ".saveButton"].Clicked, function (_, newValue)		

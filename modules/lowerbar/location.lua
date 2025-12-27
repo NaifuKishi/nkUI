@@ -43,6 +43,7 @@ function lowerBar.location()
     local buttons = {}
     local abilities = {"A3C5AEC64D3793518", "A665FDAC7EDD37636"}
     local abilityDetails = inspectAbilityNewDetail(abilities)
+
     local parent = datasetLocation
     
     for k, v in pairs(abilityDetails) do

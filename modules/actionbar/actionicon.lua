@@ -528,11 +528,28 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			fctEditMacro()
 		else
-			LibEKL.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
+			local dialog = LibEKL.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				fctEditMacro()
 			end)
+
+			dialog:SetFont(addonInfo.id, "MontserratSemiBold")
+			dialog:SetEffectGlow({ strength = 3 })
+			dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
+			dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+			dialog:SetButtonLabelColor (data.theme.labelColor)
+			dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+			dialog:SetButtonEffect({ strength = 3 })
+
+			dialog:SetColor(nil, {
+									type = "gradientLinear",
+									transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+									color = {
+										data.theme.windowStartColor,
+										data.theme.windowEndColor
+										}
+								})
 		end
 	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	

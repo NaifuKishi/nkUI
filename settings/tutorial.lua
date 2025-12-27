@@ -97,25 +97,25 @@ local function _createTutorialWindow()
     local imageFrame = LibEKL.uiCreateFrame("nkTexture", "tutorialImage", content)
 
     -- Navigation buttons
-    local prevButton = LibEKL.uiCreateFrame("nkButtonMetro", "prevButton", content)
+    local prevButton = LibEKL.uiCreateFrame("nkButton", "prevButton", content)
     prevButton:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 20, -20)
     prevButton:SetText("Previous")
     prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
     prevButton:SetWidth(100)
-    prevButton:SetFontColor(data.theme.labelColor)
+    prevButton:SetLabelColor(data.theme.labelColor)
     prevButton:SetEffectGlow ({ strength = 3 })
-    prevButton:SetColor(0, 0, 0, .4)
-    prevButton:SetBorderColor(0, 0, 0, .7)
+    prevButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+    prevButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    local nextButton = LibEKL.uiCreateFrame("nkButtonMetro", "nextButton", content)
+    local nextButton = LibEKL.uiCreateFrame("nkButton", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
     nextButton:SetText("Next")
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
     nextButton:SetWidth(100)
-    nextButton:SetFontColor(data.theme.labelColor)
+    nextButton:SetLabelColor(data.theme.labelColor)
     nextButton:SetEffectGlow ({ strength = 3 })
-    nextButton:SetColor(0, 0, 0, .4)
-    nextButton:SetBorderColor(0, 0, 0, .7)
+    nextButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+    nextButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
 
     -- Create tutorial steps
