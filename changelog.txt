@@ -5,6 +5,7 @@ V0.8.4
     - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
     - fixes: LowerBar - Fixed role change error
     - fixes: One Bag - Tooltip addition should now hide more properly
+    - fixes: Action bar - Fixed global cooldown display on actions bars
 
 V0.8.3
     - new: Bags can now be moved between bag slots

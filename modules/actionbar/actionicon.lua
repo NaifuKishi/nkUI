@@ -126,12 +126,21 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if duration == nil or cooldownActive == true then return end
 
 		local start = inspectTimeFrame()
+		local lastRemaining
 
 		local gcdCoRoutine = coroutine.create(function ()
-			for idx = 1, 100, 1 do		
-				local remaining = duration - (inspectTimeFrame() - start)
-				if inspectTimeFrame() - start > duration then return 9999 end
-				cooldown:SetText(tostring(mathFloor(remaining * 10) / 10))
+			for idx = 1, 999, 1 do		
+				local thisRemaining = duration - (inspectTimeFrame() - start)
+				local checkRemaining = mathFloor(thisRemaining * 10) / 10
+
+				if checkRemaining <= 0 then return 9999 end
+
+				--if inspectTimeFrame() - start > duration then return 9999 end
+
+				if checkRemaining ~= lastRemaining then					
+					cooldown:SetText(tostring(checkRemaining))
+				end
+
 				coroutine.yield(idx)
 			end
 		end)
@@ -141,7 +150,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		cooldownTint:SetVisible(true)
 		cooldown:SetText(tostring(mathFloor(duration * 10) / 10))
 
-		EnKai.coroutines.add ({ func = gcdCoRoutine, counter = 100, active = true })
+		EnKai.coroutines.add ({ func = gcdCoRoutine, counter = 999, active = true })
 	end	
 
 	--[[
