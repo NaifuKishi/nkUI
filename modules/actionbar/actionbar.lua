@@ -55,7 +55,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     local width = (cols * buttonSize * scale ) + ((cols -1) * spacing)
     local height = (rows * buttonSize * scale ) + ((rows - 1) * spacing)
 
-    local actionBar = EnKai.uiCreateFrame("nkFrame", thisName, uiElements.contextLowest)
+    local actionBar = LibEKL.uiCreateFrame("nkFrame", thisName, uiElements.contextLowest)
     
     actionBar:SetWidth(width)
     actionBar:SetHeight(height)
@@ -230,9 +230,9 @@ function internalFunc.uiActionBars()
     if data.unitFramesBuild then return end
     if nkUISetup.modules.actionBars.activate == false then return end
 
-    EnKai.cdManager.init()
+    LibEKL.cdManager.init()
 
-    data.actionBarSetup = nkUISetup.modules.actionBars.bars[EnKai.unit.getPlayerDetails().name]
+    data.actionBarSetup = nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name]
 
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
     local roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }
@@ -246,12 +246,12 @@ function internalFunc.uiActionBars()
 
     if count > #data.actionBarSetup.roles then
         for idx = #data.actionBarSetup.roles + 1, count, 1 do
-            local temp = EnKai.tools.table.copy(roleDesign)
-            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- main bar
-            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- stance bar
-            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- left bar
-            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- right bar
-            table.insert(temp.bars, EnKai.tools.table.copy(data.defaultBar)) -- right screen bar
+            local temp = LibEKL.tools.table.copy(roleDesign)
+            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- main bar
+            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- stance bar
+            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- left bar
+            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- right bar
+            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- right screen bar
 
             table.insert(data.actionBarSetup.roles, temp)
         end
@@ -317,7 +317,7 @@ function internalFunc.uiActionBars()
             rightScreenBar:Populate()
         end
 
-        EnKai.events.addInsecure(populateActionBars, inspectTimeFrame(), 2)
+        LibEKL.events.addInsecure(populateActionBars, inspectTimeFrame(), 2)
     end, "nkUI.TEMPORARY.Role")
 
     -- Set initial alpha for all action bars
@@ -326,9 +326,9 @@ function internalFunc.uiActionBars()
     end
 
     -- Attach event handlers for various game events
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Start, events.abCooldownProcess, "nkUI.EnKai.CDManager.Start")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Update, events.abCooldownProcess, "nkUI.EnKai.CDManager.Update")
-    Command.Event.Attach(EnKai.events["EnKai.CDManager"].Stop, events.abCooldownProcess, "nkUI.EnKai.CDManager.Stop")
+    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Start, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Start")
+    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Update, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Update")
+    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Stop, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Stop")
 
     Command.Event.Attach(Event.Buff.Add, events.abBuffAdd, "nkUI.Buff.Add")
     Command.Event.Attach(Event.Buff.Remove, events.abBuffRemove, "nkUI.Buff.Remove")

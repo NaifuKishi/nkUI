@@ -43,7 +43,7 @@ local BLANK_TEXTURE = "gfx/equipslot_blank"
 function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	-- Create the main frame for the action icon
-	local frame = EnKai.uiCreateFrame("nkCanvas", name, parent)
+	local frame = LibEKL.uiCreateFrame("nkCanvas", name, parent)
 	
 	-- Local variables for the icon components and state
 	local texture, oorTint, cooldownTint, cooldown, macroFrame, overlay
@@ -68,32 +68,32 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 1 })
 
 	-- Create the texture for the icon
-	texture = EnKai.uiCreateFrame("nkTexture", name .. '.texture', frame)  
+	texture = LibEKL.uiCreateFrame("nkTexture", name .. '.texture', frame)  
 	texture:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	texture:SetLayer(1)
 	texture:SetMouseMasking("limited")
 	
 	 -- Create the overlay for the icon
-	overlay = EnKai.uiCreateFrame("nkCanvas", name .. ".overlay", frame)
+	overlay = LibEKL.uiCreateFrame("nkCanvas", name .. ".overlay", frame)
 	overlay:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	overlay:SetShape(path, nil, {r = 0, g = 0, b = 0, a = 1, thickness = 5 })
 	overlay:SetLayer(2)
     overlay:SetVisible(false)
 	
 	-- Create the out-of-range tint
-	oorTint = EnKai.uiCreateFrame("nkCanvas", name .. ".oorTint", frame)
+	oorTint = LibEKL.uiCreateFrame("nkCanvas", name .. ".oorTint", frame)
 	oorTint:SetVisible(false)
 	oorTint:SetPoint("CENTER", overlay, "CENTER")
 	oorTint:SetLayer(4)
 	
 	-- Create the cooldown tint
-	cooldownTint = EnKai.uiCreateFrame("nkCanvas", name .. ".cooldownTint", frame)
+	cooldownTint = LibEKL.uiCreateFrame("nkCanvas", name .. ".cooldownTint", frame)
 	cooldownTint:SetVisible(false)
 	cooldownTint:SetPoint("CENTER", overlay, "CENTER")
 	cooldownTint:SetLayer(5)
 	
 	-- Create the cooldown text
-	cooldown = EnKai.uiCreateFrame("nkText", name .. '.cooldown', frame)
+	cooldown = LibEKL.uiCreateFrame("nkText", name .. '.cooldown', frame)
 	cooldown:SetVisible(false)
 	cooldown:SetFontSize(18)
 	cooldown:SetPoint("CENTER", frame, "CENTER")
@@ -154,7 +154,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		cooldownTint:SetVisible(true)
 		cooldown:SetText(tostring(mathFloor(duration * 10) / 10))
 
-		EnKai.coroutines.add ({ func = gcdCoRoutine, counter = 999, active = true })
+		LibEKL.coroutines.add ({ func = gcdCoRoutine, counter = 999, active = true })
 	end	
 
 	--[[
@@ -249,17 +249,17 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:ClearItem()
 		
-		EnKai.ui.attachItemTooltip (texture, nil)
-		EnKai.ui.attachAbilityTooltip (texture, nil)
-		EnKai.ui.attachGenericTooltip (texture, nil)
+		LibEKL.ui.attachItemTooltip (texture, nil)
+		LibEKL.ui.attachAbilityTooltip (texture, nil)
+		LibEKL.ui.attachGenericTooltip (texture, nil)
 				
 		if thisMacroCDType ~= nil then
-			EnKai.cdManager.unsubscribe(thisMacroCDType, thisMacroCDKey)
+			LibEKL.cdManager.unsubscribe(thisMacroCDType, thisMacroCDKey)
 
 			data.abilityMap[thisMacroCDKey] = nil
 			data.abilityList[thisMacroCDKey] = nil
 		elseif thisItemKey ~= nil and thisItemKey ~= 'macro' then
-			EnKai.cdManager.unsubscribe(thisItemType, thisItemKey)
+			LibEKL.cdManager.unsubscribe(thisItemType, thisItemKey)
 
 			if not data.abilityMap then data.abilityMap = {} end
 			if not data.abilityList then data.abilityList = {} end
@@ -318,13 +318,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroCDKey = macroCDKey
 		
 		if macroCDType ~= nil then
-			EnKai.cdManager.subscribe(macroCDType, macroCDKey)
+			LibEKL.cdManager.subscribe(macroCDType, macroCDKey)
 
 			if data.abilityMap[macroCDKey] == nil then data.abilityMap[macroCDKey] = {} end
 			table.insert(data.abilityMap[macroCDKey], frame)
 			table.insert(data.abilityList, macroCDKey)
 		else
-			EnKai.cdManager.subscribe(thisItemType, thisItemKey)
+			LibEKL.cdManager.subscribe(thisItemType, thisItemKey)
 			if data.abilityMap == nil then data.abilityMap = {} end
 			if data.abilityMap[itemKey] == nil then data.abilityMap[itemKey] = {} end
 			table.insert(data.abilityMap[itemKey], frame)
@@ -361,7 +361,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then
 		
 			if not macroFrame then
-				macroFrame = EnKai.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.secureContext)
+				macroFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.secureContext)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
@@ -375,7 +375,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				end, macroFrame:GetName() .. ".UI.Input.Mouse.Left.Up")
 			end
 
-			EnKai.events.addInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
+			LibEKL.events.addInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
 			macroFrame:SetVisible(true)
 			
 		elseif macroFrame ~= nil then			
@@ -387,12 +387,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then tooltipTarget = macroFrame end
 						
 		if thisItemType == 'item' then
-			EnKai.ui.attachItemTooltip (tooltipTarget, itemKey)
+			LibEKL.ui.attachItemTooltip (tooltipTarget, itemKey)
 		elseif thisItemType == "ability" then
-			EnKai.ui.attachAbilityTooltip (tooltipTarget, itemKey)
-			EnKai.ui.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+			LibEKL.ui.attachAbilityTooltip (tooltipTarget, itemKey)
+			LibEKL.ui.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 		else -- macro
-			EnKai.ui.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
+			LibEKL.ui.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
 		end
 	end
 	
@@ -435,8 +435,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		local mainColor = data.actionBarColors.mainColor
 		local subColor = data.actionBarColors.subColor
 		
-		local thisStroke = EnKai.tools.table.copy(setup[6])
-		local thisFill = EnKai.tools.table.copy(setup[5])
+		local thisStroke = LibEKL.tools.table.copy(setup[6])
+		local thisFill = LibEKL.tools.table.copy(setup[5])
 		
 		thisFill.r, thisFill.g, thisFill.b = subColor.r, subColor.g, subColor.b
 		thisFill.a = 0.6
@@ -481,15 +481,15 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then target = macroFrame end
 					
 		if thisItemType == 'item' then
-			EnKai.ui.attachItemTooltip (target, nil)
+			LibEKL.ui.attachItemTooltip (target, nil)
 		elseif thisItemType == 'macro' then
-			EnKai.ui.attachGenericTooltip (target, nil, nil)
+			LibEKL.ui.attachGenericTooltip (target, nil, nil)
 		else
-			EnKai.ui.attachAbilityTooltip (target, nil)
+			LibEKL.ui.attachAbilityTooltip (target, nil)
 		end
 		
 		texture:destroy()
-		EnKai.uiAddToGarbageCollector ('nkFrame', frame, name)
+		LibEKL.uiAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
 	--[[
@@ -528,7 +528,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			fctEditMacro()
 		else
-			EnKai.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
+			LibEKL.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				fctEditMacro()

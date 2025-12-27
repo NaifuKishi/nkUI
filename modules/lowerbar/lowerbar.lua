@@ -28,7 +28,7 @@ function lowerBar.build()
     -- Create a canvas behind the lower bar
 
     if not uiElements.lowerBarCanvas then
-        uiElements.lowerBarCanvas = EnKai.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", uiElements.contextLowest)
+        uiElements.lowerBarCanvas = LibEKL.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", uiElements.contextLowest)
         uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
         uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
 
@@ -64,19 +64,21 @@ end
 
 -- Initializes the lower bar
 function internalFunc.lowerBarInit(value)
+
     if #uiElements.lowerBarModules == 0 then
-        EnKai.events.addInsecure(function()
+        LibEKL.events.addInsecure(function()
             lowerBar.build()
         end, nil, nil)
     else
-        EnKai.events.addInsecure(function()
+        --LibEKL.events.addInsecure(function()
             for k, v in pairs(uiElements.lowerBarModules) do
                 v:SetVisible(value)
             end
-        end, nil, nil)
+        --end, nil, nil)
 
         uiElements.lowerBarCanvas:SetVisible(value)
     end
+
 end
 
 -- Redraws all lower bar modules
@@ -85,5 +87,5 @@ function internalFunc.lowerBarRedraw()
         uiElements.lowerBarModules[idx]:Redraw()
     end
     
-    EnKai.ui.reloadDialog("nkUI")
+    LibEKL.ui.reloadDialog("nkUI")
 end

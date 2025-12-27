@@ -13,7 +13,7 @@ local InspectTimeReal       = Inspect.Time.Real
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
-local EnKaiGetPlayerDetails = EnKai.unit.getPlayerDetails
+local LibEKLGetPlayerDetails = LibEKL.unit.getPlayerDetails
 
 -- Buff and debuff icons and display lists
 local buffIcons         = {}
@@ -98,7 +98,7 @@ function internalFunc.buffBar.addBuff(unit, buffs)
         local buffIdentifier = buffDetails.type
 
         if buffIdentifier == nil then
-            EnKai.tools.error.display("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
+            LibEKL.tools.error.display("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
         else
             buffId2BuffType[buffID] = buffIdentifier
             
@@ -136,14 +136,14 @@ end
 
 -- Clears all active buff icons
 function internalFunc.buffBar.clearAllBuffs()
-    local buffs = InspectBuffList(EnKaiGetPlayerDetails().id)
-    internalFunc.buffBar.removeBuff(EnKaiGetPlayerDetails().id, buffs)
+    local buffs = InspectBuffList(LibEKLGetPlayerDetails().id)
+    internalFunc.buffBar.removeBuff(LibEKLGetPlayerDetails().id, buffs)
 end
 
 -- Loads all buffs for the player
 function internalFunc.buffBar.loadAllBuffs()
-    local buffs = InspectBuffList(EnKaiGetPlayerDetails().id)
-    internalFunc.buffBar.addBuff(EnKaiGetPlayerDetails().id, buffs)
+    local buffs = InspectBuffList(LibEKLGetPlayerDetails().id)
+    internalFunc.buffBar.addBuff(LibEKLGetPlayerDetails().id, buffs)
     internalFunc.buffBar.UpdateBuffDisplay()
 end
 
@@ -167,5 +167,5 @@ function internalFunc.buffBar.Redraw()
         v.icon:Setup(newSetup)
     end
     
-    EnKai.ui.reloadDialog("nkUI")
+    LibEKL.ui.reloadDialog("nkUI")
 end

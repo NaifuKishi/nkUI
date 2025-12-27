@@ -28,7 +28,7 @@ local lastCacheUpdate
 
 local function oneBag.getBagSlots ()
 
-    local slots = EnKai.inventory.getBagSlots()
+    local slots = LibEKL.inventory.getBagSlots()
 
     for idx = 1, 8, 1 do
 
@@ -53,16 +53,16 @@ local function _fctItemIcon (name, parent)
 
     local thisItemID, thisSlot
 
-    local itemFrame = EnKai.uiCreateFrame("nKFrame", name, parent) 
+    local itemFrame = LibEKL.uiCreateFrame("nKFrame", name, parent) 
     itemFrame:SetWidth(40 * data.uiScale)
     itemFrame:SetHeight(40 * data.uiScale)
     
-    local itemIcon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
+    local itemIcon = LibEKL.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 2, 2)
     itemIcon:SetPoint("BOTTOMRIGHT", itemFrame, "BOTTOMRIGHT", -2, -2)
     itemIcon:SetLayer(1)
 
-    local quantityText = EnKai.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
+    local quantityText = LibEKL.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
     quantityText:SetFontSize(14 * data.uiScale)
     quantityText:SetFontColor(1, 1, 1, 1)
@@ -70,7 +70,7 @@ local function _fctItemIcon (name, parent)
     quantityText:SetEffectGlow({ strength = 3})
     quantityText:SetLayer(2)
 
-    local bindText = EnKai.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
+    local bindText = LibEKL.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
     bindText:SetFontSize(10 * data.uiScale)
     bindText:SetFontColor(1, 1, 1, 1)
@@ -80,7 +80,7 @@ local function _fctItemIcon (name, parent)
 
     function itemFrame:SetItem (itemID)
         thisItemID = itemID        
-        --EnKai.ui.attachItemTooltip (itemIcon, itemID)
+        --LibEKL.ui.attachItemTooltip (itemIcon, itemID)
     end
 
     function itemFrame:SetIcon (addonName, path)
@@ -161,7 +161,7 @@ local function _fctItemIcon (name, parent)
 
     itemIcon:EventAttach( Event.UI.Input.Mouse.Right.Down, function (self)	
         if UI.Native.Bank:GetLoaded() then
-            local vaultSlot = EnKai.inventory.findFreeVaultSlot()
+            local vaultSlot = LibEKL.inventory.findFreeVaultSlot()
             if vaultSlot then
                 Command.Item.Move(thisSlot, vaultSlot)
                 movedItem = thisItemID
@@ -177,10 +177,10 @@ end
 
 local function _fctItemCategory (name, parent)
     
-    local categoryFrame = EnKai.uiCreateFrame("nkFrame",  name .. ".categoryFrame", parent)    
+    local categoryFrame = LibEKL.uiCreateFrame("nkFrame",  name .. ".categoryFrame", parent)    
     categoryFrame:SetHeight(60 * data.uiScale)
 
-    local categoryText = EnKai.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
+    local categoryText = LibEKL.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
     categoryText:SetFontSize(14 * data.uiScale)
     categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT")
     categoryText:SetFontColor(1, 1, 1, 1)
@@ -203,7 +203,7 @@ end
 
 local function _fctBagUI()
 
-    local bagWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.contextDialog)
+    local bagWindow = LibEKL.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.contextDialog)
     bagWindow:SetTitle("nkUI Inventory")
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetWidth(680 * data.uiScale)
@@ -226,7 +226,7 @@ local function _fctBagSlots ()
     local bagSlots = {}
     local thisItemID
 
-    local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
+    local bagSlotsFrame = LibEKL.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(365 * data.uiScale)
     bagSlotsFrame:SetHeight(50 * data.uiScale)
     bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", -5 * data.uiScale, 8 * data.uiScale)
@@ -234,7 +234,7 @@ local function _fctBagSlots ()
     bagSlotsFrame:SetLayer(2)
 
     for idx = 1, 8, 1 do
-        local thisSlot = EnKai.uiCreateFrame("nkCanvas", "nkUIBagSlot"..idx, bagSlotsFrame)
+        local thisSlot = LibEKL.uiCreateFrame("nkCanvas", "nkUIBagSlot"..idx, bagSlotsFrame)
         thisSlot:SetWidth(40 * data.uiScale)
         thisSlot:SetHeight(40 * data.uiScale)
         thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", ((idx-1)*45 + 5)* data.uiScale, 5* data.uiScale)
@@ -249,7 +249,7 @@ local function _fctBagSlots ()
 
         thisSlot:SetShape (path, nil, stroke)
 
-        local icon = EnKai.uiCreateFrame("nkTexture", "nkUIBagSlotIcon"..idx, bagSlotsFrame)
+        local icon = LibEKL.uiCreateFrame("nkTexture", "nkUIBagSlotIcon"..idx, bagSlotsFrame)
         icon:SetWidth(38 * data.uiScale)
         icon:SetHeight(38 * data.uiScale)
         icon:SetPoint("CENTER", thisSlot, "CENTER")
@@ -270,7 +270,7 @@ local function _fctBagSlots ()
 
         thisSlot.icon = icon                
 
-        local tint = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotTint"..idx, bagSlotsFrame)
+        local tint = LibEKL.uiCreateFrame("nkFrame", "nkUIBagSlotTint"..idx, bagSlotsFrame)
         tint:SetWidth(38 * data.uiScale)
         tint:SetHeight(38 * data.uiScale)
         tint:SetPoint("CENTER", thisSlot, "CENTER")
@@ -365,7 +365,7 @@ function oneBag.populateBag(forceCacheUpdate)
     local lastIcon = nil
 
     if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
-        cachedItems = EnKai.inventory.getBagItems()
+        cachedItems = LibEKL.inventory.getBagItems()
         lastCacheUpdate = InspectTimeReal()
     end
 
@@ -381,10 +381,10 @@ function oneBag.populateBag(forceCacheUpdate)
         categories[realCategory][k] = v
     end
 
-    local sortedCategories = EnKai.tools.table.getSortedKeys (categories)
+    local sortedCategories = LibEKL.tools.table.getSortedKeys (categories)
 
     for k, v in pairs(categoryLabels) do
-        if EnKai.tools.table.isMember(sortedCategories, k) == false then
+        if LibEKL.tools.table.isMember(sortedCategories, k) == false then
             v:SetVisible(false)
         end
     end
@@ -516,7 +516,7 @@ function oneBag.itemSlot (_, slots)
     --print (doInventoryUpdate)
 
     if doInventoryUpdate then 
-        EnKai.inventory.updateDB()
+        LibEKL.inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
@@ -532,27 +532,27 @@ function InternalFunc.oneBagInit()
 
     if uiElements.oneBag then 
         if uiElements.oneBag:GetVisible() then
-            --EnKai.ui.getItemTooltip():SetVisible(false)
+            --LibEKL.ui.getItemTooltip():SetVisible(false)
             uiElements.oneBag:SetVisible(false)
         else
             uiElements.oneBag:SetVisible(true)
         end
     else
-        EnKai.inventory.updateDB()
+        LibEKL.inventory.updateDB()
         uiElements.oneBag = _fctBagUI()
         uiElements.oneBagBagSlots = _fctBagSlots ()
 
         Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
-        Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].SlotUpdate, function (_, slots)
+        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].SlotUpdate, function (_, slots)
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k,"^si%d%d%.%d%d%d$") then
                         if v == false then
                             cachedItems[k] = nil
                         else
-                            cachedItems[k] = EnKai.inventory.GetItemByKey (v)
+                            cachedItems[k] = LibEKL.inventory.GetItemByKey (v)
                         end
                     end
                 end                
@@ -560,20 +560,20 @@ function InternalFunc.oneBagInit()
 
             oneBag.populateBag()
 
-        end, "nkUI.OneBag.EnKai.InventoryManager.SlotUpdate")
+        end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
 
-        Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, items)
+        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function (_, items)
             --dump (items)
 --[[            
             for k, v in pairs(items) do
                 if movedItem == k and v > 0 then
                     movedItem = nil
-                    EnKai.inventory.updateDB()
+                    LibEKL.inventory.updateDB()
                     oneBag.populateBag()
                 end
             end
 ]]
-        end, "nkUI.OneBag.EnKai.InventoryManager.Update")
+        end, "nkUI.OneBag.LibEKL.InventoryManager.Update")
     end
 
     oneBag.populateBag()

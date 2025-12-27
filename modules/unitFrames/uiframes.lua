@@ -23,7 +23,7 @@ local stringLen     = string.len
 local stringSub     = string.sub
 local stringFind    = string.find
 
-local EnKaiGetUnitDetail  = EnKai.unit.GetUnitDetail
+local LibEKLGetUnitDetail  = LibEKL.unit.GetUnitDetail
 
 ---------- init global variables ---------
 
@@ -131,7 +131,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     -- Create new frame if none available
     local healthMax
     local energyMax
-    local thisName = EnKai.tools.uuid()
+    local thisName = LibEKL.tools.uuid()
     local thisUnitID = nil
 
     local unitBuffIcons = {}
@@ -140,7 +140,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     local unitDebuffDisplayList = {}
     local unitBuffId2BuffType = {}
 
-    local unitFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.contextLowest)
+    local unitFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.contextLowest)
     unitFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     unitFrame:SetWidth(frameWidth)
     unitFrame:SetHeight(frameHeight)    
@@ -165,7 +165,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         end
     end
     
-    local secureFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
+    local secureFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
@@ -189,7 +189,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         end
     end
 
-    local healthFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
+    local healthFrame = LibEKL.uiCreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
     healthFrame:SetLayer(1)
 
     if setup.reverse then
@@ -209,7 +209,7 @@ function frameManager.get(unitType, unitFrameType, setup)
                   {xProportional = 0, yProportional = 0}
                   }  
   
-    local nameText = EnKai.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
+    local nameText = LibEKL.uiCreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
     if unitFrameType == "raid" then
         nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
@@ -225,7 +225,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     nameText:SetEffectGlow({ strength = 5})    
     nameText:SetLayer(2)
 
-    local healthText = EnKai.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
+    local healthText = LibEKL.uiCreateFrame("nkText", thisName .. ".healthText", healthFrame)
 
     if setup.reverse then
         healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, setup.margins.health)
@@ -240,7 +240,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     if unitFrameType == "raid" then healthText:SetVisible(false) end
 
-    local energyText = EnKai.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
+    local energyText = LibEKL.uiCreateFrame("nkText", thisName .. ".energyText", healthFrame)
 
     if setup.reverse then
         energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -setup.margins.energy)
@@ -256,7 +256,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     if unitFrameType == "raid" then energyText:SetVisible(false) end
 
-    local planarText = EnKai.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
+    local planarText = LibEKL.uiCreateFrame("nkText", thisName .. ".planarText", healthFrame)
 
     if setup.reverse then
         planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
@@ -270,7 +270,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     planarText:SetEffectGlow({ strength = 5})  
     planarText:SetLayer(2)
 
-    local levelText = EnKai.uiCreateFrame("nkText", thisName .. ".levelText", healthFrame)
+    local levelText = LibEKL.uiCreateFrame("nkText", thisName .. ".levelText", healthFrame)
 
     if setup.reverse then
         levelText:SetPoint("BOTTOMRIGHT", unitFrame, "BOTTOMRIGHT", -setup.margins.level, 10)
@@ -286,7 +286,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     if unitFrameType == "raid" then levelText:SetVisible(false) end
 
-    local combatIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
+    local combatIcon = LibEKL.uiCreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
     combatIcon:SetLayer(99)
     combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -setup.margins.combatIcon, 0)
     combatIcon:SetHeight(setup.iconSizes.combat)
@@ -294,7 +294,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     combatIcon:SetVisible(false)
     combatIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconCombat.png")
 
-    local roleIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
+    local roleIcon = LibEKL.uiCreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
     roleIcon:SetLayer(99)
     roleIcon:SetHeight(setup.iconSizes.role)
     roleIcon:SetWidth(setup.iconSizes.role)
@@ -306,14 +306,14 @@ function frameManager.get(unitType, unitFrameType, setup)
         roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", setup.margins.roleIcon, 0)
     end
 
-    local tierIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".tierIcon", unitFrame)
+    local tierIcon = LibEKL.uiCreateFrame("nkTexture", thisName .. ".tierIcon", unitFrame)
     tierIcon:SetLayer(99)
     tierIcon:SetHeight(setup.iconSizes.tier)
     tierIcon:SetWidth(setup.iconSizes.tier)
     tierIcon:SetVisible(false) 
     tierIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.tierIcon, 0)
 
-    local rareIcon = EnKai.uiCreateFrame("nkTexture", thisName .. ".rareIcon", unitFrame)
+    local rareIcon = LibEKL.uiCreateFrame("nkTexture", thisName .. ".rareIcon", unitFrame)
     rareIcon:SetLayer(99)
     rareIcon:SetHeight(setup.iconSizes.tier)
     rareIcon:SetWidth(setup.iconSizes.tier)
@@ -404,7 +404,7 @@ function frameManager.get(unitType, unitFrameType, setup)
             unitFrame:SetTier("raid")
         end
 
-        unitFrame:ProcessUnitDetails (EnKai.unit.getPlayerDetails().id)
+        unitFrame:ProcessUnitDetails (LibEKL.unit.getPlayerDetails().id)
         unitFrame:SetRole("dps")
         
     end
@@ -501,7 +501,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     function unitFrame:SetLevel (newLevel)
         
-        local playerLevel = EnKai.unit.getPlayerDetails().level
+        local playerLevel = LibEKL.unit.getPlayerDetails().level
         
         if newLevel == "??" then
             color = "#FF3333"
@@ -652,7 +652,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     if frame == nil then return end
 
-    local details = EnKaiGetUnitDetail(unitID)
+    local details = LibEKLGetUnitDetail(unitID)
 
     if details == nil then return end
 
@@ -693,7 +693,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     frame:ClearBuffs()
 
-    local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+    local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
 
     if stringFind (identifier, "group") and groupStatus ~= 'raid' then
         local buffs = InspectBuffList(unitID)
@@ -727,7 +727,7 @@ function internalFunc.uiFrames()
 
     uiElements.frames = {}
 
-    local buffBarHolder = EnKai.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.contextLowest)
+    local buffBarHolder = LibEKL.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.contextLowest)
     buffBarHolder:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
     uiElements.frames["buffBar"] = buffBarHolder
 
@@ -770,7 +770,7 @@ function internalFunc.uiFrames()
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
-        --internalFunc.updateUnit (group, EnKai.unit.getPlayerDetails().id)
+        --internalFunc.updateUnit (group, LibEKL.unit.getPlayerDetails().id)
 
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
@@ -791,7 +791,7 @@ function internalFunc.uiFrames()
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
-            --internalFunc.updateUnit (raid, EnKai.unit.getPlayerDetails().id)
+            --internalFunc.updateUnit (raid, LibEKL.unit.getPlayerDetails().id)
             uiElements.frames[stringFormat("raid%02d", index)] = raid
 
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
@@ -803,8 +803,8 @@ function internalFunc.uiFrames()
     end
 
     function playerRessourceBar:update (unitID)
-        if (unitID == EnKai.unit.getPlayerDetails().id) then
-            local details = EnKaiGetUnitDetail(unitID)
+        if (unitID == LibEKL.unit.getPlayerDetails().id) then
+            local details = LibEKLGetUnitDetail(unitID)
 
             if details.combo then playerRessourceBar:SetCombo(details.combo) end
 
@@ -864,8 +864,8 @@ function internalFunc.uiFramesToggle(value)
 
     if value == true and not uiElements.frames["player"] then
         internalFunc.uiFrames ()
-        internalFunc.updateUnit (uiElements.frames["player"], EnKai.unit.getPlayerDetails().id, "player")
-        uiElements.frames["player.ressourcebar"]:update (EnKai.unit.getPlayerDetails().id)
+        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.unit.getPlayerDetails().id, "player")
+        uiElements.frames["player.ressourcebar"]:update (LibEKL.unit.getPlayerDetails().id)
     end
 
     if uiElements.frames then        
@@ -881,11 +881,11 @@ end
 
 function internalFunc.uiFramesRemoveBuffs()
 
-    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:removeBuff(EnKai.unit.getPlayerDetails().id, buffs) end
+    local buffs = InspectBuffList(LibEKL.unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
-    local targetID = EnKai.unit.GetUnitByIdentifier("player.target")
+    local targetID = LibEKL.unit.GetUnitByIdentifier("player.target")
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
@@ -893,7 +893,7 @@ function internalFunc.uiFramesRemoveBuffs()
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = EnKai.unit.GetUnitByIdentifier("player.pet")
+    local playerPetID = LibEKL.unit.GetUnitByIdentifier("player.pet")
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)
@@ -904,12 +904,12 @@ end
 
 function internalFunc.uiFramesLoadAllBuffs()
 
-    local buffs = InspectBuffList(EnKai.unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:addBuff(EnKai.unit.getPlayerDetails().id, buffs) end
+    local buffs = InspectBuffList(LibEKL.unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
 
-    local targetID = EnKai.unit.GetUnitByIdentifier("player.target")
+    local targetID = LibEKL.unit.GetUnitByIdentifier("player.target")
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
@@ -917,7 +917,7 @@ function internalFunc.uiFramesLoadAllBuffs()
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = EnKai.unit.GetUnitByIdentifier("player.pet")
+    local playerPetID = LibEKL.unit.GetUnitByIdentifier("player.pet")
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)
@@ -946,6 +946,6 @@ function internalFunc.uiFrameRedraw(bar)
         uiElements.frames[bar]:Redraw() 
     end
 
-    EnKai.ui.reloadDialog ("nkUI")
+    LibEKL.ui.reloadDialog ("nkUI")
 
 end

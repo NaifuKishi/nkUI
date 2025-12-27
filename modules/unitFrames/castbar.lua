@@ -26,7 +26,7 @@ function internalFunc.createCastBar (unitType, setup)
 
 	local thisName = name .. "." .. unitType
 
-	local castbar =  EnKai.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.secureContext)
+	local castbar =  LibEKL.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.secureContext)
 	castbar:SetVisible(false)
 	castbar:SetWidth(setup.width)
 	castbar:SetHeight(setup.height)
@@ -34,7 +34,7 @@ function internalFunc.createCastBar (unitType, setup)
 	
 	castbar:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)		
 
-	local castbarFill = EnKai.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
+	local castbarFill = LibEKL.uiCreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
 	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 0, 0)
 	castbarFill:SetHeight(setup.height )
 	castbarFill:SetLayer(1)
@@ -53,7 +53,7 @@ function internalFunc.createCastBar (unitType, setup)
 	
 	--castbarFill:SetShape (path, color, stroke)
 
-	local castBarText = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
+	local castBarText = LibEKL.uiCreateFrame("nkText", thisName .. ".castBar.Text", castbar)
 	castBarText:SetPoint("CENTER", castbar, "CENTER")
 	castBarText:SetFontSize(setup.fontSizes.text)
 	castBarText:SetFontColor (1, 1, 1, 1)
@@ -61,7 +61,7 @@ function internalFunc.createCastBar (unitType, setup)
 	castBarText:SetTextFont(addonInfo.id, "MontserratSemiBold")
 	castBarText:SetLayer(2)
 
-	local castBarTimer = EnKai.uiCreateFrame("nkText", thisName .. ".castBar.Timerr", castbar)
+	local castBarTimer = LibEKL.uiCreateFrame("nkText", thisName .. ".castBar.Timerr", castbar)
 	castBarTimer:SetPoint("CENTERRIGHT", castbar, "CENTERRIGHT")
 	castBarTimer:SetFontSize(setup.fontSizes.timer)
 	castBarTimer:SetFontColor (1, 1, 1, 1)

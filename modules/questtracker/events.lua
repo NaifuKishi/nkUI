@@ -70,7 +70,7 @@ local function questAdd(list)
 							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
-							if uiElements.areaQuestUI ~= nil and EnKai.tools.table.isMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
+							if uiElements.areaQuestUI ~= nil and LibEKL.tools.table.isMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
 								uiElements.areaQuestUI:AddQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
@@ -99,7 +99,7 @@ local function questAdd(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	EnKai.coroutines.add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.coroutines.add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
 end
@@ -128,7 +128,7 @@ local function questChange(list)
 							list[key] = nil
 						elseif err == true and isUpdate == true then
 
-							if uiElements.areaQuestUI ~= nil and EnKai.tools.table.isMember (data.areaQuestDomain, details.domain) then
+							if uiElements.areaQuestUI ~= nil and LibEKL.tools.table.isMember (data.areaQuestDomain, details.domain) then
 								uiElements.areaQuestUI:UpdateQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
@@ -153,7 +153,7 @@ local function questChange(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	EnKai.coroutines.add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.coroutines.add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 	
 end
@@ -194,7 +194,7 @@ local function questRemove(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	EnKai.coroutines.add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.coroutines.add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
 end
@@ -215,11 +215,11 @@ end
 
 function questTracker.eventUnitLevel(_, units)
 
-	local playerID = EnKai.unit.getPlayerDetails().id
+	local playerID = LibEKL.unit.getPlayerDetails().id
 
 	if units[playerID] == nil or units[playerID] == false then return end
 	
-	EnKai.unit.setPlayerDetails("level", units[playerID])
+	LibEKL.unit.setPlayerDetails("level", units[playerID])
 	
 	questTracker.clearLog(questTracker.fillLog)
 
@@ -262,7 +262,7 @@ function questTracker.eventSystemUpdate()
 	if nkQuestBase.query.isInit() == false then return end
 
 	if uiElements.useUI == nil and inspectSystemSecure() == false then
-		if EnKai.inventory.getAvailableSlots() ~= false then
+		if LibEKL.inventory.getAvailableSlots() ~= false then
 			uiElements.useUI = questTracker.buildUseUI ()
 			uiElements.useUI:Update()
 		end
@@ -279,7 +279,7 @@ function questTracker.eventSystemUpdate()
 			forceUpdate = true
 		else
 			local tmpTime = inspectTimeReal()
-			if EnKai.tools.math.round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
+			if LibEKL.tools.math.round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
 		end
 	end
 

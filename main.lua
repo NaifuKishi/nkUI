@@ -101,7 +101,7 @@ uiElements.secureContext:SetLayer(2)
 
 local function animateLogo ()
 
-	local logo = EnKai.uiCreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
+	local logo = LibEKL.uiCreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
 	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	logo:SetWidth(256)
 	logo:SetHeight(162)
@@ -126,8 +126,8 @@ local function animateLogo ()
 		end
 	)
 
-	EnKai.coroutines.add ({ func = animateShow, counter = 100, active = true, callBack = function ()
-		EnKai.coroutines.add ({ func = animateHide, counter = 100, active = true, callBack = function ()
+	LibEKL.coroutines.add ({ func = animateShow, counter = 100, active = true, callBack = function ()
+		LibEKL.coroutines.add ({ func = animateHide, counter = 100, active = true, callBack = function ()
 			logo:destroy()
 		end})
 	end})	
@@ -165,21 +165,21 @@ local function initializeAddon(_, addon)
 	if addon == addonInfo.identifier then
 		table.insert(Command.Slash.Register("nkui"), {commandHandler, "nkUI", "commandHandler"})
 		
-        EnKai.ui.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
-        EnKai.ui.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
-		EnKai.ui.registerFont(addonInfo.id, "MontserratBold", "fonts/Montserrat-Bold.ttf")
+        LibEKL.ui.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
+        LibEKL.ui.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
+		LibEKL.ui.registerFont(addonInfo.id, "MontserratBold", "fonts/Montserrat-Bold.ttf")
 
-        EnKai.ui.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
-        EnKai.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
-        EnKai.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
+        LibEKL.ui.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
+        LibEKL.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
+        LibEKL.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
-		--EnKai.art.SetTheme("nkUI")
+		--LibEKL.art.SetTheme("nkUI")
 
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
-			EnKai.unit.init()
+			LibEKL.unit.init()
 			
-			EnKai.BuffManager.init()
-            EnKai.inventory.init(false, false)
+			LibEKL.BuffManager.init()
+            LibEKL.inventory.init(false, false)
 
 			internalFunc.setupDefaults()
 
@@ -196,7 +196,7 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.lowerBar and nkUISetup.modules.lowerBar.activate then
 					internalFunc.lowerBarInit()
 				end
-				
+
 				if nkUISetup.modules.unitFrames and nkUISetup.modules.unitFrames.activate then
 					internalFunc.uiFrames()
 				end
@@ -204,10 +204,11 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.actionBars and nkUISetup.modules.actionBars.activate then
 					internalFunc.uiActionBars()
 				end				
-				
+		
 				if nkUISetup.modules.sct and nkUISetup.modules.sct.activate then
 					internalFunc.sctInit()
 				end
+
 
 				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 					
@@ -223,14 +224,13 @@ local function initializeAddon(_, addon)
 						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
 					end, "nkUI.OneBag.Native.Bag.Loaded")
 				end
-
+				
 				if nkUISetup.modules.questtracker and nkUISetup.modules.questtracker.activate then
 					internalFunc.questTrackerInit(true)
 				end
 
 				--internalFunc.chat ()
-				--internalFunc.questLogInit()
-				
+				--internalFunc.questLogInit()							
 			end
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
@@ -239,12 +239,12 @@ local function initializeAddon(_, addon)
 
 		end, "nkUI.Unit.Availability.Full")
 		
-		EnKai.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+		LibEKL.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
 
-		EnKai.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
+		LibEKL.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
 	end  
 end
 

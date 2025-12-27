@@ -1,6 +1,6 @@
 [submodule "Libs/nkQuestBase"]
 	path = Libs/nkQuestBase
 	url = https://github.com/NaifuKishi/nkQuestBase.git
-[submodule "Libs/EnKaiLight"]
-	path = Libs/EnKaiLight
-	url = https://github.com/NaifuKishi/EnKaiLight.git
+[submodule "Libs/LibEKL"]
+	path = Libs/LibEKL
+	url = https://github.com/NaifuKishi/LibEKL.git

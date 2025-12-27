@@ -22,7 +22,7 @@ function lowerBar.location()
     
     local buttonShown = false
     
-    local datasetLocation = EnKai.uiCreateFrame('nkText', "lowerBar.location", uiElements.contextLowestRestricted)
+    local datasetLocation = LibEKL.uiCreateFrame('nkText', "lowerBar.location", uiElements.contextLowestRestricted)
     datasetLocation:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, -5)
     datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -34,7 +34,7 @@ function lowerBar.location()
         datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
 
-    local datasetLocationIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.location.icon", datasetLocation)
+    local datasetLocationIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.location.icon", datasetLocation)
     datasetLocationIcon:SetPoint("CENTERRIGHT", datasetLocation, "CENTERLEFT", -5, 0)
     datasetLocationIcon:SetHeight(16)
     datasetLocationIcon:SetWidth(16)
@@ -46,7 +46,7 @@ function lowerBar.location()
     local parent = datasetLocation
     
     for k, v in pairs(abilityDetails) do
-        local datasetLocationButton = EnKai.uiCreateFrame('nkFrame', "lowerBar.location.button" .. k, datasetLocation)
+        local datasetLocationButton = LibEKL.uiCreateFrame('nkFrame', "lowerBar.location.button" .. k, datasetLocation)
         datasetLocationButton:SetVisible(false)
         datasetLocationButton:SetBackgroundColor(0, 0, 0, 1)
         datasetLocationButton:SetHeight(40)
@@ -54,7 +54,7 @@ function lowerBar.location()
         datasetLocationButton:SetSecureMode('restricted')
         datasetLocationButton:SetPoint("BOTTOMCENTER", parent, "TOPCENTER")
         
-        local datasetLocationButtonTexture = EnKai.uiCreateFrame('nkTexture', "lowerBar.location.button.texture" .. k, datasetLocationButton)
+        local datasetLocationButtonTexture = LibEKL.uiCreateFrame('nkTexture', "lowerBar.location.button.texture" .. k, datasetLocationButton)
         datasetLocationButtonTexture:SetTexture("Rift", v.icon)
         datasetLocationButtonTexture:SetPoint("TOPLEFT", datasetLocationButton, "TOPLEFT", 1, 1)
         datasetLocationButtonTexture:SetPoint("BOTTOMRIGHT", datasetLocationButton, "BOTTOMRIGHT", -1, -1)
@@ -63,7 +63,7 @@ function lowerBar.location()
         datasetLocationButtonTexture:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
         datasetLocationButtonTexture:SetVisible(true)
         
-        EnKai.ui.attachAbilityTooltip(datasetLocationButtonTexture, v.id)
+        LibEKL.ui.attachAbilityTooltip(datasetLocationButtonTexture, v.id)
         
         table.insert(buttons, datasetLocationButton)
         
@@ -78,7 +78,7 @@ function lowerBar.location()
     end, "lowerBar.location.Left_Click")
     
     local function updateLocation(_, loc)
-        local playerID = EnKai.unit.getPlayerDetails().id
+        local playerID = LibEKL.unit.getPlayerDetails().id
         
         if loc[playerID] == nil or loc[playerID] == false then return end
         
@@ -95,7 +95,7 @@ function lowerBar.location()
         end
     end
     
-    local details = inspectUnitDetail(EnKai.unit.getPlayerDetails().id)
+    local details = inspectUnitDetail(LibEKL.unit.getPlayerDetails().id)
     datasetLocation:SetText(details.locationName)
 
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")

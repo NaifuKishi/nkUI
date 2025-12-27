@@ -19,7 +19,7 @@ local function bagSlot(name, parent, riftSlot)
     local isLocked = false
     local thisItemID
 
-    local thisSlot = EnKai.uiCreateFrame("nkCanvas", name, parent)
+    local thisSlot = LibEKL.uiCreateFrame("nkCanvas", name, parent)
     thisSlot:SetWidth(ICONSIZE * data.uiScale)
     thisSlot:SetHeight(ICONSIZE * data.uiScale)    
     
@@ -34,7 +34,7 @@ local function bagSlot(name, parent, riftSlot)
     
     thisSlot:SetShape(path, nil, stroke)
     
-    local icon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", parent)
+    local icon = LibEKL.uiCreateFrame("nkTexture", name .. ".icon", parent)
     icon:SetWidth((ICONSIZE-2) * data.uiScale)
     icon:SetHeight((ICONSIZE-2) * data.uiScale)
     icon:SetPoint("CENTER", thisSlot, "CENTER")
@@ -43,7 +43,7 @@ local function bagSlot(name, parent, riftSlot)
             
     thisSlot.icon = icon
     
-    local tint = EnKai.uiCreateFrame("nkFrame", name .. ".tint", parent)
+    local tint = LibEKL.uiCreateFrame("nkFrame", name .. ".tint", parent)
     tint:SetWidth((ICONSIZE-2) * data.uiScale)
     tint:SetHeight((ICONSIZE-2) * data.uiScale)
     tint:SetPoint("CENTER", thisSlot, "CENTER")
@@ -113,7 +113,7 @@ function oneBag.createBagSlots()
     local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.uiScale
     local height = (10 + ICONSIZE) * data.uiScale
     
-    local bagSlotsFrame = EnKai.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
+    local bagSlotsFrame = LibEKL.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(width)
     bagSlotsFrame:SetHeight(height)
     bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.uiScale)
@@ -148,7 +148,7 @@ end
 
 function oneBag.getBagSlots ()
 
-    local slots = EnKai.inventory.getBagSlots()
+    local slots = LibEKL.inventory.getBagSlots()
 
     for idx = 1, 8, 1 do
 

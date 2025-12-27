@@ -34,14 +34,14 @@ function internalFunc.ressourcBar (unit, setup)
     local ressourceMax
     local comboIcon = {}
     
-    local ressourceBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.contextLowest)
+    local ressourceBGFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.contextLowest)
     ressourceBGFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     ressourceBGFrame:SetWidth(setup.width)
     ressourceBGFrame:SetHeight(setup.height)
     ressourceBGFrame:SetBackgroundColor(0, 0, 0, .25)
     ressourceBGFrame:SetVisible(false)
 
-    local ressourceFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".ressourceFrame", ressourceBGFrame)
+    local ressourceFrame = LibEKL.uiCreateFrame("nkCanvas", thisName .. ".ressourceFrame", ressourceBGFrame)
     
     ressourceFrame:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", 1, 1)
     ressourceFrame:SetWidth(setup.width - 2)
@@ -56,9 +56,9 @@ function internalFunc.ressourcBar (unit, setup)
                   {xProportional = 0, yProportional = 0}
                   }  
   
-    local ressourceText = EnKai.uiCreateFrame("nkText", thisName .. ".ressourceText", ressourceFrame)
+    local ressourceText = LibEKL.uiCreateFrame("nkText", thisName .. ".ressourceText", ressourceFrame)
 
-    local focusIndicator = EnKai.uiCreateFrame("nkFrame", thisName .. ".focusIndicator", ressourceBGFrame)
+    local focusIndicator = LibEKL.uiCreateFrame("nkFrame", thisName .. ".focusIndicator", ressourceBGFrame)
     
     focusIndicator:SetPoint("TOPLEFT", ressourceBGFrame, "TOPLEFT", 0, -5)
     focusIndicator:SetWidth(4)
@@ -74,28 +74,28 @@ function internalFunc.ressourcBar (unit, setup)
     ressourceText:SetEffectGlow({ strength = 3})
     ressourceText:SetLayer(3)
 
-    local chargeBGFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceChargeBGFrame", ressourceBGFrame)
+    local chargeBGFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceChargeBGFrame", ressourceBGFrame)
     chargeBGFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
     chargeBGFrame:SetWidth(setup.charge.width)
     chargeBGFrame:SetHeight(setup.charge.height)
     chargeBGFrame:SetBackgroundColor(0, 0, 0, 1)
     chargeBGFrame:SetVisible(false)
 
-    local chargeFrame = EnKai.uiCreateFrame("nkCanvas", thisName .. ".ressourceChargeFrame", chargeBGFrame)    
+    local chargeFrame = LibEKL.uiCreateFrame("nkCanvas", thisName .. ".ressourceChargeFrame", chargeBGFrame)    
     chargeFrame:SetPoint("TOPLEFT", chargeBGFrame, "TOPLEFT", 1, 1)
     chargeFrame:SetWidth(setup.charge.width-2)
     chargeFrame:SetHeight(setup.charge.height-2)    
     chargeFrame:SetShape (path, ressourceColor["charge"], nil)
     --chargeFrame:SetVisible(false)
 
-    local chargeText = EnKai.uiCreateFrame("nkText", thisName .. ".chargeText", chargeFrame)
+    local chargeText = LibEKL.uiCreateFrame("nkText", thisName .. ".chargeText", chargeFrame)
     chargeText:SetPoint("CENTER", chargeBGFrame, "CENTER", 1, -7)
     chargeText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     chargeText:SetFontSize(setup.fontSizes.charge)
     chargeText:SetFontColor(1, 1, 1, 1)
     chargeText:SetEffectGlow({ strength = 3})
 
-    local comboFrame = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceComboFrame", ressourceBGFrame)
+    local comboFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceComboFrame", ressourceBGFrame)
     comboFrame:SetPoint ("BOTTOMCENTER", ressourceBGFrame, "TOPCENTER", 0, -2)
     comboFrame:SetWidth(setup.combo.width * 5 + 8) -- can be done better. 5 combo points width 2 pixel margin
     comboFrame:SetHeight(setup.combo.height)
@@ -106,13 +106,13 @@ function internalFunc.ressourcBar (unit, setup)
     local color = data.colors.combo[nkUISetup.modules.unitFrames.colorScheme]
 
     for idx = 1, 5, 1 do
-        local combo = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx, comboFrame)
+        local combo = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx, comboFrame)
         combo:SetPoint(from, object, to, x, y)
         combo:SetWidth(setup.combo.width)
         combo:SetHeight(setup.combo.height)
         combo:SetBackgroundColor(0, 0, 0, 1)
 
-        combo.inner = EnKai.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx .. ".inner", combo)
+        combo.inner = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceCombo." .. idx .. ".inner", combo)
         combo.inner:SetPoint("TOPLEFT", combo, "TOPLEFT", 1, 1)
         combo.inner:SetWidth(setup.combo.width-2)
         combo.inner:SetHeight(setup.combo.height-2)
@@ -235,7 +235,7 @@ function internalFunc.ressourcBar (unit, setup)
             comboIcon[idx].inner:SetHeight(setup.combo.height-2)
         end
 
-        EnKai.ui.reloadDialog ("nkUI")
+        LibEKL.ui.reloadDialog ("nkUI")
 
     end
 

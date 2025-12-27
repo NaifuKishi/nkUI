@@ -13,7 +13,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabBuffBar (name, parent)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local activateCheckBox, widthSlider, heightSlider, timerFontSizeSlider, stackFontSizeSlider, labelFontSizeSlider
     local sizeHeader, fontHeader
 

@@ -87,11 +87,13 @@ RunOnStartup = {
 }
 
 Embed = {	
-  ["Libs/EnKaiLight"] = true,
+  ["Libs/LibEKL"] = true,
+  ["Libs/nkQuestBase"] = true
 }
 
 Dependencies = {
-  EnKaiLight = {"required", "before"},
+  LibEKL = {"required", "before"},
+  nkQuestBase = {"required", "before"},
 }
 
 SavedVariables = {

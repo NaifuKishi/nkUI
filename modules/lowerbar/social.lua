@@ -23,14 +23,14 @@ function lowerBar.social()
     local lastGuildUpdate
     local _friendlist, _guildList = {}, {}
     
-    local datasetSocial = EnKai.uiCreateFrame("nkText", "lowerBar.datasetsocial", uiElements.contextLowestRestricted)
+    local datasetSocial = LibEKL.uiCreateFrame("nkText", "lowerBar.datasetsocial", uiElements.contextLowestRestricted)
     datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 31, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")
     datasetSocial:SetEffectGlow({ strength = 1})
 
-    local datasetSocialIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
+    local datasetSocialIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
     datasetSocialIcon:SetPoint("CENTERRIGHT", datasetSocial, "CENTERLEFT", -5, 0)
     datasetSocialIcon:SetHeight(16)
     datasetSocialIcon:SetWidth(16)
@@ -79,7 +79,7 @@ function lowerBar.social()
         table.insert(_friendlist, {
             name = details.name,
             level = details.level,
-            calling = EnKai.unit.getCallingText(details.calling),
+            calling = LibEKL.unit.getCallingText(details.calling),
             zone = ""
         })
     end

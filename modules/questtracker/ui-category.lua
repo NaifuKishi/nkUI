@@ -38,7 +38,7 @@ local function abandonQuestCategory ()
 
 	local text = string.format(privateVars.langTexts.abandonAllQuestsConfirm, privateVars.langTexts.showCategoryCheckbox[categoryMenuCategory])
 
-	EnKai.ui.confirmDialog (text, yesFunc, noFunc) 
+	LibEKL.ui.confirmDialog (text, yesFunc, noFunc) 
 
 end
 
@@ -47,7 +47,7 @@ local function showMenuCategory (parent, category)
 	categoryMenuCategory = category
 
 	if uiElements.menuCategory == nil then
-		uiElements.menuCategory = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.context)
+		uiElements.menuCategory = LibEKL.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.context)
 		uiElements.menuCategory:SetFont(addonInfo.id, "Montserrat")
 		uiElements.menuCategory:SetLayer(3)
 		uiElements.menuCategory:AddEntry({ label = privateVars.langTexts.abandonAll, callBack = abandonQuestCategory })
@@ -93,7 +93,7 @@ function questTracker.questCategory(category, parent)
 	headerText:SetWidth(header:GetWidth() - 15)
 	headerText:SetEffectGlow ({ strength = 3 })	
 
-	EnKai.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
+	LibEKL.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
 
 	local color = data.categoryColor[category]
 	headerText:SetFontColor(color[1], color[2], color[3], 0)
@@ -111,7 +111,7 @@ function questTracker.questCategory(category, parent)
 
 	header:SetHeight(headerText:GetHeight())
 
-	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", frame)
+	local headerLine = LibEKL.uiCreateFrame("nkCanvas", name .. ".headerLine", frame)
 	headerLine:SetHeight(2)
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 

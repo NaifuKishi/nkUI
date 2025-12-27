@@ -20,7 +20,7 @@ local currencyTextSilver = '%d<font color="#a7aba7"> silver</font>'
 
 local function uiItemTooltip ()
 
-    local tooltip = EnKai.uiCreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
+    local tooltip = LibEKL.uiCreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
     tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "BOTTOMLEFT", 5, 5)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 55)
 
@@ -35,28 +35,28 @@ local function uiItemTooltip ()
 
     tooltip:SetShape(path, fill, stroke)
         
-    local valueText = EnKai.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
+    local valueText = LibEKL.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
     valueText:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 5, 5)
     valueText:SetFontSize(12 * data.uiScale)
     valueText:SetEffectGlow({strength = 3})
     valueText:SetFontColor(1, 1, 1, 1)
 
-    EnKai.ui.setFont(valueText, addonInfo.id, "MontserratSemiBold")
+    LibEKL.ui.setFont(valueText, addonInfo.id, "MontserratSemiBold")
 
-    local countText = EnKai.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
+    local countText = LibEKL.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
     countText:SetPoint("TOPLEFT", valueText, "BOTTOMLEFT")
     countText:SetFontSize(12 * data.uiScale)
     countText:SetEffectGlow({strength = 3})
     countText:SetFontColor(1, 1, 1, 1)
 
-    EnKai.ui.setFont(countText, addonInfo.id, "MontserratSemiBold")
+    LibEKL.ui.setFont(countText, addonInfo.id, "MontserratSemiBold")
 
     function tooltip:SetItem(itemID)
         local flag, details = pcall(inspectItemDetail, itemID)        
         local qty = 0
 
         if flag and details and details.sell then 
-            qty = EnKai.inventory.queryQtyById (itemID)
+            qty = LibEKL.inventory.queryQtyById (itemID)
 
             local platin = mathFloor(details.sell / 10000)
             local gold = mathFloor((details.sell - (platin * 10000)) / 100)

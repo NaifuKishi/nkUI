@@ -21,7 +21,7 @@ local function uiQuestLog()
 	local scrollPane, content
 	local questCategories
 
-	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkWindowElement", name, uiElements.contextLowest)
 	
 	ui:SetReverseAtBorder(false)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 600, 400)
@@ -48,7 +48,7 @@ local function uiQuestLog()
 
     -- ********* SCROLL PANE
 			
-	scrollPane = EnKai.uiCreateFrame("nkScrollPane", name .. '.scrollPane', ui:GetContent())
+	scrollPane = LibEKL.uiCreateFrame("nkScrollPane", name .. '.scrollPane', ui:GetContent())
 	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 20, 30)
 	scrollPane:SetWidth(300)
 	scrollPane:SetHeight(ui:GetContent():GetHeight() - 40)
@@ -61,7 +61,7 @@ local function uiQuestLog()
 
 	scrollPane:SetLayer(1)
 		
-	content = EnKai.uiCreateFrame("nkFrame", name .. '.content', scrollPane)
+	content = LibEKL.uiCreateFrame("nkFrame", name .. '.content', scrollPane)
 	content:SetWidth(ui:GetContent():GetWidth())	
 	
 	function ui:getScrollPane()
@@ -120,8 +120,8 @@ local function fillLog ()
         end        
     end
 
-	local zoneNames = EnKai.tools.table.getSortedKeys(zones)
-	local tagNames = EnKai.tools.table.getSortedKeys(tags)
+	local zoneNames = LibEKL.tools.table.getSortedKeys(zones)
+	local tagNames = LibEKL.tools.table.getSortedKeys(tags)
 
 	local lastObject
 	local categories = {}

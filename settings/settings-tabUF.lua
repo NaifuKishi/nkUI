@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, reverseCheckbox, nameFontSize, healthFontSize, energyFontSize, planarFontSize, nameMargins, healthMargins, energyMargins, planarMargins, combatIconMargins, roleIconMargins, tierIconMargins, combatIconSize, roleIconSize, tierIconSize, buffWidth, buffHeight, timerFontSize, stackFontSize, labelFontSize, levelFontSize
     local sizeHeader, fontSizesHeader, marginsHeader, iconSizeHeader, buffSizeHeader
     local introText
@@ -121,7 +121,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         --[[
         -- margins
 
-        marginsHeader = EnKai.uiCreateFrame("nkText", name .. ".marginsHeader", frame)
+        marginsHeader = LibEKL.uiCreateFrame("nkText", name .. ".marginsHeader", frame)
         marginsHeader:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT" , 0, 10)
         marginsHeader:SetFontSize(14)
         marginsHeader:SetText("Offsets")

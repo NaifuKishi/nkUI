@@ -18,7 +18,7 @@ local stringFormat  = string.format
 local stringSub     = string.sub
 local stringUpper   = string.upper
 
-local EnKaiGetPlayerDetails = EnKai.unit.getPlayerDetails
+local LibEKLGetPlayerDetails = LibEKL.unit.getPlayerDetails
 
 ---------- init local function ---------
 
@@ -28,7 +28,7 @@ local function tooltipUI()
 
     UI.Native.Tooltip:SetLayer(1)
 
-    local tooltip = EnKai.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip", uiElements.contextTooltip)
+    local tooltip = LibEKL.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip", uiElements.contextTooltip)
     tooltip:SetLayer(99)
     tooltip:SetVisible(false)
     tooltip:SetWidth(tooltipWidth)
@@ -37,7 +37,7 @@ local function tooltipUI()
     tooltip:SetBackgroundColor(0, 0, 0, 1)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.TooltipAnchor, "BOTTOMRIGHT")
 
-    local title = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.title", tooltip)
+    local title = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.title", tooltip)
     title:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 2, 2)
     title:SetFontSize(16)
     title:SetAlpha(1)
@@ -48,7 +48,7 @@ local function tooltipUI()
     local lastObject, x = title, 2
 
     for idx = 1, 10, 1 do
-        local line = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.line" .. idx, tooltip)
+        local line = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.line" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT",x , -5)
         line:SetWordwrap(true)
         line:SetFontSize(14)
@@ -62,7 +62,7 @@ local function tooltipUI()
     local y = 5
 
     for idx = 1, 10, 1 do
-        local line = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.stats" .. idx, tooltip)
+        local line = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.stats" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT", 0 ,y)
         line:SetWordwrap(true)
         line:SetFontSize(12)
@@ -73,12 +73,12 @@ local function tooltipUI()
         table.insert (stats, line)
     end
 
-    healthBarBG = EnKai.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
+    healthBarBG = LibEKL.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
     healthBarBG:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT", 0, 2)
     healthBarBG:SetPoint("BOTTOMRIGHT", tooltip, "BOTTOMRIGHT", 0, 12)
     healthBarBG:SetVisible(false)
 
-    healthBar = EnKai.uiCreateFrame("nkCanvas", TOOLTIP_NAME .. ".tooltip.healthBar", healthBarBG)
+    healthBar = LibEKL.uiCreateFrame("nkCanvas", TOOLTIP_NAME .. ".tooltip.healthBar", healthBarBG)
     healthBar:SetPoint("TOPLEFT", healthBarBG, "TOPLEFT", 1, 1)
     healthBar:SetHeight(8)
     
@@ -99,7 +99,7 @@ local function tooltipUI()
 
     healthBar:SetShape (path, fill, stroke)
 
-    healthText = EnKai.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.healthText", healthBar)
+    healthText = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.healthText", healthBar)
     healthText:SetPoint("CENTER", healthBarBG, "CENTER", 0, 0)
     healthText:SetFontSize(14)
     healthText:SetFontColor(1,1,1,1)
@@ -270,7 +270,7 @@ local function tooltipUnit (unitInfo)
         table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
     end
 
-    local playerDetail = EnKaiGetPlayerDetails()
+    local playerDetail = LibEKLGetPlayerDetails()
 
     if unitDetail.guild then
         table.insert(infoLines, unitDetail.guild)
@@ -369,7 +369,7 @@ end
 function _tooltip.item(iteminfo)
 
     local itemDetail = Inspect.Item.Detail(iteminfo)
-    local playerDetail = EnKaiGetPlayerDetails()
+    local playerDetail = LibEKLGetPlayerDetails()
 
     local infoLines = {}
 
@@ -395,7 +395,7 @@ function _tooltip.item(iteminfo)
     end
 
     if (itemDetail.category) then
-         table.insert(infoLines, EnKai.strings.Capitalize(itemDetail.category))         
+         table.insert(infoLines, LibEKL.strings.Capitalize(itemDetail.category))         
     end
 
     table.insert(infoLines, " ")
@@ -417,9 +417,9 @@ function _tooltip.item(iteminfo)
     end
     
     if itemDetail.requiredCalling then
-        local callings = EnKai.strings.split(itemDetail.requiredCalling, " ")
+        local callings = LibEKL.strings.split(itemDetail.requiredCalling, " ")
         for idx = 1, #callings, 1 do
-            local tmpCalling = EnKai.strings.Capitalize(callings[idx])
+            local tmpCalling = LibEKL.strings.Capitalize(callings[idx])
             if callings[idx] == playerDetail.calling then
                 callings[idx] = stringFormat("<font color='#00FF00'>%s</font>", tmpCalling)
             else
@@ -454,7 +454,7 @@ function _tooltip.item(iteminfo)
         -- Find the longest stat name to determine the maximum width needed
         local maxNameLength = 0
         for k, _ in pairs(itemDetail.stats) do
-            local nameLength = string.len(EnKai.strings.Capitalize(k))
+            local nameLength = string.len(LibEKL.strings.Capitalize(k))
             if nameLength > maxNameLength then
                 maxNameLength = nameLength
             end
@@ -462,7 +462,7 @@ function _tooltip.item(iteminfo)
 
         -- Add each stat with proper spacing
         for k, v in pairs(itemDetail.stats) do
-            local statName = EnKai.strings.Capitalize(k)
+            local statName = LibEKL.strings.Capitalize(k)
             -- Calculate the number of spaces needed to align values
             local spaces = string.rep(" ", maxNameLength - string.len(statName) + 2)
             table.insert(statLines, stringFormat('%s%s%s', statName, spaces, v))
@@ -480,7 +480,7 @@ function _tooltip.ability(abilityInfo)
     
     if abilityDetail == nil then return end
     
-    local playerDetail = EnKaiGetPlayerDetails()
+    local playerDetail = LibEKLGetPlayerDetails()
 
     local infoLines = {}
     local statLines = {}
@@ -594,7 +594,7 @@ function _tooltip.ability(abilityInfo)
 
     
     if abilityDetail.weapon then
-        table.insert(infoLines, stringFormat('Weapon: %s', EnKai.strings.Capitalize(abilityDetail.weapon)))
+        table.insert(infoLines, stringFormat('Weapon: %s', LibEKL.strings.Capitalize(abilityDetail.weapon)))
     end
 
     -- Ability Stats
@@ -602,7 +602,7 @@ function _tooltip.ability(abilityInfo)
         -- Find the longest stat name to determine the maximum width needed
         local maxNameLength = 0
         for k, _ in pairs(abilityDetail.stats) do
-            local nameLength = string.len(EnKai.strings.Capitalize(k))
+            local nameLength = string.len(LibEKL.strings.Capitalize(k))
             if nameLength > maxNameLength then
                 maxNameLength = nameLength
             end
@@ -610,7 +610,7 @@ function _tooltip.ability(abilityInfo)
 
         -- Add each stat with proper spacing
         for k, v in pairs(abilityDetail.stats) do
-            local statName = EnKai.strings.Capitalize(k)
+            local statName = LibEKL.strings.Capitalize(k)
             -- Calculate the number of spaces needed to align values
             local spaces = string.rep(" ", maxNameLength - string.len(statName) + 2)
             table.insert(statLines, stringFormat('%s%s%s', statName, spaces, v))

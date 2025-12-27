@@ -21,7 +21,7 @@ local stringMatch	= string.match
 local stringFind	= string.find
 local stringSub		= string.sub
 
-local EnKaiGetUnitTypes	= EnKai.unit.getUnitTypes
+local LibEKLGetUnitTypes	= LibEKL.unit.getUnitTypes
 
 local processBuffs	= internalFunc.processBuffs
 
@@ -59,7 +59,7 @@ local function _eventCastBar(_, units)
 
 	for unitID, state in pairs (units) do			
 
-		local unitTypes = EnKaiGetUnitTypes(unitID)
+		local unitTypes = LibEKLGetUnitTypes(unitID)
 
 		for _, identifier in pairs (unitTypes) do
 
@@ -85,8 +85,8 @@ local function _eventCastBar(_, units)
 					}
 				else
 					if data[castBarName] and not data[castBarName].uninterruptible then 
-						if unitID ~= EnKai.unit.getPlayerDetails().id and InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
-							local unitDetails = EnKai.unit.GetUnitDetail (unitID, true)
+						if unitID ~= LibEKL.unit.getPlayerDetails().id and InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
+							local unitDetails = LibEKL.unit.GetUnitDetail (unitID, true)
 							if unitDetails.health > 0 then
 								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)
 							end
@@ -136,19 +136,19 @@ end
 
 local function _eventBuffAdd(_, unit, buffs)
 	
-	local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+	local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
 
 	if nkUISetup.modules.unitFrames.activate == false then return end
 
 	-- Handle player buffs
-	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then
+	if unit == LibEKL.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then
 		internalFunc.buffBar.addBuff(unit, buffs)
 		internalFunc.buffBar.UpdateBuffDisplay()
 	end
 
 	-- Handle unit frame buffs
 	if nkUISetup.modules.unitFrames.showBuffs then
-		local identifiers = EnKaiGetUnitTypes (unit)
+		local identifiers = LibEKLGetUnitTypes (unit)
 
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
@@ -170,13 +170,13 @@ local function _eventBuffRemove (_, unit, buffs)
 
 	--if nkUISetup.modules.unitFrames.activate == false then return end
 
-	if unit == EnKai.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
+	if unit == LibEKL.unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
 		internalFunc.buffBar.removeBuff(unit, buffs) 
 		internalFunc.buffBar.UpdateBuffDisplay()
 	end
 
 	if nkUISetup.modules.unitFrames.showBuffs then
-		local identifiers = EnKaiGetUnitTypes (unit)
+		local identifiers = LibEKLGetUnitTypes (unit)
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
 				if not stringFind(value, "group") or groupStatus ~= "raid" then
@@ -193,7 +193,7 @@ end
 local function _fctZoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
-		if k == EnKai.unit.getPlayerDetails().id then
+		if k == LibEKL.unit.getPlayerDetails().id then
 			internalFunc.updateUnit (playerFrame, playerID, "player")
 			internalFunc.processBuffs ()
 			break
@@ -204,10 +204,10 @@ end
 local function _fctRoleEvent (_, thisData)
 	
 	for unitID, v in pairs(thisData) do
-		local unitTypes = EnKaiGetUnitTypes (unitID)
+		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
-			EnKai.unit.GetUnitDetail(unitID, true)
+			LibEKL.unit.GetUnitDetail(unitID, true)
 			internalFunc.updateUnit (frame, unitID, thisType)
 		end
 	end	
@@ -253,20 +253,20 @@ function _events.uiFramesInitEvents()
 
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitEvents", "Startup", nil) end
 
-	EnKai.unit.subscribe("player")
-	EnKai.unit.subscribe("player.target")
-	EnKai.unit.subscribe("player.pet")
-	EnKai.unit.subscribe("focus")
+	LibEKL.unit.subscribe("player")
+	LibEKL.unit.subscribe("player.target")
+	LibEKL.unit.subscribe("player.pet")
+	LibEKL.unit.subscribe("focus")
 
 	for idx = 1, 20, 1 do
-		EnKai.unit.subscribe(stringFormat("group%02d", idx))
+		LibEKL.unit.subscribe(stringFormat("group%02d", idx))
 	end
 
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.EnKai.Unit.PlayerAvailable")
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].GroupStatus, _events.groupStatus, "nkUI.EnKai.Unit.GroupStatus")
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].Available, _events.available, "nkUI.EnKai.Unit.Available")
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].Unavailable, _events.unavailable, "nkUI.EnKai.Unit.Unavailable")
-	Command.Event.Attach(EnKai.events["EnKai.Unit"].Change, _events.change, "nkUI.EnKai.Unit.Change")	
+	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
+	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].GroupStatus, _events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
+	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Available, _events.available, "nkUI.LibEKL.Unit.Available")
+	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Unavailable, _events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
+	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Change, _events.change, "nkUI.LibEKL.Unit.Change")	
 
 	--- in combat and out of combat alpha
 
@@ -294,7 +294,7 @@ function _events.uiFramesInitEvents()
 
 	----- initialize player, pet and target -----
 
-	local playerID = EnKai.unit.GetUnitDetail ("player").id
+	local playerID = LibEKL.unit.GetUnitDetail ("player").id
 
 	local playerFrame = uiElements.frames["player"]
 	internalFunc.updateUnit (playerFrame, playerID, "player")
@@ -302,7 +302,7 @@ function _events.uiFramesInitEvents()
 
 	uiElements.frames["player.ressourcebar"]:update(playerID)
 
-	local petID = EnKai.unit.GetUnitByIdentifier ("player.pet")	
+	local petID = LibEKL.unit.GetUnitByIdentifier ("player.pet")	
 	if (petID) then 
 		local frame = uiElements.frames["player.pet"]
 		internalFunc.updateUnit (frame, petID, "player.pet") 
@@ -310,7 +310,7 @@ function _events.uiFramesInitEvents()
 		frame:SetVisible(true)
 	end
 
-	local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
+	local targetID = LibEKL.unit.GetUnitByIdentifier ("player.target")
 	if (targetID) then 
 		local frame = uiElements.frames["player.target"]
 		internalFunc.updateUnit (frame, targetID, "player.target") 
@@ -318,14 +318,14 @@ function _events.uiFramesInitEvents()
 		frame:SetVisible(true)
 	end
 
-	local focusID = EnKai.unit.GetUnitByIdentifier ("focus")
+	local focusID = LibEKL.unit.GetUnitByIdentifier ("focus")
 	if (focusID) then 
 		local frame = uiElements.frames["focus"]
 		internalFunc.updateUnit (frame, focusID, "focus") 
 		frame:SetVisible(true)
 	end
 
-	EnKai.unit.UpdateGroupUnit()
+	LibEKL.unit.UpdateGroupUnit()
 
 end
 
@@ -374,7 +374,7 @@ function _events.available (_, units)
 		local frame
 		
 		if stringMatch(identifier, "^group(%d+)$") then
-			local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+			local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
 
 			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.available", stringFormat("%s %d", groupStatus, groupSize), units) end
 
@@ -402,7 +402,7 @@ function _events.unavailable (_, units)
 
 	for unitId, _ in pairs (units) do
 	
-		local unitTypes = EnKaiGetUnitTypes (unitId)
+		local unitTypes = LibEKLGetUnitTypes (unitId)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
 			if frame then frame:SetVisible(false) end
@@ -420,7 +420,7 @@ function _events.change (_, unitID, identifier)
 	if stringMatch(identifier, "^group(%d+)$") then
 		-- only process group if group status matches
 
-		local groupStatus, groupSize = EnKai.unit.getGroupStatus()
+		local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
 
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("%s %d", groupStatus, groupSize), {}) end
 

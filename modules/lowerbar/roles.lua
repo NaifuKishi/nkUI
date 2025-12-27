@@ -20,7 +20,7 @@ local stringFormat         = string.format
 function lowerBar.lowerBarRoles()
     local name = "lowerbar.roles"
     
-    local datasetRole = EnKai.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
+    local datasetRole = LibEKL.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
     datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", (-data.aFourth * 2) - 10, -5)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -28,13 +28,13 @@ function lowerBar.lowerBarRoles()
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
 
-    local datasetRoleIcon = EnKai.uiCreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
+    local datasetRoleIcon = LibEKL.uiCreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
     datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)
     datasetRoleIcon:SetHeight(16)
     datasetRoleIcon:SetWidth(16)
     datasetRoleIcon:SetTextureAsync("nkUI", "gfx/lowerbarRole.png")
     
-    local roleSwitch = EnKai.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
+    local roleSwitch = LibEKL.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
     roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
     roleSwitch:SetSecureMode('restricted')
     roleSwitch:SetHeight(1)
@@ -56,14 +56,14 @@ function lowerBar.lowerBarRoles()
         end
         
         for roleID, desc in pairs(roles) do
-            local id = EnKai.tools.hex2number(roleID) + 1
+            local id = LibEKL.tools.hex2number(roleID) + 1
             local thisRole
             
             if id == curRole then
                 datasetRole:SetText(stringFormat("Active role: %s", desc))
             else
                 if roleDisplay[roleID] == nil then
-                    thisRole = EnKai.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
+                    thisRole = LibEKL.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
                     thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
                     thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
                     thisRole:SetEffectGlow({ strength = 1})

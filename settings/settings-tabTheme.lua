@@ -12,7 +12,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabTheme (name, parent)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local themeComboBox, oneBagColor, oneBagAlphaSlider
 
     function frame:build()
@@ -21,7 +21,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
     
         themeComboBox = settingsUI.combobox(name .. ".theme", frame, "Select coloring mode", true, function(newValue)        
             nkUISetup.modules.unitFrames.colorScheme = newValue
-            EnKai.ui.reloadDialog ("nkUI")
+            LibEKL.ui.reloadDialog ("nkUI")
         end)
 
         local currentTheme = nkUISetup.modules.unitFrames.colorScheme
@@ -30,7 +30,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
         themeComboBox:SetSelectedValue(currentTheme, false)
         themeComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
 
-        --[[oneBagColor = EnKai.uiCreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
+        --[[oneBagColor = LibEKL.uiCreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
 		oneBagColor:SetPoint("TOPLEFT", themeComboBox, "BOTTOMLEFT", 0, 10)
 		oneBagColor:SetText("Bag window color")
 		oneBagColor:SetFont(addonInfo.id, "Montserrat")
@@ -38,7 +38,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
 		oneBagColor:SetHeight(15)
 		oneBagColor:SetColor(nkUISetup.modules.oneBag.windowColor.r, nkUISetup.modules.oneBag.windowColor.g, nkUISetup.modules.oneBag.windowColor.b, nkUISetup.modules.oneBag.windowColor.a)
 		
-		Command.Event.Attach(EnKai.events[name .. '.oneBagColor'].ColorChanged, function (_, r, g, b, a)
+		Command.Event.Attach(LibEKL.events[name .. '.oneBagColor'].ColorChanged, function (_, r, g, b, a)
             nkUISetup.modules.oneBag.windowColor = { r = r, g = g, b = b, a = nkUISetup.modules.oneBag.windowColor.a}
 		end, name .. ".oneBagColor.ColorChanged")
 

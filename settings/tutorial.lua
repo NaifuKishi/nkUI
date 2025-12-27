@@ -45,7 +45,7 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = EnKai.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextDialog)
+    local tutorialWindow = LibEKL.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextDialog)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)
@@ -73,13 +73,13 @@ local function _createTutorialWindow()
     local currentStep = 1
 
     -- Create UI elements for the tutorial
-    local titleText = EnKai.uiCreateFrame("nkText", "tutorialTitle", content)
+    local titleText = LibEKL.uiCreateFrame("nkText", "tutorialTitle", content)
     titleText:SetPoint("TOPLEFT", content, "TOPLEFT", 20, 20)
     titleText:SetFontSize(20)
     titleText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     titleText:SetEffectGlow({strength = 3})
 
-    local descriptionText = EnKai.uiCreateFrame("nkText", "tutorialDescription", content)
+    local descriptionText = LibEKL.uiCreateFrame("nkText", "tutorialDescription", content)
     descriptionText:SetPoint("TOPLEFT", titleText, "BOTTOMLEFT", 0, 20)
     descriptionText:SetWordwrap(true)
     descriptionText:SetWidth(560)
@@ -88,16 +88,16 @@ local function _createTutorialWindow()
     descriptionText:SetEffectGlow({strength = 3})
 
     -- Create a frame for displaying subframes
-    local subFrameContainer = EnKai.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
+    local subFrameContainer = LibEKL.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
     subFrameContainer:SetPoint("TOPLEFT", descriptionText, "BOTTOMLEFT", 0, 10)
     subFrameContainer:SetWidth(560)
     subFrameContainer:SetHeight(500)
     subFrameContainer:SetVisible(false)
 
-    local imageFrame = EnKai.uiCreateFrame("nkTexture", "tutorialImage", content)
+    local imageFrame = LibEKL.uiCreateFrame("nkTexture", "tutorialImage", content)
 
     -- Navigation buttons
-    local prevButton = EnKai.uiCreateFrame("nkButtonMetro", "prevButton", content)
+    local prevButton = LibEKL.uiCreateFrame("nkButtonMetro", "prevButton", content)
     prevButton:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 20, -20)
     prevButton:SetText("Previous")
     prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -107,7 +107,7 @@ local function _createTutorialWindow()
     prevButton:SetColor(0, 0, 0, .4)
     prevButton:SetBorderColor(0, 0, 0, .7)
 
-    local nextButton = EnKai.uiCreateFrame("nkButtonMetro", "nextButton", content)
+    local nextButton = LibEKL.uiCreateFrame("nkButtonMetro", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
     nextButton:SetText("Next")
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -123,7 +123,7 @@ local function _createTutorialWindow()
         {
             title = "Welcome to nkUI BETA 0.8.0",
             description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n\n- New Quest Tracker module\n- Made ui movable\n- Redesigned settings\n- New One bag module",
-            image = "gfx/EnKaiLogo.png",
+            image = "gfx/LibEKLLogo.png",
             width = 300,
             height = 79,
             position = "bottom",

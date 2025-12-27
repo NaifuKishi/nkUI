@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabCastBar (name, parent, unitType, thisSettings)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, textFontSize, timerFontSize    
     local comboHeader, fontSizeHeader, sizeHeader
     local introText

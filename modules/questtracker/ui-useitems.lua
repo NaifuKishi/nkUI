@@ -27,14 +27,14 @@ local _itemCounter = 0
 
 local function useItem(name, parent)
 
-	local useItem = EnKai.uiCreateFrame("nkFrame", name, parent)
+	local useItem = LibEKL.uiCreateFrame("nkFrame", name, parent)
 	useItem:SetWidth(25)
 	useItem:SetHeight(25)
 	useItem:SetSecureMode("restricted")
 	useItem:SetBackgroundColor(.843, .796, 0, 1)
 	useItem:SetVisible(false)
 
-	local useItemTexture = EnKai.uiCreateFrame("nkTexture", name .. ".texture", useItem)
+	local useItemTexture = LibEKL.uiCreateFrame("nkTexture", name .. ".texture", useItem)
 	useItemTexture:SetPoint("CENTER", useItem, "CENTER")
 	useItemTexture:SetHeight(23)
 	useItemTexture:SetWidth(23)
@@ -76,7 +76,7 @@ function questTracker.buildUseUI ()
 
 	local name = "nkUI.QuestTracker.UseUI"
 
-	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowestRestricted)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowestRestricted)
 	ui:SetPoint("TOPRIGHT", uiElements.questTracker, "TOPLEFT", 20, 35)
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questTracker:GetHeight()-20)
@@ -190,12 +190,12 @@ function questTracker.buildUseUI ()
 	
 		-- go through quest item space, identify usable quest items and move them to the bag 
 	
-		local itemList = EnKai.inventory.getQuestItems()
+		local itemList = LibEKL.inventory.getQuestItems()
 
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_questTracker.buildUseUI", "quest items", itemList) end
 	
-		local bagItemList = EnKai.inventory.queryByCategory ('misc quest')
-		local completeList = EnKai.tools.table.copy (itemList)
+		local bagItemList = LibEKL.inventory.queryByCategory ('misc quest')
+		local completeList = LibEKL.tools.table.copy (itemList)
 
 		if bagItemList and itemList then			
 

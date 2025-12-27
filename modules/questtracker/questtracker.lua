@@ -20,7 +20,7 @@ local stringLen				= string.len
 local stringSub				= string.sub
 local stringSplit			= string.split
 
-local EnKaiGetLanguageShort	= EnKai.tools.lang.getLanguageShort
+local LibEKLGetLanguageShort	= LibEKL.tools.lang.getLanguageShort
 
 ---------- init local variables ---------
 
@@ -65,16 +65,16 @@ function internalFunc.questTrackerInit(flag)
 
 	 if flag then
         if isInit then
-            uiElements.questTracker:SetVisible(true)
-			uiElements.useUI:Toggle()
+            --uiElements.questTracker:SetVisible(true)
+			--uiElements.useUI:Toggle()
         else
             internalFunc.uiQuestTracker()
         end
     else
-        if uiElements.questTracker then
-            uiElements.questTracker:SetVisible(false)
-			uiElements.useUI:Toggle()
-        end
+        --if uiElements.questTracker then
+        --    uiElements.questTracker:SetVisible(false)
+		--	uiElements.useUI:Toggle()
+        --end
     end    
 end
 
@@ -86,7 +86,7 @@ function internalFunc.uiQuestTracker()
 	nkQuestBase.loadPackage("nt")
 	nkQuestBase.loadPackage("sfp")
 		
-	EnKai.inventory.init()
+	LibEKL.inventory.init()
 	
 	if uiElements.questTracker == nil then
 		
@@ -94,7 +94,7 @@ function internalFunc.uiQuestTracker()
 		
 		questTracker.fillLog ()
 		
-		uiElements.progressBar = EnKai.uiCreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
+		uiElements.progressBar = LibEKL.uiCreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
 		uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questTracker, "CENTERTOP", 0, 40)
 		
 		uiElements.progressBar:SetWidth(uiElements.questTracker:GetWidth()-20)
@@ -113,7 +113,7 @@ function internalFunc.uiQuestTracker()
 			
 		Command.Event.Attach(Event.Unit.Detail.Level, questTracker.eventUnitLevel, "nkUI.questtracker.Unit.Detail.Level")
 		
-		Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, questTracker.eventInventoryUpdate, "nkUI.questtracker.EnKai.InventoryManager.update")
+		Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, questTracker.eventInventoryUpdate, "nkUI.questtracker.LibEKL.InventoryManager.update")
 
 	end
 
@@ -165,7 +165,7 @@ function questTracker.fillLog ()
 		
 			local addQuest = true
 			if data.zoneFilter == true then
-				addQuest = nkQuestBase.query.IsQuestInZone (EnKai.unit.getPlayerDetails().zone, v.id)
+				addQuest = nkQuestBase.query.IsQuestInZone (LibEKL.unit.getPlayerDetails().zone, v.id)
 			end
 		
 			if addQuest == true then
@@ -180,18 +180,7 @@ function questTracker.fillLog ()
 	if (#data.addQuestList == 0) then uiElements.questTracker:GetContent():SetVisible(true) end
 		 
 end
-
-function questTracker.clearLog(callBack)
-
-	--uiElements.questTracker:Collapse(true)
-	
-	local list = inspectQuestList()
-
-	for key, v in pairs(list) do
-		table.insert(data.removeQuestList, key)
-	end
-	
-	if callBack ~= nil then table.insert(data.removeQuestList, callBack) end
+/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.luast, callBack) end
 
 end
 
@@ -201,7 +190,7 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	if details.rewardChoose ~= nil then
 		for k, v in pairs(details.rewardChoose) do
-			if EnKai.tools.table.isMember (_craftingItems, k) == true then
+			if LibEKL.tools.table.isMember (_craftingItems, k) == true then
 				if details.tagName ~= nil then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 				details.domain = "crafting"
 				setDomain = true
@@ -212,7 +201,7 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	if setDomain == false and details.rewardGuaranteed ~= nil then
 		for k, v in pairs(details.rewardGuaranteed) do
-			if EnKai.tools.table.isMember (_craftingItems, k) == true then
+			if LibEKL.tools.table.isMember (_craftingItems, k) == true then
 				if details.tagName ~= nil then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 				details.domain = "crafting"
 				setDomain = true
@@ -222,47 +211,27 @@ function questTracker.processQuest(details, processTitleFlag)
 	end
 
 	if setDomain == false then
-		if EnKai.strings.find(details.tag, 'weekly') ~= nil then
+		if LibEKL.strings.find(details.tag, 'weekly') ~= nil then
 			if processTitleFlag == true then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 			details.domain = 'weekly'
 			setDomain = true
-		elseif EnKai.strings.find(details.tag, 'daily') ~= nil then
+		elseif LibEKL.strings.find(details.tag, 'daily') ~= nil then
 			if processTitleFlag == true then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 			details.domain = 'daily'
 			setDomain = true
-		elseif EnKai.strings.find(details.tag, 'story') then
+		elseif LibEKL.strings.find(details.tag, 'story') then
 			details.domain = 'story'
 			setDomain = true
 		elseif details.domain == nil then		
 			if details.tag ~= nil then
-				if EnKai.strings.find(details.tag, 'dungeon') then
+				if LibEKL.strings.find(details.tag, 'dungeon') then
 					details.domain = 'instant'
 					setDomain = true
-				elseif EnKai.strings.find(details.tag, 'monthly') then
+				elseif LibEKL.strings.find(details.tag, 'monthly') then
 					details.domain = 'monthly'
 					setDomain = true
-				else
-					if nkDebug then nkDebug.logEntry (addonInfo.identifier, "questTracker.processQuest", "no domain 1", details) end
-					details.domain = 'personal'
-				end
-			elseif EnKai.strings.find(details.name, privateVars.langTexts.identifierCarnage) then
-				details.domain = 'carnage'
-				setDomain = true
-			else
-				if nkDebug then nkDebug.logEntry (addonInfo.identifier, "questTracker.processQuest", "no domain 2", details) end
-				details.domain = 'personal'
-			end
-		end
-	end
-
-	local lvl, libDetails = nkQuestBase.query.byKey(details.id, true)
-
-	if libDetails ~= nil then
-
-		if libDetails.domain ~= nil then 
-			details.domain = libDetails.domain
-		elseif libDetails.type ~= nil then
-			if EnKai.tools.table.isMember(libDetails.type, 9) then details.domain = "carnage" end
+				else/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
+			if LibEKL.tools.table.isMember(libDetails.type, 9) then details.domain = "carnage" end
 		end
 
 		details.grp = libDetails.grp
@@ -287,14 +256,14 @@ function questTracker.processQuest(details, processTitleFlag)
 		details.zone = details.categoryName
 	end
 	
-	if EnKai.strings.find(details.tag, 'story') ~= nil and details.zone == nil and details.categoryName ~= nil then
+	if LibEKL.strings.find(details.tag, 'story') ~= nil and details.zone == nil and details.categoryName ~= nil then
 		details.name = stringFormat("%s:\n%s", details.categoryName, details.name)
 	end	
 
 	if processTitleFlag == true then
 
 		local color = "#009900"
-		local playerLevel = EnKai.unit.getPlayerDetails().level
+		local playerLevel = LibEKL.unit.getPlayerDetails().level
 
 		if lvl == nil then
 			color = "#009900"
@@ -304,11 +273,7 @@ function questTracker.processQuest(details, processTitleFlag)
 			color = "#FF3333"
 		elseif lvl > playerLevel + 2 then
 			color = "#FF8000"
-		end
-
-		if color ~= nil and details.level ~= nil then
-			details.level = stringFormat("<font color='%s'>%s</font>", color, details.level)
-		end
+		end/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
 
 		if details.complete == true then details.name = stringFormat(privateVars.langTexts.completeInfo, details.name) end
 
@@ -326,7 +291,7 @@ end
 function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 
 	if uiElements.qtTooltip == nil then
-		uiElements.qtTooltip = EnKai.uiCreateFrame("nkTooltip", 'nkUI.questtracker.tooltip', uiElements.contextTooltip)
+		uiElements.qtTooltip = LibEKL.uiCreateFrame("nkTooltip", 'nkUI.questtracker.tooltip', uiElements.contextTooltip)
 		uiElements.qtTooltip:SetLayer(2)
 		uiElements.qtTooltip:SetFont (addonInfo.id, "MontserratSemiBold")
 	end
@@ -354,8 +319,8 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   if (details == nil) then return end
 		   
 		   local dbDetails = nkQuestBase.query.questItemByKey(details.type)
-		   if dbDetails ~= nil and dbDetails['use_' .. EnKaiGetLanguageShort()] ~= nil then
-		      message = dbDetails['use_' .. EnKaiGetLanguageShort()]
+		   if dbDetails ~= nil and dbDetails['use_' .. LibEKLGetLanguageShort()] ~= nil then
+		      message = dbDetails['use_' .. LibEKLGetLanguageShort()]
 		   elseif details.flavor ~= nil then
           message = details.flavor
         else
@@ -366,7 +331,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   
 		end
 		
-		local color = data.categoryColor[category]
+		local color = data.categoryColor[category]/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
 		if color == nil then color = {1, 1, 1} end
 		tooltip:SetTitleColor(color[1], color[2], color[3])
 	end
@@ -395,17 +360,17 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		if libDetails.giver ~= nil then
 			npc = nkQuestBase.query.NPC (libDetails.giver)
 			if npc ~= nil then
-				if npc.scene ~= nil then scene = npc.scene[EnKaiGetLanguageShort()] end
+				if npc.scene ~= nil then scene = npc.scene[LibEKLGetLanguageShort()] end
 				table.insert (lines, { text = "", height = 10})
-				table.insert (lines, { text = stringFormat(privateVars.langTexts.questGiver, npc[EnKaiGetLanguageShort()]), wordwrap = true, fontsize=13})
+				table.insert (lines, { text = stringFormat(privateVars.langTexts.questGiver, npc[LibEKLGetLanguageShort()]), wordwrap = true, fontsize=13})
 			end
 		end
 	
 		if scene ~= nil then
-			local sceneInfo = EnKai.location.getSceneInfo(scene)
+			local sceneInfo = LibEKL.location.getSceneInfo(scene)
 			if sceneInfo ~= nil then
-				if sceneInfo[EnKaiGetLanguageShort()] ~= nil then
-					scene = sceneInfo[EnKaiGetLanguageShort()]
+				if sceneInfo[LibEKLGetLanguageShort()] ~= nil then
+					scene = sceneInfo[LibEKLGetLanguageShort()]
 				end
 			end
 			
@@ -423,7 +388,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 				table.insert(lines, {text = stringFormat("<font color='%s'>%s</font>", "#cccccc", v.description), wordwrap = true, fontsize = 13 })
 			end
 		end
-	end
+	end/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/EnKai/ui/tools/progressBar.lua
 
 	if nkDebug then -- show quest key if nkDebug is enabled		
 		table.insert (lines, { text = "", height = 10})

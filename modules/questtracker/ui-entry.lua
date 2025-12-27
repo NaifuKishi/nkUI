@@ -47,7 +47,7 @@ local function abandonQuest ()
 	
 	local text = string.format(privateVars.langTexts.abandonQuestConfirm, quest.name)
 
-	EnKai.ui.confirmDialog (text, yesFunc, noFunc) 
+	LibEKL.ui.confirmDialog (text, yesFunc, noFunc) 
 	
 end
 
@@ -56,7 +56,7 @@ local function showMenu (parent, key)
 	questMenuKey = key
 
 	if uiElements.menu == nil then
-		uiElements.menu = EnKai.uiCreateFrame("nkMenu", 'nkQuestTracker.menu', uiElements.contextTooltip)
+		uiElements.menu = LibEKL.uiCreateFrame("nkMenu", 'nkQuestTracker.menu', uiElements.contextTooltip)
 		uiElements.menu:SetFont(addonInfo.id, "MontserratSemiBold")
 		uiElements.menu:SetLayer(3)
 		uiElements.menu:AddEntry({ label = privateVars.langTexts.track, callBack = trackQuest })
@@ -85,40 +85,40 @@ function questTracker.questEntry (key, parent, counter)
 	local objectiveCount = 0
 	local use = nil
 	
-	local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+	local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
 	frame:SetWidth(parent:GetWidth() -  20)
 	
-	local levelFrame = EnKai.uiCreateFrame("nkFrame", name .. ".levelFrame", frame)
+	local levelFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".levelFrame", frame)
 	levelFrame:SetWidth(20)
 	levelFrame:SetHeight(20)
 	levelFrame:SetPoint("TOPLEFT", frame, "TOPLEFT")
 
-	local level = EnKai.uiCreateFrame("nkText", name .. '.levelText', levelFrame)
+	local level = LibEKL.uiCreateFrame("nkText", name .. '.levelText', levelFrame)
 	level:SetPoint("TOPLEFT", frame, "TOPLEFT")		
 	level:SetFontSize(15)
 	level:SetFontColor(1, 1, 1, 1)
 	level:SetWordwrap(true)
 	level:SetEffectGlow({ strength = 3})
 
-	local header = EnKai.uiCreateFrame("nkText", name .. '.Header', frame)
+	local header = LibEKL.uiCreateFrame("nkText", name .. '.Header', frame)
 	header:SetPoint("TOPLEFT", levelFrame, "TOPRIGHT", 5, 0)		
 	header:SetFontSize(15)
 	header:SetFontColor(1, 1, 1, 1)
 	header:SetWordwrap(true)
 	header:SetEffectGlow({ strength = 3})
 
-	EnKai.ui.setFont(header, addonInfo.id, "MontserratSemiBold")
+	LibEKL.ui.setFont(header, addonInfo.id, "MontserratSemiBold")
 
 	header:SetWidth(frame:GetWidth())
 
-	local subHeader = EnKai.uiCreateFrame("nkText", name .. '.subHeader', frame)
+	local subHeader = LibEKL.uiCreateFrame("nkText", name .. '.subHeader', frame)
 	subHeader:SetPoint("TOPLEFT", header, "BOTTOMLEFT")		
 	subHeader:SetFontSize(fontSize)
 	subHeader:SetFontColor(1, 1, 1, 1)
 	subHeader:SetWordwrap(true)
 	subHeader:SetEffectGlow({ strength = 3})
 
-	EnKai.ui.setFont(subHeader, addonInfo.id, "MontserratSemiBold")
+	LibEKL.ui.setFont(subHeader, addonInfo.id, "MontserratSemiBold")
 
 	subHeader:SetWidth(frame:GetWidth())
 	
@@ -155,7 +155,7 @@ function questTracker.questEntry (key, parent, counter)
 		end, name .. "Header.Left.Down")
 	end
 	
-	subFrame = EnKai.uiCreateFrame("nkFrame", name .. '.subFrame', parent)
+	subFrame = LibEKL.uiCreateFrame("nkFrame", name .. '.subFrame', parent)
 	subFrame:SetPoint("TOPLEFT", subHeader, "BOTTOMLEFT")
 	subFrame:SetWidth(frame:GetWidth())
 	
@@ -259,7 +259,7 @@ function questTracker.questEntry (key, parent, counter)
 				thisObjective:SetPoint("TOPLEFT", objectives[objectiveCount], "BOTTOMLEFT")
 			end
 			
-			EnKai.ui.setFont(thisObjective, addonInfo.id, "MontserratSemiBold")
+			LibEKL.ui.setFont(thisObjective, addonInfo.id, "MontserratSemiBold")
 			thisObjective:SetEffectGlow({strength = 3})
 			thisObjective:SetFontSize(fontSize)			
 			table.insert(objectives, thisObjective)

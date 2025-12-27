@@ -47,7 +47,7 @@ function privateVars.internal.craftinglist (internalFlag)
 				local key = dbData.craft[idx].key
 				local toCraft = dbData.craft[idx].count
 			
-				if privateVars.have[key] == nil then privateVars.have[key] = EnKai.inventory.queryByKey (key) end
+				if privateVars.have[key] == nil then privateVars.have[key] = LibEKL.inventory.queryByKey (key) end
 				
 				local temp = Inspect.Item.Detail(key)
 				if privateVars.debug == true then print ('===== ' .. temp.name .. " =====") end
@@ -132,7 +132,7 @@ function privateVars.internal.checkRecipe(key, realNeed, lookupList)
 						
 						local akey = ingredient.akey
 						
-						if privateVars.have[akey] == nil then privateVars.have[akey] = EnKai.inventory.queryByKey (akey) end
+						if privateVars.have[akey] == nil then privateVars.have[akey] = LibEKL.inventory.queryByKey (akey) end
 						
 						local temp = Inspect.Item.Detail(akey)
 						
@@ -156,7 +156,7 @@ function privateVars.internal.checkRecipe(key, realNeed, lookupList)
 					end
 				end
 			else
-				EnKai.tools.error.display (addonInfo.toc.Identifier, "Could not find recipe for [" .. recipes[idx2] .. "]", 3)
+				LibEKL.tools.error.display (addonInfo.toc.Identifier, "Could not find recipe for [" .. recipes[idx2] .. "]", 3)
 			end
 		end 
 	end
@@ -175,7 +175,7 @@ function privateVars.internal.craftingUI ()
 	ui:SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)
 	ui:SetVisible(false)	
 	
-	local grid = EnKai.uiCreateFrame("nkGrid", name .. 'grid', ui)
+	local grid = LibEKL.uiCreateFrame("nkGrid", name .. 'grid', ui)
 		
 	grid:SetHeaderHeight(0)
 	grid:SetPoint("TOPLEFT", ui, "TOPLEFT")
@@ -198,7 +198,7 @@ function privateVars.internal.craftingUI ()
 	
 	function ui:GetGrid() return grid end
 	
-	Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, updates)
+	Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function (_, updates)
 		
 		if ui:GetVisible() == false then return end
 		
@@ -210,7 +210,7 @@ function privateVars.internal.craftingUI ()
 				end				
 			end
 		end	
-	end, "EnKai.InventoryManager.Update")
+	end, "LibEKL.InventoryManager.Update")
 	
 	return ui	
 

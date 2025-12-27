@@ -19,16 +19,16 @@ function lowerBar.currency()
     local currencyText = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font> (%d)'
     local freeBagCount = 0
     
-    local freeBagSlots = EnKai.inventory.getAvailableSlots()
+    local freeBagSlots = LibEKL.inventory.getAvailableSlots()
     if freeBagSlots == false then
-        EnKai.inventory.updateDB()
-        freeBagSlots = EnKai.inventory.getAvailableSlots()
+        LibEKL.inventory.updateDB()
+        freeBagSlots = LibEKL.inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
     else
         freeBagCount = #freeBagSlots
     end
     
-    local datasetCurrency = EnKai.uiCreateFrame("nkText", "lowerBar.currency", uiElements.contextLowestRestricted)
+    local datasetCurrency = LibEKL.uiCreateFrame("nkText", "lowerBar.currency", uiElements.contextLowestRestricted)
     datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird - 10, -5)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -39,7 +39,7 @@ function lowerBar.currency()
         internalFunc.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")
 
-    local datasetCurrencyIcon = EnKai.uiCreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
+    local datasetCurrencyIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
     datasetCurrencyIcon:SetPoint("CENTERRIGHT", datasetCurrency, "CENTERLEFT", -5, 0)
     datasetCurrencyIcon:SetHeight(16)
     datasetCurrencyIcon:SetWidth(16)
@@ -63,11 +63,11 @@ function lowerBar.currency()
         end
     end
     
-    Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function(_, a, b)
-        local freeBagSlots = EnKai.inventory.getAvailableSlots()
+    Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function(_, a, b)
+        local freeBagSlots = LibEKL.inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
         updateCoin(_, {coin = true})
-    end, "nkUI.EnKai.InventoryManager.Update")
+    end, "nkUI.LibEKL.InventoryManager.Update")
     
     Command.Event.Attach(Event.Currency, updateCoin, "nkUI.lowerbar.Currency.Currency")
     

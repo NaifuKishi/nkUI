@@ -8,7 +8,7 @@ local data        	= privateVars.data
 -- Cache frequently used functions and values
 local stringLen     = string.len
 local stringSub     = string.sub
-local stringSplit   = EnKai.strings.split
+local stringSplit   = LibEKL.strings.split
 
 function internalFunc.shortenName (name, maxLen)
 
@@ -36,7 +36,7 @@ end
 
 -- Helper function to check if the unit is the player
 function internalFunc.isPlayerUnit(unit)
-    return unit == EnKai.unit.getPlayerDetails().id
+    return unit == LibEKL.unit.getPlayerDetails().id
 end
 
 
@@ -56,7 +56,7 @@ end
 function internalFunc.dialog (messageText)
 
     if uiElements.dialog == nil then
-        uiElements.dialog = EnKai.uiCreateFrame("nkDialogMetro", "nkUI.dialog", uiElements.contextDialog)        
+        uiElements.dialog = LibEKL.uiCreateFrame("nkDialogMetro", "nkUI.dialog", uiElements.contextDialog)        
         uiElements.dialog:SetType("ok")
         uiElements.dialog:SetWidth(400)
         uiElements.dialog:SetHeight(100)

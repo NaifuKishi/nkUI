@@ -91,7 +91,7 @@ function iconManager.get(unitType, iconType)
     end
 
     -- Create new icon if none available
-    local thisName = EnKai.tools.uuid()
+    local thisName = LibEKL.tools.uuid()
     local thisIcon = uiElements.icon(thisName .. ".icon", uiElements.contextLowest)
     --thisIcon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
     --thisIcon:Setup(setup)

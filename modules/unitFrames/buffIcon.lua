@@ -20,16 +20,16 @@ local _eventHandlers = {}
 
 function uiElements.icon (name, parent)
 	
-	local icon = EnKai.uiCreateFrame('nkFrame', name, parent)
+	local icon = LibEKL.uiCreateFrame('nkFrame', name, parent)
 	
-	local border = EnKai.uiCreateFrame('nkFrame', name .. '.border', icon)
-	local texture = EnKai.uiCreateFrame('nkTexture', name .. '.texture', icon)
-	local effect = EnKai.uiCreateFrame('nkTexture', name .. '.effect', icon)
+	local border = LibEKL.uiCreateFrame('nkFrame', name .. '.border', icon)
+	local texture = LibEKL.uiCreateFrame('nkTexture', name .. '.texture', icon)
+	local effect = LibEKL.uiCreateFrame('nkTexture', name .. '.effect', icon)
 	
-	local timer = EnKai.uiCreateFrame('nkText', name ..'.timer', icon)
-	local stack = EnKai.uiCreateFrame('nkText', name ..'.stack', icon)
+	local timer = LibEKL.uiCreateFrame('nkText', name ..'.timer', icon)
+	local stack = LibEKL.uiCreateFrame('nkText', name ..'.stack', icon)
 	
-	local label = EnKai.uiCreateFrame('nkText', name .. 'label', icon)
+	local label = LibEKL.uiCreateFrame('nkText', name .. 'label', icon)
 	
 	local properties = {}
 	local tooltipIcon = nil
@@ -193,7 +193,7 @@ function uiElements.icon (name, parent)
 	function icon:SetTimer (newTimer)
 		if newTimer then 
 
-			if EnKai.tools.math.round (newTimer, 0) <= 10 then
+			if LibEKL.tools.math.round (newTimer, 0) <= 10 then
 				if isBelow10 == false then
 					timer:SetFontColor(1, 0, 0, 0)
 					isBelow10 = true
@@ -212,7 +212,7 @@ function uiElements.icon (name, parent)
 				unit = "m"
 			end
 
-			newTimer = EnKai.tools.math.round (newTimer, 0)
+			newTimer = LibEKL.tools.math.round (newTimer, 0)
 
 			if newTimer ~= lastTimer then
 				--timer:ClearWidth()
@@ -324,8 +324,8 @@ function uiElements.icon (name, parent)
 		--print (name)
 		thisName = name
 		thisDescription = description
-		EnKai.ui.attachGenericTooltip (texture, thisName, thisDescription)
-		EnKai.ui.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+		LibEKL.ui.attachGenericTooltip (texture, thisName, thisDescription)
+		LibEKL.ui.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 	end	
 	
 	return icon

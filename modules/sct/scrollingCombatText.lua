@@ -14,7 +14,7 @@ local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local InspectAbilityDetail      = Inspect.Ability.Detail
 local InspectExperience         = Inspect.Experience
 
-local EnKaiUnitGetUnitDetail    = EnKai.unit.GetUnitDetail
+local LibEKLUnitGetUnitDetail    = LibEKL.unit.GetUnitDetail
 
 local stringFind        = string.find
 local stringMatch       = string.match
@@ -105,14 +105,14 @@ end
 -- Creates a new text frame for displaying combat text
 -- @return The created text frame
 local function createTextFrame()
-    local name = EnKai.tools.uuid()
+    local name = LibEKL.tools.uuid()
 
-    local frame = EnKai.uiCreateFrame("nkText", name, uiElements.contextLowest)
+    local frame = LibEKL.uiCreateFrame("nkText", name, uiElements.contextLowest)
     frame:SetEffectGlow({ strength = 3 })
     frame:SetVisible(false)
 
     -- Create an icon frame for the text frame
-    local icon = EnKai.uiCreateFrame("nkTexture", name .. "." .. EnKai.tools.uuid(), frame)
+    local icon = LibEKL.uiCreateFrame("nkTexture", name .. "." .. LibEKL.tools.uuid(), frame)
     icon:SetPoint("CENTERRIGHT", frame, "CENTERLEFT", -5, 0)
     icon:SetVisible(false)
     icon:SetWidth(24)
@@ -177,7 +177,7 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
         releaseFrame(frame)
     end
 
-    EnKai.coroutines.add({
+    LibEKL.coroutines.add({
         func = animationCoroutine,
         callBack = callBack,
         counter = duration * 100,
@@ -218,7 +218,7 @@ local function displayMovingMessage(message, duration)
         releaseFrame(frame)
     end
 
-    EnKai.coroutines.add({
+    LibEKL.coroutines.add({
         func = animationCoroutine,
         callBack = callBack,
         counter = duration * 100,
@@ -274,7 +274,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         releaseFrame(frame)
     end
     
-    EnKai.coroutines.add({
+    LibEKL.coroutines.add({
         func = animationCoroutine,
         callBack = callBack,
         counter = 200,
@@ -328,25 +328,25 @@ end
 -- @param info The combat event information
 -- @return Whether the event is valid, whether it's from a pet, and whether it's incoming
 local function validEvent(info)
-    if info.caster == EnKai.unit.getPlayerDetails().id then return true, false, false end
+    if info.caster == LibEKL.unit.getPlayerDetails().id then return true, false, false end
 
     if petID ~= nil and info.caster == petID then
-        if info.target == EnKai.unit.getPlayerDetails().id then
+        if info.target == LibEKL.unit.getPlayerDetails().id then
             return true, true, true
         else
             return true, true, false 
         end
     end
     
-    local localUnitsTypes = EnKai.unit.getUnitTypes(info.caster)
+    local localUnitsTypes = LibEKL.unit.getUnitTypes(info.caster)
     
-    if EnKai.tools.table.isMember(localUnitsTypes, "player.pet") then
+    if LibEKL.tools.table.isMember(localUnitsTypes, "player.pet") then
         petID = info.caster
         petName = internalFunc.shortenName(info.casterName, 10)
         return true, true, false
     end
 
-    if info.target == EnKai.unit.getPlayerDetails().id then return true, false, true end
+    if info.target == LibEKL.unit.getPlayerDetails().id then return true, false, true end
     
     return false, false, false
 end
@@ -406,7 +406,7 @@ local function handleCombatDamage(self, info)
     end
 
     if isIncoming == true then
-        damageText = stringFormat(TEXT_INCOMING, internalFunc.shortenName(EnKaiUnitGetUnitDetail(info.caster).name, 10), damageText)
+        damageText = stringFormat(TEXT_INCOMING, internalFunc.shortenName(LibEKLUnitGetUnitDetail(info.caster).name, 10), damageText)
     end
     
     --if info.crit then

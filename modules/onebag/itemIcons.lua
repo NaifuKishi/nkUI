@@ -17,16 +17,16 @@ local stringFormat  = string.format
 function oneBag.createItemIcon(name, parent)
     local thisItemID, thisSlot
     
-    local itemFrame = EnKai.uiCreateFrame("nKFrame", name, parent)
+    local itemFrame = LibEKL.uiCreateFrame("nKFrame", name, parent)
     itemFrame:SetWidth(40 * data.uiScale)
     itemFrame:SetHeight(40 * data.uiScale)
     
-    local itemIcon = EnKai.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
+    local itemIcon = LibEKL.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 1, 1)
     itemIcon:SetPoint("BOTTOMRIGHT", itemFrame, "BOTTOMRIGHT", -1, -1)
     itemIcon:SetLayer(1)
     
-    local quantityText = EnKai.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
+    local quantityText = LibEKL.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
     quantityText:SetFontSize(14 * data.uiScale)
     quantityText:SetFontColor(1, 1, 1, 1)
@@ -34,7 +34,7 @@ function oneBag.createItemIcon(name, parent)
     quantityText:SetEffectGlow({ strength = 3})
     quantityText:SetLayer(2)
     
-    local bindText = EnKai.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
+    local bindText = LibEKL.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
     bindText:SetFontSize(10 * data.uiScale)
     bindText:SetFontColor(1, 1, 1, 1)
@@ -116,7 +116,7 @@ function oneBag.createItemIcon(name, parent)
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
         oneBag.hideItemTooltip()
         Command.Tooltip(thisItemID)
-        EnKai.events.addInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
+        LibEKL.events.addInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
@@ -135,12 +135,12 @@ function oneBag.createItemIcon(name, parent)
    
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
         if UI.Native.Bank:GetLoaded() then
-            local vaultSlot = EnKai.inventory.findFreeVaultSlot()
+            local vaultSlot = LibEKL.inventory.findFreeVaultSlot()
             if vaultSlot then
                 Command.Item.Move(thisSlot, vaultSlot)
                 movedItem = thisItemID
             else
-                local bankSlot = EnKai.inventory.findFreeBankSlot()
+                local bankSlot = LibEKL.inventory.findFreeBankSlot()
                 if bankSlot then
                     Command.Item.Move(thisSlot, bankSlot)
                     movedItem = thisItemID

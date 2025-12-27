@@ -22,7 +22,7 @@ local function showCategoryFilter (parent)
 
 	local name = "nkUI.QuestTracker.categoryFilter"
 
-	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
 	ui:SetLayer(2)
 	ui:SetBackgroundColor(0, 0, 0, 1)
 	ui:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
@@ -31,7 +31,7 @@ local function showCategoryFilter (parent)
 	local height = 0
 
 	for _, v in pairs(categoryOrder) do
-		local checkbox = EnKai.uiCreateFrame("nkCheckbox", name.. "." .. v, ui)
+		local checkbox = LibEKL.uiCreateFrame("nkCheckbox", name.. "." .. v, ui)
 		checkbox:SetText(privateVars.langTexts.showCategoryCheckbox[v])
 		checkbox:SetChecked(nkUISetup.modules.questtracker.categoryShow[v])
 		checkbox:SetLabelWidth(150)
@@ -43,7 +43,7 @@ local function showCategoryFilter (parent)
 
 		from, object, to, x, y = "TOPLEFT", checkbox, "BOTTOMLEFT", 0, 5
 
-		Command.Event.Attach(EnKai.events[name.. "." .. v].CheckboxChanged, function (_, newValue)		
+		Command.Event.Attach(LibEKL.events[name.. "." .. v].CheckboxChanged, function (_, newValue)		
 			nkUISetup.modules.questtracker.categoryShow[v] = newValue			
 		end, name.. "." .. v .. ".CheckboxChanged")
 	end
@@ -60,7 +60,7 @@ function questTracker.buildUI ()
 	local name = "nkUI.questTracker"
 	local scrollPane, content	
 
-	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
 	
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
 	ui:SetWidth(nkUISetup.modules.questtracker.width)
@@ -68,7 +68,7 @@ function questTracker.buildUI ()
 	ui:SetBackgroundColor(0, 0, 0, 0)
 	ui:SetLayer(1)
 
-	local header = EnKai.uiCreateFrame("nkText", name .. ".header", ui)	
+	local header = LibEKL.uiCreateFrame("nkText", name .. ".header", ui)	
 	header:SetText(addonInfo.name)
 	header:SetEffectGlow({strength = 3})
 	header:SetFontColor(colorR, colorG, colorB, colorA)
@@ -115,9 +115,9 @@ function questTracker.buildUI ()
 		nkUISetup.modules.questtracker.y = ui:GetTop()
 	end , name .. ".header.Left.Upoutside")
 
-	EnKai.ui.setFont(header, addonInfo.id, "MontserratSemiBold")	
+	LibEKL.ui.setFont(header, addonInfo.id, "MontserratSemiBold")	
 
-	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", ui)
+	local headerLine = LibEKL.uiCreateFrame("nkCanvas", name .. ".headerLine", ui)
 	headerLine:SetHeight(2)
 	headerLine:SetWidth(ui:GetWidth())
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
@@ -143,13 +143,13 @@ function questTracker.buildUI ()
 
 	-- ********* ZONE FILTER BUTTON
 	
-	local zoneFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui)
+	local zoneFilterIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui)
 	zoneFilterIcon:SetWidth(16)
 	zoneFilterIcon:SetHeight(16)
 	zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
 	zoneFilterIcon:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -3, 5)
 	
-	local zoneFilterText = EnKai.uiCreateFrame('nkText', name .. '.zoneFilterIcon.text', zoneFilterIcon)	
+	local zoneFilterText = LibEKL.uiCreateFrame('nkText', name .. '.zoneFilterIcon.text', zoneFilterIcon)	
 	zoneFilterText:SetPoint("CENTER", zoneFilterIcon, "CENTER")
 	zoneFilterText:SetText("Z")
 	zoneFilterText:SetFontSize(14)
@@ -178,17 +178,17 @@ function questTracker.buildUI ()
 		
 	end, name .. ".zoneFilterText.text.Mouse.Left.Down")
 
-	EnKai.ui.attachGenericTooltip (zoneFilterText, "nkUI Questtracker", privateVars.langTexts.zoneFilter)
+	LibEKL.ui.attachGenericTooltip (zoneFilterText, "nkUI Questtracker", privateVars.langTexts.zoneFilter)
 
 	-- ********* CATEGORY FILTER BUTTON
 	
-	local categoryFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui)
+	local categoryFilterIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui)
 	categoryFilterIcon:SetWidth(16)
 	categoryFilterIcon:SetHeight(16)
 	categoryFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
 	categoryFilterIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
 	
-	local categoryFilterText = EnKai.uiCreateFrame('nkText', name .. '.categoryFilterIcon.text', categoryFilterIcon)	
+	local categoryFilterText = LibEKL.uiCreateFrame('nkText', name .. '.categoryFilterIcon.text', categoryFilterIcon)	
 	categoryFilterText:SetPoint("CENTER", categoryFilterIcon, "CENTER")
 	categoryFilterText:SetText("C")
 	categoryFilterText:SetFontSize(14)
@@ -208,19 +208,19 @@ function questTracker.buildUI ()
 		uiElements.categoryFilter:SetVisible(not uiElements.categoryFilter:GetVisible())
 	end, name .. ".categoryFilterIcon.text.Mouse.Left.Down")	
 
-	EnKai.ui.attachGenericTooltip (categoryFilterText, "nkUI Questtracker", privateVars.langTexts.categoryFilter)
+	LibEKL.ui.attachGenericTooltip (categoryFilterText, "nkUI Questtracker", privateVars.langTexts.categoryFilter)
 	 	
-	EnKai.ui.genericTooltipSetFont(addonInfo.id, "Montserrat")
+	LibEKL.ui.genericTooltipSetFont(addonInfo.id, "Montserrat")
 
 	-- ********* ITEM BUTTON
 	
-	local itemIcon = EnKai.uiCreateFrame("nkFrame", name .. '.itemIcon', ui)
+	local itemIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.itemIcon', ui)
 	itemIcon:SetWidth(16)
 	itemIcon:SetHeight(16)
 	itemIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
 	itemIcon:SetPoint("CENTERRIGHT", categoryFilterIcon, "CENTERLEFT", -5, 0)
 	
-	local itemIconText = EnKai.uiCreateFrame('nkText', name .. '.itemIcon.text', itemIcon)	
+	local itemIconText = LibEKL.uiCreateFrame('nkText', name .. '.itemIcon.text', itemIcon)	
 	itemIconText:SetPoint("CENTER", itemIcon, "CENTER")
 	itemIconText:SetText("I")
 	itemIconText:SetFontSize(14)
@@ -232,7 +232,7 @@ function questTracker.buildUI ()
 		uiElements.useUI:Toggle()
 	end, name .. ".itemIcon.text.Mouse.Left.Down")	
 
-	EnKai.ui.attachGenericTooltip (itemIconText, "nkUI Questtracker", privateVars.langTexts.questItems)	 	
+	LibEKL.ui.attachGenericTooltip (itemIconText, "nkUI Questtracker", privateVars.langTexts.questItems)	 	
 
 	-- ********* RESIZE ICON
 	
@@ -291,7 +291,7 @@ function questTracker.buildUI ()
 			
 	-- ********* SCROLL PANE
 			
-	scrollPane = EnKai.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui)
+	scrollPane = LibEKL.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui)
 	scrollPane:SetPoint("TOPLEFT", header, "TOPLEFT", -5, 30)
 	scrollPane:SetWidth(ui:GetWidth())
 	scrollPane:SetHeight(ui:GetHeight() - 30)

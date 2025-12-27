@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabTooltip (name, parent)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local activateCheckbox
 
     function frame:build()

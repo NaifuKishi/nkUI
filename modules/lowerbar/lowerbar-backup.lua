@@ -46,7 +46,7 @@ uiElements.lowerBarModules = {}
 
 function internalFunc.timeDate () 
     
-    local datasetTime = EnKai.uiCreateFrame("nkText", name .. ".datasettime", uiElements.contextLowestRestricted)
+    local datasetTime = LibEKL.uiCreateFrame("nkText", name .. ".datasettime", uiElements.contextLowestRestricted)
     datasetTime:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", 0, 0)
     datasetTime:SetText("00:00:00")
     datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
@@ -58,7 +58,7 @@ function internalFunc.timeDate ()
         datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
     end
 
-    local datasetDate = EnKai.uiCreateFrame("nkText", name .. ".datasetdate", uiElements.contextLowestRestricted)
+    local datasetDate = LibEKL.uiCreateFrame("nkText", name .. ".datasetdate", uiElements.contextLowestRestricted)
     datasetDate:SetPoint("BOTTOMCENTER", datasetTime, "TOPCENTER",0, 7)
     datasetDate:SetText("00/00/0000")
     datasetDate:SetFontSize(nkUISetup.modules.lowerBar.dateSize)
@@ -100,16 +100,16 @@ function internalFunc.currency ()
     local x = halfWidth / 3
     local currencyText = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font> (%d)'    
     local freeBagCount = 0
-    local freeBagSlots = EnKai.inventory.getAvailableSlots()
+    local freeBagSlots = LibEKL.inventory.getAvailableSlots()
     if freeBagSlots == false then 
-        EnKai.inventory.updateDB ()
-        freeBagSlots = EnKai.inventory.getAvailableSlots()
+        LibEKL.inventory.updateDB ()
+        freeBagSlots = LibEKL.inventory.getAvailableSlots()
          if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
     else
         freeBagCount = #freeBagSlots
     end
 
-    local datasetCurrency = EnKai.uiCreateFrame("nkText", name .. ".currency", uiElements.contextLowestRestricted)
+    local datasetCurrency = LibEKL.uiCreateFrame("nkText", name .. ".currency", uiElements.contextLowestRestricted)
     datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird, -5)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -139,11 +139,11 @@ function internalFunc.currency ()
 		end
 	end
 
-    Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function (_, a, b)
-        local freeBagSlots = EnKai.inventory.getAvailableSlots()
+    Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function (_, a, b)
+        local freeBagSlots = LibEKL.inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
 		_updateCoin(_, {coin = true})
-	end, "nkUI.EnKai.InventoryManager.Update")	
+	end, "nkUI.LibEKL.InventoryManager.Update")	
 
 	Command.Event.Attach(Event.Currency, _updateCoin, "nkUI.lowerbar.Currency.Currency")
 
@@ -157,7 +157,7 @@ function internalFunc.fps()
 
     local x = halfWidth / 4
 
-    local datasetFPS = EnKai.uiCreateFrame('nkText', name .. ".fps", uiElements.contextLowestRestricted)
+    local datasetFPS = LibEKL.uiCreateFrame('nkText', name .. ".fps", uiElements.contextLowestRestricted)
     datasetFPS:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMLEFT", aFourth, -5)
     datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -198,7 +198,7 @@ function internalFunc.location()
    
     local buttonShown = false
 
-    local datasetLocation = EnKai.uiCreateFrame('nkText', name .. ".location", uiElements.contextLowestRestricted)
+    local datasetLocation = LibEKL.uiCreateFrame('nkText', name .. ".location", uiElements.contextLowestRestricted)
     datasetLocation:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, -5)
     datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -217,7 +217,7 @@ function internalFunc.location()
 
     for k, v in pairs (abilityDetails) do
         
-        local datasetLocationButton = EnKai.uiCreateFrame('nkFrame', name .. ".location.button" .. k, datasetLocation)
+        local datasetLocationButton = LibEKL.uiCreateFrame('nkFrame', name .. ".location.button" .. k, datasetLocation)
         datasetLocationButton:SetVisible(false)
         datasetLocationButton:SetBackgroundColor(0, 0, 0, 1)
         datasetLocationButton:SetHeight(40)
@@ -225,7 +225,7 @@ function internalFunc.location()
         datasetLocationButton:SetSecureMode('restricted')
         datasetLocationButton:SetPoint("BOTTOMCENTER", parent, "TOPCENTER")
         
-        local datasetLocationButtonTexture = EnKai.uiCreateFrame('nkTexture', name .. ".location.button.texture" .. k, datasetLocationButton)
+        local datasetLocationButtonTexture = LibEKL.uiCreateFrame('nkTexture', name .. ".location.button.texture" .. k, datasetLocationButton)
         datasetLocationButtonTexture:SetTexture("Rift", v.icon)
         datasetLocationButtonTexture:SetPoint("TOPLEFT", datasetLocationButton, "TOPLEFT", 1, 1)
         datasetLocationButtonTexture:SetPoint("BOTTOMRIGHT", datasetLocationButton, "BOTTOMRIGHT", -1, -1)
@@ -234,7 +234,7 @@ function internalFunc.location()
         datasetLocationButtonTexture:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro)
         datasetLocationButtonTexture:SetVisible(true)
 
-        EnKai.ui.attachAbilityTooltip (datasetLocationButtonTexture, k)
+        LibEKL.ui.attachAbilityTooltip (datasetLocationButtonTexture, k)
 
         table.insert (buttons, datasetLocationButton)        
 
@@ -286,19 +286,19 @@ function internalFunc.experience ()
     local x = halfWidth / 3
     local updateTime
 
-    local datasetExpBarBG = EnKai.uiCreateFrame('nkFrame', name .. ".experienceFrameBG", uiElements.contextLowestRestricted)
+    local datasetExpBarBG = LibEKL.uiCreateFrame('nkFrame', name .. ".experienceFrameBG", uiElements.contextLowestRestricted)
     datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -aFourth, -9)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
 
-    local datasetExpBar = EnKai.uiCreateFrame('nkFrame', name .. ".experienceFrame", datasetExpBarBG)
+    local datasetExpBar = LibEKL.uiCreateFrame('nkFrame', name .. ".experienceFrame", datasetExpBarBG)
     datasetExpBar:SetPoint("TOPLEFT", datasetExpBarBG, "TOPLEFT")
     datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBar:SetWidth(0)
     datasetExpBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
 
-    local datasetExp = EnKai.uiCreateFrame('nkText', name .. ".experience", uiElements.contextLowestRestricted)
+    local datasetExp = LibEKL.uiCreateFrame('nkText', name .. ".experience", uiElements.contextLowestRestricted)
     datasetExp:SetPoint("BOTTOMCENTER", datasetExpBarBG, "TOPCENTER", 0, 0)
     datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
@@ -373,26 +373,26 @@ function internalFunc.faction ()
         end
     end
     
-    local datasetFactionBarBG = EnKai.uiCreateFrame('nkFrame', name .. ".factionFrameBG", uiElements.contextLowestRestricted)
+    local datasetFactionBarBG = LibEKL.uiCreateFrame('nkFrame', name .. ".factionFrameBG", uiElements.contextLowestRestricted)
     datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aThird, -9)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
 
-    local datasetFactionBar = EnKai.uiCreateFrame('nkFrame', name .. ".factionFrame", datasetFactionBarBG)
+    local datasetFactionBar = LibEKL.uiCreateFrame('nkFrame', name .. ".factionFrame", datasetFactionBarBG)
     datasetFactionBar:SetPoint("TOPLEFT", datasetFactionBarBG, "TOPLEFT")
     datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBar:SetWidth(0)
     datasetFactionBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
 
-    local datasetFaction = EnKai.uiCreateFrame('nkText', name .. ".faction", datasetFactionBarBG)
+    local datasetFaction = LibEKL.uiCreateFrame('nkText', name .. ".faction", datasetFactionBarBG)
     datasetFaction:SetPoint("BOTTOMCENTER", datasetFactionBarBG, "TOPCENTER", 0, 0)
     datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFaction:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetFaction:SetTextFont(addonInfo.id, "Montserrat")
     datasetFaction:SetEffectGlow({ strength = 1, offsetX = 1, offsetY = 1, blurX=1, blurY = 1})
     
-    local datasetFactionName = EnKai.uiCreateFrame('nkText', name .. ".factionName", datasetFactionBar)
+    local datasetFactionName = LibEKL.uiCreateFrame('nkText', name .. ".factionName", datasetFactionBar)
     datasetFactionName:SetPoint("CENTER", datasetFactionBarBG, "CENTER")
     datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
     datasetFactionName:SetFontColor(0, 0, 0, 1)
@@ -463,7 +463,7 @@ function internalFunc.social ()
 	
 	local _friendlist, _guildList = {}, {}
 
-    local datasetSocial = EnKai.uiCreateFrame("nkText", name .. ".datasetsocial", uiElements.contextLowestRestricted)
+    local datasetSocial = LibEKL.uiCreateFrame("nkText", name .. ".datasetsocial", uiElements.contextLowestRestricted)
     datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -513,7 +513,7 @@ function internalFunc.social ()
 
 		local details = InspectSocialFriendDetail(friendName)
 		
-		table.insert(_friendlist, { name = details.name, level = details.level, calling = EnKai.unit.getCallingText(details.calling), zone = "" }) 
+		table.insert(_friendlist, { name = details.name, level = details.level, calling = LibEKL.unit.getCallingText(details.calling), zone = "" }) 
 	
 	end
 		
@@ -601,7 +601,7 @@ function internalFunc.lowerBarRoles()
 
     local name = "lowerbar.roles"
 
-    local datasetRole = EnKai.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
+    local datasetRole = LibEKL.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
     datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -aFourth *2, -5)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -609,7 +609,7 @@ function internalFunc.lowerBarRoles()
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
 
-    local roleSwitch = EnKai.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
+    local roleSwitch = LibEKL.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
     roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
     roleSwitch:SetSecureMode('restricted')
     roleSwitch:SetHeight(1)
@@ -630,7 +630,7 @@ function internalFunc.lowerBarRoles()
         end
 
         for roleID, desc in pairs (roles) do
-            local id = EnKai.tools.hex2number(roleID) +1
+            local id = LibEKL.tools.hex2number(roleID) +1
             --local id = tonumber(string.sub ( roleID, string.len(roleID) - 1)) + 1
             local thisRole
 
@@ -638,7 +638,7 @@ function internalFunc.lowerBarRoles()
                 datasetRole:SetText(stringFormat("Active role: %s", desc))
             else
                 if roleDisplay[roleID] == nil then
-                    thisRole = EnKai.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)                
+                    thisRole = LibEKL.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)                
                     thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
                     thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)                
                     thisRole:SetEffectGlow({ strength = 1}) 
@@ -696,7 +696,7 @@ function internalFunc.lowerBarRedraw()
         uiElements.lowerBarModules[idx]:Redraw()
     end
 
-    EnKai.ui.reloadDialog ("nkUI")
+    LibEKL.ui.reloadDialog ("nkUI")
 
 end
 
@@ -745,11 +745,11 @@ end
 function internalFunc.lowerBarInit (value)
 
     if #uiElements.lowerBarModules == 0 then
-        EnKai.events.addInsecure(function() 
+        LibEKL.events.addInsecure(function() 
             internalFunc.lowerBar()
         end, nil, nil)        
     else
-        EnKai.events.addInsecure(function() 
+        LibEKL.events.addInsecure(function() 
 			for k, v in pairs (uiElements.lowerBarModules) do
                 v:SetVisible(value)
             end

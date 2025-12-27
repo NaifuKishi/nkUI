@@ -15,7 +15,7 @@ function internalFunc.chat ()
 
     -- Create a canvas behind the chat
 
-    local canvas = EnKai.uiCreateFrame("nkCanvas", NAME, uiElements.contextLowest)
+    local canvas = LibEKL.uiCreateFrame("nkCanvas", NAME, uiElements.contextLowest)
     canvas:SetPoint("TOPLEFT", UI.Native.Console1, "TOPLEFT", 0, 30)
     canvas:SetPoint("BOTTOMRIGHT", UI.Native.Console1, "BOTTOMRIGHT")
 

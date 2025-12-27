@@ -14,12 +14,12 @@ local inspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 
 -- Helper function to create and configure a UI button
 local function createButton(parent, name, width, height, x, y, text, iconPath)
-    local button = EnKai.uiCreateFrame("nkButtonMetro", name, parent)
+    local button = LibEKL.uiCreateFrame("nkButtonMetro", name, parent)
     button:SetWidth(width)
     button:SetHeight(height)
     button:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
     button:SetText(text)
-    button:SetIcon("EnKai", iconPath)
+    button:SetIcon("LibEKL", iconPath)
     button:SetFont(addonInfo.id, "Montserrat")
     button:SetScale(0.7)
     return button
@@ -27,7 +27,7 @@ end
 
 -- Helper function to create and configure a text field
 local function createTextField(parent, name, width, height, x, y)
-    local textField = EnKai.uiCreateFrame("nkTextField", name, parent)
+    local textField = LibEKL.uiCreateFrame("nkTextField", name, parent)
     textField:SetWidth(width)
     textField:SetHeight(height)
     textField:SetMultiLine(true)
@@ -48,7 +48,7 @@ function internalFunc.macroEditDialog (editBar)
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
 	-- Create the main dialog window
-	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextDialog)
+	local ui = LibEKL.uiCreateFrame("nkWindowElement", name, uiElements.contextDialog)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
 	ui:SetHeight(230)
@@ -56,7 +56,7 @@ function internalFunc.macroEditDialog (editBar)
     ui:SetTitleFont (addonInfo.id, "Montserrat")
 	
 	-- Create icon edit button for macro icon selection
-	local iconEdit = EnKai.uiCreateFrame("nkActionButtonMetro", name .. ".iconEdit", ui:GetContent())
+	local iconEdit = LibEKL.uiCreateFrame("nkActionButtonMetro", name .. ".iconEdit", ui:GetContent())
 	iconEdit:SetWidth(48)
 	iconEdit:SetHeight(48)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
@@ -80,7 +80,7 @@ function internalFunc.macroEditDialog (editBar)
 	end, iconEdit:GetName() .. ".UI.Input.Mouse.Left.Up")
 	
 	-- Label for the icon edit section
-	local iconEditLabel = EnKai.uiCreateFrame("nkText", name .. ".iconEditLabel", ui:GetContent())
+	local iconEditLabel = LibEKL.uiCreateFrame("nkText", name .. ".iconEditLabel", ui:GetContent())
 	iconEditLabel:SetPoint("CENTERRIGHT", iconEdit, "CENTERLEFT")
 	iconEditLabel:SetWidth(75)
 	iconEditLabel:SetFontColor(1, 1, 1, 1)
@@ -95,7 +95,7 @@ function internalFunc.macroEditDialog (editBar)
     local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetHeight() - 40, "Cancel macro", "gfx/icons/close.png")
 	
 	-- Event handler for cancel button
-	Command.Event.Attach(EnKai.events[name .. ".cancelButton"].Clicked, function (_, newValue)
+	Command.Event.Attach(LibEKL.events[name .. ".cancelButton"].Clicked, function (_, newValue)
 		macroEdit:Leave(true)
 		ui:SetVisible(false)
 	end, name .. ".cancelButton.Clicked")
@@ -104,7 +104,7 @@ function internalFunc.macroEditDialog (editBar)
     local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetHeight() - 40, "Save macro", "gfx/icons/ok.png")
 	
 	-- Event handler for save button
-	Command.Event.Attach(EnKai.events[name .. ".saveButton"].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.events[name .. ".saveButton"].Clicked, function (_, newValue)		
 		if inspectSystemSecure() then return end
 
 		data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }

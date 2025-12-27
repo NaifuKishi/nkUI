@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
 
-    local frame = EnKai.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, comboWidthSlider, comboHeightSlider, chargeWidthSlider, chargeHeightSlider, marginRessourceSlider, chargeFontSize, ressourceFontSize    
     local sizeHeader, comboHeader, chargeHeader, marginHeader, fontSizeHeader
     local introText
@@ -99,7 +99,7 @@ function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         -- offset display
         --[[
-        marginHeader = EnKai.uiCreateFrame("nkText", name .. ".marginHeader", frame)
+        marginHeader = LibEKL.uiCreateFrame("nkText", name .. ".marginHeader", frame)
         marginHeader:SetPoint("TOPLEFT", chargeWidthSlider, "BOTTOMLEFT" , 0, 10)
         marginHeader:SetFontSize(14)
         marginHeader:SetText("Offset")

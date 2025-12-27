@@ -61,31 +61,31 @@ function internalFunc.oneBagInit()
             uiElements.oneBag:SetVisible(true)
         end
     else
-        EnKai.inventory.updateDB()
+        LibEKL.inventory.updateDB()
         uiElements.oneBag = oneBag.createBagUI()
         uiElements.oneBagBagSlots = oneBag.createBagSlots()
 
         Command.Event.Attach(Event.Item.Slot, oneBag.itemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
-        Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].SlotUpdate, function(_, slots)
+        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
                         if v == false then
                             cachedItems[k] = nil -- hier scheint es das problem zu geben bei item use
                         else
-                            cachedItems[k] = EnKai.inventory.GetItemByKey(v)
+                            cachedItems[k] = LibEKL.inventory.GetItemByKey(v)
                         end
                     end
                 end
             end
             oneBag.populateBag()
-        end, "nkUI.OneBag.EnKai.InventoryManager.SlotUpdate")
+        end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
 
-        --[[Command.Event.Attach(EnKai.events["EnKai.InventoryManager"].Update, function(_, items)
+        --[[Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function(_, items)
             -- Handle inventory updates
-        end, "nkUI.OneBag.EnKai.InventoryManager.Update")]]
+        end, "nkUI.OneBag.LibEKL.InventoryManager.Update")]]
     end
 
     oneBag.populateBag()
@@ -99,7 +99,7 @@ function oneBag.populateBag(forceCacheUpdate)
     local lastIcon = nil
 
     if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
-        cachedItems = EnKai.inventory.getBagItems()
+        cachedItems = LibEKL.inventory.getBagItems()
         lastCacheUpdate = InspectTimeReal()
     end
 
@@ -132,7 +132,7 @@ function oneBag.populateBag(forceCacheUpdate)
         }
     end
 
-    local sortedCategories = EnKai.tools.table.getSortedKeys (categories)
+    local sortedCategories = LibEKL.tools.table.getSortedKeys (categories)
 
     if hasTrash then
         table.insert(sortedCategories, "Trash")
@@ -143,7 +143,7 @@ function oneBag.populateBag(forceCacheUpdate)
     end
 
     for k, v in pairs(bagCategories) do
-        if EnKai.tools.table.isMember(sortedCategories, k) == false then
+        if LibEKL.tools.table.isMember(sortedCategories, k) == false then
             v:SetVisible(false)
 
             for slot, icon in pairs (v.items) do
@@ -300,7 +300,7 @@ function oneBag.itemSlot (_, slots)
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
-        EnKai.inventory.updateDB()
+        LibEKL.inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
@@ -329,7 +329,7 @@ function oneBag.itemUpdate (_, slots)
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
-        EnKai.inventory.updateDB()
+        LibEKL.inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
