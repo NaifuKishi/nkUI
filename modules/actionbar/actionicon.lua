@@ -133,7 +133,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				local thisRemaining = duration - (inspectTimeFrame() - start)
 				local checkRemaining = mathFloor(thisRemaining * 10) / 10
 
-				if checkRemaining <= 0 then return 9999 end
+				if checkRemaining <= 0 then 
+					cooldown:SetVisible(false)
+					cooldownTint:SetVisible(false)					
+					return 9999 
+				end
 
 				--if inspectTimeFrame() - start > duration then return 9999 end
 
