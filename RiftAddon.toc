@@ -87,11 +87,11 @@ RunOnStartup = {
 }
 
 Embed = {	
-  ["Libs/EnKai"] = true,
+  ["Libs/EnKaiLight"] = true,
 }
 
 Dependencies = {
-  EnKai = {"required", "before"},
+  EnKaiLight = {"required", "before"},
 }
 
 SavedVariables = {
