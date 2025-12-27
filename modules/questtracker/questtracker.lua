@@ -366,7 +366,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   
 		end
 		
-		local color = data.categoryColor[category]/home/dirk/Games/Heroic/Prefixes/default/Glyph/drive_c/users/dirk/Documents/RIFT/Interface/Addons/LibEKL/ui/tools/progressBar.lua
+		local color = data.categoryColor[category]
 		if color == nil then color = {1, 1, 1} end
 		tooltip:SetTitleColor(color[1], color[2], color[3])
 	end
