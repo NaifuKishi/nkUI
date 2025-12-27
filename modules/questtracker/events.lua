@@ -89,7 +89,7 @@ local function questAdd(list)
 	local callBack = function ()
 		_update = false
 		if (_addonInit == false) then
-		   uiElements.questTracker:GetContent():SetVisible(true)
+		   uiElements.questTracker:SetVisible(true)
 		   _addonInit = true
 		end
 		uiElements.progressBar:SetVisible(false)
@@ -98,7 +98,7 @@ local function questAdd(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
@@ -152,7 +152,7 @@ local function questChange(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 	
@@ -193,7 +193,7 @@ local function questRemove(list)
 	
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
-	if #list > 3 and uiElements.questTracker:GetContent():GetVisible() == true then uiElements.progressBar:SetVisible(true) end
+	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	EnKai.coroutines.add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 

@@ -60,32 +60,27 @@ function questTracker.buildUI ()
 	local name = "nkUI.questTracker"
 	local scrollPane, content	
 
-	local ui = EnKai.uiCreateFrame("nkWindowElement", name, uiElements.contextLowest)
+	local ui = EnKai.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
 	
-	ui:SetReverseAtBorder(false)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
 	ui:SetWidth(nkUISetup.modules.questtracker.width)
 	ui:SetHeight(nkUISetup.modules.questtracker.height)
 	ui:SetBackgroundColor(0, 0, 0, 0)
 	ui:SetLayer(1)
-	ui:SetTitleFont(addonInfo.id, "MontserratSemiBold")	
-	ui:SetTitle(addonInfo.name)
-	ui:SetTitleEffectGlow({strength = 3})
-	ui:SetTitleColor(colorR, colorG, colorB, colorA)
 
-	ui:SetTitleAlign("left", 0)
-	ui:SetCloseable(false)
-	ui:ShowMoveToggle(false)
-	ui:SetDragable(true)
-	ui:SetCollapseable(false)
-	ui:SetFontSize(16)
+	local header = EnKai.uiCreateFrame("nkText", name .. ".header", ui)	
+	header:SetText(addonInfo.name)
+	header:SetEffectGlow({strength = 3})
+	header:SetFontColor(colorR, colorG, colorB, colorA)
+	header:SetFontSize(16)
+	header:SetPoint("TOPLEFT", ui, "TOPLEFT")
 
-	ui:GetHeader():SetBackgroundColor(0, 0, 0, 0)	
-	
-	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", ui:GetHeader())
+	EnKai.ui.setFont(header, addonInfo.id, "MontserratSemiBold")	
+
+	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", ui)
 	headerLine:SetHeight(2)
 	headerLine:SetWidth(ui:GetWidth())
-	headerLine:SetPoint("TOPLEFT", ui:GetHeader(), "BOTTOMLEFT")
+	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 
     local path =  {  {xProportional = 0, yProportional = 0},
                   {xProportional = 1, yProportional = 0},
@@ -105,46 +100,14 @@ function questTracker.buildUI ()
 	}
 
 	headerLine:SetShape(path, fill, nil)
-		 
-	Command.Event.Attach(EnKai.events[name].Moved, function (_, xpos, ypos)
-		nkUISetup.modules.questtracker.x = xpos
-		nkUISetup.modules.questtracker.y = ypos
-	end, name .. '.Moved')
-
-	-- ********* QUEST ITEM BUTTON
-		
-	local useButton = EnKai.uiCreateFrame("nkActionButtonMetro", name .. "questIconButton", uiElements.secureContext)
-	useButton:SetScale(.75)
-	useButton:SetPoint("TOPRIGHT", ui, "TOPLEFT", -5, 0)	
-	useButton:SetColor(0, 0, 0, 0)
-	useButton:SetBackgroundColor(0, 0, 0, 0)
-	useButton:SetSecureMode("restricted")	
-	--useButton:SetVisible(false)
-
-	local checkAlpha = nil
-
-	useButton:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
-		if inspectSystemSecure() == false then
-			checkAlpha = useButton:GetAlpha()
-			useButton:SetAlpha(1)
-		end
-	end, name .. ".resizeIcon.Mouse.Cursor.In")
-
-	useButton:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
-		if inspectSystemSecure() == false and checkAlpha ~= nil then
-			useButton:SetAlpha(checkAlpha)
-		end
-	end, name .. ".resizeIcon.Mouse.Cursor.Out")
-
-	function ui:getUseItemButton () return useButton end
 
 	-- ********* ZONE FILTER BUTTON
 	
-	local zoneFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui:GetHeader())
+	local zoneFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui)
 	zoneFilterIcon:SetWidth(16)
 	zoneFilterIcon:SetHeight(16)
 	zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
-	zoneFilterIcon:SetPoint("CENTERRIGHT", ui:GetHeader(), "CENTERRIGHT", -3, 0)
+	zoneFilterIcon:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -3, 5)
 	
 	local zoneFilterText = EnKai.uiCreateFrame('nkText', name .. '.zoneFilterIcon.text', zoneFilterIcon)	
 	zoneFilterText:SetPoint("CENTER", zoneFilterIcon, "CENTER")
@@ -170,7 +133,7 @@ function questTracker.buildUI ()
 			zoneFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
 		end
 		
-		ui:GetContent():SetVisible(false)
+		ui:SetVisible(false)
 		questTracker.clearLog( questTracker.fillLog )
 		
 	end, name .. ".zoneFilterText.text.Mouse.Left.Down")
@@ -179,7 +142,7 @@ function questTracker.buildUI ()
 
 	-- ********* CATEGORY FILTER BUTTON
 	
-	local categoryFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui:GetHeader())
+	local categoryFilterIcon = EnKai.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui)
 	categoryFilterIcon:SetWidth(16)
 	categoryFilterIcon:SetHeight(16)
 	categoryFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
@@ -211,7 +174,7 @@ function questTracker.buildUI ()
 
 	-- ********* ITEM BUTTON
 	
-	local itemIcon = EnKai.uiCreateFrame("nkFrame", name .. '.itemIcon', ui:GetHeader())
+	local itemIcon = EnKai.uiCreateFrame("nkFrame", name .. '.itemIcon', ui)
 	itemIcon:SetWidth(16)
 	itemIcon:SetHeight(16)
 	itemIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
@@ -233,8 +196,8 @@ function questTracker.buildUI ()
 
 	-- ********* RESIZE ICON
 	
-	local resizeIcon = UI.CreateFrame('Texture', name .. '.resizeIcon', ui:GetContent())
-	resizeIcon:SetPoint("BOTTOMRIGHT", ui:GetContent(), "BOTTOMRIGHT")
+	local resizeIcon = UI.CreateFrame('Texture', name .. '.resizeIcon', ui)
+	resizeIcon:SetPoint("BOTTOMRIGHT", ui, "BOTTOMRIGHT")
 	resizeIcon:SetTextureAsync(addonInfo.identifier, "gfx/resizeIcon.png")
 	resizeIcon:SetWidth(20)
 	resizeIcon:SetHeight(20)
@@ -272,8 +235,8 @@ function questTracker.buildUI ()
 		nkUISetup.modules.questtracker.width = newWidth
 		nkUISetup.modules.questtracker.height = newHeight
 		
-		scrollPane:SetWidth(ui:GetContent():GetWidth())
-		scrollPane:SetHeight(ui:GetContent():GetHeight())
+		scrollPane:SetWidth(ui:GetWidth())
+		scrollPane:SetHeight(ui:GetHeight())
 
 		ui:RecalcDimensions()
 	end, name .. ".header.Cursor.Move")
@@ -288,10 +251,10 @@ function questTracker.buildUI ()
 			
 	-- ********* SCROLL PANE
 			
-	scrollPane = EnKai.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui:GetContent())
-	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 0, 10)
-	scrollPane:SetWidth(ui:GetContent():GetWidth())
-	scrollPane:SetHeight(ui:GetContent():GetHeight() - 10)
+	scrollPane = EnKai.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui)
+	scrollPane:SetPoint("TOPLEFT", header, "TOPLEFT", -5, 30)
+	scrollPane:SetWidth(ui:GetWidth())
+	scrollPane:SetHeight(ui:GetHeight() - 30)
 	
 	-- ***** Hide scrollbars by setting the color to transparent *****
 
@@ -302,7 +265,7 @@ function questTracker.buildUI ()
 	scrollPane:SetLayer(1)	
 		
 	content = UI.CreateFrame("Frame", name .. '.content', scrollPane)
-	content:SetWidth(ui:GetContent():GetWidth())
+	content:SetWidth(ui:GetWidth())
 		
 	local questCategories = {}
 			
@@ -326,10 +289,10 @@ function questTracker.buildUI ()
 	----- UI dimension recalculations -----
 	
 	function ui:RecalcDimensions()
-		content:SetWidth(ui:GetContent():GetWidth()	)
+		content:SetWidth(ui:GetWidth()	)
     
 		for idx = 1, #questCategories, 1 do
-			questCategories[idx]:SetWidth(ui:GetContent():GetWidth())
+			questCategories[idx]:SetWidth(ui:GetWidth())
 	    end
 		
 		ui:RecalcHeight()
@@ -370,6 +333,10 @@ function questTracker.buildUI ()
 			count = count + v:GetQuestCount()
 		end
 		return count
+	end
+
+	function ui:SetTitle(newTitle)
+		header:SetText(newTitle)
 	end
 		
 	---------------------------------------
@@ -437,14 +404,6 @@ function questTracker.buildUI ()
 		
 		ui:RecalcHeight()
 	end
-
-	local oDisplayHeader = ui.DisplayHeader
-	function ui:DisplayHeader(flag)
-		oDisplayHeader(self, flag)
-		EnKai.events.addInsecure( function() useButton:SetVisible(flag) end )
-	end
-	
-	ui:DisplayHeader(true)
 	
 	return ui
 
