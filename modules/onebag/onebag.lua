@@ -55,7 +55,8 @@ function internalFunc.oneBagInit()
     if uiElements.oneBag then
         if uiElements.oneBag:GetVisible() then
             uiElements.oneBag:SetVisible(false)
-            uiElements.oneBag:SetVisible(false)
+            --uiElements.oneBag:SetVisible(false)
+            oneBag.hideItemTooltip()
         else
             uiElements.oneBag:SetVisible(true)
         end
