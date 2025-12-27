@@ -27,9 +27,9 @@ local EFFECT_GLOSS = { alpha = 0.6, texturePath = 'gfx/iconDesignGloss.png', rep
 
 -- Buff management function
 
-function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, action)
+function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, action)
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.manageBuffs", frame:GetName(), { unitId = unitId, buffUnit = buffUnit, buffs = buffs, action = action}) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.manageBuffs", frame:GetName(), { unitID = unitID, buffUnit = buffUnit, buffs = buffs, action = action}) end
 
     -- Buff management variables
     local unitBuffIcons = frame:GetBuffIcons() or {}
@@ -46,53 +46,74 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
         local x = 0
         local y = - (buffSetup.height + (30 * data.uiScale))
 
-        for k, v in pairs (unitBuffDisplayList) do            
-            if unitBuffIcons[k].lastX ~= x then
-                local icon = unitBuffIcons[k].icon
+        -- Sort buffs by remaining time
+        local sortedBuffs = {}
+        for buffID, buffDetails in pairs(unitBuffDisplayList) do
+            local remaining = unitBuffIcons[buffID].remaining or 999999
+            table.insert(sortedBuffs, {key = buffID, remaining = remaining})
+        end
+
+        table.sort(sortedBuffs, function(a, b) return a.remaining > b.remaining end)
+
+        for _, details in ipairs(sortedBuffs) do
+            local thisIcon = unitBuffIcons[details.key]
+
+            if thisIcon.lastX ~= x then
+                local icon = thisIcon.icon
                 icon:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
                 icon:Setup(buffSetup)
             end
-            
-            unitBuffIcons[k].lastX = x            
-            x = x + buffSetup.width + 2            
+
+            thisIcon.lastX = x
+            x = x + buffSetup.width + 2
         end
 
         x, y = 0, frame:GetHeight() + (10 * data.uiScale)
 
-        for k, v in pairs (unitDebuffDisplayList) do
+        -- Sort debuffs by remaining time
+        local sortedDebuffs = {}
+        for debuffID, debuffDetails in pairs(unitDebuffDisplayList) do
+            local remaining = unitDebuffIcons[debuffID].remaining or 999999
+            table.insert(sortedDebuffs, {key = debuffID, remaining = remaining})
+        end
+        table.sort(sortedDebuffs, function(a, b) return a.remaining > b.remaining end)
 
-            if unitDebuffIcons[k].lastX ~= x then
-                local icon = unitDebuffIcons[k].icon
+        for _, details in ipairs(sortedDebuffs) do
+            local thisIcon = unitDebuffIcons[details.key]
+
+            if thisIcon.lastX ~= x then
+                local icon = thisIcon.icon
                 icon:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
                 icon:Setup(buffSetup)
             end
-            
-            unitDebuffIcons[k].lastX = x
+
+            thisIcon.lastX = x
             x = x + buffSetup.width + 2
         end
     end
 
     if action == "add" then
-        if buffUnit == unitId then
+        if buffUnit == unitID then
 
             local details = InspectBuffDetail(buffUnit, buffs)
 
             if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.manageBuffs", "details", details) end
 
-            for k, v in pairs(details) do
+            for buffID, buffDetails in pairs(details) do
 
-                local buffIdentifier = v.type
-                unitBuffId2BuffType[k] = buffIdentifier
+                local buffIdentifier = buffDetails.type
+                unitBuffId2BuffType[buffID] = buffIdentifier
 
-                if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
+                if buffDetails.poison == true or buffDetails.curse == true or buffDetails.disease == true or buffDetails.debuff == true then
 
                     local targetID = EnKai.unit.GetUnitByIdentifier ("player.target")
 
-                    if unitId ~= targetID or (unitId == EnKai.unit.GetUnitByIdentifier ("player.target") and v.caster == EnKai.unit.getPlayerDetails().id) then
-                        
-                        internalFunc.processNewBuff ("unit." .. unitId .. ".debuff.icon" .. buffIdentifier, unitId, buffUnit, k, buffIdentifier, v, unitDebuffDisplayList, unitDebuffIcons)                        
+                    if unitID ~= targetID or (unitID == EnKai.unit.GetUnitByIdentifier ("player.target") and buffDetails.caster == EnKai.unit.getPlayerDetails().id) then                    
 
-                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".debuff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitDebuffDisplayList, unitDebuffIcons, frame)
+
+                        --if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        if InspectSystemSecure() == false then
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
@@ -100,11 +121,12 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
 
                     end
                 else
-                    if (v.remaining and v.remaining < nkUISetup.modules.unitFrames.buffDuration) then
+                    if (buffDetails.remaining and buffDetails.remaining < nkUISetup.modules.unitFrames.buffDuration) then
 
-                        internalFunc.processNewBuff ("unit." .. unitId .. ".buff.icon" .. buffIdentifier, unitId, buffUnit, k, buffIdentifier, v, unitBuffDisplayList, unitBuffIcons)                        
+                        internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".buff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitBuffDisplayList, unitBuffIcons, frame)
                         
-                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        --if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        if InspectSystemSecure() == false then
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
@@ -139,7 +161,7 @@ function internalFunc.manageBuffs(frame, unitType, unitId, buffUnit, buffs, acti
         unitBuffDisplayList = {}
         unitDebuffDisplayList = {}
     elseif action == "remove" then
-        if buffUnit == unitId then
+        if buffUnit == unitID then
             for id, v in pairs(buffs) do
 
                 local buffType = unitBuffId2BuffType[id]
@@ -289,18 +311,31 @@ function internalFunc.processBuffs ()
     end
 end
 
-function internalFunc.processNewBuff (iconName, unitID, unit, buffID, buffIdentifier, buffDetails, displayList, icons)
+--function internalFunc.processNewBuff (iconName, unitID, unit, buffID, buffIdentifier, buffDetails, displayList, icons)
+
+-- unitType         player, player.target etc
+-- iconName         Name of the icon
+-- buffID           the id of that specific buff (not the type)
+-- buffIdentifier   the type of buff
+-- buffDetails      Details of the buff
+-- displayList      displayed buffs
+-- icons            icon list
+-- parent           parent of the icon
+
+function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier, buffDetails, displayList, icons, parent)
 
     if displayList[buffIdentifier] == nil then
 
         if icons[buffIdentifier] == nil then 
-            local icon = internalFunc.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
+            --local icon = internalFunc.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
+            local icon = internalFunc.iconManager.get(unitType, iconName)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
             
             icons[buffIdentifier].icon:SetEffect(EFFECT_GLOSS)
             icons[buffIdentifier].icon:ShowBorder(true)
             icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
             icons[buffIdentifier].icon:SetTexture("Rift", buffDetails.icon)
+            icons[buffIdentifier].icon:SetParent(parent)
 
             if buffDetails.poison then
                 icons[buffIdentifier].icon:SetBorderColor(0, 0.5, 0, 1)
@@ -323,7 +358,7 @@ function internalFunc.processNewBuff (iconName, unitID, unit, buffID, buffIdenti
 
     icons[buffIdentifier].remaining = buffDetails.remaining
     icons[buffIdentifier].duration = buffDetails.duration
-    icons[buffIdentifier].icon:SetBuff(unit, buffID, buffIdentifier)
+    icons[buffIdentifier].icon:SetBuff(buffID)
     icons[buffIdentifier].icon:SetTooltip(buffDetails.name, buffDetails.description)
 
     if buffDetails.remaining == nil or buffDetails.duration == nil then

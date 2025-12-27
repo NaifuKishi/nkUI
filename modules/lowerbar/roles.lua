@@ -99,7 +99,7 @@ function lowerBar.lowerBarRoles()
     updateRoles()
     
     datasetRole:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
-        if InspectSystemSecure() then return end
+        if inspectSystemSecure() then return end
         
         buttonShown = not buttonShown
         roleSwitch:SetVisible(buttonShown)

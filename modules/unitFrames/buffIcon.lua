@@ -58,7 +58,7 @@ function uiElements.icon (name, parent)
 	local showBorder = true
 	local activeEffect = 'none'
 	local scale = 1
-	local thisUnitId, thisBuffId, thisBuffType
+	local thisBuffId
 	local thisName, thisDescription
 		
 	icon:SetWidth(50)
@@ -316,8 +316,8 @@ function uiElements.icon (name, parent)
         Command.Buff.Cancel(thisBuffId)
     end, name .. ".UI.Input.Mouse.Right.Click")
 
-	function icon:SetBuff(unitType, buffId, buffType)
-		thisUnitType, thisBuffId, thisBuffType = unitType, buffId, buffType
+	function icon:SetBuff(buffId)
+		thisBuffId = buffId
 	end
 
 	function icon:SetTooltip(name, description)

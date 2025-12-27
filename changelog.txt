@@ -1,5 +1,11 @@
+V0.8.4
+    - updates: Buff Bar - buffs and debuffs are now sorted by remaining time
+    - updates: Unit Frames - buffs and debuffs are now sorted by remaining time
+    - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
+    - fixes: LowerBar - Fixed role change error
+
 V0.8.3
-    - new: Bags can now be moved betwen bag slots
+    - new: Bags can now be moved between bag slots
     - new: Bags can now be moved onto the bag slots from inventory
     - new: started adding hint dialogs
     - new: Additional info in One Bag item tooltip showing qty owned and price of item

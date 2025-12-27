@@ -40,29 +40,52 @@ end
 
 -- Updates the display of buff and debuff icons
 function internalFunc.buffBar.UpdateBuffDisplay()
+
+    local sortedBuffs = {}
+    for buffID, buffDetails in pairs(buffDisplayList) do
+        local remaining = buffIcons[buffID].remaining or 99999999
+        table.insert(sortedBuffs, {key = buffID, remaining = remaining})
+    end
+
+    table.sort(sortedBuffs, function(a, b) return a.remaining > b.remaining end)
+
     local x = 0
-    
-    for k, v in pairs(buffDisplayList) do
-        if buffIcons[k].lastX ~= x then
-            local icon = buffIcons[k].icon
+    local debuffOffset = nkUISetup.modules.buffBar.buffs.height + 12
+    local buffBarWidth = nkUISetup.modules.buffBar.buffs.width + 2
+
+    for _, details in ipairs(sortedBuffs) do
+        local thisIcon = buffIcons[details.key]
+
+        if thisIcon.lastX ~= x then
+            local icon = thisIcon.icon
             icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, 0)
         end
 
-        buffIcons[k].lastX = x
-        x = x + nkUISetup.modules.buffBar.buffs.width + 2        
+        thisIcon.lastX = x
+        x = x + buffBarWidth
     end
+    
+    -- Sort debuffs by remaining time
+    local sortedDebuffs = {}
+    for debuffID, debuffDetails in pairs(debuffDisplayList) do
+        local remaining = debuffIcons[debuffID].remaining or 99999999
+        table.insert(sortedDebuffs, {key = debuffID, remaining = remaining})
+    end
+    table.sort(sortedDebuffs, function(a, b) return a.time > b.time end)
 
     x = 0
-    
-    for k, v in pairs(debuffDisplayList) do
-        if debuffIcons[k].lastX ~= x then
-            local icon = debuffIcons[k].icon
-            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, (nkUISetup.modules.buffBar.buffs.height + 12))
+    for _, details in ipairs(sortedDebuffs) do
+        local thisIcon = debuffIcons[details.key]
+
+        if thisIcon.lastX ~= x then
+            local icon = thisIcon.icon
+            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, debuffOffset)
         end
-        
-        debuffIcons[k].lastX = x
-        x = x + nkUISetup.modules.buffBar.buffs.width + 2
+
+        thisIcon.lastX = x
+        x = x + buffBarWidth
     end
+
 end
 
 -- Adds a buff to the display
@@ -71,18 +94,18 @@ end
 function internalFunc.buffBar.addBuff(unit, buffs)
     local details = InspectBuffDetail(unit, buffs)
 
-    for k, v in pairs(details) do
-        local buffIdentifier = v.type
+    for buffID, buffDetails in pairs(details) do
+        local buffIdentifier = buffDetails.type
 
         if buffIdentifier == nil then
             EnKai.tools.error.display("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
         else
-            buffId2BuffType[k] = buffIdentifier
+            buffId2BuffType[buffID] = buffIdentifier
             
-            if v.poison == true or v.curse == true or v.disease == true or v.debuff == true then
-                internalFunc.processNewBuff("buffbar.debuff.icon" .. buffIdentifier, EnKaiGetPlayerDetails().id, unit, k, buffIdentifier, v, debuffDisplayList, debuffIcons)
+            if buffDetails.poison == true or buffDetails.curse == true or buffDetails.disease == true or buffDetails.debuff == true then
+                internalFunc.processNewBuff("buffbar", "buffbar.debuff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, debuffDisplayList, debuffIcons, uiElements.frames["buffBar"])
             else
-                internalFunc.processNewBuff("buffbar.buff.icon" .. buffIdentifier, EnKaiGetPlayerDetails().id, unit, k, buffIdentifier, v, buffDisplayList, buffIcons)
+                internalFunc.processNewBuff("buffbar", "buffbar.buff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, buffDisplayList, buffIcons, uiElements.frames["buffBar"])
             end
         end
     end

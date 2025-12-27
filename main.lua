@@ -99,6 +99,41 @@ uiElements.secureContext:SetStrata('tutorial')
 uiElements.secureContext:SetSecureMode("restricted")
 uiElements.secureContext:SetLayer(2)
 
+local function animateLogo ()
+
+	local logo = EnKai.uiCreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
+	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	logo:SetWidth(256)
+	logo:SetHeight(162)
+	logo:SetAlpha(0)
+	logo:SetTextureAsync("nkUI", "gfx/nkUILogo.png")
+
+	local animateShow = coroutine.create(
+		function ()
+			for idx = 1, 100, 1 do
+				logo:SetAlpha(idx / 100)
+				coroutine.yield(idx)
+			end
+		end
+	)
+
+	local animateHide = coroutine.create(
+		function ()
+			for idx = 1, 100, 1 do
+				logo:SetAlpha((100 - idx) / 100)
+				coroutine.yield(idx)
+			end
+		end
+	)
+
+	EnKai.coroutines.add ({ func = animateShow, counter = 100, active = true, callBack = function ()
+		EnKai.coroutines.add ({ func = animateHide, counter = 100, active = true, callBack = function ()
+			logo:destroy()
+		end})
+	end})	
+
+end
+
 --[[
    @function commandHandler
    @description Handles slash commands for the addon
@@ -199,6 +234,8 @@ local function initializeAddon(_, addon)
 			end
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
+
+			--animateLogo ()
 
 		end, "nkUI.Unit.Availability.Full")
 		
