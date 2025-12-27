@@ -75,6 +75,46 @@ function questTracker.buildUI ()
 	header:SetFontSize(16)
 	header:SetPoint("TOPLEFT", ui, "TOPLEFT")
 
+	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)            	    
+    	self.leftDown = true
+    	local mouse = inspectMouse()
+    
+    	self.originalXDiff = mouse.x - ui:GetLeft()
+    	self.originalYDiff = mouse.y - ui:GetTop()
+    
+    	local left, top, right, bottom = ui:GetBounds()
+    
+    	ui:ClearPoint("TOPLEFT")
+    	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", left, top)
+  	end, name .. ".header.Left.Down")
+  
+	header:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function (self, _, x, y)  
+		if self.leftDown ~= true then return end
+		
+		local newX, newY = x - self.originalXDiff, y - self.originalYDiff
+
+		-- the boundary below if fucked in scale mode and turned out to be completely useless
+
+		ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", newX, newY)    
+	end, name .. ".header.Cursor.Move")
+	
+	header:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self) 
+		if self.leftDown ~= true then return end
+		self.leftDown = false
+
+		nkUISetup.modules.questtracker.x = ui:GetLeft()
+		nkUISetup.modules.questtracker.y = ui:GetTop()
+
+	end, name .. ".header.Left.Up")
+	
+	header:EventAttach( Event.UI.Input.Mouse.Left.Upoutside, function (self)
+		if self.leftDown ~= true then return end
+		self.leftDown = false
+
+		nkUISetup.modules.questtracker.x = ui:GetLeft()
+		nkUISetup.modules.questtracker.y = ui:GetTop()
+	end , name .. ".header.Left.Upoutside")
+
 	EnKai.ui.setFont(header, addonInfo.id, "MontserratSemiBold")	
 
 	local headerLine = EnKai.uiCreateFrame("nkCanvas", name .. ".headerLine", ui)
