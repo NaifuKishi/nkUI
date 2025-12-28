@@ -1,3 +1,6 @@
 [submodule "Libs/LibEKL"]
 	path = Libs/LibEKL
 	url = https://github.com/NaifuKishi/LibEKL.git
+[submodule "Libs/LibQB"]
+	path = Libs/LibQB
+	url = https://github.com/NaifuKishi/LibQB.git
