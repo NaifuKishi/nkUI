@@ -82,9 +82,9 @@ function internalFunc.uiQuestTracker()
 
 	if isInit then return end
 
-	nkQuestBase.loadPackage("classic")
-	nkQuestBase.loadPackage("nt")
-	nkQuestBase.loadPackage("sfp")
+	LibQB.loadPackage("classic")
+	LibQB.loadPackage("nt")
+	LibQB.loadPackage("sfp")
 		
 	LibEKL.inventory.init()
 	
@@ -165,7 +165,7 @@ function questTracker.fillLog ()
 		
 			local addQuest = true
 			if data.zoneFilter == true then
-				addQuest = nkQuestBase.query.IsQuestInZone (LibEKL.unit.getPlayerDetails().zone, v.id)
+				addQuest = LibQB.query.IsQuestInZone (LibEKL.unit.getPlayerDetails().zone, v.id)
 			end
 		
 			if addQuest == true then
@@ -255,7 +255,7 @@ function questTracker.processQuest(details, processTitleFlag)
 		end
 	end
 
-	local lvl, libDetails = nkQuestBase.query.byKey(details.id, true)
+	local lvl, libDetails = LibQB.query.byKey(details.id, true)
 
 	if libDetails ~= nil then
 
@@ -353,7 +353,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		   local details = inspectItemDetail(itemkey)
 		   if (details == nil) then return end
 		   
-		   local dbDetails = nkQuestBase.query.questItemByKey(details.type)
+		   local dbDetails = LibQB.query.questItemByKey(details.type)
 		   if dbDetails ~= nil and dbDetails['use_' .. LibEKLGetLanguageShort()] ~= nil then
 		      message = dbDetails['use_' .. LibEKLGetLanguageShort()]
 		   elseif details.flavor ~= nil then
@@ -385,7 +385,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	local lvl, libDetails = nil, nil
 	
 	if (questkey ~= nil ) then
-		lvl, libDetails = nkQuestBase.query.byKey(questkey, true)
+		lvl, libDetails = LibQB.query.byKey(questkey, true)
 	end
 	
 	if libDetails ~= nil then
@@ -393,7 +393,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		local npc
 		
 		if libDetails.giver ~= nil then
-			npc = nkQuestBase.query.NPC (libDetails.giver)
+			npc = LibQB.query.NPC (libDetails.giver)
 			if npc ~= nil then
 				if npc.scene ~= nil then scene = npc.scene[LibEKLGetLanguageShort()] end
 				table.insert (lines, { text = "", height = 10})

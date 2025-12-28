@@ -259,7 +259,7 @@ end
 
 function questTracker.eventSystemUpdate()
 
-	if nkQuestBase.query.isInit() == false then return end
+	if LibQB.query.isInit() == false then return end
 
 	if uiElements.useUI == nil and inspectSystemSecure() == false then
 		if LibEKL.inventory.getAvailableSlots() ~= false then

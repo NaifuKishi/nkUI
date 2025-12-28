@@ -108,7 +108,7 @@ local function fillLog ()
 	local tags = {}
 
     for questID, v in pairs (questDetail) do
-        local zone = nkQuestBase.query.getZoneByQuest (questID)
+        local zone = LibQB.query.getZoneByQuest (questID)
         if zone == "UNKNOWN_ZONE" then
 			if not v.tag then v.tag = 'personal' end
         	tags[v.tag] = true

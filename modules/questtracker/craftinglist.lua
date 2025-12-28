@@ -39,7 +39,7 @@ function privateVars.internal.craftinglist (internalFlag)
 	
 	
 	for questKey, v in pairs(details) do
-		local count, dbData = nkQuestBase.query.byKey (questKey)
+		local count, dbData = LibQB.query.byKey (questKey)
 		
 		if dbData ~= nil and dbData.craft ~= nil then
 			for idx = 1, #dbData.craft, 1 do

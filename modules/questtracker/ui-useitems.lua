@@ -213,7 +213,7 @@ function questTracker.buildUseUI ()
 		local tempList = {}
 		
 		for slot, v in pairs (completeList) do
-			local questInfo = nkQuestBase.query.questItemByKey (v.type)			
+			local questInfo = LibQB.query.questItemByKey (v.type)			
 
 			local addItem = true
 
