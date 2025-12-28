@@ -53,6 +53,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local interactive = false
 	local oor, usable = false, true
 
+	local lastCooldown
+
 	-- Shape path for the icon	
 	local path = {{xProportional = 0.5, yProportional = 0}, 
                   {xProportional = 1, yProportional = 0.5, xControlProportional = (61/64), yControlProportional = (3/64)},
@@ -159,10 +161,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	--[[
       Function to set cooldown
-      @param {string|number} timer - The cooldown timer text or number
-      @param {number} percent - The percentage of cooldown remaining
+      @param {string|number} timer - The cooldown timer text or number      
     ]]
-	function frame:SetCooldown(timer, percent)
+	function frame:SetCooldown(timer)
 	
 		if timer == nil then
 			cooldown:SetVisible(false)
@@ -181,7 +182,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				cooldown:SetFontColor(1, 0, 0, 1)
 			end
 			
-			cooldown:SetText(timer)
+			if lastCooldown ~= timer then
+				cooldown:SetText(timer)
+			end
 		end		
 	end
 	

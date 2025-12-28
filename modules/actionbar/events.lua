@@ -35,6 +35,7 @@ data.activeCooldowns = {}
 -- @param abilityId The ID of the ability to update
 -- @param updateFunc Function to apply to each ability frame
 local function updateAbilityStates(abilityId, updateFunc)
+    
     if data.abilityMap and data.abilityMap[abilityId] then
         for _, frame in pairs(data.abilityMap[abilityId]) do
             updateFunc(frame)
@@ -143,23 +144,34 @@ end
 -- @param info Table containing cooldown information
 function events.abCooldownProcess(_, addon, info)
     local debugId = internalFunc.traceStart("cooldownProcess")
-    
-    for key, details in pairs(info) do
-        if data.abilityMap and data.abilityMap[key] then
-            local percent = details.duration and details.remaining and (1 / details.duration * details.remaining) or nil
 
-            if not details.remaining or details.remaining < 0 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown() end)
-            elseif details.remaining <= 1 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining)), percent) end)
-            elseif details.remaining > 14400 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown() end)
-            elseif details.remaining > 3600 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining / 3600)) .. "h", percent) end)
-            elseif details.remaining > 60 then
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining / 60)) .. "m", percent) end)
-            else
-                updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(details.remaining)), percent) end)
+    if addon ~= addonInfo.id then
+        internalFunc.traceEnd("cooldownProcess", debugId)
+        return -- the event is fired for every addon which subscribed
+    end
+
+    local abilityMap = data.abilityMap
+    
+    if abilityMap then
+        for key, details in pairs(info) do
+            if abilityMap[key] then
+
+                local duration, remaining = details.duration, details.remaining
+                local percent = duration and remaining and (1 / duration * remaining) or nil
+
+                if not remaining or remaining < 0 then
+                    updateAbilityStates(key, function(frame) frame:SetCooldown() end)
+                elseif remaining <= 1 then
+                    updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(remaining)), percent) end)
+                elseif remaining > 14400 then
+                    updateAbilityStates(key, function(frame) frame:SetCooldown() end)
+                elseif remaining > 3600 then
+                    updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(remaining / 3600)) .. "h", percent) end)
+                elseif remaining > 60 then
+                    updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(remaining / 60)) .. "m", percent) end)
+                else
+                    updateAbilityStates(key, function(frame) frame:SetCooldown(tostring(mathFloor(remaining)), percent) end)
+                end
             end
         end
     end
