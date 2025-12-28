@@ -15,6 +15,15 @@ local mathpi        = math.pi
 
 uiElements.lowerBarModules = {}
 
+lowerBar.context = UI.CreateContext("nkUI.lowerbar")
+lowerBar.context:SetStrata('hud')
+lowerBar.context:SetLayer(2)
+
+lowerBar.contextRestricted = UI.CreateContext("nkUI.lowerbar.restricted")
+lowerBar.contextRestricted :SetStrata('hud')
+lowerBar.contextRestricted :SetSecureMode("restricted")
+lowerBar.contextRestricted :SetLayer(2)
+
 ---------- local functions ---------
 
 -- Initializes the lower bar and loads all modules
@@ -28,7 +37,7 @@ function lowerBar.build()
     -- Create a canvas behind the lower bar
 
     if not uiElements.lowerBarCanvas then
-        uiElements.lowerBarCanvas = LibEKL.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", uiElements.contextLowest)
+        uiElements.lowerBarCanvas = LibEKL.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.context)
         uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
         uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
 

@@ -16,6 +16,7 @@ local InspectUnitLookup     = Inspect.Unit.Lookup
 local InspectBuffList       = Inspect.Buff.List
 local InspectTimeReal       = Inspect.Time.Real
 local InspectSystemSecure   = Inspect.System.Secure
+local inspectAddonCurrent   = Inspect.Addon.Current
 
 local mathFloor             = math.floor
 local stringFormat          = string.format
@@ -26,6 +27,24 @@ local stringFind            = string.find
 local EFFECT_GLOSS = { alpha = 0.6, texturePath = 'gfx/iconDesignGloss.png', replaceBorder = false }
 
 -- Buff management function
+
+local function processIconTimers (icons)
+
+    local curTime = InspectTimeReal()
+
+    for _, thisIcon in pairs (icons) do
+        if thisIcon.remaining then
+            local timer = thisIcon.duration - (curTime - thisIcon.start)
+            if timer > 0 then
+                thisIcon.icon:SetTimer(timer)
+            else
+                thisIcon.icon:Clear()
+                thisIcon.remaining = nil
+            end
+        end
+    end
+
+end
 
 function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, action)
 
@@ -197,86 +216,34 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
 end
 
 
-function internalFunc.processBuffs ()
+function internalFunc.processBuffs()
 
 	--- process buffs and debuffs
 
-    local buffIcons = internalFunc.buffBar:GetBuffIcons()
-    local debuffIcons = internalFunc.buffBar:GetDebuffIcons()
-
-    for k, thisIcon in pairs (buffIcons) do
-        if thisIcon.remaining then
-            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-        end
-    end
-
-    for k, thisIcon in pairs (debuffIcons) do
-        if thisIcon.remaining then
-            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-        end
-    end
+    processIconTimers (internalFunc.buffBar:GetBuffIcons())
+    processIconTimers (internalFunc.buffBar:GetDebuffIcons())
 
     --- process player
 
     local playerFrame = uiElements.frames["player"]
-    local playerBuffIcons = playerFrame:GetBuffIcons()
-    local playerDebuffIcons = playerFrame:GetDebuffIcons()
 
-    for k, thisIcon in pairs (playerBuffIcons) do
-        if thisIcon.remaining then
-            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-        end
-    end
-
-    for k, thisIcon in pairs (playerDebuffIcons) do
-        if thisIcon.remaining then
-            thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-        end
-    end
+    processIconTimers (playerFrame:GetBuffIcons())
+    processIconTimers (playerFrame:GetDebuffIcons())
 
 	--- process pet
 
 	if data.playerPetID then
-
         local playerPetFrame = uiElements.frames["player.pet"]
-
-        local playerPetBuffIcons = playerPetFrame:GetBuffIcons()
-        local playerPetDebuffIcons = playerPetFrame:GetDebuffIcons()
-
-        for k, thisIcon in pairs (playerPetBuffIcons) do
-            if thisIcon.remaining then
-                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-            end
-        end
-
-        for k, thisIcon in pairs (playerPetDebuffIcons) do
-            if thisIcon.remaining then
-                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-            end
-        end
+        processIconTimers (playerPetFrame:GetBuffIcons())
+        processIconTimers (playerPetFrame:GetDebuffIcons())
     end
 
 	--- process target
 
 	if LibEKL.Unit.GetUnitByIdentifier("player.target") then
-
-        local targetFrame = uiElements.frames["player.target"]
-
-        local targetBuffIcons = targetFrame:GetBuffIcons()
-
-        local targetDebuffIcons = targetFrame:GetDebuffIcons()
-
-        for k, thisIcon in pairs (targetBuffIcons) do
-            if thisIcon.remaining then             
-                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-            end
-        end
-
-        for k, thisIcon in pairs (targetDebuffIcons) do
-            if thisIcon.remaining then
-                thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-            end
-        end
+        local playerTarget = uiElements.frames["player.target"]
+        processIconTimers (playerTarget:GetBuffIcons())
+        processIconTimers (playerTarget:GetDebuffIcons())
 	end
 
     --- process groups
@@ -289,30 +256,16 @@ function internalFunc.processBuffs ()
             local groupName = stringFormat("group%02d", idx)
 
             if LibEKL.Unit.GetUnitByIdentifier(groupName) then
-
-                local targetFrame = uiElements.frames[groupName]
-
-                local targetBuffIcons = targetFrame:GetBuffIcons()
-                local targetDebuffIcons = targetFrame:GetDebuffIcons()
-
-                for k, thisIcon in pairs (targetBuffIcons) do
-                    if thisIcon.remaining then             
-                        thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-                    end
-                end
-
-                for k, thisIcon in pairs (targetDebuffIcons) do
-                    if thisIcon.remaining then
-                        thisIcon.icon:SetTimer(thisIcon.duration - (InspectTimeReal() - thisIcon.start))
-                    end
-                end
+                local groupFrame = uiElements.frames[groupName]
+                processIconTimers (groupFrame:GetBuffIcons())
+                processIconTimers (groupFrame:GetDebuffIcons())
             end
         end
     end
+    
 end
 
 --function internalFunc.processNewBuff (iconName, unitID, unit, buffID, buffIdentifier, buffDetails, displayList, icons)
-
 -- unitType         player, player.target etc
 -- iconName         Name of the icon
 -- buffID           the id of that specific buff (not the type)
@@ -323,6 +276,9 @@ end
 -- parent           parent of the icon
 
 function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier, buffDetails, displayList, icons, parent)
+
+    local debugId  
+	if nkDebug then debugId = nkDebug.traceStart (inspectAddonCurrent(), "nkUI internalFunc.processNewBuff") end
 
     if displayList[buffIdentifier] == nil then
 
@@ -366,5 +322,7 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
     else
         icons[buffIdentifier].start = InspectTimeReal() - (buffDetails.duration - buffDetails.remaining)
     end
+
+    if nkDebug then nkDebug.traceEnd (inspectAddonCurrent(), "nkUI internalFunc.processNewBuff", debugId) end
 
 end

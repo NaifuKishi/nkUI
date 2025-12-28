@@ -28,7 +28,16 @@ local LibEKLGetUnitDetail  = LibEKL.Unit.GetUnitDetail
 ---------- init global variables ---------
 
 data.unitFramesBuild = false
+
 uiElements.frames = {}
+uiElements.unitFramesContext = UI.CreateContext("nkUI.unitFrames")
+uiElements.unitFramesContext:SetStrata('hud')
+uiElements.unitFramesContext:SetLayer(2)
+
+uiElements.unitFramesContextSecure = UI.CreateContext("nkUI.unitFrames.secure")
+uiElements.unitFramesContextSecure:SetStrata('tutorial')
+uiElements.unitFramesContextSecure:SetSecureMode("restricted")
+uiElements.unitFramesContextSecure:SetLayer(2)
 
 ---------- init local variables ---------
 
@@ -140,7 +149,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     local unitDebuffDisplayList = {}
     local unitBuffId2BuffType = {}
 
-    local unitFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.contextLowest)
+    local unitFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame", uiElements.unitFramesContext)
     unitFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     unitFrame:SetWidth(frameWidth)
     unitFrame:SetHeight(frameHeight)    
@@ -165,7 +174,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         end
     end
     
-    local secureFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.secureContext)
+    local secureFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".unitFrame.secure", uiElements.unitFramesContextSecure)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
@@ -727,7 +736,7 @@ function internalFunc.uiFrames()
 
     uiElements.frames = {}
 
-    local buffBarHolder = LibEKL.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.contextLowest)
+    local buffBarHolder = LibEKL.uiCreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.unitFramesContext)
     buffBarHolder:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
     uiElements.frames["buffBar"] = buffBarHolder
 

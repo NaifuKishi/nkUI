@@ -15,6 +15,8 @@ local InspectBuffDetail = Inspect.Buff.Detail
 local stringFormat	= string.format
 local mathFloor		= math.floor
 
+local LibEKLToolsMathRound = LibEKL.Tools.Math.Round
+
 -- Cache frequently used functions and values
 local _eventHandlers = {}
 
@@ -108,11 +110,6 @@ function uiElements.icon (name, parent)
 		label:SetText(text)
 	end
 	
-	--function icon:SetTimer(text)
-	--	timer:ClearWidth()
-	--	timer:SetText(text)
-	--end
-	
 	function icon:SetStack(text)
 		--stack:ClearWidth()
 		if text == nil then
@@ -191,39 +188,41 @@ function uiElements.icon (name, parent)
 	end
 	
 	function icon:SetTimer (newTimer)
-		if newTimer then 
+		if newTimer then
 
-			if LibEKL.Tools.Math.Round (newTimer, 0) <= 10 then
-				if isBelow10 == false then
-					timer:SetFontColor(1, 0, 0, 0)
-					isBelow10 = true
+			local roundedTimer = LibEKLToolsMathRound (newTimer, 0)
+			if roundedTimer ~= lastTimer then
+
+				if roundedTimer <= 10 then
+					if isBelow10 == false then
+						timer:SetFontColor(1, 0, 0, 0)
+						isBelow10 = true
+					end
+				elseif isBelow10 == true then
+					isBelow10 = false
+					timer:SetFontColor(1, 1, 1, 0)
 				end
-			elseif isBelow10 == true then
-				isBelow10 = false
-				timer:SetFontColor(1, 1, 1, 0)
-			end
 
-			local unit = "s"
-			if newTimer > 3600 then
-				newTimer = newTimer / 3600
-				unit = "h"
-			elseif newTimer > 60 then
-				newTimer = newTimer / 60
-				unit = "m"
-			end
+				local thisTimer = newTimer
 
-			newTimer = LibEKL.Tools.Math.Round (newTimer, 0)
+				local unit = "s"
+				if thisTimer > 3600 then
+					thisTimer = thisTimer / 3600
+					unit = "h"
+				elseif thisTimer > 60 then
+					thisTimer = thisTimer / 60
+					unit = "m"
+				end
 
-			if newTimer ~= lastTimer then
-				--timer:ClearWidth()
-				timer:SetText(stringFormat("%d%s", newTimer, unit))
+				thisTimer = LibEKLToolsMathRound (thisTimer, 0)			
+				timer:SetText(stringFormat("%d%s", thisTimer, unit))
 
 				if timerVisible == false then 
 					timer:SetVisible(true)
 					timerVisible = true
 				end
 
-				lastTimer = newTimer
+				lastTimer = thisTimer
 			end
 		else
 			if timerVisible == true then 
@@ -235,13 +234,12 @@ function uiElements.icon (name, parent)
 		end
 	end
 
-	function icon:Clear()
-		
+	function icon:Clear()		
 		lastTimer = nil
 		timerVisible = false
 		isBelow10 = false
 		timer:SetFontColor(1, 1, 1, 0)
-		icon:SetVisible(false)		
+		icon:SetVisible(false)
 	end
 
 	function icon:SetTimerColor(r, g, b, a, ro, go, bo)

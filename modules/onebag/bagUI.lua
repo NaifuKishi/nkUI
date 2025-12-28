@@ -11,10 +11,14 @@ local oneBag        = privateVars.oneBag
 
 local stringFormat  = string.format
 
+local context = UI.CreateContext("nkUI.onebag")
+context:SetStrata('dialog')
+context:SetLayer(2)
+
 -- Creates the main bag UI window
 function oneBag.createBagUI()
     
-    local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", uiElements.contextDialog)
+    local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", context)
     bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.Unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)

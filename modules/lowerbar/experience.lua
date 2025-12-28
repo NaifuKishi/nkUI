@@ -15,7 +15,7 @@ local stringFormat      = string.format
 
 -- Creates and manages the experience bar display
 function lowerBar.experience()
-    local datasetExpBarBG = LibEKL.uiCreateFrame('nkFrame', "lowerBar.experienceFrameBG", uiElements.contextLowestRestricted)
+    local datasetExpBarBG = LibEKL.uiCreateFrame('nkFrame', "lowerBar.experienceFrameBG", lowerBar.contextRestricted)
     datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth + 10, -9)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
@@ -27,7 +27,7 @@ function lowerBar.experience()
     datasetExpBar:SetWidth(0)
     datasetExpBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     
-    local datasetExp = LibEKL.uiCreateFrame('nkText', "lowerBar.experience", uiElements.contextLowestRestricted)
+    local datasetExp = LibEKL.uiCreateFrame('nkText', "lowerBar.experience", lowerBar.contextRestricted)
     datasetExp:SetPoint("BOTTOMCENTER", datasetExpBarBG, "TOPCENTER", 0, 0)
     datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)

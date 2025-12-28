@@ -22,7 +22,7 @@ local function showCategoryFilter (parent)
 
 	local name = "nkUI.QuestTracker.categoryFilter"
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, questTracker.context)
 	ui:SetLayer(2)
 	ui:SetBackgroundColor(0, 0, 0, 1)
 	ui:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
@@ -60,7 +60,7 @@ function questTracker.buildUI ()
 	local name = "nkUI.questTracker"
 	local scrollPane, content	
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, questTracker.context)
 	
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
 	ui:SetWidth(nkUISetup.modules.questtracker.width)

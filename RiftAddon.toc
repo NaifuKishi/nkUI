@@ -45,16 +45,16 @@ RunOnStartup = {
 	"modules/onebag/bagSlots.lua",
 	"modules/onebag/itemTooltip.lua",
 
-	"modules/unitFrames/events.lua",
-	"modules/unitFrames/statevents.lua",
 	"modules/unitFrames/buffBar.lua",
-	"modules/unitFrames/buffManagement.lua",
-	"modules/unitFrames/iconManagement.lua",
-	"modules/unitFrames/uiframes.lua",
-	"modules/unitFrames/castbar.lua",
 	"modules/unitFrames/buffIcon.lua",
+	"modules/unitFrames/buffManagement.lua",
+	"modules/unitFrames/castbar.lua",
+	"modules/unitFrames/events.lua",
+	"modules/unitFrames/iconManagement.lua",
 	"modules/unitFrames/ressourceBar.lua",
-
+	"modules/unitFrames/statevents.lua",
+	"modules/unitFrames/uiframes.lua",
+	
 	"modules/cooldowns/cooldowns.lua",
 
 	"modules/sct/scrollingCombatText.lua",

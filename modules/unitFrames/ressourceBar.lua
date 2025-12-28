@@ -34,7 +34,7 @@ function internalFunc.ressourcBar (unit, setup)
     local ressourceMax
     local comboIcon = {}
     
-    local ressourceBGFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.contextLowest)
+    local ressourceBGFrame = LibEKL.uiCreateFrame("nkFrame", thisName .. ".ressourceBGFrame", uiElements.unitFramesContext)
     ressourceBGFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     ressourceBGFrame:SetWidth(setup.width)
     ressourceBGFrame:SetHeight(setup.height)

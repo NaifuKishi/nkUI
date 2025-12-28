@@ -23,8 +23,6 @@ local stringSub		= string.sub
 
 local LibEKLGetUnitTypes	= LibEKL.Unit.getUnitTypes
 
-local processBuffs	= internalFunc.processBuffs
-
 ------------------------------ combat functions ------------------------------
 
 local function _fctSecureEnter()
@@ -234,7 +232,7 @@ local function _fctUpdateHandler()
 	-- run every 0.5 seconds	
 	
 	if (_lastUpdate2 == nil or _curTime - _lastUpdate2 >= .5) then		
-		internalFunc.processBuffs()	
+		internalFunc.processBuffs()
 		_lastUpdate2 = _curTime
 	end
 	

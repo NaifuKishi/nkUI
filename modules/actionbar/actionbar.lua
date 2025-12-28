@@ -35,6 +35,10 @@ data.actionBarColors = { mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {
 
 uiElements.actionbars = {}
 
+local context = UI.CreateContext("nkUI.actionbar")
+context:SetStrata('hud')
+context:SetLayer(2)
+
 -- init local variables
 
 local name = "uiActionBar"
@@ -55,7 +59,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     local width = (cols * buttonSize * scale ) + ((cols -1) * spacing)
     local height = (rows * buttonSize * scale ) + ((rows - 1) * spacing)
 
-    local actionBar = LibEKL.uiCreateFrame("nkFrame", thisName, uiElements.contextLowest)
+    local actionBar = LibEKL.uiCreateFrame("nkFrame", thisName, context)
     
     actionBar:SetWidth(width)
     actionBar:SetHeight(height)

@@ -17,7 +17,7 @@ local stringFormat      = string.format
 -- Creates and manages the FPS display
 function lowerBar.fps()
 
-    local datasetFPS = LibEKL.uiCreateFrame('nkText', "lowerBar.fps", uiElements.contextLowestRestricted)
+    local datasetFPS = LibEKL.uiCreateFrame('nkText', "lowerBar.fps", lowerBar.contextRestricted)
     datasetFPS:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMLEFT", (data.aFourth - 10), -5)
     datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)

@@ -76,28 +76,12 @@ data.colors = {
 data.uiScale = 1
 local thisTutorialVersion = 80
 
--- Generate UI context
-uiElements.contextLowest = UI.CreateContext("nkUI.lowest")
-uiElements.contextLowest:SetStrata('hud')
-uiElements.contextLowest:SetLayer(2)
 
-uiElements.contextDialog = UI.CreateContext("nkUI.Dialog")
-uiElements.contextDialog:SetStrata('dialog')
-uiElements.contextDialog:SetLayer(2)
+-- Generate UI context
 
 uiElements.contextTooltip = UI.CreateContext("nkUI.Tooltip")
 uiElements.contextTooltip:SetStrata('tooltip')
 uiElements.contextTooltip:SetLayer(99)
-
-uiElements.contextLowestRestricted = UI.CreateContext("nkUI.lowestRestricted")
-uiElements.contextLowestRestricted:SetStrata('hud')
-uiElements.contextLowestRestricted:SetSecureMode("restricted")
-uiElements.contextLowestRestricted:SetLayer(2)
-
-uiElements.secureContext = UI.CreateContext("nkUI.secure")
-uiElements.secureContext:SetStrata('tutorial')
-uiElements.secureContext:SetSecureMode("restricted")
-uiElements.secureContext:SetLayer(2)
 
 local function animateLogo ()
 

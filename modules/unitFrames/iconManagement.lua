@@ -17,6 +17,10 @@ local InspectUnitLookup     = Inspect.Unit.Lookup
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
+local context = UI.CreateContext("nkUI.buffIcons")
+context:SetStrata('hud')
+context:SetLayer(2)
+
 ---------- init global variables ----------
 
 -- Icon management function
@@ -92,7 +96,7 @@ function iconManager.get(unitType, iconType)
 
     -- Create new icon if none available
     local thisName = LibEKL.Tools.UUID()
-    local thisIcon = uiElements.icon(thisName .. ".icon", uiElements.contextLowest)
+    local thisIcon = uiElements.icon(thisName .. ".icon", context)
     --thisIcon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
     --thisIcon:Setup(setup)
     thisIcon:SetVisible(false)

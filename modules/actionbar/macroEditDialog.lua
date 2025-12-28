@@ -12,6 +12,10 @@ local inspectItemDetail			= Inspect.Item.Detail
 local inspectAbilityNewDetail	= Inspect.Ability.New.Detail
 local inspectTEMPORARYRole		= Inspect.TEMPORARY.Role
 
+local context = UI.CreateContext("nkUI.actionbar.macroEdit")
+context:SetStrata('hud')
+context:SetLayer(2)
+
 -- Helper function to create and configure a UI button
 local function createButton(parent, name, width, height, x, y, text, iconPath)
     local button = LibEKL.uiCreateFrame("nkButton", name, parent)
@@ -53,7 +57,7 @@ function internalFunc.macroEditDialog (editBar)
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
 	-- Create the main dialog window
-	local ui = LibEKL.uiCreateFrame("nkWindow", name, uiElements.contextDialog)
+	local ui = LibEKL.uiCreateFrame("nkWindow", name, context)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
 	ui:SetHeight(250)

@@ -21,6 +21,11 @@ local mathFloor					= math.floor
 local _useButtonQuestItemID = nil
 local _itemCounter = 0
 
+local context = UI.CreateContext("nkUI.QuestTracker.UseItem")
+context:SetStrata('hud')
+context:SetSecureMode("restricted")
+context:SetLayer(2)
+
 ---------- init variables ---------
 
 ---------- local function block ---------
@@ -76,7 +81,7 @@ function questTracker.buildUseUI ()
 
 	local name = "nkUI.QuestTracker.UseUI"
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, uiElements.contextLowestRestricted)
+	local ui = LibEKL.uiCreateFrame("nkFrame", name, context)
 	ui:SetPoint("TOPRIGHT", uiElements.questTracker, "TOPLEFT", 20, 35)
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questTracker:GetHeight()-20)

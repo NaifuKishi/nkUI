@@ -23,7 +23,7 @@ function lowerBar.social()
     local lastGuildUpdate
     local _friendlist, _guildList = {}, {}
     
-    local datasetSocial = LibEKL.uiCreateFrame("nkText", "lowerBar.datasetsocial", uiElements.contextLowestRestricted)
+    local datasetSocial = LibEKL.uiCreateFrame("nkText", "lowerBar.datasetsocial", lowerBar.contextRestricted)
     datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 31, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)

@@ -13,6 +13,11 @@ local settingsUI = privateVars.settingsUI
 
 local stringFind = string.find
 
+local context = UI.CreateContext("nkUI.Settings")
+context:SetStrata('dialog')
+context:SetLayer(2)
+
+
 ---------- init local variables ---------
 
 local _defaults = {
@@ -329,7 +334,7 @@ function internalFunc.setupUI ()
     
     local name = "nkUI.config"
 
-    local config = LibEKL.uiCreateFrame("nkWindow", name, uiElements.contextDialog)
+    local config = LibEKL.uiCreateFrame("nkWindow", name, context)
     config:SetLayer(1)
     config:SetWidth(950)
     config:SetHeight(650)

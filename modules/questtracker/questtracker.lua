@@ -36,6 +36,10 @@ local _craftingItems = {
 local _zoneInfo			= {}
 local isInit			= false
 
+questTracker.context = UI.CreateContext("nkUI.QuestTracker")
+questTracker.context:SetStrata('hud')
+questTracker.context:SetLayer(2)
+
 ---------- init variables ---------
 
 data.zoneFilter			= false

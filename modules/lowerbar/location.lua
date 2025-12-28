@@ -22,7 +22,7 @@ function lowerBar.location()
     
     local buttonShown = false
     
-    local datasetLocation = LibEKL.uiCreateFrame('nkText', "lowerBar.location", uiElements.contextLowestRestricted)
+    local datasetLocation = LibEKL.uiCreateFrame('nkText', "lowerBar.location", lowerBar.contextRestricted)
     datasetLocation:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, -5)
     datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)

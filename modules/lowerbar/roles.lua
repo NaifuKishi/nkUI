@@ -20,7 +20,7 @@ local stringFormat         = string.format
 function lowerBar.lowerBarRoles()
     local name = "lowerbar.roles"
     
-    local datasetRole = LibEKL.uiCreateFrame("nkText", name .. ".datasetrole", uiElements.contextLowestRestricted)
+    local datasetRole = LibEKL.uiCreateFrame("nkText", name .. ".datasetrole", lowerBar.contextRestricted)
     datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", (-data.aFourth * 2) - 10, -5)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)

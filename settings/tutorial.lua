@@ -23,6 +23,10 @@ local _events       = privateVars.events
 
 local name = "tutorial"
 
+local context = UI.CreateContext("nkUI.Tutorial")
+context:SetStrata('dialog')
+context:SetLayer(2)
+
 ---------- init local function ---------
 
 --[[
@@ -45,7 +49,7 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.tutorialWindow", uiElements.contextDialog)
+    local tutorialWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.tutorialWindow", context)
     tutorialWindow:SetLayer(99)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")

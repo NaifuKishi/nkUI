@@ -205,8 +205,8 @@ function _events.uiFramesInitStatEvents()
 
 	local details = LibEKL.Unit.getPlayerDetails()
 	if details.calling == "primalist" then
-		LibEKL.stat.init()
-		LibEKL.stat.subscribe("focus")
+		LibEKL.Stat.Init()
+		LibEKL.Stat.Subscribe("focus")
 		Command.Event.Attach(LibEKL.Events["LibEKL.Stat"].Focus, _events.focus, "nkUI.LibEKL.Stat.Focus")	
 	end
 

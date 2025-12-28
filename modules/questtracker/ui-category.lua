@@ -47,7 +47,7 @@ local function showMenuCategory (parent, category)
 	categoryMenuCategory = category
 
 	if uiElements.menuCategory == nil then
-		uiElements.menuCategory = LibEKL.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.context)
+		uiElements.menuCategory = LibEKL.uiCreateFrame("nkMenu", 'nkQuestTracker.menuCategory', uiElements.contextTooltip)
 		uiElements.menuCategory:SetFont(addonInfo.id, "Montserrat")
 		uiElements.menuCategory:SetLayer(3)
 		uiElements.menuCategory:AddEntry({ label = privateVars.langTexts.abandonAll, callBack = abandonQuestCategory })

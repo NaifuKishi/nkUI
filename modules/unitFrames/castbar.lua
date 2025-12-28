@@ -26,7 +26,7 @@ function internalFunc.createCastBar (unitType, setup)
 
 	local thisName = name .. "." .. unitType
 
-	local castbar =  LibEKL.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.secureContext)
+	local castbar =  LibEKL.uiCreateFrame("nkFrame", thisName .. ".castBar", uiElements.unitFramesContext)
 	castbar:SetVisible(false)
 	castbar:SetWidth(setup.width)
 	castbar:SetHeight(setup.height)

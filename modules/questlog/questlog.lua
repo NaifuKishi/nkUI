@@ -21,7 +21,7 @@ local function uiQuestLog()
 	local scrollPane, content
 	local questCategories
 
-	local ui = LibEKL.uiCreateFrame("nkwindow", name, uiElements.contextLowest)
+	local ui = LibEKL.uiCreateFrame("nkwindow", name, questTracker.context)
 	
 	ui:SetReverseAtBorder(false)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 600, 400)

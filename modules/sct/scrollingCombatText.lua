@@ -65,6 +65,11 @@ local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
 
+local context = UI.CreateContext("nkUI.SCT")
+context:SetStrata('hud')
+context:SetLayer(2)
+
+
 ---------- local functions ---------
 
 -- Gets the ability icon for a given ability
@@ -107,7 +112,7 @@ end
 local function createTextFrame()
     local name = LibEKL.Tools.UUID()
 
-    local frame = LibEKL.uiCreateFrame("nkText", name, uiElements.contextLowest)
+    local frame = LibEKL.uiCreateFrame("nkText", name, context)
     frame:SetEffectGlow({ strength = 3 })
     frame:SetVisible(false)
 

@@ -364,7 +364,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then
 		
 			if not macroFrame then
-				macroFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.secureContext)
+				macroFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.unitFramesContextSecure)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
