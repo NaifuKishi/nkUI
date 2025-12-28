@@ -116,7 +116,7 @@ function oneBag.createItemIcon(name, parent)
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
         oneBag.hideItemTooltip()
         Command.Tooltip(thisItemID)
-        LibEKL.events.addInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
+        LibEKL.Events.AddInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
@@ -135,12 +135,12 @@ function oneBag.createItemIcon(name, parent)
    
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
         if UI.Native.Bank:GetLoaded() then
-            local vaultSlot = LibEKL.inventory.findFreeVaultSlot()
+            local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
             if vaultSlot then
                 Command.Item.Move(thisSlot, vaultSlot)
                 movedItem = thisItemID
             else
-                local bankSlot = LibEKL.inventory.findFreeBankSlot()
+                local bankSlot = LibEKL.Inventory.findFreeBankSlot()
                 if bankSlot then
                     Command.Item.Move(thisSlot, bankSlot)
                     movedItem = thisItemID

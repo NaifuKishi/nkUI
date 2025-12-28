@@ -47,7 +47,7 @@ function privateVars.internal.craftinglist (internalFlag)
 				local key = dbData.craft[idx].key
 				local toCraft = dbData.craft[idx].count
 			
-				if privateVars.have[key] == nil then privateVars.have[key] = LibEKL.inventory.queryByKey (key) end
+				if privateVars.have[key] == nil then privateVars.have[key] = LLibEKL.Inventory.queryQtyById (key) end
 				
 				local temp = Inspect.Item.Detail(key)
 				if privateVars.debug == true then print ('===== ' .. temp.name .. " =====") end
@@ -132,7 +132,7 @@ function privateVars.internal.checkRecipe(key, realNeed, lookupList)
 						
 						local akey = ingredient.akey
 						
-						if privateVars.have[akey] == nil then privateVars.have[akey] = LibEKL.inventory.queryByKey (akey) end
+						if privateVars.have[akey] == nil then privateVars.have[akey] = LibEKL.Inventory.queryQtyById (akey) end
 						
 						local temp = Inspect.Item.Detail(akey)
 						
@@ -198,7 +198,7 @@ function privateVars.internal.craftingUI ()
 	
 	function ui:GetGrid() return grid end
 	
-	Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function (_, updates)
+	Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function (_, updates)
 		
 		if ui:GetVisible() == false then return end
 		

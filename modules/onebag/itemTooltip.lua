@@ -56,7 +56,7 @@ local function uiItemTooltip ()
         local qty = 0
 
         if flag and details and details.sell then 
-            qty = LibEKL.inventory.queryQtyById (itemID)
+            qty = LibEKL.Inventory.queryQtyById (itemID)
 
             local platin = mathFloor(details.sell / 10000)
             local gold = mathFloor((details.sell - (platin * 10000)) / 100)

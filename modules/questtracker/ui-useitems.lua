@@ -190,11 +190,11 @@ function questTracker.buildUseUI ()
 	
 		-- go through quest item space, identify usable quest items and move them to the bag 
 	
-		local itemList = LibEKL.inventory.getQuestItems()
+		local itemList = LibEKL.Inventory.getQuestItems()
 
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_questTracker.buildUseUI", "quest items", itemList) end
 	
-		local bagItemList = LibEKL.inventory.queryByCategory ('misc quest')
+		local bagItemList = LibEKL.Inventory.queryByCategory ('misc quest')
 		local completeList = LibEKL.Tools.Table.Copy (itemList)
 
 		if bagItemList and itemList then			

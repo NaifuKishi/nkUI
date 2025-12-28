@@ -28,7 +28,7 @@ local lastCacheUpdate
 
 local function oneBag.getBagSlots ()
 
-    local slots = LibEKL.inventory.getBagSlots()
+    local slots = LibEKL.Inventory.getBagSlots()
 
     for idx = 1, 8, 1 do
 
@@ -161,7 +161,7 @@ local function _fctItemIcon (name, parent)
 
     itemIcon:EventAttach( Event.UI.Input.Mouse.Right.Down, function (self)	
         if UI.Native.Bank:GetLoaded() then
-            local vaultSlot = LibEKL.inventory.findFreeVaultSlot()
+            local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
             if vaultSlot then
                 Command.Item.Move(thisSlot, vaultSlot)
                 movedItem = thisItemID
@@ -365,7 +365,7 @@ function oneBag.populateBag(forceCacheUpdate)
     local lastIcon = nil
 
     if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
-        cachedItems = LibEKL.inventory.getBagItems()
+        cachedItems = LibEKL.Inventory.getBagItems()
         lastCacheUpdate = InspectTimeReal()
     end
 
@@ -516,7 +516,7 @@ function oneBag.itemSlot (_, slots)
     --print (doInventoryUpdate)
 
     if doInventoryUpdate then 
-        LibEKL.inventory.updateDB()
+        LibEKL.Inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
@@ -538,21 +538,21 @@ function InternalFunc.oneBagInit()
             uiElements.oneBag:SetVisible(true)
         end
     else
-        LibEKL.inventory.updateDB()
+        LibEKL.Inventory.updateDB()
         uiElements.oneBag = _fctBagUI()
         uiElements.oneBagBagSlots = _fctBagSlots ()
 
         Command.Event.Attach(Event.Item.Slot, _fctItemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
-        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].SlotUpdate, function (_, slots)
+        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].SlotUpdate, function (_, slots)
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k,"^si%d%d%.%d%d%d$") then
                         if v == false then
                             cachedItems[k] = nil
                         else
-                            cachedItems[k] = LibEKL.inventory.GetItemByKey (v)
+                            cachedItems[k] = LibEKL.Inventory.GetItemByKey (v)
                         end
                     end
                 end                
@@ -562,13 +562,13 @@ function InternalFunc.oneBagInit()
 
         end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
 
-        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function (_, items)
+        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function (_, items)
             --dump (items)
 --[[            
             for k, v in pairs(items) do
                 if movedItem == k and v > 0 then
                     movedItem = nil
-                    LibEKL.inventory.updateDB()
+                    LibEKL.Inventory.updateDB()
                     oneBag.populateBag()
                 end
             end

@@ -113,7 +113,7 @@ function internalFunc.macroEditDialog (editBar)
     local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetContent():GetHeight() - 35, "Cancel macro")
 	
 	-- Event handler for cancel button
-	Command.Event.Attach(LibEKL.events[name .. ".cancelButton"].Clicked, function (_, newValue)
+	Command.Event.Attach(LibEKL.Events[name .. ".cancelButton"].Clicked, function (_, newValue)
 		macroEdit:Leave(true)
 		ui:SetVisible(false)
 	end, name .. ".cancelButton.Clicked")
@@ -122,7 +122,7 @@ function internalFunc.macroEditDialog (editBar)
     local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetContent():GetHeight() - 35, "Save macro")
 	
 	-- Event handler for save button
-	Command.Event.Attach(LibEKL.events[name .. ".saveButton"].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.Events[name .. ".saveButton"].Clicked, function (_, newValue)		
 		if inspectSystemSecure() then return end
 
 		data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }

@@ -175,7 +175,7 @@ local function initializeAddon(_, addon)
 
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
 			LibEKL.Unit.init()			
-			LibEKL.inventory.init(false, false)
+			LibEKL.Inventory.Init(false, false)
 
 			internalFunc.setupDefaults()
 

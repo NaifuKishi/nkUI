@@ -257,12 +257,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		LibEKL.ui.attachGenericTooltip (texture, nil)
 				
 		if thisMacroCDType ~= nil then
-			LibEKL.cdManager.unsubscribe(thisMacroCDType, thisMacroCDKey)
+			LibEKL.Cooldowns.Unsubscribe(thisMacroCDType, thisMacroCDKey)
 
 			data.abilityMap[thisMacroCDKey] = nil
 			data.abilityList[thisMacroCDKey] = nil
 		elseif thisItemKey ~= nil and thisItemKey ~= 'macro' then
-			LibEKL.cdManager.unsubscribe(thisItemType, thisItemKey)
+			LibEKL.Cooldowns.Unsubscribe(thisItemType, thisItemKey)
 
 			if not data.abilityMap then data.abilityMap = {} end
 			if not data.abilityList then data.abilityList = {} end
@@ -321,13 +321,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroCDKey = macroCDKey
 		
 		if macroCDType ~= nil then
-			LibEKL.cdManager.subscribe(macroCDType, macroCDKey)
+			LibEKL.Cooldowns.Subscribe(macroCDType, macroCDKey)
 
 			if data.abilityMap[macroCDKey] == nil then data.abilityMap[macroCDKey] = {} end
 			table.insert(data.abilityMap[macroCDKey], frame)
 			table.insert(data.abilityList, macroCDKey)
 		else
-			LibEKL.cdManager.subscribe(thisItemType, thisItemKey)
+			LibEKL.Cooldowns.Subscribe(thisItemType, thisItemKey)
 			if data.abilityMap == nil then data.abilityMap = {} end
 			if data.abilityMap[itemKey] == nil then data.abilityMap[itemKey] = {} end
 			table.insert(data.abilityMap[itemKey], frame)
@@ -378,7 +378,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				end, macroFrame:GetName() .. ".UI.Input.Mouse.Left.Up")
 			end
 
-			LibEKL.events.addInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
+			LibEKL.Events.AddInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
 			macroFrame:SetVisible(true)
 			
 		elseif macroFrame ~= nil then			

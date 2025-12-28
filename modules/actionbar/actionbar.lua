@@ -230,7 +230,7 @@ function internalFunc.uiActionBars()
     if data.unitFramesBuild then return end
     if nkUISetup.modules.actionBars.activate == false then return end
 
-    LibEKL.cdManager.init()
+    LibEKL.Cooldowns.Init()
 
     data.actionBarSetup = nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name]
 
@@ -317,7 +317,7 @@ function internalFunc.uiActionBars()
             rightScreenBar:Populate()
         end
 
-        LibEKL.events.addInsecure(populateActionBars, inspectTimeFrame(), 2)
+        LibEKL.Events.AddInsecure(populateActionBars, inspectTimeFrame(), 2)
     end, "nkUI.TEMPORARY.Role")
 
     -- Set initial alpha for all action bars
@@ -326,9 +326,9 @@ function internalFunc.uiActionBars()
     end
 
     -- Attach event handlers for various game events
-    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Start, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Start")
-    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Update, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Update")
-    Command.Event.Attach(LibEKL.events["LibEKL.CDManager"].Stop, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Stop")
+    Command.Event.Attach(LibEKL.Events["LibEKL.CDManager"].Start, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Start")
+    Command.Event.Attach(LibEKL.Events["LibEKL.CDManager"].Update, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Update")
+    Command.Event.Attach(LibEKL.Events["LibEKL.CDManager"].Stop, events.abCooldownProcess, "nkUI.LibEKL.CDManager.Stop")
 
     Command.Event.Attach(Event.Buff.Add, events.abBuffAdd, "nkUI.Buff.Add")
     Command.Event.Attach(Event.Buff.Remove, events.abBuffRemove, "nkUI.Buff.Remove")

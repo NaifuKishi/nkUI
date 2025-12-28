@@ -19,10 +19,10 @@ function lowerBar.currency()
     local currencyText = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font> (%d)'
     local freeBagCount = 0
     
-    local freeBagSlots = LibEKL.inventory.getAvailableSlots()
+    local freeBagSlots = LibEKL.Inventory.getAvailableSlots()
     if freeBagSlots == false then
-        LibEKL.inventory.updateDB()
-        freeBagSlots = LibEKL.inventory.getAvailableSlots()
+        LibEKL.Inventory.updateDB()
+        freeBagSlots = LibEKL.Inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
     else
         freeBagCount = #freeBagSlots
@@ -63,8 +63,8 @@ function lowerBar.currency()
         end
     end
     
-    Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function(_, a, b)
-        local freeBagSlots = LibEKL.inventory.getAvailableSlots()
+    Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, a, b)
+        local freeBagSlots = LibEKL.Inventory.getAvailableSlots()
         if freeBagSlots ~= false then freeBagCount = #freeBagSlots end
         updateCoin(_, {coin = true})
     end, "nkUI.LibEKL.InventoryManager.Update")

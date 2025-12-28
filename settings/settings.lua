@@ -240,7 +240,7 @@ function settingsUI.checkbox (name, parent, text, active, callBack)
     thisCheckbox:SetColorInner(data.theme.formElementColorSub)
     thisCheckbox:SetEffectGlow({strength = 3})
     
-    Command.Event.Attach(LibEKL.events[name].CheckboxChanged, function (_, newValue)		
+    Command.Event.Attach(LibEKL.Events[name].CheckboxChanged, function (_, newValue)		
         callBack(newValue)
     end, name .. ".CheckboxChanged")
 
@@ -264,7 +264,7 @@ function settingsUI.combobox (name, parent, text, active, callBack)
     thisCombobox:SetColorSelected(data.theme.labelColor)
     thisCombobox:SetEffectGlow({strength = 3})
 
-    Command.Event.Attach(LibEKL.events[name].ComboChanged, function (_, newValue)		
+    Command.Event.Attach(LibEKL.Events[name].ComboChanged, function (_, newValue)		
         callBack(newValue.value)
     end, name .. ".CheckboxChanged")
 
@@ -288,7 +288,7 @@ function settingsUI.slider (name, parent, text, active, callBack)
     thisSlider:SetColorHighlight(data.theme.formElementColorMain)    
     thisSlider:SetEffectGlow({strength = 3})
 
-    Command.Event.Attach(LibEKL.events[name].SliderChanged, function (_, newValue)
+    Command.Event.Attach(LibEKL.Events[name].SliderChanged, function (_, newValue)
         callBack(newValue)
     end, name .. ".SliderChanged")
 
@@ -406,7 +406,7 @@ function internalFunc.setupUI ()
     closeButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
     closeButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    Command.Event.Attach(LibEKL.events[name .. ".closeButton"].Clicked, function (_, newValue)
+    Command.Event.Attach(LibEKL.Events[name .. ".closeButton"].Clicked, function (_, newValue)
         uiElements.settings:SetVisible(false)   
     end, name .. ".closeButton.Clicked")
 
@@ -422,7 +422,7 @@ function internalFunc.setupUI ()
     tutorialButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
     tutorialButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    Command.Event.Attach(LibEKL.events[name .. ".tutorialButton"].Clicked, function (_, newValue)
+    Command.Event.Attach(LibEKL.Events[name .. ".tutorialButton"].Clicked, function (_, newValue)
         internalFunc.tutorial()
     end, name .. ".tutorialButton.Clicked")
 
@@ -438,7 +438,7 @@ function internalFunc.setupUI ()
     moveButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
     moveButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    Command.Event.Attach(LibEKL.events[name .. ".moveButton"].Clicked, function (_, newValue)
+    Command.Event.Attach(LibEKL.Events[name .. ".moveButton"].Clicked, function (_, newValue)
         internalFunc.initMove()
         config:SetVisible(false)
     end, name .. ".moveButton.Clicked")
@@ -471,7 +471,7 @@ function internalFunc.setupUI ()
 
     tabPane:AddPane( { label = "Units", effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
 
-    --if LibEKL.events.checkEvents ("nkRadial", true) == false then return nil end
+    --if LibEKL.Events.CheckEvents ("nkRadial", true) == false then return nil end
 
     config:SetVisible(true)
 

@@ -43,7 +43,7 @@ local function showCategoryFilter (parent)
 
 		from, object, to, x, y = "TOPLEFT", checkbox, "BOTTOMLEFT", 0, 5
 
-		Command.Event.Attach(LibEKL.events[name.. "." .. v].CheckboxChanged, function (_, newValue)		
+		Command.Event.Attach(LibEKL.Events[name.. "." .. v].CheckboxChanged, function (_, newValue)		
 			nkUISetup.modules.questtracker.categoryShow[v] = newValue			
 		end, name.. "." .. v .. ".CheckboxChanged")
 	end
@@ -152,7 +152,7 @@ function questTracker.buildUI ()
   	zoneFilterIcon:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -10, 5)
   	zoneFilterIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.zoneFilter)
 
-	Command.Event.Attach(LibEKL.events[name .. '.zoneFilterIcon'].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.Events[name .. '.zoneFilterIcon'].Clicked, function (_, newValue)		
 		if data.zoneFilter == true then data.zoneFilter = false else data.zoneFilter = true end				
 		questTracker.clearLog( questTracker.fillLog )
 	end,name .. '.zoneFilterIcon.Clicked')	
@@ -167,7 +167,7 @@ function questTracker.buildUI ()
   	categoryFilterIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
   	categoryFilterIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.categoryFilter)
 
-	Command.Event.Attach(LibEKL.events[name .. '.categoryFilterIcon'].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.Events[name .. '.categoryFilterIcon'].Clicked, function (_, newValue)		
 		if uiElements.categoryFilter == nil then
 			uiElements.categoryFilter = showCategoryFilter (categoryFilterIcon)
 		end
@@ -189,7 +189,7 @@ function questTracker.buildUI ()
   	itemIcon:SetPoint("CENTERRIGHT", categoryFilterIcon, "CENTERLEFT", -5, 0)
   	itemIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.questItems)
 
-	Command.Event.Attach(LibEKL.events[name .. '.itemIcon'].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.Events[name .. '.itemIcon'].Clicked, function (_, newValue)		
 		uiElements.useUI:Toggle()
 	end,name .. '.itemIcon.Clicked') 	
 

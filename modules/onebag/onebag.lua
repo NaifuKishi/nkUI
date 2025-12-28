@@ -61,21 +61,21 @@ function internalFunc.oneBagInit()
             uiElements.oneBag:SetVisible(true)
         end
     else
-        LibEKL.inventory.updateDB()
+        LibEKL.Inventory.updateDB()
         uiElements.oneBag = oneBag.createBagUI()
         uiElements.oneBagBagSlots = oneBag.createBagSlots()
 
         Command.Event.Attach(Event.Item.Slot, oneBag.itemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
-        Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
+        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
             if cachedItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
                         if v == false then
                             cachedItems[k] = nil -- hier scheint es das problem zu geben bei item use
                         else
-                            cachedItems[k] = LibEKL.inventory.GetItemByKey(v)
+                            cachedItems[k] = LibEKL.Inventory.GetItemByKey(v)
                         end
                     end
                 end
@@ -83,7 +83,7 @@ function internalFunc.oneBagInit()
             oneBag.populateBag()
         end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
 
-        --[[Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, function(_, items)
+        --[[Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, items)
             -- Handle inventory updates
         end, "nkUI.OneBag.LibEKL.InventoryManager.Update")]]
     end
@@ -99,7 +99,7 @@ function oneBag.populateBag(forceCacheUpdate)
     local lastIcon = nil
 
     if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
-        cachedItems = LibEKL.inventory.getBagItems()
+        cachedItems = LibEKL.Inventory.getBagItems()
         lastCacheUpdate = InspectTimeReal()
     end
 
@@ -300,7 +300,7 @@ function oneBag.itemSlot (_, slots)
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
-        LibEKL.inventory.updateDB()
+        LibEKL.Inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
@@ -329,7 +329,7 @@ function oneBag.itemUpdate (_, slots)
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
 
     if doInventoryUpdate then 
-        LibEKL.inventory.updateDB()
+        LibEKL.Inventory.updateDB()
         oneBag.populateBag(true) 
     end
 

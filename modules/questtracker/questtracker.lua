@@ -86,7 +86,7 @@ function internalFunc.uiQuestTracker()
 	LibQB.loadPackage("nt")
 	LibQB.loadPackage("sfp")
 		
-	LibEKL.inventory.init()
+	LibEKL.Inventory.Init()
 	
 	if uiElements.questTracker == nil then
 		
@@ -113,7 +113,7 @@ function internalFunc.uiQuestTracker()
 			
 		Command.Event.Attach(Event.Unit.Detail.Level, questTracker.eventUnitLevel, "nkUI.questtracker.Unit.Detail.Level")
 		
-		Command.Event.Attach(LibEKL.events["LibEKL.InventoryManager"].Update, questTracker.eventInventoryUpdate, "nkUI.questtracker.LibEKL.InventoryManager.update")
+		Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, questTracker.eventInventoryUpdate, "nkUI.questtracker.LibEKL.InventoryManager.update")
 
 	end
 

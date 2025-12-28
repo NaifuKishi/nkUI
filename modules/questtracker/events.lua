@@ -262,7 +262,7 @@ function questTracker.eventSystemUpdate()
 	if LibQB.query.isInit() == false then return end
 
 	if uiElements.useUI == nil and inspectSystemSecure() == false then
-		if LibEKL.inventory.getAvailableSlots() ~= false then
+		if LibEKL.Inventory.getAvailableSlots() ~= false then
 			uiElements.useUI = questTracker.buildUseUI ()
 			uiElements.useUI:Update()
 		end

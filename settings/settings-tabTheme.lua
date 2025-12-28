@@ -38,7 +38,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
 		oneBagColor:SetHeight(15)
 		oneBagColor:SetColor(nkUISetup.modules.oneBag.windowColor.r, nkUISetup.modules.oneBag.windowColor.g, nkUISetup.modules.oneBag.windowColor.b, nkUISetup.modules.oneBag.windowColor.a)
 		
-		Command.Event.Attach(LibEKL.events[name .. '.oneBagColor'].ColorChanged, function (_, r, g, b, a)
+		Command.Event.Attach(LibEKL.Events[name .. '.oneBagColor'].ColorChanged, function (_, r, g, b, a)
             nkUISetup.modules.oneBag.windowColor = { r = r, g = g, b = b, a = nkUISetup.modules.oneBag.windowColor.a}
 		end, name .. ".oneBagColor.ColorChanged")
 

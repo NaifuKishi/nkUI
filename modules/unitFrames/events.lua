@@ -262,11 +262,11 @@ function _events.uiFramesInitEvents()
 		LibEKL.Unit.subscribe(stringFormat("group%02d", idx))
 	end
 
-	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
-	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].GroupStatus, _events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
-	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Available, _events.available, "nkUI.LibEKL.Unit.Available")
-	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Unavailable, _events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
-	Command.Event.Attach(LibEKL.events["LibEKL.Unit"].Change, _events.change, "nkUI.LibEKL.Unit.Change")	
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, _events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Available, _events.available, "nkUI.LibEKL.Unit.Available")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Unavailable, _events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, _events.change, "nkUI.LibEKL.Unit.Change")	
 
 	--- in combat and out of combat alpha
 

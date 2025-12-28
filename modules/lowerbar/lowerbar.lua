@@ -66,11 +66,11 @@ end
 function internalFunc.lowerBarInit(value)
 
     if #uiElements.lowerBarModules == 0 then
-        LibEKL.events.addInsecure(function()
+        LibEKL.Events.AddInsecure(function()
             lowerBar.build()
         end, nil, nil)
     else
-        --LibEKL.events.addInsecure(function()
+        --LibEKL.Events.AddInsecure(function()
             for k, v in pairs(uiElements.lowerBarModules) do
                 v:SetVisible(value)
             end

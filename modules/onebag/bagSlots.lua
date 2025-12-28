@@ -165,7 +165,7 @@ end
 
 function oneBag.getBagSlots ()
 
-    local slots = LibEKL.inventory.getBagSlots()
+    local slots = LibEKL.Inventory.getBagSlots()
 
     for idx = 1, 8, 1 do
 
