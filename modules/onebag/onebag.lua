@@ -132,7 +132,7 @@ function oneBag.populateBag(forceCacheUpdate)
         }
     end
 
-    local sortedCategories = LibEKL.tools.table.getSortedKeys (categories)
+    local sortedCategories = LibEKL.Tools.Table.GetSortedKeys (categories)
 
     if hasTrash then
         table.insert(sortedCategories, "Trash")
@@ -143,7 +143,7 @@ function oneBag.populateBag(forceCacheUpdate)
     end
 
     for k, v in pairs(bagCategories) do
-        if LibEKL.tools.table.isMember(sortedCategories, k) == false then
+        if LibEKL.Tools.Table.IsMember(sortedCategories, k) == false then
             v:SetVisible(false)
 
             for slot, icon in pairs (v.items) do

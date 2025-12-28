@@ -435,8 +435,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		local mainColor = data.actionBarColors.mainColor
 		local subColor = data.actionBarColors.subColor
 		
-		local thisStroke = LibEKL.tools.table.copy(setup[6])
-		local thisFill = LibEKL.tools.table.copy(setup[5])
+		local thisStroke = LibEKL.Tools.Table.Copy(setup[6])
+		local thisFill = LibEKL.Tools.Table.Copy(setup[5])
 		
 		thisFill.r, thisFill.g, thisFill.b = subColor.r, subColor.g, subColor.b
 		thisFill.a = 0.6

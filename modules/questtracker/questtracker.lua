@@ -20,7 +20,7 @@ local stringLen				= string.len
 local stringSub				= string.sub
 local stringSplit			= string.split
 
-local LibEKLGetLanguageShort	= LibEKL.tools.lang.getLanguageShort
+local LibEKLGetLanguageShort	= LibEKL.Tools.Lang.GetLanguageShort
 
 ---------- init local variables ---------
 
@@ -201,7 +201,7 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	if details.rewardChoose ~= nil then
 		for k, v in pairs(details.rewardChoose) do
-			if LibEKL.tools.table.isMember (_craftingItems, k) == true then
+			if LibEKL.Tools.Table.IsMember (_craftingItems, k) == true then
 				if details.tagName ~= nil then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 				details.domain = "crafting"
 				setDomain = true
@@ -212,7 +212,7 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	if setDomain == false and details.rewardGuaranteed ~= nil then
 		for k, v in pairs(details.rewardGuaranteed) do
-			if LibEKL.tools.table.isMember (_craftingItems, k) == true then
+			if LibEKL.Tools.Table.IsMember (_craftingItems, k) == true then
 				if details.tagName ~= nil then details.name = stringFormat("%s (%s)", details.name, details.tagName) end
 				details.domain = "crafting"
 				setDomain = true
@@ -262,7 +262,7 @@ function questTracker.processQuest(details, processTitleFlag)
 		if libDetails.domain ~= nil then 
 			details.domain = libDetails.domain
 		elseif libDetails.type ~= nil then
-			if LibEKL.tools.table.isMember(libDetails.type, 9) then details.domain = "carnage" end
+			if LibEKL.Tools.Table.IsMember(libDetails.type, 9) then details.domain = "carnage" end
 		end
 
 		details.grp = libDetails.grp

@@ -246,12 +246,12 @@ function internalFunc.uiActionBars()
 
     if count > #data.actionBarSetup.roles then
         for idx = #data.actionBarSetup.roles + 1, count, 1 do
-            local temp = LibEKL.tools.table.copy(roleDesign)
-            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- main bar
-            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- stance bar
-            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- left bar
-            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- right bar
-            table.insert(temp.bars, LibEKL.tools.table.copy(data.defaultBar)) -- right screen bar
+            local temp = LibEKL.Tools.Table.Copy(roleDesign)
+            table.insert(temp.bars, LibEKL.Tools.Table.Copy(data.defaultBar)) -- main bar
+            table.insert(temp.bars, LibEKL.Tools.Table.Copy(data.defaultBar)) -- stance bar
+            table.insert(temp.bars, LibEKL.Tools.Table.Copy(data.defaultBar)) -- left bar
+            table.insert(temp.bars, LibEKL.Tools.Table.Copy(data.defaultBar)) -- right bar
+            table.insert(temp.bars, LibEKL.Tools.Table.Copy(data.defaultBar)) -- right screen bar
 
             table.insert(data.actionBarSetup.roles, temp)
         end

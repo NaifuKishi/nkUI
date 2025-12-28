@@ -114,7 +114,7 @@ function lowerBar.faction()
                     end
                 end
 
-                if LibEKL.tools.isNaN(percent) then percent = 0 end
+                if LibEKL.Tools.Math.IsNaN(percent) then percent = 0 end
                 
                 datasetFactionName:SetText(stringFormat("%s (%s)", faction.name, level))
                 datasetFaction:SetText(stringFormat("%d%%", percent))

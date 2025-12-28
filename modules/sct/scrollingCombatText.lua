@@ -105,14 +105,14 @@ end
 -- Creates a new text frame for displaying combat text
 -- @return The created text frame
 local function createTextFrame()
-    local name = LibEKL.tools.uuid()
+    local name = LibEKL.Tools.UUID()
 
     local frame = LibEKL.uiCreateFrame("nkText", name, uiElements.contextLowest)
     frame:SetEffectGlow({ strength = 3 })
     frame:SetVisible(false)
 
     -- Create an icon frame for the text frame
-    local icon = LibEKL.uiCreateFrame("nkTexture", name .. "." .. LibEKL.tools.uuid(), frame)
+    local icon = LibEKL.uiCreateFrame("nkTexture", name .. "." .. LibEKL.Tools.UUID(), frame)
     icon:SetPoint("CENTERRIGHT", frame, "CENTERLEFT", -5, 0)
     icon:SetVisible(false)
     icon:SetWidth(24)
@@ -340,7 +340,7 @@ local function validEvent(info)
     
     local localUnitsTypes = LibEKL.unit.getUnitTypes(info.caster)
     
-    if LibEKL.tools.table.isMember(localUnitsTypes, "player.pet") then
+    if LibEKL.Tools.Table.IsMember(localUnitsTypes, "player.pet") then
         petID = info.caster
         petName = internalFunc.shortenName(info.casterName, 10)
         return true, true, false

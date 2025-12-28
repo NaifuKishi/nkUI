@@ -381,10 +381,10 @@ function oneBag.populateBag(forceCacheUpdate)
         categories[realCategory][k] = v
     end
 
-    local sortedCategories = LibEKL.tools.table.getSortedKeys (categories)
+    local sortedCategories = LibEKL.Tools.Table.GetSortedKeys (categories)
 
     for k, v in pairs(categoryLabels) do
-        if LibEKL.tools.table.isMember(sortedCategories, k) == false then
+        if LibEKL.Tools.Table.IsMember(sortedCategories, k) == false then
             v:SetVisible(false)
         end
     end

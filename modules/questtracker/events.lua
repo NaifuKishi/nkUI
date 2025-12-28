@@ -70,7 +70,7 @@ local function questAdd(list)
 							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
-							if uiElements.areaQuestUI ~= nil and LibEKL.tools.table.isMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
+							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
 								uiElements.areaQuestUI:AddQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
@@ -128,7 +128,7 @@ local function questChange(list)
 							list[key] = nil
 						elseif err == true and isUpdate == true then
 
-							if uiElements.areaQuestUI ~= nil and LibEKL.tools.table.isMember (data.areaQuestDomain, details.domain) then
+							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) then
 								uiElements.areaQuestUI:UpdateQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
@@ -279,7 +279,7 @@ function questTracker.eventSystemUpdate()
 			forceUpdate = true
 		else
 			local tmpTime = inspectTimeReal()
-			if LibEKL.tools.math.round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
+			if LibEKL.Tools.Math.Round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
 		end
 	end
 

@@ -131,7 +131,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     -- Create new frame if none available
     local healthMax
     local energyMax
-    local thisName = LibEKL.tools.uuid()
+    local thisName = LibEKL.Tools.UUID()
     local thisUnitID = nil
 
     local unitBuffIcons = {}

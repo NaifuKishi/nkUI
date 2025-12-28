@@ -56,7 +56,7 @@ function lowerBar.lowerBarRoles()
         end
         
         for roleID, desc in pairs(roles) do
-            local id = LibEKL.tools.hex2number(roleID) + 1
+            local id = LibEKL.Tools.Math.Hex2number(roleID) + 1
             local thisRole
             
             if id == curRole then

@@ -630,7 +630,7 @@ function internalFunc.lowerBarRoles()
         end
 
         for roleID, desc in pairs (roles) do
-            local id = LibEKL.tools.hex2number(roleID) +1
+            local id = LibEKL.Tools.Math.Hex2number(roleID) +1
             --local id = tonumber(string.sub ( roleID, string.len(roleID) - 1)) + 1
             local thisRole
 

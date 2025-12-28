@@ -120,8 +120,8 @@ local function fillLog ()
         end        
     end
 
-	local zoneNames = LibEKL.tools.table.getSortedKeys(zones)
-	local tagNames = LibEKL.tools.table.getSortedKeys(tags)
+	local zoneNames = LibEKL.Tools.Table.GetSortedKeys(zones)
+	local tagNames = LibEKL.Tools.Table.GetSortedKeys(tags)
 
 	local lastObject
 	local categories = {}

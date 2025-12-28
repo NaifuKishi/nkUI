@@ -4,7 +4,7 @@ local addonInfo, privateVars = ...
 
 ---------- init language texts ---------
 
-if ( LibEKL.tools.lang.getLanguage()  == "German") then
+if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 
 	privateVars.langTexts = {
 		startUp             		= '<font color="#0094FF">nkUI</font> V%s geladen',

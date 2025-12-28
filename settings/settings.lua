@@ -205,7 +205,7 @@ function internalFunc.setupDefaults()
         nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name] = { roles = {} }
     end
 
-    nkUISetup = LibEKL.tools.updateSettings (_defaults, nkUISetup)
+    nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
 
 end
 

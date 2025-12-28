@@ -193,7 +193,7 @@ function uiElements.icon (name, parent)
 	function icon:SetTimer (newTimer)
 		if newTimer then 
 
-			if LibEKL.tools.math.round (newTimer, 0) <= 10 then
+			if LibEKL.Tools.Math.Round (newTimer, 0) <= 10 then
 				if isBelow10 == false then
 					timer:SetFontColor(1, 0, 0, 0)
 					isBelow10 = true
@@ -212,7 +212,7 @@ function uiElements.icon (name, parent)
 				unit = "m"
 			end
 
-			newTimer = LibEKL.tools.math.round (newTimer, 0)
+			newTimer = LibEKL.Tools.Math.Round (newTimer, 0)
 
 			if newTimer ~= lastTimer then
 				--timer:ClearWidth()

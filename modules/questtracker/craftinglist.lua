@@ -156,7 +156,7 @@ function privateVars.internal.checkRecipe(key, realNeed, lookupList)
 					end
 				end
 			else
-				LibEKL.tools.error.display (addonInfo.toc.Identifier, "Could not find recipe for [" .. recipes[idx2] .. "]", 3)
+				LibEKL.Tools.Error.Display (addonInfo.toc.Identifier, "Could not find recipe for [" .. recipes[idx2] .. "]", 3)
 			end
 		end 
 	end

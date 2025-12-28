@@ -170,13 +170,13 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
                     unitBuffIcons[buffType].visible = false
                     unitBuffIcons[buffType].icon:Clear()
                     unitBuffIcons[buffType].lastX = nil
-                    --LibEKL.tools.table.removeValue(unitBuffDisplayList, id)
+                    --LibEKL.Tools.Table.RemoveValue(unitBuffDisplayList, id)
                     unitBuffDisplayList[buffType] = nil
                 elseif unitDebuffIcons[buffType] then
                     unitDebuffIcons[buffType].visible = false
                     unitDebuffIcons[buffType].icon:Clear()
                     unitDebuffIcons[buffType].lastX = nil
-                    --LibEKL.tools.table.removeValue(unitDebuffDisplayList, id)
+                    --LibEKL.Tools.Table.RemoveValue(unitDebuffDisplayList, id)
                     unitDebuffDisplayList[buffType] = nil
                 end
 
