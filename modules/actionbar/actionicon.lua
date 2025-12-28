@@ -154,7 +154,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		cooldownTint:SetVisible(true)
 		cooldown:SetText(tostring(mathFloor(duration * 10) / 10))
 
-		LibEKL.coroutines.add ({ func = gcdCoRoutine, counter = 999, active = true })
+		LibEKL.Coroutines.Add ({ func = gcdCoRoutine, counter = 999, active = true })
 	end	
 
 	--[[

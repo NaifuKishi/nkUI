@@ -14,7 +14,7 @@ local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local InspectAbilityDetail      = Inspect.Ability.Detail
 local InspectExperience         = Inspect.Experience
 
-local LibEKLUnitGetUnitDetail    = LibEKL.unit.GetUnitDetail
+local LibEKLUnitGetUnitDetail    = LibEKL.Unit.GetUnitDetail
 
 local stringFind        = string.find
 local stringMatch       = string.match
@@ -177,7 +177,7 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
         releaseFrame(frame)
     end
 
-    LibEKL.coroutines.add({
+    LibEKL.Coroutines.Add({
         func = animationCoroutine,
         callBack = callBack,
         counter = duration * 100,
@@ -218,7 +218,7 @@ local function displayMovingMessage(message, duration)
         releaseFrame(frame)
     end
 
-    LibEKL.coroutines.add({
+    LibEKL.Coroutines.Add({
         func = animationCoroutine,
         callBack = callBack,
         counter = duration * 100,
@@ -274,7 +274,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         releaseFrame(frame)
     end
     
-    LibEKL.coroutines.add({
+    LibEKL.Coroutines.Add({
         func = animationCoroutine,
         callBack = callBack,
         counter = 200,
@@ -328,17 +328,17 @@ end
 -- @param info The combat event information
 -- @return Whether the event is valid, whether it's from a pet, and whether it's incoming
 local function validEvent(info)
-    if info.caster == LibEKL.unit.getPlayerDetails().id then return true, false, false end
+    if info.caster == LibEKL.Unit.getPlayerDetails().id then return true, false, false end
 
     if petID ~= nil and info.caster == petID then
-        if info.target == LibEKL.unit.getPlayerDetails().id then
+        if info.target == LibEKL.Unit.getPlayerDetails().id then
             return true, true, true
         else
             return true, true, false 
         end
     end
     
-    local localUnitsTypes = LibEKL.unit.getUnitTypes(info.caster)
+    local localUnitsTypes = LibEKL.Unit.getUnitTypes(info.caster)
     
     if LibEKL.Tools.Table.IsMember(localUnitsTypes, "player.pet") then
         petID = info.caster
@@ -346,7 +346,7 @@ local function validEvent(info)
         return true, true, false
     end
 
-    if info.target == LibEKL.unit.getPlayerDetails().id then return true, false, true end
+    if info.target == LibEKL.Unit.getPlayerDetails().id then return true, false, true end
     
     return false, false, false
 end

@@ -18,7 +18,7 @@ local stringFormat  = string.format
 local stringSub     = string.sub
 local stringUpper   = string.upper
 
-local LibEKLGetPlayerDetails = LibEKL.unit.getPlayerDetails
+local LibEKLGetPlayerDetails = LibEKL.Unit.getPlayerDetails
 
 ---------- init local function ---------
 

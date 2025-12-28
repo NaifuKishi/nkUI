@@ -99,7 +99,7 @@ local function questAdd(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	LibEKL.coroutines.add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.Coroutines.Add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
 end
@@ -153,7 +153,7 @@ local function questChange(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	LibEKL.coroutines.add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.Coroutines.Add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 	
 end
@@ -194,7 +194,7 @@ local function questRemove(list)
 	uiElements.progressBar:SetRange(1, #list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
-	LibEKL.coroutines.add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
+	LibEKL.Coroutines.Add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
 	_update = true
 
 end
@@ -215,11 +215,11 @@ end
 
 function questTracker.eventUnitLevel(_, units)
 
-	local playerID = LibEKL.unit.getPlayerDetails().id
+	local playerID = LibEKL.Unit.getPlayerDetails().id
 
 	if units[playerID] == nil or units[playerID] == false then return end
 	
-	LibEKL.unit.setPlayerDetails("level", units[playerID])
+	LibEKL.Unit.setPlayerDetails("level", units[playerID])
 	
 	questTracker.clearLog(questTracker.fillLog)
 

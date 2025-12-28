@@ -23,7 +23,7 @@ local stringLen     = string.len
 local stringSub     = string.sub
 local stringFind    = string.find
 
-local LibEKLGetUnitDetail  = LibEKL.unit.GetUnitDetail
+local LibEKLGetUnitDetail  = LibEKL.Unit.GetUnitDetail
 
 ---------- init global variables ---------
 
@@ -404,7 +404,7 @@ function frameManager.get(unitType, unitFrameType, setup)
             unitFrame:SetTier("raid")
         end
 
-        unitFrame:ProcessUnitDetails (LibEKL.unit.getPlayerDetails().id)
+        unitFrame:ProcessUnitDetails (LibEKL.Unit.getPlayerDetails().id)
         unitFrame:SetRole("dps")
         
     end
@@ -501,7 +501,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     function unitFrame:SetLevel (newLevel)
         
-        local playerLevel = LibEKL.unit.getPlayerDetails().level
+        local playerLevel = LibEKL.Unit.getPlayerDetails().level
         
         if newLevel == "??" then
             color = "#FF3333"
@@ -693,7 +693,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     frame:ClearBuffs()
 
-    local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
+    local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
 
     if stringFind (identifier, "group") and groupStatus ~= 'raid' then
         local buffs = InspectBuffList(unitID)
@@ -770,7 +770,7 @@ function internalFunc.uiFrames()
         group:SetPoint(from, object, to, x, y)
         group:SetMacro(stringFormat("/target @group%02d", idx))
         --group:SetVisible(true)
-        --internalFunc.updateUnit (group, LibEKL.unit.getPlayerDetails().id)
+        --internalFunc.updateUnit (group, LibEKL.Unit.getPlayerDetails().id)
 
         uiElements.frames[stringFormat("group%02d", idx)] = group
 
@@ -791,7 +791,7 @@ function internalFunc.uiFrames()
             raid:SetPoint(from, object, to, x, y)
             raid:SetMacro(stringFormat("/target @group%02d", index))
             --raid:SetVisible(true)
-            --internalFunc.updateUnit (raid, LibEKL.unit.getPlayerDetails().id)
+            --internalFunc.updateUnit (raid, LibEKL.Unit.getPlayerDetails().id)
             uiElements.frames[stringFormat("raid%02d", index)] = raid
 
             from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
@@ -803,7 +803,7 @@ function internalFunc.uiFrames()
     end
 
     function playerRessourceBar:update (unitID)
-        if (unitID == LibEKL.unit.getPlayerDetails().id) then
+        if (unitID == LibEKL.Unit.getPlayerDetails().id) then
             local details = LibEKLGetUnitDetail(unitID)
 
             if details.combo then playerRessourceBar:SetCombo(details.combo) end
@@ -864,8 +864,8 @@ function internalFunc.uiFramesToggle(value)
 
     if value == true and not uiElements.frames["player"] then
         internalFunc.uiFrames ()
-        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.unit.getPlayerDetails().id, "player")
-        uiElements.frames["player.ressourcebar"]:update (LibEKL.unit.getPlayerDetails().id)
+        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.Unit.getPlayerDetails().id, "player")
+        uiElements.frames["player.ressourcebar"]:update (LibEKL.Unit.getPlayerDetails().id)
     end
 
     if uiElements.frames then        
@@ -881,11 +881,11 @@ end
 
 function internalFunc.uiFramesRemoveBuffs()
 
-    local buffs = InspectBuffList(LibEKL.unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.unit.getPlayerDetails().id, buffs) end
+    local buffs = InspectBuffList(LibEKL.Unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
-    local targetID = LibEKL.unit.GetUnitByIdentifier("player.target")
+    local targetID = LibEKL.Unit.GetUnitByIdentifier("player.target")
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
@@ -893,7 +893,7 @@ function internalFunc.uiFramesRemoveBuffs()
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = LibEKL.unit.GetUnitByIdentifier("player.pet")
+    local playerPetID = LibEKL.Unit.GetUnitByIdentifier("player.pet")
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)
@@ -904,12 +904,12 @@ end
 
 function internalFunc.uiFramesLoadAllBuffs()
 
-    local buffs = InspectBuffList(LibEKL.unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.unit.getPlayerDetails().id, buffs) end
+    local buffs = InspectBuffList(LibEKL.Unit.getPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
 
-    local targetID = LibEKL.unit.GetUnitByIdentifier("player.target")
+    local targetID = LibEKL.Unit.GetUnitByIdentifier("player.target")
 
     if targetFrame:GetVisible() and targetID ~= nil then        
         local buffs = InspectBuffList(targetID)
@@ -917,7 +917,7 @@ function internalFunc.uiFramesLoadAllBuffs()
     end
 
     local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = LibEKL.unit.GetUnitByIdentifier("player.pet")
+    local playerPetID = LibEKL.Unit.GetUnitByIdentifier("player.pet")
 
     if playerPetFrame:GetVisible() and playerPetID ~= nil then        
         local buffs = InspectBuffList(playerPetID)

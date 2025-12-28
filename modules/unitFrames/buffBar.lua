@@ -13,7 +13,7 @@ local InspectTimeReal       = Inspect.Time.Real
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
-local LibEKLGetPlayerDetails = LibEKL.unit.getPlayerDetails
+local LibEKLGetPlayerDetails = LibEKL.Unit.getPlayerDetails
 
 -- Buff and debuff icons and display lists
 local buffIcons         = {}

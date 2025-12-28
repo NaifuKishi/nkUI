@@ -232,7 +232,7 @@ function internalFunc.uiActionBars()
 
     LibEKL.cdManager.init()
 
-    data.actionBarSetup = nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name]
+    data.actionBarSetup = nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name]
 
     data.defaultBar = { name = stringFormat("bar %d", 1), layer = 1, show = true, interactive = false, vertical = false, trigger = "none", triggerTarget = nil, cols = 12, rows = 1, scale = 100, x = 300, y = 800, outOfCombatAlpha = 100, inCombatAlpha = 100, slots = {}, padding = 0 }
     local roleDesign = { design = 'default', mainColor = {r = 0, g = 0, b = 0, a = 1 }, subColor = {r = 0, g = 0, b = 0, a = 0.5}, hideempty = false, bars = {  } }

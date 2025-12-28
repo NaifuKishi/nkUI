@@ -15,7 +15,7 @@ local stringFormat  = string.format
 function oneBag.createBagUI()
     
     local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", uiElements.contextDialog)
-    bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.unit.getPlayerDetails().name))
+    bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.Unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
     bagWindow:SetTitleEffect({ strength = 3})

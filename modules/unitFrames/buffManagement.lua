@@ -106,9 +106,9 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
 
                 if buffDetails.poison == true or buffDetails.curse == true or buffDetails.disease == true or buffDetails.debuff == true then
 
-                    local targetID = LibEKL.unit.GetUnitByIdentifier ("player.target")
+                    local targetID = LibEKL.Unit.GetUnitByIdentifier ("player.target")
 
-                    if unitID ~= targetID or (unitID == LibEKL.unit.GetUnitByIdentifier ("player.target") and buffDetails.caster == LibEKL.unit.getPlayerDetails().id) then                    
+                    if unitID ~= targetID or (unitID == LibEKL.Unit.GetUnitByIdentifier ("player.target") and buffDetails.caster == LibEKL.Unit.getPlayerDetails().id) then                    
 
                         internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".debuff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitDebuffDisplayList, unitDebuffIcons, frame)
 
@@ -258,7 +258,7 @@ function internalFunc.processBuffs ()
 
 	--- process target
 
-	if LibEKL.unit.GetUnitByIdentifier("player.target") then
+	if LibEKL.Unit.GetUnitByIdentifier("player.target") then
 
         local targetFrame = uiElements.frames["player.target"]
 
@@ -281,14 +281,14 @@ function internalFunc.processBuffs ()
 
     --- process groups
 
-    local groupStatus, groupSize = LibEKL.unit.getGroupStatus()
+    local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
 
     if groupStatus == "group" then
 
         for idx = 1, 5, 1 do
             local groupName = stringFormat("group%02d", idx)
 
-            if LibEKL.unit.GetUnitByIdentifier(groupName) then
+            if LibEKL.Unit.GetUnitByIdentifier(groupName) then
 
                 local targetFrame = uiElements.frames[groupName]
 

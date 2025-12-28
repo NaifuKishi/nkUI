@@ -513,7 +513,7 @@ function internalFunc.social ()
 
 		local details = InspectSocialFriendDetail(friendName)
 		
-		table.insert(_friendlist, { name = details.name, level = details.level, calling = LibEKL.unit.getCallingText(details.calling), zone = "" }) 
+		table.insert(_friendlist, { name = details.name, level = details.level, calling = LibEKL.Unit.getCallingText(details.calling), zone = "" }) 
 	
 	end
 		

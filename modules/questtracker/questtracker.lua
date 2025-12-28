@@ -165,7 +165,7 @@ function questTracker.fillLog ()
 		
 			local addQuest = true
 			if data.zoneFilter == true then
-				addQuest = LibQB.query.IsQuestInZone (LibEKL.unit.getPlayerDetails().zone, v.id)
+				addQuest = LibQB.query.IsQuestInZone (LibEKL.Unit.getPlayerDetails().zone, v.id)
 			end
 		
 			if addQuest == true then
@@ -294,7 +294,7 @@ function questTracker.processQuest(details, processTitleFlag)
 	if processTitleFlag == true then
 
 		local color = "#009900"
-		local playerLevel = LibEKL.unit.getPlayerDetails().level
+		local playerLevel = LibEKL.Unit.getPlayerDetails().level
 
 		if lvl == nil then
 			color = "#009900"

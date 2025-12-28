@@ -173,13 +173,9 @@ local function initializeAddon(_, addon)
         LibEKL.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
         LibEKL.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
-		--LibEKL.art.SetTheme("nkUI")
-
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
-			LibEKL.unit.init()
-			
-			LibEKL.BuffManager.init()
-            LibEKL.inventory.init(false, false)
+			LibEKL.Unit.init()			
+			LibEKL.inventory.init(false, false)
 
 			internalFunc.setupDefaults()
 
@@ -208,7 +204,6 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.sct and nkUISetup.modules.sct.activate then
 					internalFunc.sctInit()
 				end
-
 
 				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 					

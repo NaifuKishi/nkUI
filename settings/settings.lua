@@ -194,15 +194,15 @@ function internalFunc.setupDefaults()
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults
         nkUISetup.modules.actionBars.bars = {}
-        nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name] = { roles = {} }
+        nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
 
         scaleUI ()
     end
     
     -- check for new char
 
-    if nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name] == nil then
-        nkUISetup.modules.actionBars.bars[LibEKL.unit.getPlayerDetails().name] = { roles = {} }
+    if nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] == nil then
+        nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
     end
 
     nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
