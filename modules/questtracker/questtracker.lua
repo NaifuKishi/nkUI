@@ -432,6 +432,8 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	
 	tooltip:SetLines(lines)
 	
+	LibEKL.ui.showWithinBound (tooltip, parent)
+--[[
 	local mouse = inspectMouse()
 	
 	if mouse.x + tooltip:GetWidth() > UIParent:GetWidth() then
@@ -439,7 +441,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	else
 		tooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
 	end
-		
+]]		
 	tooltip:SetVisible(true)
 
 end

@@ -203,7 +203,7 @@ end
 
 local function _fctBagUI()
 
-    local bagWindow = LibEKL.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.contextDialog)
+    local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", uiElements.contextDialog)
     bagWindow:SetTitle("nkUI Inventory")
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetWidth(680 * data.uiScale)

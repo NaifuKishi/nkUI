@@ -45,26 +45,26 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = LibEKL.uiCreateFrame("nkWindowMetro", "nkUI.tutorialWindow", uiElements.contextDialog)
+    local tutorialWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.tutorialWindow", uiElements.contextDialog)
+    tutorialWindow:SetLayer(99)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)
     tutorialWindow:SetHeight(600)
-    tutorialWindow:SetPoint("CENTER", UIParent, "CENTER")
-    --tutorialWindow:SetShadow(false)
+    tutorialWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.ui.getBoundRight() / 2) - (tutorialWindow:GetWidth()/2), 200)
     tutorialWindow:SetTitleFontSize(16)
     tutorialWindow:SetTitleEffect ( {strength = 3})
 
     tutorialWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
 
-    tutorialWindow:SetColor(nil, {
+    tutorialWindow:SetColor({
         type = "gradientLinear",
         transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
         color = {
             data.theme.windowStartColor,
             data.theme.windowEndColor
             }
-    })
+    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
 
     -- Create content frame
     local content = tutorialWindow:GetContent()

@@ -142,61 +142,32 @@ function questTracker.buildUI ()
 	headerLine:SetShape(path, fill, nil)
 
 	-- ********* ZONE FILTER BUTTON
-	
-	local zoneFilterIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.zoneFilterIcon', ui)
+
+	local zoneFilterIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.zoneFilterIcon', ui)
 	zoneFilterIcon:SetWidth(16)
 	zoneFilterIcon:SetHeight(16)
-	zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
-	zoneFilterIcon:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -3, 5)
-	
-	local zoneFilterText = LibEKL.uiCreateFrame('nkText', name .. '.zoneFilterIcon.text', zoneFilterIcon)	
-	zoneFilterText:SetPoint("CENTER", zoneFilterIcon, "CENTER")
-	zoneFilterText:SetText("Z")
-	zoneFilterText:SetFontSize(14)
-	zoneFilterText:SetFontColor(colorR, colorG, colorB, 1)
-	zoneFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-	zoneFilterText:SetEffectGlow({strength = 3})
-	
-	zoneFilterText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+	zoneFilterIcon:SetToggleable(true)
+	zoneFilterIcon:SetColor({ r = colorR, g = colorG, b = colorB, a = 1})
+	zoneFilterIcon:SetText("Z")
+  	zoneFilterIcon:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -10, 5)
+  	zoneFilterIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.zoneFilter)
 
-		if data.zoneFilter == true then data.zoneFilter = false else data.zoneFilter = true end
-		
-		if data.zoneFilter then
-			zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 1)
-			zoneFilterText:SetEffectGlow({strength = 0})
-			zoneFilterText:SetFontColor(0,0,0,1)
-			zoneFilterText:SetTextFont(addonInfo.id, "MontserratBold")
-		else
-			zoneFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
-			zoneFilterText:SetFontColor(colorR, colorG, colorB, 1)
-			zoneFilterText:SetEffectGlow({strength = 3})
-			zoneFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-		end
-		
-		ui:SetVisible(false)
+	Command.Event.Attach(LibEKL.events[name .. '.zoneFilterIcon'].Clicked, function (_, newValue)		
+		if data.zoneFilter == true then data.zoneFilter = false else data.zoneFilter = true end				
 		questTracker.clearLog( questTracker.fillLog )
-		
-	end, name .. ".zoneFilterText.text.Mouse.Left.Down")
-
-	LibEKL.ui.attachGenericTooltip (zoneFilterText, "nkUI Questtracker", privateVars.langTexts.zoneFilter)
+	end,name .. '.zoneFilterIcon.Clicked')	
 
 	-- ********* CATEGORY FILTER BUTTON
-	
-	local categoryFilterIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.categoryFilterIcon', ui)
+
+	local categoryFilterIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.categoryFilterIcon', ui)
 	categoryFilterIcon:SetWidth(16)
 	categoryFilterIcon:SetHeight(16)
-	categoryFilterIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
-	categoryFilterIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
-	
-	local categoryFilterText = LibEKL.uiCreateFrame('nkText', name .. '.categoryFilterIcon.text', categoryFilterIcon)	
-	categoryFilterText:SetPoint("CENTER", categoryFilterIcon, "CENTER")
-	categoryFilterText:SetText("C")
-	categoryFilterText:SetFontSize(14)
-	categoryFilterText:SetFontColor(colorR, colorG, colorB, 1)
-	categoryFilterText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-	categoryFilterText:SetEffectGlow({strength = 3})
-	
-	categoryFilterText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+	categoryFilterIcon:SetColor({ r = colorR, g = colorG, b = colorB, a = 1})
+	categoryFilterIcon:SetText("C")
+  	categoryFilterIcon:SetPoint("CENTERRIGHT", zoneFilterIcon, "CENTERLEFT", -5, 0)
+  	categoryFilterIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.categoryFilter)
+
+	Command.Event.Attach(LibEKL.events[name .. '.categoryFilterIcon'].Clicked, function (_, newValue)		
 		if uiElements.categoryFilter == nil then
 			uiElements.categoryFilter = showCategoryFilter (categoryFilterIcon)
 		end
@@ -206,33 +177,21 @@ function questTracker.buildUI ()
 		end
 
 		uiElements.categoryFilter:SetVisible(not uiElements.categoryFilter:GetVisible())
-	end, name .. ".categoryFilterIcon.text.Mouse.Left.Down")	
-
-	LibEKL.ui.attachGenericTooltip (categoryFilterText, "nkUI Questtracker", privateVars.langTexts.categoryFilter)
-	 	
-	LibEKL.ui.genericTooltipSetFont(addonInfo.id, "Montserrat")
-
-	-- ********* ITEM BUTTON
+	end,name .. '.categoryFilterIcon.Clicked')		
 	
-	local itemIcon = LibEKL.uiCreateFrame("nkFrame", name .. '.itemIcon', ui)
+	-- ********* ITEM BUTTON
+
+	local itemIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.itemIcon', ui)
 	itemIcon:SetWidth(16)
 	itemIcon:SetHeight(16)
-	itemIcon:SetBackgroundColor(colorR, colorG, colorB, 0)
-	itemIcon:SetPoint("CENTERRIGHT", categoryFilterIcon, "CENTERLEFT", -5, 0)
-	
-	local itemIconText = LibEKL.uiCreateFrame('nkText', name .. '.itemIcon.text', itemIcon)	
-	itemIconText:SetPoint("CENTER", itemIcon, "CENTER")
-	itemIconText:SetText("I")
-	itemIconText:SetFontSize(14)
-	itemIconText:SetFontColor(colorR, colorG, colorB, 1)
-	itemIconText:SetTextFont(addonInfo.id, "MontserratSemiBold")
-	itemIconText:SetEffectGlow({strength = 3})
-	
-	itemIconText:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-		uiElements.useUI:Toggle()
-	end, name .. ".itemIcon.text.Mouse.Left.Down")	
+	itemIcon:SetColor({ r = colorR, g = colorG, b = colorB, a = 1})
+	itemIcon:SetText("I")
+  	itemIcon:SetPoint("CENTERRIGHT", categoryFilterIcon, "CENTERLEFT", -5, 0)
+  	itemIcon:SetTooltip("nkUI Questtracker", privateVars.langTexts.questItems)
 
-	LibEKL.ui.attachGenericTooltip (itemIconText, "nkUI Questtracker", privateVars.langTexts.questItems)	 	
+	Command.Event.Attach(LibEKL.events[name .. '.itemIcon'].Clicked, function (_, newValue)		
+		uiElements.useUI:Toggle()
+	end,name .. '.itemIcon.Clicked') 	
 
 	-- ********* RESIZE ICON
 	

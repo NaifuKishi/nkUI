@@ -329,11 +329,11 @@ function internalFunc.setupUI ()
     
     local name = "nkUI.config"
 
-    local config = LibEKL.uiCreateFrame("nkWindowMetro", name, uiElements.contextDialog)
-
-    config:SetPoint("CENTER", UIParent, "CENTER")
+    local config = LibEKL.uiCreateFrame("nkWindow", name, uiElements.contextDialog)
+    config:SetLayer(1)
     config:SetWidth(950)
     config:SetHeight(650)
+    config:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.ui.getBoundRight() / 2) - (config:GetWidth()/2), 200)
     config:SetTitle(addonInfo.toc.Identifier .. " version ".. addonInfo.toc.Version)
     config:SetTitleFont(addonInfo.id, "MontserratBold")
     config:SetTitleFontSize(16)
@@ -341,16 +341,16 @@ function internalFunc.setupUI ()
     config:SetCloseable(true)
     config:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
 
-    config:SetColor(nil, {
+    config:SetColor({
         type = "gradientLinear",
         transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
         color = {
             data.theme.windowStartColor,
             data.theme.windowEndColor
             }
-    })
+    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
 
-    local tabPane = LibEKL.uiCreateFrame("nkTabPaneMetro", name .. ".tabPane", config:GetContent())
+    local tabPane = LibEKL.uiCreateFrame("nkTabPane", name .. ".tabPane", config:GetContent())
     tabPane:SetBorder(false)
     tabPane:SetVertical(true)
     tabPane:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -360,8 +360,7 @@ function internalFunc.setupUI ()
         }, 
         {   type = 'solid', 
             r = data.theme.windowEndColor.r, g = data.theme.windowEndColor.g, b = data.theme.windowEndColor.b, a = .3},
-     data.theme.labelColor, data.theme.labelColor)
-    --SetColor(stroke, fill, newFontColor, newFontColorSelected)
+        data.theme.labelColor, data.theme.labelColor)
 
     local paneTabTheme = settingsUI.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
     local paneTabQuestTracker = settingsUI.uiConfigTabQuestTracker (name .. ".tab.QuestTracker", tabPane)

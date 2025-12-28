@@ -53,15 +53,26 @@ function internalFunc.macroEditDialog (editBar)
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
 	-- Create the main dialog window
-	local ui = LibEKL.uiCreateFrame("nkWindowElement", name, uiElements.contextDialog)
+	local ui = LibEKL.uiCreateFrame("nkWindow", name, uiElements.contextDialog)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
-	ui:SetHeight(230)
+	ui:SetHeight(250)
 	ui:SetTitle("Macro edit")
-    ui:SetTitleFont (addonInfo.id, "Montserrat")
+    ui:SetTitleFont (addonInfo.id, "MontserratSemiBold")
+	ui:SetTitleEffect ({strength = 3})
+	ui:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+	ui:SetColor({
+        type = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+        color = {
+            data.theme.windowStartColor,
+            data.theme.windowEndColor
+            }
+    }, { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+
 	
 	-- Create icon edit button for macro icon selection
-	local iconEdit = LibEKL.uiCreateFrame("nkActionButtonMetro", name .. ".iconEdit", ui:GetContent())
+	local iconEdit = LibEKL.uiCreateFrame("nkActionButton", name .. ".iconEdit", ui:GetContent())
 	iconEdit:SetWidth(48)
 	iconEdit:SetHeight(48)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
@@ -99,7 +110,7 @@ function internalFunc.macroEditDialog (editBar)
     local macroEdit = createTextField(ui:GetContent(), name .. ".macroEdit", ui:GetWidth() - 20, 100, 10, 68)
 	
 	-- Cancel button for the dialog
-    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetHeight() - 50, "Cancel macro")
+    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetContent():GetHeight() - 35, "Cancel macro")
 	
 	-- Event handler for cancel button
 	Command.Event.Attach(LibEKL.events[name .. ".cancelButton"].Clicked, function (_, newValue)
@@ -108,7 +119,7 @@ function internalFunc.macroEditDialog (editBar)
 	end, name .. ".cancelButton.Clicked")
 	
 	-- Save button for the dialog
-    local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetHeight() - 50, "Save macro")
+    local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetContent():GetHeight() - 35, "Save macro")
 	
 	-- Event handler for save button
 	Command.Event.Attach(LibEKL.events[name .. ".saveButton"].Clicked, function (_, newValue)		

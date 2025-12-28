@@ -147,7 +147,7 @@ function questTracker.questEntry (key, parent, counter)
 		end, name .. "Header.Left.Down")
 	
 		header:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)		
-				questTracker.showTooltip(header, key, nil, parent:GetCategory())
+			questTracker.showTooltip(header, key, nil, parent:GetCategory())
 		end, name .. "Header.Left.Down")
 		
 		header:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)		

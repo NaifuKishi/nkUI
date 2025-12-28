@@ -14,7 +14,7 @@ local stringFormat  = string.format
 -- Creates the main bag UI window
 function oneBag.createBagUI()
     
-    local bagWindow = LibEKL.uiCreateFrame("nkWindowMetro", "nkUI.bagWindow", uiElements.contextDialog)
+    local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", uiElements.contextDialog)
     bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
@@ -23,18 +23,17 @@ function oneBag.createBagUI()
 
     bagWindow:SetWidth(690 * data.uiScale)
     bagWindow:SetHeight(600 * data.uiScale)
-    bagWindow:SetShadow(false)
-    bagWindow:SetLayer(1)
-    bagWindow:SetPoint("CENTER", UIParent, "CENTER", 1000 * data.uiScale, 000 * data.uiScale)
+    bagWindow:SetLayer(1)    
+    bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 2000 * data.uiScale, 600 * data.uiScale)
 
-    bagWindow:SetColor(nil, {
+    bagWindow:SetColor({
         type = "gradientLinear",
         transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
         color = {
             data.theme.windowStartColor,
             data.theme.windowEndColor
             }
-    })
+    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
     
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         Command.Cursor(nil)

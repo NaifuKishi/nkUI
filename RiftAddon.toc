@@ -88,12 +88,12 @@ RunOnStartup = {
 
 Embed = {	
   ["Libs/LibEKL"] = true,
-  ["Libs/nkQuestBase"] = true
+  ["Libs/LibQB"] = true
 }
 
 Dependencies = {
   LibEKL = {"required", "before"},
-  nkQuestBase = {"required", "before"},
+  LibQB = {"required", "before"},
 }
 
 SavedVariables = {

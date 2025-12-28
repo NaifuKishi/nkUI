@@ -542,14 +542,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 			dialog:SetButtonEffect({ strength = 3 })
 
-			dialog:SetColor(nil, {
-									type = "gradientLinear",
-									transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
-									color = {
-										data.theme.windowStartColor,
-										data.theme.windowEndColor
-										}
-								})
+			dialog:SetColor({	type = "gradientLinear",
+								transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+								color = {
+									data.theme.windowStartColor,
+									data.theme.windowEndColor
+									}
+							},  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
 		end
 	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	

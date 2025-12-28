@@ -96,7 +96,24 @@ local function bagSlot(name, parent, riftSlot)
 
     icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         if not isLocked then return end        
-        internalFunc.dialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
+        local dialog = LibEKL.ui.messageDialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
+        
+        dialog:SetFont(addonInfo.id, "MontserratSemiBold")
+        dialog:SetEffectGlow({ strength = 3 })
+        dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
+        dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+        dialog:SetButtonLabelColor (data.theme.labelColor)
+        dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+        dialog:SetButtonEffect({ strength = 3 })
+
+        dialog:SetColor({   type = "gradientLinear",
+                            transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+                            color = {
+                                data.theme.windowStartColor,
+                                data.theme.windowEndColor
+                                }
+                        },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+
     end, name .. ".Event.Mouse.Right.Click")
     
     return thisSlot
