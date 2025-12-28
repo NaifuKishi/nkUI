@@ -14,7 +14,7 @@ function settingsUI.uiConfigTabUnitFrames (name, parent)
 
     local paneTabUFPlayer, paneTabUFTarget, paneTabUFPlayerPet, paneTabUFFocus, paneTabUFGroup, paneTabUFRaid
 
-    local tabPane = LibEKL.uiCreateFrame("nkTabPane", name .. ".tabPane", parent:GetBodyFrame())
+    local tabPane = LibEKL.UICreateFrame("nkTabPane", name .. ".tabPane", parent:GetBodyFrame())
     tabPane:SetColor(
         {   thickness = 1, 
             r = data.theme.windowEndColor.r, g = data.theme.windowEndColor.g, b = data.theme.windowEndColor.b, a = 0

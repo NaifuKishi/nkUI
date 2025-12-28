@@ -28,7 +28,7 @@ local function tooltipUI()
 
     UI.Native.Tooltip:SetLayer(1)
 
-    local tooltip = LibEKL.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip", uiElements.contextTooltip)
+    local tooltip = LibEKL.UICreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip", uiElements.contextTooltip)
     tooltip:SetLayer(99)
     tooltip:SetVisible(false)
     tooltip:SetWidth(tooltipWidth)
@@ -37,7 +37,7 @@ local function tooltipUI()
     tooltip:SetBackgroundColor(0, 0, 0, 1)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.TooltipAnchor, "BOTTOMRIGHT")
 
-    local title = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.title", tooltip)
+    local title = LibEKL.UICreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.title", tooltip)
     title:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 2, 2)
     title:SetFontSize(16)
     title:SetAlpha(1)
@@ -48,7 +48,7 @@ local function tooltipUI()
     local lastObject, x = title, 2
 
     for idx = 1, 10, 1 do
-        local line = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.line" .. idx, tooltip)
+        local line = LibEKL.UICreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.line" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT",x , -5)
         line:SetWordwrap(true)
         line:SetFontSize(14)
@@ -62,7 +62,7 @@ local function tooltipUI()
     local y = 5
 
     for idx = 1, 10, 1 do
-        local line = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.stats" .. idx, tooltip)
+        local line = LibEKL.UICreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.stats" .. idx, tooltip)
         line:SetPoint("TOPLEFT", lastObject, "BOTTOMLEFT", 0 ,y)
         line:SetWordwrap(true)
         line:SetFontSize(12)
@@ -73,12 +73,12 @@ local function tooltipUI()
         table.insert (stats, line)
     end
 
-    healthBarBG = LibEKL.uiCreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
+    healthBarBG = LibEKL.UICreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
     healthBarBG:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT", 0, 2)
     healthBarBG:SetPoint("BOTTOMRIGHT", tooltip, "BOTTOMRIGHT", 0, 12)
     healthBarBG:SetVisible(false)
 
-    healthBar = LibEKL.uiCreateFrame("nkCanvas", TOOLTIP_NAME .. ".tooltip.healthBar", healthBarBG)
+    healthBar = LibEKL.UICreateFrame("nkCanvas", TOOLTIP_NAME .. ".tooltip.healthBar", healthBarBG)
     healthBar:SetPoint("TOPLEFT", healthBarBG, "TOPLEFT", 1, 1)
     healthBar:SetHeight(8)
     
@@ -99,7 +99,7 @@ local function tooltipUI()
 
     healthBar:SetShape (path, fill, stroke)
 
-    healthText = LibEKL.uiCreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.healthText", healthBar)
+    healthText = LibEKL.UICreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.healthText", healthBar)
     healthText:SetPoint("CENTER", healthBarBG, "CENTER", 0, 0)
     healthText:SetFontSize(14)
     healthText:SetFontColor(1,1,1,1)

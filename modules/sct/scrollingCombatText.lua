@@ -112,12 +112,12 @@ end
 local function createTextFrame()
     local name = LibEKL.Tools.UUID()
 
-    local frame = LibEKL.uiCreateFrame("nkText", name, context)
+    local frame = LibEKL.UICreateFrame("nkText", name, context)
     frame:SetEffectGlow({ strength = 3 })
     frame:SetVisible(false)
 
     -- Create an icon frame for the text frame
-    local icon = LibEKL.uiCreateFrame("nkTexture", name .. "." .. LibEKL.Tools.UUID(), frame)
+    local icon = LibEKL.UICreateFrame("nkTexture", name .. "." .. LibEKL.Tools.UUID(), frame)
     icon:SetPoint("CENTERRIGHT", frame, "CENTERLEFT", -5, 0)
     icon:SetVisible(false)
     icon:SetWidth(24)

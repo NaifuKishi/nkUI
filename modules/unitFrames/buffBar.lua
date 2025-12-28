@@ -167,5 +167,5 @@ function internalFunc.buffBar.Redraw()
         v.icon:Setup(newSetup)
     end
     
-    LibEKL.ui.reloadDialog("nkUI")
+    LibEKL.UI.reloadDialog("nkUI")
 end

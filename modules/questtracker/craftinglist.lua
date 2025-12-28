@@ -175,7 +175,7 @@ function privateVars.internal.craftingUI ()
 	ui:SetBackgroundColor(0, 0, 0, nkQuestTrackerSetup.bgAlpha)
 	ui:SetVisible(false)	
 	
-	local grid = LibEKL.uiCreateFrame("nkGrid", name .. 'grid', ui)
+	local grid = LibEKL.UICreateFrame("nkGrid", name .. 'grid', ui)
 		
 	grid:SetHeaderHeight(0)
 	grid:SetPoint("TOPLEFT", ui, "TOPLEFT")

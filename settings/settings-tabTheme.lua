@@ -12,7 +12,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabTheme (name, parent)
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local themeComboBox, oneBagColor, oneBagAlphaSlider
 
     function frame:build()
@@ -21,7 +21,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
     
         themeComboBox = settingsUI.combobox(name .. ".theme", frame, "Select coloring mode", true, function(newValue)        
             nkUISetup.modules.unitFrames.colorScheme = newValue
-            LibEKL.ui.reloadDialog ("nkUI")
+            LibEKL.UI.reloadDialog ("nkUI")
         end)
 
         local currentTheme = nkUISetup.modules.unitFrames.colorScheme
@@ -30,7 +30,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
         themeComboBox:SetSelectedValue(currentTheme, false)
         themeComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
 
-        --[[oneBagColor = LibEKL.uiCreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
+        --[[oneBagColor = LibEKL.UICreateFrame("nkColorPicker", name .. '.oneBagColor', frame)
 		oneBagColor:SetPoint("TOPLEFT", themeComboBox, "BOTTOMLEFT", 0, 10)
 		oneBagColor:SetText("Bag window color")
 		oneBagColor:SetFont(addonInfo.id, "Montserrat")

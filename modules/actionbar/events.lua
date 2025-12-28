@@ -36,11 +36,15 @@ data.activeCooldowns = {}
 -- @param updateFunc Function to apply to each ability frame
 local function updateAbilityStates(abilityId, updateFunc)
     
+    local debugId = internalFunc.traceStart("actionbar.updateAbilityStates")
+
     if data.abilityMap and data.abilityMap[abilityId] then
         for _, frame in pairs(data.abilityMap[abilityId]) do
             updateFunc(frame)
         end
     end
+
+    internalFunc.traceEnd("actionbar.updateAbilityStates", debugId)
 end
 
 -- Event handler for when a buff is added to a unit
@@ -49,7 +53,7 @@ end
 function events.abBuffAdd(_, unit, info)
     if not internalFunc.isPlayerUnit(unit) then return end
     
-    local debugId = internalFunc.traceStart("buffAdd")
+    local debugId = internalFunc.traceStart("actionbar.buffAdd")
     
     for key, v in pairs(info) do
         if v == 'B109B81E0E0F231CF' or v == 'B55F770C673BE8384' then
@@ -60,7 +64,7 @@ function events.abBuffAdd(_, unit, info)
         end
     end
     
-    internalFunc.traceEnd("buffAdd", debugId)
+    internalFunc.traceEnd("actionbar.buffAdd", debugId)
 end
 
 -- Event handler for when a buff is removed from a unit
@@ -69,7 +73,7 @@ end
 function events.abBuffRemove(_, unit, info)
     if not internalFunc.isPlayerUnit(unit) then return end
     
-    local debugId = internalFunc.traceStart("buffRemove")
+    local debugId = internalFunc.traceStart("actionbar.buffRemove")
     
     for key, v in pairs(info) do
         if key == stanceBuff then
@@ -80,7 +84,7 @@ function events.abBuffRemove(_, unit, info)
         end
     end
     
-    internalFunc.traceEnd("buffRemove", debugId)
+    internalFunc.traceEnd("actionbar.buffRemove", debugId)
 end
 
 -- Event handler for abilities becoming unusable
@@ -88,13 +92,13 @@ end
 function events.abAbilityUnusable(_, info)
     if not data.abilityMap then return end
     
-    local debugId = internalFunc.traceStart("abilityUnusable")
+    local debugId = internalFunc.traceStart("actionbar.abilityUnusable")
     
     for key, v in pairs(info) do
         updateAbilityStates(key, function(frame) frame:SetUsable(false) end)
     end
     
-    internalFunc.traceEnd("abilityUnusable", debugId)
+    internalFunc.traceEnd("actionbar.abilityUnusable", debugId)
 end
 
 -- Event handler for abilities becoming usable
@@ -102,13 +106,13 @@ end
 function events.abAbilityUsable(_, info)
     if not data.abilityMap then return end
     
-    local debugId = internalFunc.traceStart("abilityUsable")
+    local debugId = internalFunc.traceStart("actionbar.abilityUsable")
     
     for key in pairs(info) do
         updateAbilityStates(key, function(frame) frame:SetUsable(true) end)
     end
     
-    internalFunc.traceEnd("abilityUsable", debugId)
+    internalFunc.traceEnd("actionbar.abilityUsable", debugId)
 end
 
 -- Event handler for abilities going out of range
@@ -116,13 +120,13 @@ end
 function events.abAbilityOutOfRange(_, info)
     if not data.abilityMap then return end
 
-    local debugId = internalFunc.traceStart("abilityOutOfRange")
+    local debugId = internalFunc.traceStart("actionbar.abilityOutOfRange")
 
     for key in pairs(info) do
         updateAbilityStates(key, function(frame) frame:SetOOR(true) end)
     end
 
-    internalFunc.traceEnd("abilityOutOfRange", debugId)
+    internalFunc.traceEnd("actionbar.abilityOutOfRange", debugId)
 end
 
 -- Event handler for abilities coming into range
@@ -130,23 +134,23 @@ end
 function events.abAbilityInRange(_, info)
     if not data.abilityMap then return end
     
-    local debugId = internalFunc.traceStart("abilityInRange")
+    local debugId = internalFunc.traceStart("actionbar.abilityInRange")
 
     for key in pairs(info) do
         updateAbilityStates(key, function(frame) frame:SetOOR(false) end)
     end
 
-    internalFunc.traceEnd("abilityInRange", debugId)
+    internalFunc.traceEnd("actionbar.abilityInRange", debugId)
 end
 
 -- Event handler for ability cooldown progress
 -- @param addon The addon triggering the event
 -- @param info Table containing cooldown information
 function events.abCooldownProcess(_, addon, info)
-    local debugId = internalFunc.traceStart("cooldownProcess")
+    local debugId = internalFunc.traceStart("actionbar.cooldownProcess")
 
     if addon ~= addonInfo.id then
-        internalFunc.traceEnd("cooldownProcess", debugId)
+        internalFunc.traceEnd("actionbar.cooldownProcess", debugId)
         return -- the event is fired for every addon which subscribed
     end
 
@@ -176,44 +180,49 @@ function events.abCooldownProcess(_, addon, info)
         end
     end
 
-    internalFunc.traceEnd("cooldownProcess", debugId)
+    internalFunc.traceEnd("actionbar.cooldownProcess", debugId)
 end
 
 -- Event handler for entering secure mode
 -- @param info Table containing secure mode information
 function events.abSecureEnter(_, info)
-    local debugId = internalFunc.traceStart("secureEnter")
+    local debugId = internalFunc.traceStart("actionbar.secureEnter")
 
     for _, actionBar in pairs(uiElements.actionbars) do
         actionBar:SetAlpha(nkUISetup.modules.actionBars.combatAlpha)
         actionBar:ResetStates()
     end
 
-    internalFunc.traceEnd("secureEnter", debugId)
+    internalFunc.traceEnd("actionbar.secureEnter", debugId)
 end
 
 -- Event handler for leaving secure mode
 -- @param info Table containing secure mode information
 function events.abSecureLeave(_, info)
     
-    local debugId = internalFunc.traceStart("secureLeave")
+    local debugId = internalFunc.traceStart("actionbar.secureLeave")
 
     for _, actionBar in pairs(uiElements.actionbars) do
         actionBar:SetAlpha(nkUISetup.modules.actionBars.nonCombatAlpha)
     end
 
-    internalFunc.traceEnd("secureLeave", debugId)
+    internalFunc.traceEnd("actionbar.secureLeave", debugId)
 end
 
 -- Event handler for GCD (Global Cooldown) start
 -- @param info Table containing GCD information
 function events.abGcdStart(_, info)
+
+    local debugId = internalFunc.traceStart("actionbar.abGcdStart")
+
     for key, remaining in pairs(info) do
         if data.abilityMap and data.abilityMap[key] and remaining <= 1.5 then
             data.gcdActive = { flag = true, key = key }
             updateAbilityStates(key, function(frame) frame:SetGCD(remaining) end)
         end
     end
+
+    internalFunc.traceEnd("actionbar.abGcdStart", debugId)
 end
 
 --[[

@@ -13,10 +13,10 @@ local stringFind    = string.find
 
 -- Creates an item category UI element
 function oneBag.createItemCategory(name, parent)
-    local categoryFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".categoryFrame", parent)
+    local categoryFrame = LibEKL.UICreateFrame("nkFrame", name .. ".categoryFrame", parent)
     categoryFrame:SetHeight(60 * data.uiScale)
     
-    local categoryText = LibEKL.uiCreateFrame("nkText", name .. ".categoryText", categoryFrame)
+    local categoryText = LibEKL.UICreateFrame("nkText", name .. ".categoryText", categoryFrame)
     categoryText:SetFontSize(14 * data.uiScale)
     categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT", -3, 0)
     categoryText:SetFontColor(1, 1, 1, 1)

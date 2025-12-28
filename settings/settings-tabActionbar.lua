@@ -12,7 +12,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabActionBar (name, parent)
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local activateCheckbox, combatAlphaSlider, nonCombatAlphaSlider, offsetSlider, spacingSlider, noOfMainBarsSlider, rightBarCheckbox
 
     function frame:build()
@@ -55,7 +55,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
 
         noOfMainBarsSlider = settingsUI.slider(name .. ".noOfMainBarsSlider", frame, "Number of main bars <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
             nkUISetup.modules.actionBars.mainbars = newValue
-            LibEKL.ui.reloadDialog ("nkUI")
+            LibEKL.UI.reloadDialog ("nkUI")
         end)
         
         noOfMainBarsSlider:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 10)

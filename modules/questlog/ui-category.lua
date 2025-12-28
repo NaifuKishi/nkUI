@@ -52,7 +52,7 @@ function questLog.questCategory(category, parent)
 	headerText:SetWidth(header:GetWidth() - 15)
 	headerText:SetEffectGlow ({ strength = 3 })	
 
-	LibEKL.ui.setFont(headerText, addonInfo.id, "MontserratSemiBold")
+	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratSemiBold")
 
 	local color = data.categoryColor[category]
 	headerText:SetFontColor(1, 1, 1, 1)

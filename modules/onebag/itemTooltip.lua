@@ -20,7 +20,7 @@ local currencyTextSilver = '%d<font color="#a7aba7"> silver</font>'
 
 local function uiItemTooltip ()
 
-    local tooltip = LibEKL.uiCreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
+    local tooltip = LibEKL.UICreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
     tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "BOTTOMLEFT", 5, 5)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 55)
 
@@ -35,21 +35,21 @@ local function uiItemTooltip ()
 
     tooltip:SetShape(path, fill, stroke)
         
-    local valueText = LibEKL.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
+    local valueText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
     valueText:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 5, 5)
     valueText:SetFontSize(12 * data.uiScale)
     valueText:SetEffectGlow({strength = 3})
     valueText:SetFontColor(1, 1, 1, 1)
 
-    LibEKL.ui.setFont(valueText, addonInfo.id, "MontserratSemiBold")
+    LibEKL.UI.SetFont(valueText, addonInfo.id, "MontserratSemiBold")
 
-    local countText = LibEKL.uiCreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
+    local countText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
     countText:SetPoint("TOPLEFT", valueText, "BOTTOMLEFT")
     countText:SetFontSize(12 * data.uiScale)
     countText:SetEffectGlow({strength = 3})
     countText:SetFontColor(1, 1, 1, 1)
 
-    LibEKL.ui.setFont(countText, addonInfo.id, "MontserratSemiBold")
+    LibEKL.UI.SetFont(countText, addonInfo.id, "MontserratSemiBold")
 
     function tooltip:SetItem(itemID)
         local flag, details = pcall(inspectItemDetail, itemID)        

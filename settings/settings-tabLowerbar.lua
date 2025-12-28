@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabLowerBar (name, parent)
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local fontSizeSlider, timeSizeSlider, dateSizeSlider, barHeightSlider, barWidthSlider, barTextSlider
     local fontHeader, barHeader
     local activateCheckbox

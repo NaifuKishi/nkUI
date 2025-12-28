@@ -19,7 +19,7 @@ local function bagSlot(name, parent, riftSlot)
     local isLocked = false
     local thisItemID
 
-    local thisSlot = LibEKL.uiCreateFrame("nkCanvas", name, parent)
+    local thisSlot = LibEKL.UICreateFrame("nkCanvas", name, parent)
     thisSlot:SetWidth(ICONSIZE * data.uiScale)
     thisSlot:SetHeight(ICONSIZE * data.uiScale)    
     
@@ -34,7 +34,7 @@ local function bagSlot(name, parent, riftSlot)
     
     thisSlot:SetShape(path, nil, stroke)
     
-    local icon = LibEKL.uiCreateFrame("nkTexture", name .. ".icon", parent)
+    local icon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", parent)
     icon:SetWidth((ICONSIZE-2) * data.uiScale)
     icon:SetHeight((ICONSIZE-2) * data.uiScale)
     icon:SetPoint("CENTER", thisSlot, "CENTER")
@@ -43,7 +43,7 @@ local function bagSlot(name, parent, riftSlot)
             
     thisSlot.icon = icon
     
-    local tint = LibEKL.uiCreateFrame("nkFrame", name .. ".tint", parent)
+    local tint = LibEKL.UICreateFrame("nkFrame", name .. ".tint", parent)
     tint:SetWidth((ICONSIZE-2) * data.uiScale)
     tint:SetHeight((ICONSIZE-2) * data.uiScale)
     tint:SetPoint("CENTER", thisSlot, "CENTER")
@@ -96,7 +96,7 @@ local function bagSlot(name, parent, riftSlot)
 
     icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         if not isLocked then return end        
-        local dialog = LibEKL.ui.messageDialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
+        local dialog = LibEKL.UI.messageDialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
         
         dialog:SetFont(addonInfo.id, "MontserratSemiBold")
         dialog:SetEffectGlow({ strength = 3 })
@@ -130,7 +130,7 @@ function oneBag.createBagSlots()
     local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.uiScale
     local height = (10 + ICONSIZE) * data.uiScale
     
-    local bagSlotsFrame = LibEKL.uiCreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
+    local bagSlotsFrame = LibEKL.UICreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(width)
     bagSlotsFrame:SetHeight(height)
     bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.uiScale)

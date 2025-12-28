@@ -11,7 +11,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabUFBasic (name, parent)
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider
     local buffDurationLabel
 

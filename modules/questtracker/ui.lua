@@ -22,7 +22,7 @@ local function showCategoryFilter (parent)
 
 	local name = "nkUI.QuestTracker.categoryFilter"
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, questTracker.context)
+	local ui = LibEKL.UICreateFrame("nkFrame", name, questTracker.context)
 	ui:SetLayer(2)
 	ui:SetBackgroundColor(0, 0, 0, 1)
 	ui:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
@@ -31,7 +31,7 @@ local function showCategoryFilter (parent)
 	local height = 0
 
 	for _, v in pairs(categoryOrder) do
-		local checkbox = LibEKL.uiCreateFrame("nkCheckbox", name.. "." .. v, ui)
+		local checkbox = LibEKL.UICreateFrame("nkCheckbox", name.. "." .. v, ui)
 		checkbox:SetText(privateVars.langTexts.showCategoryCheckbox[v])
 		checkbox:SetChecked(nkUISetup.modules.questtracker.categoryShow[v])
 		checkbox:SetLabelWidth(150)
@@ -60,7 +60,7 @@ function questTracker.buildUI ()
 	local name = "nkUI.questTracker"
 	local scrollPane, content	
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, questTracker.context)
+	local ui = LibEKL.UICreateFrame("nkFrame", name, questTracker.context)
 	
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)
 	ui:SetWidth(nkUISetup.modules.questtracker.width)
@@ -68,7 +68,7 @@ function questTracker.buildUI ()
 	ui:SetBackgroundColor(0, 0, 0, 0)
 	ui:SetLayer(1)
 
-	local header = LibEKL.uiCreateFrame("nkText", name .. ".header", ui)	
+	local header = LibEKL.UICreateFrame("nkText", name .. ".header", ui)	
 	header:SetText(addonInfo.name)
 	header:SetEffectGlow({strength = 3})
 	header:SetFontColor(colorR, colorG, colorB, colorA)
@@ -115,9 +115,9 @@ function questTracker.buildUI ()
 		nkUISetup.modules.questtracker.y = ui:GetTop()
 	end , name .. ".header.Left.Upoutside")
 
-	LibEKL.ui.setFont(header, addonInfo.id, "MontserratSemiBold")	
+	LibEKL.UI.SetFont(header, addonInfo.id, "MontserratSemiBold")	
 
-	local headerLine = LibEKL.uiCreateFrame("nkCanvas", name .. ".headerLine", ui)
+	local headerLine = LibEKL.UICreateFrame("nkCanvas", name .. ".headerLine", ui)
 	headerLine:SetHeight(2)
 	headerLine:SetWidth(ui:GetWidth())
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
@@ -143,7 +143,7 @@ function questTracker.buildUI ()
 
 	-- ********* ZONE FILTER BUTTON
 
-	local zoneFilterIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.zoneFilterIcon', ui)
+	local zoneFilterIcon = LibEKL.UICreateFrame("nkClickButton", name .. '.zoneFilterIcon', ui)
 	zoneFilterIcon:SetWidth(16)
 	zoneFilterIcon:SetHeight(16)
 	zoneFilterIcon:SetToggleable(true)
@@ -159,7 +159,7 @@ function questTracker.buildUI ()
 
 	-- ********* CATEGORY FILTER BUTTON
 
-	local categoryFilterIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.categoryFilterIcon', ui)
+	local categoryFilterIcon = LibEKL.UICreateFrame("nkClickButton", name .. '.categoryFilterIcon', ui)
 	categoryFilterIcon:SetWidth(16)
 	categoryFilterIcon:SetHeight(16)
 	categoryFilterIcon:SetColor({ r = colorR, g = colorG, b = colorB, a = 1})
@@ -181,7 +181,7 @@ function questTracker.buildUI ()
 	
 	-- ********* ITEM BUTTON
 
-	local itemIcon = LibEKL.uiCreateFrame("nkClickButton", name .. '.itemIcon', ui)
+	local itemIcon = LibEKL.UICreateFrame("nkClickButton", name .. '.itemIcon', ui)
 	itemIcon:SetWidth(16)
 	itemIcon:SetHeight(16)
 	itemIcon:SetColor({ r = colorR, g = colorG, b = colorB, a = 1})
@@ -250,7 +250,7 @@ function questTracker.buildUI ()
 			
 	-- ********* SCROLL PANE
 			
-	scrollPane = LibEKL.uiCreateFrame("nkScrollPane", name .. 'scrollPane', ui)
+	scrollPane = LibEKL.UICreateFrame("nkScrollPane", name .. 'scrollPane', ui)
 	scrollPane:SetPoint("TOPLEFT", header, "TOPLEFT", -5, 30)
 	scrollPane:SetWidth(ui:GetWidth())
 	scrollPane:SetHeight(ui:GetHeight() - 30)

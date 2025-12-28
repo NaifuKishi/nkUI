@@ -21,7 +21,7 @@ local function uiQuestLog()
 	local scrollPane, content
 	local questCategories
 
-	local ui = LibEKL.uiCreateFrame("nkwindow", name, questTracker.context)
+	local ui = LibEKL.UICreateFrame("nkwindow", name, questTracker.context)
 	
 	ui:SetReverseAtBorder(false)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 600, 400)
@@ -48,7 +48,7 @@ local function uiQuestLog()
 
     -- ********* SCROLL PANE
 			
-	scrollPane = LibEKL.uiCreateFrame("nkScrollPane", name .. '.scrollPane', ui:GetContent())
+	scrollPane = LibEKL.UICreateFrame("nkScrollPane", name .. '.scrollPane', ui:GetContent())
 	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 20, 30)
 	scrollPane:SetWidth(300)
 	scrollPane:SetHeight(ui:GetContent():GetHeight() - 40)
@@ -61,7 +61,7 @@ local function uiQuestLog()
 
 	scrollPane:SetLayer(1)
 		
-	content = LibEKL.uiCreateFrame("nkFrame", name .. '.content', scrollPane)
+	content = LibEKL.UICreateFrame("nkFrame", name .. '.content', scrollPane)
 	content:SetWidth(ui:GetContent():GetWidth())	
 	
 	function ui:getScrollPane()

@@ -59,7 +59,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     local width = (cols * buttonSize * scale ) + ((cols -1) * spacing)
     local height = (rows * buttonSize * scale ) + ((rows - 1) * spacing)
 
-    local actionBar = LibEKL.uiCreateFrame("nkFrame", thisName, context)
+    local actionBar = LibEKL.UICreateFrame("nkFrame", thisName, context)
     
     actionBar:SetWidth(width)
     actionBar:SetHeight(height)

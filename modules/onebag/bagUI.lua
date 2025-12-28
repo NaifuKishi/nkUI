@@ -18,7 +18,7 @@ context:SetLayer(2)
 -- Creates the main bag UI window
 function oneBag.createBagUI()
     
-    local bagWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.bagWindow", context)
+    local bagWindow = LibEKL.UICreateFrame("nkwindow", "nkUI.bagWindow", context)
     bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.Unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)

@@ -12,7 +12,7 @@ local stringFormat = string.format
 
 function settingsUI.uiConfigTabQuestTracker (name, parent)
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, parent)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local activateCheckbox, trackerSizeHeader, yPosSlider, widthSlider, heightSlider, useXPosSlider, useYPosSlider, useUICheckbox, categoryHeaderSizeSlider, categoryShowCheckboxes, categoryFontSizeSliders, bodyColorPicker, bodyCompleteColorPicker
 
     function frame:build()

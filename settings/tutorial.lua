@@ -49,13 +49,13 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = LibEKL.uiCreateFrame("nkwindow", "nkUI.tutorialWindow", context)
+    local tutorialWindow = LibEKL.UICreateFrame("nkwindow", "nkUI.tutorialWindow", context)
     tutorialWindow:SetLayer(99)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)
     tutorialWindow:SetHeight(600)
-    tutorialWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.ui.getBoundRight() / 2) - (tutorialWindow:GetWidth()/2), 200)
+    tutorialWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2) - (tutorialWindow:GetWidth()/2), 200)
     tutorialWindow:SetTitleFontSize(16)
     tutorialWindow:SetTitleEffect ( {strength = 3})
 
@@ -77,13 +77,13 @@ local function _createTutorialWindow()
     local currentStep = 1
 
     -- Create UI elements for the tutorial
-    local titleText = LibEKL.uiCreateFrame("nkText", "tutorialTitle", content)
+    local titleText = LibEKL.UICreateFrame("nkText", "tutorialTitle", content)
     titleText:SetPoint("TOPLEFT", content, "TOPLEFT", 20, 20)
     titleText:SetFontSize(20)
     titleText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     titleText:SetEffectGlow({strength = 3})
 
-    local descriptionText = LibEKL.uiCreateFrame("nkText", "tutorialDescription", content)
+    local descriptionText = LibEKL.UICreateFrame("nkText", "tutorialDescription", content)
     descriptionText:SetPoint("TOPLEFT", titleText, "BOTTOMLEFT", 0, 20)
     descriptionText:SetWordwrap(true)
     descriptionText:SetWidth(560)
@@ -92,16 +92,16 @@ local function _createTutorialWindow()
     descriptionText:SetEffectGlow({strength = 3})
 
     -- Create a frame for displaying subframes
-    local subFrameContainer = LibEKL.uiCreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
+    local subFrameContainer = LibEKL.UICreateFrame("nkFrame", "nkUI.tutorialWindow.subFrameContainer", content)
     subFrameContainer:SetPoint("TOPLEFT", descriptionText, "BOTTOMLEFT", 0, 10)
     subFrameContainer:SetWidth(560)
     subFrameContainer:SetHeight(500)
     subFrameContainer:SetVisible(false)
 
-    local imageFrame = LibEKL.uiCreateFrame("nkTexture", "tutorialImage", content)
+    local imageFrame = LibEKL.UICreateFrame("nkTexture", "tutorialImage", content)
 
     -- Navigation buttons
-    local prevButton = LibEKL.uiCreateFrame("nkButton", "prevButton", content)
+    local prevButton = LibEKL.UICreateFrame("nkButton", "prevButton", content)
     prevButton:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 20, -20)
     prevButton:SetText("Previous")
     prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -111,7 +111,7 @@ local function _createTutorialWindow()
     prevButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
     prevButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    local nextButton = LibEKL.uiCreateFrame("nkButton", "nextButton", content)
+    local nextButton = LibEKL.UICreateFrame("nkButton", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
     nextButton:SetText("Next")
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")

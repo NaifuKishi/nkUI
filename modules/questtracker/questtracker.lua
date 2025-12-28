@@ -98,7 +98,7 @@ function internalFunc.uiQuestTracker()
 		
 		questTracker.fillLog ()
 		
-		uiElements.progressBar = LibEKL.uiCreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
+		uiElements.progressBar = LibEKL.UICreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
 		uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questTracker, "CENTERTOP", 0, 40)
 		
 		uiElements.progressBar:SetWidth(uiElements.questTracker:GetWidth()-20)
@@ -330,7 +330,7 @@ end
 function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 
 	if uiElements.qtTooltip == nil then
-		uiElements.qtTooltip = LibEKL.uiCreateFrame("nkTooltip", 'nkUI.questtracker.tooltip', uiElements.contextTooltip)
+		uiElements.qtTooltip = LibEKL.UICreateFrame("nkTooltip", 'nkUI.questtracker.tooltip', uiElements.contextTooltip)
 		uiElements.qtTooltip:SetLayer(2)
 		uiElements.qtTooltip:SetFont (addonInfo.id, "MontserratSemiBold")
 	end
@@ -436,7 +436,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	
 	tooltip:SetLines(lines)
 	
-	LibEKL.ui.showWithinBound (tooltip, parent)
+	LibEKL.UI.showWithinBound (tooltip, parent)
 --[[
 	local mouse = inspectMouse()
 	

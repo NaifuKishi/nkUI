@@ -28,7 +28,7 @@ function lowerBar.currency()
         freeBagCount = #freeBagSlots
     end
     
-    local datasetCurrency = LibEKL.uiCreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
+    local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
     datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird - 10, -5)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -39,7 +39,7 @@ function lowerBar.currency()
         internalFunc.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")
 
-    local datasetCurrencyIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
+    local datasetCurrencyIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
     datasetCurrencyIcon:SetPoint("CENTERRIGHT", datasetCurrency, "CENTERLEFT", -5, 0)
     datasetCurrencyIcon:SetHeight(16)
     datasetCurrencyIcon:SetWidth(16)

@@ -37,7 +37,7 @@ function lowerBar.build()
     -- Create a canvas behind the lower bar
 
     if not uiElements.lowerBarCanvas then
-        uiElements.lowerBarCanvas = LibEKL.uiCreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.context)
+        uiElements.lowerBarCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.context)
         uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
         uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
 
@@ -96,5 +96,5 @@ function internalFunc.lowerBarRedraw()
         uiElements.lowerBarModules[idx]:Redraw()
     end
     
-    LibEKL.ui.reloadDialog("nkUI")
+    LibEKL.UI.reloadDialog("nkUI")
 end

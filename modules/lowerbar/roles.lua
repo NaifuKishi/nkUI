@@ -20,7 +20,7 @@ local stringFormat         = string.format
 function lowerBar.lowerBarRoles()
     local name = "lowerbar.roles"
     
-    local datasetRole = LibEKL.uiCreateFrame("nkText", name .. ".datasetrole", lowerBar.contextRestricted)
+    local datasetRole = LibEKL.UICreateFrame("nkText", name .. ".datasetrole", lowerBar.contextRestricted)
     datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", (-data.aFourth * 2) - 10, -5)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
@@ -28,13 +28,13 @@ function lowerBar.lowerBarRoles()
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
 
-    local datasetRoleIcon = LibEKL.uiCreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
+    local datasetRoleIcon = LibEKL.UICreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
     datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)
     datasetRoleIcon:SetHeight(16)
     datasetRoleIcon:SetWidth(16)
     datasetRoleIcon:SetTextureAsync("nkUI", "gfx/lowerbarRole.png")
     
-    local roleSwitch = LibEKL.uiCreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
+    local roleSwitch = LibEKL.UICreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
     roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
     roleSwitch:SetSecureMode('restricted')
     roleSwitch:SetHeight(1)
@@ -63,7 +63,7 @@ function lowerBar.lowerBarRoles()
                 datasetRole:SetText(stringFormat("Active role: %s", desc))
             else
                 if roleDisplay[roleID] == nil then
-                    thisRole = LibEKL.uiCreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
+                    thisRole = LibEKL.UICreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
                     thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
                     thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
                     thisRole:SetEffectGlow({ strength = 1})

@@ -18,7 +18,7 @@ context:SetLayer(2)
 
 -- Helper function to create and configure a UI button
 local function createButton(parent, name, width, height, x, y, text, iconPath)
-    local button = LibEKL.uiCreateFrame("nkButton", name, parent)
+    local button = LibEKL.UICreateFrame("nkButton", name, parent)
     button:SetWidth(width)
     button:SetHeight(height)
     button:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
@@ -34,7 +34,7 @@ end
 
 -- Helper function to create and configure a text field
 local function createTextField(parent, name, width, height, x, y)
-    local textField = LibEKL.uiCreateFrame("nkTextField", name, parent)
+    local textField = LibEKL.UICreateFrame("nkTextField", name, parent)
     textField:SetWidth(width)
     textField:SetHeight(height)
     textField:SetMultiLine(true)
@@ -57,7 +57,7 @@ function internalFunc.macroEditDialog (editBar)
 	local barIndex, buttonIndex, contentType, contentKey, icon
 	
 	-- Create the main dialog window
-	local ui = LibEKL.uiCreateFrame("nkWindow", name, context)
+	local ui = LibEKL.UICreateFrame("nkWindow", name, context)
 	ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetWidth() / 2 - 150, 300)
 	ui:SetWidth(320)
 	ui:SetHeight(250)
@@ -76,7 +76,7 @@ function internalFunc.macroEditDialog (editBar)
 
 	
 	-- Create icon edit button for macro icon selection
-	local iconEdit = LibEKL.uiCreateFrame("nkActionButton", name .. ".iconEdit", ui:GetContent())
+	local iconEdit = LibEKL.UICreateFrame("nkActionButton", name .. ".iconEdit", ui:GetContent())
 	iconEdit:SetWidth(48)
 	iconEdit:SetHeight(48)
 	iconEdit:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 85, 10)
@@ -102,7 +102,7 @@ function internalFunc.macroEditDialog (editBar)
 	end, iconEdit:GetName() .. ".UI.Input.Mouse.Left.Up")
 	
 	-- Label for the icon edit section
-	local iconEditLabel = LibEKL.uiCreateFrame("nkText", name .. ".iconEditLabel", ui:GetContent())
+	local iconEditLabel = LibEKL.UICreateFrame("nkText", name .. ".iconEditLabel", ui:GetContent())
 	iconEditLabel:SetPoint("CENTERRIGHT", iconEdit, "CENTERLEFT")
 	iconEditLabel:SetWidth(75)
 	iconEditLabel:SetFontColor(1, 1, 1, 1)

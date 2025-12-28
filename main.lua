@@ -85,7 +85,7 @@ uiElements.contextTooltip:SetLayer(99)
 
 local function animateLogo ()
 
-	local logo = LibEKL.uiCreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
+	local logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
 	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	logo:SetWidth(256)
 	logo:SetHeight(162)
@@ -149,13 +149,13 @@ local function initializeAddon(_, addon)
 	if addon == addonInfo.identifier then
 		table.insert(Command.Slash.Register("nkui"), {commandHandler, "nkUI", "commandHandler"})
 		
-        LibEKL.ui.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
-        LibEKL.ui.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
-		LibEKL.ui.registerFont(addonInfo.id, "MontserratBold", "fonts/Montserrat-Bold.ttf")
+        LibEKL.UI.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
+        LibEKL.UI.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")
+		LibEKL.UI.registerFont(addonInfo.id, "MontserratBold", "fonts/Montserrat-Bold.ttf")
 
-        LibEKL.ui.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
-        LibEKL.ui.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
-        LibEKL.ui.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
+        LibEKL.UI.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
+        LibEKL.UI.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
+        LibEKL.UI.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
 			LibEKL.Unit.init()			

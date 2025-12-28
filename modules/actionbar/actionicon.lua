@@ -43,7 +43,7 @@ local BLANK_TEXTURE = "gfx/equipslot_blank"
 function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	-- Create the main frame for the action icon
-	local frame = LibEKL.uiCreateFrame("nkCanvas", name, parent)
+	local frame = LibEKL.UICreateFrame("nkCanvas", name, parent)
 	
 	-- Local variables for the icon components and state
 	local texture, oorTint, cooldownTint, cooldown, macroFrame, overlay
@@ -70,32 +70,32 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 1 })
 
 	-- Create the texture for the icon
-	texture = LibEKL.uiCreateFrame("nkTexture", name .. '.texture', frame)  
+	texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
 	texture:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	texture:SetLayer(1)
 	texture:SetMouseMasking("limited")
 	
 	 -- Create the overlay for the icon
-	overlay = LibEKL.uiCreateFrame("nkCanvas", name .. ".overlay", frame)
+	overlay = LibEKL.UICreateFrame("nkCanvas", name .. ".overlay", frame)
 	overlay:SetPoint("CENTER", frame, "CENTER", 1, 1)
 	overlay:SetShape(path, nil, {r = 0, g = 0, b = 0, a = 1, thickness = 5 })
 	overlay:SetLayer(2)
     overlay:SetVisible(false)
 	
 	-- Create the out-of-range tint
-	oorTint = LibEKL.uiCreateFrame("nkCanvas", name .. ".oorTint", frame)
+	oorTint = LibEKL.UICreateFrame("nkCanvas", name .. ".oorTint", frame)
 	oorTint:SetVisible(false)
 	oorTint:SetPoint("CENTER", overlay, "CENTER")
 	oorTint:SetLayer(4)
 	
 	-- Create the cooldown tint
-	cooldownTint = LibEKL.uiCreateFrame("nkCanvas", name .. ".cooldownTint", frame)
+	cooldownTint = LibEKL.UICreateFrame("nkCanvas", name .. ".cooldownTint", frame)
 	cooldownTint:SetVisible(false)
 	cooldownTint:SetPoint("CENTER", overlay, "CENTER")
 	cooldownTint:SetLayer(5)
 	
 	-- Create the cooldown text
-	cooldown = LibEKL.uiCreateFrame("nkText", name .. '.cooldown', frame)
+	cooldown = LibEKL.UICreateFrame("nkText", name .. '.cooldown', frame)
 	cooldown:SetVisible(false)
 	cooldown:SetFontSize(18)
 	cooldown:SetPoint("CENTER", frame, "CENTER")
@@ -252,9 +252,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:ClearItem()
 		
-		LibEKL.ui.attachItemTooltip (texture, nil)
-		LibEKL.ui.attachAbilityTooltip (texture, nil)
-		LibEKL.ui.attachGenericTooltip (texture, nil)
+		LibEKL.UI.attachItemTooltip (texture, nil)
+		LibEKL.UI.attachAbilityTooltip (texture, nil)
+		LibEKL.UI.attachGenericTooltip (texture, nil)
 				
 		if thisMacroCDType ~= nil then
 			LibEKL.Cooldowns.Unsubscribe(thisMacroCDType, thisMacroCDKey)
@@ -364,7 +364,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then
 		
 			if not macroFrame then
-				macroFrame = LibEKL.uiCreateFrame("nkFrame", name .. ".macroFrame", uiElements.unitFramesContextSecure)
+				macroFrame = LibEKL.UICreateFrame("nkFrame", name .. ".macroFrame", uiElements.unitFramesContextSecure)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
@@ -390,12 +390,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then tooltipTarget = macroFrame end
 						
 		if thisItemType == 'item' then
-			LibEKL.ui.attachItemTooltip (tooltipTarget, itemKey)
+			LibEKL.UI.attachItemTooltip (tooltipTarget, itemKey)
 		elseif thisItemType == "ability" then
-			LibEKL.ui.attachAbilityTooltip (tooltipTarget, itemKey)
-			LibEKL.ui.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+			LibEKL.UI.attachAbilityTooltip (tooltipTarget, itemKey)
+			LibEKL.UI.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 		else -- macro
-			LibEKL.ui.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
+			LibEKL.UI.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
 		end
 	end
 	
@@ -484,15 +484,15 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then target = macroFrame end
 					
 		if thisItemType == 'item' then
-			LibEKL.ui.attachItemTooltip (target, nil)
+			LibEKL.UI.attachItemTooltip (target, nil)
 		elseif thisItemType == 'macro' then
-			LibEKL.ui.attachGenericTooltip (target, nil, nil)
+			LibEKL.UI.attachGenericTooltip (target, nil, nil)
 		else
-			LibEKL.ui.attachAbilityTooltip (target, nil)
+			LibEKL.UI.attachAbilityTooltip (target, nil)
 		end
 		
 		texture:destroy()
-		LibEKL.uiAddToGarbageCollector ('nkFrame', frame, name)
+		LibEKL.UIAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
 	--[[
@@ -531,7 +531,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			fctEditMacro()
 		else
-			local dialog = LibEKL.ui.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
+			local dialog = LibEKL.UI.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				fctEditMacro()

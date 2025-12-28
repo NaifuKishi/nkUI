@@ -37,13 +37,13 @@ local function _moveFrame (moveFrame, label, callBack)
     local x, y = info.x[0.5].offset, info.y[0.5].offset    
     local newX, newY
 
-    local frame = LibEKL.uiCreateFrame("nkFrame", name, context)
+    local frame = LibEKL.UICreateFrame("nkFrame", name, context)
     frame:SetWidth(width)
     frame:SetHeight(height)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
     frame:SetBackgroundColor(0.529, 0.808, 0.922, 1)
     
-    local text = LibEKL.uiCreateFrame("nkText", name .. ".text", frame)
+    local text = LibEKL.UICreateFrame("nkText", name .. ".text", frame)
     text:SetFontSize(16)
     text:SetPoint("CENTER", frame, "CENTER")
     text:SetFontColor(1, 1, 1, 1)
@@ -170,7 +170,7 @@ function internalFunc.initMove ()
     end
 
     if nkUISetup.modules.buffBar.activate then
-        buffBarFrame = LibEKL.uiCreateFrame("nkFrame", LibEKL.Tools.UUID(), context)
+        buffBarFrame = LibEKL.UICreateFrame("nkFrame", LibEKL.Tools.UUID(), context)
         buffBarFrame:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
         buffBarFrame:SetWidth(nkUISetup.modules.buffBar.buffs.width)
         buffBarFrame:SetHeight(nkUISetup.modules.buffBar.buffs.height)
@@ -193,7 +193,7 @@ function internalFunc.initMove ()
                   }  
 
     for idx = 1, mathFloor((height / 2) / 25), 1 do
-        local thisGrid = LibEKL.uiCreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
+        local thisGrid = LibEKL.UICreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * 25)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(width)
@@ -203,7 +203,7 @@ function internalFunc.initMove ()
     end
 
     for idx = 1, mathFloor((height / 2) / 25), 1 do
-        local thisGrid = LibEKL.uiCreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
+        local thisGrid = LibEKL.UICreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", 0, idx * -25)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(width)
@@ -213,7 +213,7 @@ function internalFunc.initMove ()
     end    
 
     for idx = 1, mathFloor((width / 2) / 25), 1 do
-        local thisGrid = LibEKL.uiCreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
+        local thisGrid = LibEKL.UICreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * 25, 0)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(25)
@@ -223,7 +223,7 @@ function internalFunc.initMove ()
     end
 
     for idx = 1, mathFloor((width / 2) / 25), 1 do
-        local thisGrid = LibEKL.uiCreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
+        local thisGrid = LibEKL.UICreateFrame("nkCanvas", LibEKL.Tools.UUID(), contextLowest)
         thisGrid:SetPoint("CENTER", UIParent, "CENTER", idx * -25, 0)
         thisGrid:SetShape(path, nil, stroke)
         thisGrid:SetWidth(25)
@@ -232,6 +232,6 @@ function internalFunc.initMove ()
         table.insert(gridFrames, thisGrid)
     end
 
-    LibEKL.ui.reloadDialog ("Reload after you are done moving")
+    LibEKL.UI.reloadDialog ("Reload after you are done moving")
 
 end

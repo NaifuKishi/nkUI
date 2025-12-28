@@ -32,14 +32,14 @@ context:SetLayer(2)
 
 local function useItem(name, parent)
 
-	local useItem = LibEKL.uiCreateFrame("nkFrame", name, parent)
+	local useItem = LibEKL.UICreateFrame("nkFrame", name, parent)
 	useItem:SetWidth(25)
 	useItem:SetHeight(25)
 	useItem:SetSecureMode("restricted")
 	useItem:SetBackgroundColor(.843, .796, 0, 1)
 	useItem:SetVisible(false)
 
-	local useItemTexture = LibEKL.uiCreateFrame("nkTexture", name .. ".texture", useItem)
+	local useItemTexture = LibEKL.UICreateFrame("nkTexture", name .. ".texture", useItem)
 	useItemTexture:SetPoint("CENTER", useItem, "CENTER")
 	useItemTexture:SetHeight(23)
 	useItemTexture:SetWidth(23)
@@ -81,7 +81,7 @@ function questTracker.buildUseUI ()
 
 	local name = "nkUI.QuestTracker.UseUI"
 
-	local ui = LibEKL.uiCreateFrame("nkFrame", name, context)
+	local ui = LibEKL.UICreateFrame("nkFrame", name, context)
 	ui:SetPoint("TOPRIGHT", uiElements.questTracker, "TOPLEFT", 20, 35)
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questTracker:GetHeight()-20)

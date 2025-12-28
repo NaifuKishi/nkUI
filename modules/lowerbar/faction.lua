@@ -40,33 +40,33 @@ function lowerBar.faction()
         end
     end
     
-    local datasetFactionBarBG = LibEKL.uiCreateFrame('nkFrame', "lowerBar.factionFrameBG", lowerBar.contextRestricted)
+    local datasetFactionBarBG = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrameBG", lowerBar.contextRestricted)
     datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aThird - 10, -9)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
     
-    local datasetFactionBar = LibEKL.uiCreateFrame('nkFrame', "lowerBar.factionFrame", datasetFactionBarBG)
+    local datasetFactionBar = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrame", datasetFactionBarBG)
     datasetFactionBar:SetPoint("TOPLEFT", datasetFactionBarBG, "TOPLEFT")
     datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBar:SetWidth(0)
     datasetFactionBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     
-    local datasetFaction = LibEKL.uiCreateFrame('nkText', "lowerBar.faction", datasetFactionBarBG)
+    local datasetFaction = LibEKL.UICreateFrame('nkText', "lowerBar.faction", datasetFactionBarBG)
     datasetFaction:SetPoint("BOTTOMCENTER", datasetFactionBarBG, "TOPCENTER", 0, 0)
     datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFaction:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetFaction:SetTextFont(addonInfo.id, "MontserratSemiBold")
     datasetFaction:SetEffectGlow({ strength = 1 })
     
-    local datasetFactionName = LibEKL.uiCreateFrame('nkText', "lowerBar.factionName", datasetFactionBar)
+    local datasetFactionName = LibEKL.UICreateFrame('nkText', "lowerBar.factionName", datasetFactionBar)
     datasetFactionName:SetPoint("CENTER", datasetFactionBarBG, "CENTER")
     datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
     datasetFactionName:SetFontColor(0, 0, 0, 1)
     datasetFactionName:SetTextFont(addonInfo.id, "MontserratSemiBold")
     datasetFactionName:SetEffectGlow({ strength = 1, colorR = 1, colorG = 1, colorB = 1})
 
-    local datasetFactionBarBGIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
+    local datasetFactionBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
     datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -5, 0)
     datasetFactionBarBGIcon:SetHeight(16)
     datasetFactionBarBGIcon:SetWidth(16)

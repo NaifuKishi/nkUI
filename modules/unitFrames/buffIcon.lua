@@ -22,16 +22,16 @@ local _eventHandlers = {}
 
 function uiElements.icon (name, parent)
 	
-	local icon = LibEKL.uiCreateFrame('nkFrame', name, parent)
+	local icon = LibEKL.UICreateFrame('nkFrame', name, parent)
 	
-	local border = LibEKL.uiCreateFrame('nkFrame', name .. '.border', icon)
-	local texture = LibEKL.uiCreateFrame('nkTexture', name .. '.texture', icon)
-	local effect = LibEKL.uiCreateFrame('nkTexture', name .. '.effect', icon)
+	local border = LibEKL.UICreateFrame('nkFrame', name .. '.border', icon)
+	local texture = LibEKL.UICreateFrame('nkTexture', name .. '.texture', icon)
+	local effect = LibEKL.UICreateFrame('nkTexture', name .. '.effect', icon)
 	
-	local timer = LibEKL.uiCreateFrame('nkText', name ..'.timer', icon)
-	local stack = LibEKL.uiCreateFrame('nkText', name ..'.stack', icon)
+	local timer = LibEKL.UICreateFrame('nkText', name ..'.timer', icon)
+	local stack = LibEKL.UICreateFrame('nkText', name ..'.stack', icon)
 	
-	local label = LibEKL.uiCreateFrame('nkText', name .. 'label', icon)
+	local label = LibEKL.UICreateFrame('nkText', name .. 'label', icon)
 	
 	local properties = {}
 	local tooltipIcon = nil
@@ -322,8 +322,8 @@ function uiElements.icon (name, parent)
 		--print (name)
 		thisName = name
 		thisDescription = description
-		LibEKL.ui.attachGenericTooltip (texture, thisName, thisDescription)
-		LibEKL.ui.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+		LibEKL.UI.attachGenericTooltip (texture, thisName, thisDescription)
+		LibEKL.UI.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 	end	
 	
 	return icon

@@ -30,19 +30,19 @@ local function createCooldownElement(abilityId)
     }
 
     -- Create main frame for the cooldown display
-    cooldown.frame = LibEKL.uiCreateFrame("nkTexture", "nkUI.cooldown." .. abilityId, uiElements.contextDialog)
+    cooldown.frame = LibEKL.UICreateFrame("nkTexture", "nkUI.cooldown." .. abilityId, uiElements.contextDialog)
     cooldown.frame:SetWidth(40)
     cooldown.frame:SetHeight(40)
 
     -- Create element to display the ability icon
-    cooldown.element = LibEKL.uiCreateFrame("nkTexture", "nkUI.cooldown.element." .. abilityId, cooldown.frame)
+    cooldown.element = LibEKL.UICreateFrame("nkTexture", "nkUI.cooldown.element." .. abilityId, cooldown.frame)
     cooldown.element:SetPoint("CENTER", cooldown.frame, "CENTER")
     cooldown.element:SetWidth(40)
     cooldown.element:SetHeight(40)
     cooldown.element:SetLayer(1)
 
     -- Create progress bar for the cooldown
-    cooldown.bar = LibEKL.uiCreateFrame("nkFrame", "nkUI.cooldown.bar." .. abilityId, cooldown.frame)
+    cooldown.bar = LibEKL.UICreateFrame("nkFrame", "nkUI.cooldown.bar." .. abilityId, cooldown.frame)
     cooldown.bar:SetWidth(100)
     cooldown.bar:SetHeight(5)
     cooldown.bar:SetPoint("TOPLEFT", cooldown.frame, "BOTTOMLEFT", 0, 0)
@@ -50,7 +50,7 @@ local function createCooldownElement(abilityId)
     cooldown.bar:SetLayer(2)
 
     -- Create timer text for the cooldown
-    cooldown.timer = LibEKL.uiCreateFrame("nkText", "nkUI.cooldown.timer." .. abilityId, cooldown.frame)
+    cooldown.timer = LibEKL.UICreateFrame("nkText", "nkUI.cooldown.timer." .. abilityId, cooldown.frame)
     cooldown.timer:SetPoint("CENTER", cooldown.frame, "CENTER", 0, 0)
     cooldown.timer:SetFontSize(16)
     cooldown.timer:SetTextFont(addonInfo.id, "MontserratSemiBold")

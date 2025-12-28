@@ -17,16 +17,16 @@ local stringFormat  = string.format
 function oneBag.createItemIcon(name, parent)
     local thisItemID, thisSlot
     
-    local itemFrame = LibEKL.uiCreateFrame("nKFrame", name, parent)
+    local itemFrame = LibEKL.UICreateFrame("nKFrame", name, parent)
     itemFrame:SetWidth(40 * data.uiScale)
     itemFrame:SetHeight(40 * data.uiScale)
     
-    local itemIcon = LibEKL.uiCreateFrame("nkTexture", name .. ".icon", itemFrame)
+    local itemIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 1, 1)
     itemIcon:SetPoint("BOTTOMRIGHT", itemFrame, "BOTTOMRIGHT", -1, -1)
     itemIcon:SetLayer(1)
     
-    local quantityText = LibEKL.uiCreateFrame("nkText", name .. ".quantityText", itemFrame)
+    local quantityText = LibEKL.UICreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
     quantityText:SetFontSize(14 * data.uiScale)
     quantityText:SetFontColor(1, 1, 1, 1)
@@ -34,7 +34,7 @@ function oneBag.createItemIcon(name, parent)
     quantityText:SetEffectGlow({ strength = 3})
     quantityText:SetLayer(2)
     
-    local bindText = LibEKL.uiCreateFrame("nkText", name .. ".bindText", itemFrame)
+    local bindText = LibEKL.UICreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
     bindText:SetFontSize(10 * data.uiScale)
     bindText:SetFontColor(1, 1, 1, 1)

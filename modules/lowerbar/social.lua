@@ -23,14 +23,14 @@ function lowerBar.social()
     local lastGuildUpdate
     local _friendlist, _guildList = {}, {}
     
-    local datasetSocial = LibEKL.uiCreateFrame("nkText", "lowerBar.datasetsocial", lowerBar.contextRestricted)
+    local datasetSocial = LibEKL.UICreateFrame("nkText", "lowerBar.datasetsocial", lowerBar.contextRestricted)
     datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 31, -5)
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")
     datasetSocial:SetEffectGlow({ strength = 1})
 
-    local datasetSocialIcon = LibEKL.uiCreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
+    local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
     datasetSocialIcon:SetPoint("CENTERRIGHT", datasetSocial, "CENTERLEFT", -5, 0)
     datasetSocialIcon:SetHeight(16)
     datasetSocialIcon:SetWidth(16)
