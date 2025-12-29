@@ -23,7 +23,7 @@ local function uiItemTooltip ()
     local tooltip = LibEKL.UICreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
     tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "BOTTOMLEFT", 5, 5)
     tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 55)
-
+    
     local stroke = {r = .6, g = .6, b = .6, a = .8, thickness = 1 }
     local path =  {  {xProportional = 0, yProportional = 0},
                   {xProportional = 1, yProportional = 0},
@@ -52,6 +52,7 @@ local function uiItemTooltip ()
     LibEKL.UI.SetFont(countText, addonInfo.id, "MontserratSemiBold")
 
     function tooltip:SetItem(itemID)
+
         local flag, details = pcall(inspectItemDetail, itemID)        
         local qty = 0
 

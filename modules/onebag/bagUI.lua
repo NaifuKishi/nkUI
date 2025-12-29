@@ -46,9 +46,9 @@ function oneBag.createBagUI()
         Command.Cursor(nil)
     end, "nkUI.bagWindow.Event.Left.Up")
 
-    bagWindow:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
-        oneBag.hideItemTooltip()
-    end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
+    --bagWindow:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
+    --    oneBag.hideItemTooltip()
+    --end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
 
 
     local currencyText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.currencyText", bagWindow)
