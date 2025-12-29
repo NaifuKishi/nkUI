@@ -24,8 +24,6 @@ local stringFind            = string.find
 
 ---------- init global variables ---------
 
-local EFFECT_GLOSS = { alpha = 0.6, texturePath = 'gfx/iconDesignGloss.png', replaceBorder = false }
-
 -- Buff management function
 
 local function processIconTimers (icons)
@@ -289,9 +287,11 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
             --local icon = internalFunc.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
             local icon = internalFunc.iconManager.get(unitType, iconName)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
-            
-            icons[buffIdentifier].icon:SetEffect(EFFECT_GLOSS)
-            icons[buffIdentifier].icon:ShowBorder(true)
+            if unitType == "buffbar" then
+                icons[buffIdentifier].icon:ShowBorder(true)
+            else
+                icons[buffIdentifier].icon:ShowBorder(false)
+            end
             icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
             icons[buffIdentifier].icon:SetTexture("Rift", buffDetails.icon)
             icons[buffIdentifier].icon:SetParent(parent)

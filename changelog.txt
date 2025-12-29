@@ -1,5 +1,6 @@
 V0.9.2
     - new: One Bag - Free bag slots and currency is shown in header of bag
+    - fixes: One Bag - Fixed tooltip qty display
     - fixes: Unit Frames - Buffs on player pet got their timers back
     - fixes: Lower Bar - Fixed layering issue with level display
 
@@ -15,7 +16,7 @@ V0.9.0
     - updates: Lower Bar - added level text to Experience dataset
     - updates: Lower Bar - added CPU Usage to FPS counter
     - updates: Lower Bar - Some minor tweaks to improve visibility
-    - updates: Changed Libs to LibEKL and LibQB (Smaller footprint)
+    - updates: Changed Libs to LibEKL and LibQB (Smaller footprint)<
     - updates: Huge refactoring of code
     - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
     - fixes: LowerBar - Fixed role change error

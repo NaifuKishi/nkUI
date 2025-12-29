@@ -93,7 +93,7 @@ local function uiItemTooltip ()
             valueText:SetText("No price information")
         end
         
-        if qty == 0 then countText:SetText(stringFormat("Quantity you own: %d", qty)) end
+        if qty > 0 then countText:SetText(stringFormat("You own: %d", qty)) end
     end
 
     return tooltip
@@ -108,7 +108,6 @@ function oneBag.showItemTooltip (thisItemID)
 
     uiElements.oneBagItemTooltip:SetItem(thisItemID)
     uiElements.oneBagItemTooltip:SetVisible(true)
-
 
 end
 

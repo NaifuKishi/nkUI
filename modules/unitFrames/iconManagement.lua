@@ -31,44 +31,6 @@ local iconManager = {
     iconPool = {}
 }
 
---[[
-   _iconManager.get
-    Description:
-        Retrieves or creates an icon for a specific unit type. This function manages a pool of reusable icons to optimize performance.
-    Parameters:
-        unitType (string): The type of unit (e.g., "player", "target", "player.pet")
-        iconType (string): The type of icon (e.g., "buff", "debuff")
-        scale (number): The scaling factor for the icon size
-        x (number): The x-coordinate position for the icon
-        y (number): The y-coordinate position for the icon
-    Returns:
-        icon (table): The configured icon with all child elements and functionality
-    Process:
-        1. Checks if an icon already exists for the specified unit type and icon type
-        2. If not, checks the icon pool for available icons to reuse
-        3. If no reusable icons are available, creates a new icon
-        4. Configures the icon with the specified parameters
-        5. Sets up the icon's visual elements (texture, border, etc.)
-        6. Implements icon-specific functionality (timer, visibility, etc.)
-        7. Adds the icon to the active icons collection
-    Notes:
-        - The function maintains a pool of reusable icons to optimize performance
-        - Icons are created with secure and non-secure components for proper UI functionality
-        - The icon includes various visual elements like texture, border, and timer
-        - Timer functionality is implemented for tracking buff and debuff durations
-        - The icon supports visibility control and positioning
-        - Each icon is uniquely identified and can be accessed by unit type and icon type
-    Available Methods:
-        - SetTexture(textureType, texturePath): Sets the texture for the icon
-        - SetBorderColor(r, g, b, a): Sets the border color of the icon
-        - SetTimer(duration): Sets the timer for the icon
-        - SetVisible(visible): Sets the visibility of the icon
-        - ClearAll(): Clears all points and anchors for the icon
-        - SetPoint(from, object, to, x, y): Sets the position of the icon
-        - SetScale(scale): Sets the scale of the icon
-        - ShowBorder(show): Shows or hides the border of the icon
-        - SetEffect(effect): Sets the effect for the icon
-]]
 function iconManager.get(unitType, iconType)
 
     -- Check if icon already exists

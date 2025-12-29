@@ -26,13 +26,10 @@ function uiElements.icon (name, parent)
 	
 	local border = LibEKL.UICreateFrame('nkFrame', name .. '.border', icon)
 	local texture = LibEKL.UICreateFrame('nkTexture', name .. '.texture', icon)
-	local effect = LibEKL.UICreateFrame('nkTexture', name .. '.effect', icon)
 	
 	local timer = LibEKL.UICreateFrame('nkText', name ..'.timer', icon)
 	local stack = LibEKL.UICreateFrame('nkText', name ..'.stack', icon)
-	
-	local label = LibEKL.UICreateFrame('nkText', name .. 'label', icon)
-	
+		
 	local properties = {}
 	local tooltipIcon = nil
 	local lastTimer = nil
@@ -56,9 +53,7 @@ function uiElements.icon (name, parent)
 	
 	local timerFontSize = 18
 	local stackFontSize = 16
-	local labelFontSize = 16
 	local showBorder = true
-	local activeEffect = 'none'
 	local scale = 1
 	local thisBuffId
 	local thisName, thisDescription
@@ -91,23 +86,8 @@ function uiElements.icon (name, parent)
 	stack:SetEffectGlow({strength = 3})
 	stack:SetPoint("TOPLEFT", icon, "TOPLEFT", 1, -1)
 		
-	label:SetPoint("TOPCENTER", border, "BOTTOMCENTER")
-	label:SetFontColor (1, 1, 1, 1)
-	label:SetTextFont(addonInfo.id, "Montserrat")
-	label:SetFontSize(labelFontSize)
-	label:SetHeight(labelFontSize+4)
-	label:SetEffectGlow({strength = 3})
-	
-	effect:SetLayer(3)
-	effect:SetVisible(false)
-	
 	function icon:SetTexture(textureType, texturePath)
 		texture:SetTextureAsync(textureType, texturePath)
-	end
-	
-	function icon:SetLabel(text)
-		label:ClearWidth()
-		label:SetText(text)
 	end
 	
 	function icon:SetStack(text)
@@ -119,11 +99,7 @@ function uiElements.icon (name, parent)
 			lastStack = text
 		end
 	end
-	
-	function icon:ShowLabel(flag)
-		label:SetVisible(flag)
-	end
-	
+		
 	function icon:ShowTimer(flag)
 		timer:SetVisible(flag)
 	end
@@ -136,21 +112,14 @@ function uiElements.icon (name, parent)
 	
 		showBorder = flag
 		
-		effect:ClearAll()
 		texture:ClearAll()
 	
 		if flag == true then
-			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
-			
-			effect:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-			effect:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
+			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 3, 3)
+			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -3, -3)
 		else
 			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 0, 0)
 			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", 0, 0)
-			
-			effect:SetPoint("TOPLEFT", border, "TOPLEFT", 0, 0)
-			effect:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", 0, 0)
 		end
 	end
 	
@@ -165,11 +134,6 @@ function uiElements.icon (name, parent)
 			icon:SetHeight(newSetup.height)
 			border:SetHeight(newSetup.height)
 		end
-
-		if lastSetup.label ~= newSetup.label then		
-			label:SetFontSize(newSetup.label)
-			label:SetHeight(newSetup.label + 4)
-		end
 		
 		if lastSetup.timer ~= newSetup.timer then		
 			timer:SetFontSize(newSetup.timer)
@@ -182,11 +146,7 @@ function uiElements.icon (name, parent)
 
 		lastSetup = newSetup
 	end
-	
-	function icon:SetLabelColor(r, g, b, a)
-		label:SetFontColor(r, g, b, a)
-	end
-	
+		
 	function icon:SetTimer (newTimer)
 		if newTimer then
 
@@ -255,56 +215,7 @@ function uiElements.icon (name, parent)
 	function icon:SetBorderColor(r, g, b, a)
 		border:SetBackgroundColor(r, g, b, a)
 	end
-	
-	function icon:SetEffect(newEffect)
-		activeEffect = newEffect
-	
-		if newEffect == nil then
-			effect:SetVisible(false)
-			return
-		end
-	
-		effect:SetTextureAsync("nkUI", newEffect.texturePath)
-		effect:SetAlpha(newEffect.alpha)
 		
-		effect:ClearAll()
-		texture:ClearAll()
-		
-		if newEffect.replaceBorder == false and showBorder == true then
-			effect:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-			effect:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
-			
-			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
-			
-			border:SetVisible(true)
-		else
-			effect:SetPoint("TOPLEFT", border, "TOPLEFT")
-			effect:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT")
-			
-			if newEffect.border == nil then
-				texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-				texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)				
-			else
-				texture:SetPoint("CENTER", border, "CENTER")			
-				local width, height = icon:GetWidth(), icon:GetHeight()
-			
-				if newEffect.border ~= nil then
-					width = mathFloor(width - (newEffect.border * 2 * (50 / width)))
-					height = mathFloor(height - (newEffect.border * 2 * (50 / height)))
-					
-				end
-				
-				texture:SetWidth(width)
-				texture:SetHeight(height)
-			end			
-			
-			border:SetVisible(false)
-		end
-		
-		effect:SetVisible(true)
-		
-	end
 	
 	function icon:Recycle()
 		icon:SetVisible(false)

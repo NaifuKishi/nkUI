@@ -66,14 +66,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	-- Create the texture for the icon
 	texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
-	texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+	texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
 	texture:SetMouseMasking("limited")
 	texture:SetVisible(false)
 	texture:SetLayer(1)
 
 	-- Create the tint canvas
 	tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
-	tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+	tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
 	tint:SetVisible(false)
 	tint:SetLayer(2)
 	
@@ -432,15 +432,15 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		frame:SetHeight(newSize)
 		frame:SetShape(path, thisFill, thisStroke)
 
-        texture:SetWidth(newSize-2)
-        texture:SetHeight(newSize-2)
-		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+        texture:SetWidth(newSize-4)
+        texture:SetHeight(newSize-4)
+		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
 		
 		thisStroke.r, thisStroke.g, thisStroke.b, thisStroke.a = thisFill.r, thisFill.g, thisFill.b, 1
 		
-		tint:SetWidth(newSize-2)
-        tint:SetHeight(newSize-2)				
-		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+		tint:SetWidth(newSize-4)
+        tint:SetHeight(newSize-4)				
+		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
 	end
 	
 	--[[
