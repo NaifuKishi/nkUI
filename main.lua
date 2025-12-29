@@ -21,6 +21,9 @@ local internalFunc  = privateVars.internalFunc
 local events     	= privateVars.events
 
 -- Cache frequently used functions and values
+
+local inspectTimeFrame	= Inspect.Time.Frame
+
 local stringFind	= string.find
 local mathpi		= math.pi
 
@@ -270,7 +273,9 @@ local function initializeAddon(_, addon)
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
-			if nkUISetup.showLogo then animateLogo () end
+			if nkUISetup.showLogo then 
+				LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame(), 5)
+			end
 
 		end, "nkUI.Unit.Availability.Full")
 		
