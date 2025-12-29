@@ -85,7 +85,7 @@ uiElements.contextTooltip:SetLayer(99)
 
 local function animateLogo ()
 
-	local logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextLowest)
+	local logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextTooltip )
 	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	logo:SetWidth(256)
 	logo:SetHeight(162)
@@ -110,8 +110,8 @@ local function animateLogo ()
 		end
 	)
 
-	LibEKL.coroutines.add ({ func = animateShow, counter = 100, active = true, callBack = function ()
-		LibEKL.coroutines.add ({ func = animateHide, counter = 100, active = true, callBack = function ()
+	LibEKL.Coroutines.Add ({ func = animateShow, counter = 100, active = true, callBack = function ()
+		LibEKL.Coroutines.Add ({ func = animateHide, counter = 100, active = true, callBack = function ()
 			logo:destroy()
 		end})
 	end})	
@@ -214,7 +214,7 @@ local function initializeAddon(_, addon)
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
-			--animateLogo ()
+			animateLogo ()
 
 		end, "nkUI.Unit.Availability.Full")
 		

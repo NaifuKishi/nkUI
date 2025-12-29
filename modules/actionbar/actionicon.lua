@@ -463,7 +463,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		texture:destroy()
 		tint:destroy()
 		cooldown:destroy()
-		LibEKL.UIAddToGarbageCollector ('nkFrame', frame, name)
+		internalFunc.uiAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
 	--[[
