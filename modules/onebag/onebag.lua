@@ -55,7 +55,6 @@ function internalFunc.oneBagInit()
     if uiElements.oneBag then
         if uiElements.oneBag:GetVisible() then
             uiElements.oneBag:SetVisible(false)
-            --uiElements.oneBag:SetVisible(false)
             oneBag.hideItemTooltip()
         else
             uiElements.oneBag:SetVisible(true)
@@ -283,6 +282,8 @@ function oneBag.itemSlot (_, slots)
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", "", slots) end
 
+    if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
+
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
 
@@ -311,6 +312,8 @@ end
 function oneBag.itemUpdate (_, slots)
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemUpdate", "", slots) end
+
+    if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
     
     local doInventoryUpdate = false
     local doBatSlotsUpdate = false
@@ -333,6 +336,6 @@ function oneBag.itemUpdate (_, slots)
         oneBag.populateBag(true) 
     end
 
-    if doBatSlotsUpdate then  oneBag.getBagSlots() end
+    if doBatSlotsUpdate then oneBag.getBagSlots() end
 
 end

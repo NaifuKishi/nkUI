@@ -46,6 +46,17 @@ function oneBag.createBagUI()
     bagWindow:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
         oneBag.hideItemTooltip()
     end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
+
+    local oSetVisible = bagWindow.SetVisible
+    function bagWindow:SetVisible(visible)
+        if visible then
+            LibEKL.Inventory.updateDB()
+            oneBag.populateBag(true) 
+            oneBag.getBagSlots()
+        end
+
+        oSetVisible(self, visible)
+    end
     
     return bagWindow
 end

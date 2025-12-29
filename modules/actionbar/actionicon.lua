@@ -84,15 +84,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	cooldown:SetPoint("CENTER", texture, "CENTER")
 	cooldown:SetFontColor (1, 1, 1, 1)
 	cooldown:SetEffectGlow({ strength = 3 })
-	cooldown:SetLayer(3)
-	
-	--[[
-      Function to show/hide cooldown
-      @param {boolean} flag - Whether to show the cooldown
-    ]]
-	function frame:ShowCooldown(flag) 
-		cooldown:SetVisible(flag) 
-	end
+	cooldown:SetLayer(99)
 
 	function frame:SetTint(state)
 
@@ -135,7 +127,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 				--if inspectTimeFrame() - start > duration then return 9999 end
 
-				if checkRemaining ~= lastRemaining then					
+				if checkRemaining ~= lastRemaining then
+					lastRemaining = checkRemaining
 					cooldown:SetText(tostring(checkRemaining))
 				end
 
