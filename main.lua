@@ -283,8 +283,6 @@ local function initializeAddon(_, addon)
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
-
-		LibEKL.version.init(addonInfo.toc.Identifier, addonInfo.toc.Version)
 	end  
 end
 
