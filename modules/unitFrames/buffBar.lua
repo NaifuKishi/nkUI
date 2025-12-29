@@ -71,7 +71,8 @@ function internalFunc.buffBar.UpdateBuffDisplay()
         local remaining = debuffIcons[debuffID].remaining or 99999999
         table.insert(sortedDebuffs, {key = debuffID, remaining = remaining})
     end
-    table.sort(sortedDebuffs, function(a, b) return a.time > b.time end)
+    
+    table.sort(sortedDebuffs, function(a, b) return a.remaining > b.remaining end)
 
     x = 0
     for _, details in ipairs(sortedDebuffs) do
