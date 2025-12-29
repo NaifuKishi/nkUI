@@ -1,8 +1,9 @@
-V0.8.4
+V0.9.0
     - updates: Buff Bar - buffs and debuffs are now sorted by remaining time
     - updates: Unit Frames - buffs and debuffs are now sorted by remaining time
     - updates: Quest Tracker - Can now be moved by dragging the header
-    - updates: Changed Libs to LibEKL and LibQB
+    - updates: Changed Libs to LibEKL and LibQB (Smaller footprint)
+    - updates: Huge refactoring of code
     - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
     - fixes: LowerBar - Fixed role change error
     - fixes: One Bag - Tooltip addition should now hide more properly

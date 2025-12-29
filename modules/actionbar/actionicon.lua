@@ -29,8 +29,6 @@ local mathFloor					= math.floor
 -- Predefined constants
 local DEFAULT_SCALE = 1
 local DEFAULT_DESIGN = 'default'
-local EMPTY_FRAME_TEXTURE = "gfx/emptyFrame.png"
-local BLANK_TEXTURE = "gfx/equipslot_blank"
 
 --[[
   Main action icon function
@@ -46,21 +44,17 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local frame = LibEKL.UICreateFrame("nkCanvas", name, parent)
 	
 	-- Local variables for the icon components and state
-	local texture, oorTint, cooldownTint, cooldown, macroFrame, overlay
+	local texture, cooldown, macroFrame, tint
 	local thisItemKey, thisItemType, thisMacroIcon, thisMacroCDType, thisMacroCDKey
 
 	local cooldownActive = false
 	local interactive = false
-	local oor, usable = false, true
+	local isOOR, isUsable = false, true
 
 	local lastCooldown
 
 	-- Shape path for the icon	
-	local path = {{xProportional = 0.5, yProportional = 0}, 
-                  {xProportional = 1, yProportional = 0.5, xControlProportional = (61/64), yControlProportional = (3/64)},
-                  {xProportional = 0.5, yProportional = 1, xControlProportional = (61/64), yControlProportional = (61/64)},
-                  {xProportional = 0, yProportional = 0.5, xControlProportional = (3/64), yControlProportional = (61/64)},
-                  {xProportional = 0.5, yProportional = 0, xControlProportional = (3/64), yControlProportional = (3/64)}}
+	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
 	
 	-- Fill color for the icon
 	local fill = {type = 'solid', r = 0.078, g = 0.188, b = 0.306, a = 1}
@@ -68,57 +62,55 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	-- Set the shape and border of the frame
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 1 })
+		
 
 	-- Create the texture for the icon
 	texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
-	texture:SetPoint("CENTER", frame, "CENTER", 1, 1)
-	texture:SetLayer(1)
+	texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
 	texture:SetMouseMasking("limited")
-	
-	 -- Create the overlay for the icon
-	overlay = LibEKL.UICreateFrame("nkCanvas", name .. ".overlay", frame)
-	overlay:SetPoint("CENTER", frame, "CENTER", 1, 1)
-	overlay:SetShape(path, nil, {r = 0, g = 0, b = 0, a = 1, thickness = 5 })
-	overlay:SetLayer(2)
-    overlay:SetVisible(false)
-	
-	-- Create the out-of-range tint
-	oorTint = LibEKL.UICreateFrame("nkCanvas", name .. ".oorTint", frame)
-	oorTint:SetVisible(false)
-	oorTint:SetPoint("CENTER", overlay, "CENTER")
-	oorTint:SetLayer(4)
-	
-	-- Create the cooldown tint
-	cooldownTint = LibEKL.UICreateFrame("nkCanvas", name .. ".cooldownTint", frame)
-	cooldownTint:SetVisible(false)
-	cooldownTint:SetPoint("CENTER", overlay, "CENTER")
-	cooldownTint:SetLayer(5)
+	texture:SetVisible(false)
+	texture:SetLayer(1)
+
+	-- Create the tint canvas
+	tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
+	tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
+	tint:SetVisible(false)
+	tint:SetLayer(2)
 	
 	-- Create the cooldown text
 	cooldown = LibEKL.UICreateFrame("nkText", name .. '.cooldown', frame)
 	cooldown:SetVisible(false)
 	cooldown:SetFontSize(18)
-	cooldown:SetPoint("CENTER", frame, "CENTER")
+	cooldown:SetPoint("CENTER", texture, "CENTER")
 	cooldown:SetFontColor (1, 1, 1, 1)
-	--cooldown:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
 	cooldown:SetEffectGlow({ strength = 3 })
-	cooldown:SetLayer(6)
+	cooldown:SetLayer(3)
 	
 	--[[
       Function to show/hide cooldown
       @param {boolean} flag - Whether to show the cooldown
     ]]
-	function frame:ShowCooldown(flag) cooldown:SetVisible(flag) end
-	
-	--[[
-      Function to make the icon flicker
-      This could be improved for better visual feedback
-    ]]
-	function frame:Flicker()
-		cooldownTint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
-		cooldownTint:SetVisible(true)		
+	function frame:ShowCooldown(flag) 
+		cooldown:SetVisible(flag) 
 	end
 
+	function frame:SetTint(state)
+
+		if state == "cooldown" then
+			tint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
+		elseif state == "oor" then 
+			tint:SetShape(path, {type = 'solid', r = 1, g = 0, b = 0, a = .6}, nil)
+		elseif state == "unusable" and not isOOR then
+			tint:SetShape(path, {type = 'solid', r = 0, g = 0, b = 0, a = .8}, nil)
+		end
+
+		if state then
+			tint:SetVisible(true)
+		else
+			tint:SetVisible(false)
+		end
+	end
+	
 	--[[
       Function to set GCD (Global Cooldown)
       @param {number} duration - The duration of the GCD
@@ -137,7 +129,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 				if checkRemaining <= 0 then 
 					cooldown:SetVisible(false)
-					cooldownTint:SetVisible(false)					
+					frame:SetTint()
 					return 9999 
 				end
 
@@ -153,7 +145,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 		cooldownActive = true		
 		cooldown:SetVisible(true)
-		cooldownTint:SetVisible(true)
+		frame:SetTint("cooldown")
 		cooldown:SetText(tostring(mathFloor(duration * 10) / 10))
 
 		LibEKL.Coroutines.Add ({ func = gcdCoRoutine, counter = 999, active = true })
@@ -167,15 +159,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 		if timer == nil then
 			cooldown:SetVisible(false)
-			cooldownTint:SetVisible(false)
-			cooldownTint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
+			frame:SetTint()
 			cooldown:SetFontColor (1, 1, 1, 1)
 			cooldownActive = false
 		else
 			if cooldownActive == false then
 				cooldownActive = true		
 				cooldown:SetVisible(true)
-				cooldownTint:SetVisible(true)
+				frame:SetTint("cooldown")
 			end
 
 			if type(timer) == 'number' and tonumber(timer) < 10 then
@@ -194,14 +185,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:SetOOR (flag)
 	
-		oor = flag
+		isOOR = flag
 	
 		if flag == true then
-			oorTint:SetVisible(true)
-			oorTint:SetShape(path, {type = 'solid', r = 1, g = 0, b = 0, a = .6}, nil)
+			tint:SetVisible(true)
+			frame:SetTint("oor")
 		else
-			if usable then
-				oorTint:SetVisible(false)
+			if isUsable then
+				frame:SetTint()
 			else
 				frame:SetUsable(false)
 			end
@@ -214,17 +205,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:SetUsable (flag)
 	
-		usable = flag
+		isUsable = flag
 	
 		if flag == true then
-			if oor then
-				frame:SetOOR(true)
-			else
-				oorTint:SetVisible(false)
+			if not isOOR then
+				frame:SetTint()
 			end
 		else
-			oorTint:SetVisible(true)
-			oorTint:SetShape(path, {type = 'solid', r = 0, g = 0, b = 0, a = .8}, nil)
+			frame:SetTint("unusable")
 		end
 	end
 	
@@ -277,16 +265,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
 
-		frame:SetOOR(false)
-		frame:SetUsable(true)
-		frame:SetCooldown(nil)
+		--tint:SetVisible(false)
 
 		if macroFrame then
 			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)
 		end
 
-        texture:SetTextureAsync("nkUI", EMPTY_FRAME_TEXTURE)
-		
+        texture:SetVisible(false)
 	end
 	
 	function frame:CheckState()
@@ -356,9 +341,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 			
 		if err and thisDetails ~= nil and thisDetails.icon ~= nil then
-			texture:SetTextureAsync("Rift", thisDetails.icon)  
+			texture:SetTextureAsync("Rift", thisDetails.icon)
+			texture:SetVisible(true)
 		else
-			texture:SetTextureAsync("nkUI", BLANK_TEXTURE)
+			texture:SetVisible(false)
 		end
 
 		if interactive then
@@ -446,32 +432,22 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				
 		thisStroke.r, thisStroke.g, thisStroke.b = mainColor.r, mainColor.g, mainColor.b
 		thisStroke.a = 0.6
+
+		local newSize = (setup[3] * thisScale) 
 		
-		frame:SetWidth((setup[3] * thisScale))
-		frame:SetHeight((setup[3] * thisScale))
+		frame:SetWidth(newSize)
+		frame:SetHeight(newSize)
 		frame:SetShape(path, thisFill, thisStroke)
 
-        local thisSize = frame:GetWidth() -2
-
-        texture:SetWidth(thisSize)
-        texture:SetHeight(thisSize)
+        texture:SetWidth(newSize-2)
+        texture:SetHeight(newSize-2)
+		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
 		
 		thisStroke.r, thisStroke.g, thisStroke.b, thisStroke.a = thisFill.r, thisFill.g, thisFill.b, 1
 		
-		overlay:SetWidth(thisSize)
-        overlay:SetHeight(thisSize)
-		overlay:SetShape(path, nil, thisStroke)
-		
-		oorTint:SetShape(path, {type = 'solid', r = 1, g = 0, b = 0, a = .6}, nil)
-        oorTint:SetWidth(thisSize)
-        oorTint:SetHeight(thisSize)
-
-		cooldownTint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
-        cooldownTint:SetWidth(thisSize)
-        cooldownTint:SetHeight(thisSize)
-		
-		overlay:SetVisible(setup[7])	
-				
+		tint:SetWidth(newSize-2)
+        tint:SetHeight(newSize-2)				
+		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, 2)
 	end
 	
 	--[[
@@ -492,6 +468,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 		
 		texture:destroy()
+		tint:destroy()
+		cooldown:destroy()
 		LibEKL.UIAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
