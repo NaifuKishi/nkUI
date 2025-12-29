@@ -9,6 +9,7 @@ local lowerBar      = privateVars.lowerBar
 ---------- init local variables ---------
 
 local inspectTimeFrame = Inspect.Time.Frame
+local inspectAddonCpu  = Inspect.Addon.Cpu
 
 local stringFormat      = string.format
 
@@ -40,17 +41,25 @@ function lowerBar.fps()
     local function updateFPS()
         local now = inspectTimeFrame()
         local lastFrame = fpsUpdateTime or now
+        local total = 0
         
         fpsDeltaTime = now - lastFrame
         fpsTimer = fpsTimer + fpsDeltaTime
         frameCount = frameCount + 1
-        
-        if (fpsTimer > 1) then
-            datasetFPS:SetText(stringFormat("%d fps", frameCount / fpsTimer))
-            frameCount, fpsTimer = 0, 0
+
+        for k, v in pairs(inspectAddonCpu()) do
+            for det, usage in pairs(v) do
+                total = total + usage
+            end
         end
         
+        if (fpsTimer > 1) then
+            datasetFPS:SetText(stringFormat("%d fps | %d%% CPU", frameCount / fpsTimer, total * 100))
+            frameCount, fpsTimer = 0, 0
+        end
+
         fpsUpdateTime = now
+        
     end
     
     Command.Event.Attach(Event.System.Update.Begin, updateFPS, "nkUI.lowerbar.fps.System.Update.Begin")

@@ -2,13 +2,14 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
 local lowerBar      = privateVars.lowerBar
 
 ---------- init local variables ---------
 
 local inspectExperience = Inspect.Experience
+
 local stringFormat      = string.format
 
 ---------- local functions ---------
@@ -33,6 +34,13 @@ function lowerBar.experience()
     datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
     datasetExp:SetTextFont(addonInfo.id, "MontserratSemiBold")
     datasetExp:SetEffectGlow({ strength = 1})
+
+    local datasetExpLabel = LibEKL.UICreateFrame('nkText', "lowerBar.experienceLabel", datasetExpBarBG)
+    datasetExpLabel:SetPoint("CENTER", datasetExpBarBG, "CENTER")
+    datasetExpLabel:SetFontSize(nkUISetup.modules.lowerBar.barText)
+    datasetExpLabel:SetFontColor(0, 0, 0, 1)
+    datasetExpLabel:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    datasetExpLabel:SetEffectGlow({ strength = 1, colorR = 1, colorG = 1, colorB = 1})
 
     local datasetExpBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.experienceFrameBG.icon", datasetExpBarBG)
     datasetExpBarBGIcon:SetPoint("CENTERRIGHT", datasetExpBarBG, "CENTERLEFT", -5, 0)
@@ -65,6 +73,8 @@ function lowerBar.experience()
         end
         
         datasetExpBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))
+        datasetExpLabel:SetText(stringFormat("Level %d", LibEKL.Unit.GetPlayerDetails().level))
+
     end
     
     Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
