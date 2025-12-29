@@ -88,14 +88,63 @@ local function animateLogo ()
 	local logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextTooltip )
 	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	logo:SetWidth(256)
-	logo:SetHeight(162)
+	logo:SetHeight(253)
 	logo:SetAlpha(0)
 	logo:SetTextureAsync("nkUI", "gfx/nkUILogo.png")
+
+	local canvas = LibEKL.UICreateFrame("nkCanvas", "nkUILogo.line", logo)
+	canvas:SetPoint("TOPCENTER", logo, "BOTTOMCENTER", 0, -15) -- Position below the logo
+	canvas:SetWidth(300)
+	canvas:SetHeight(10)
+	
+	local text = LibEKL.UICreateFrame("nkText", "nkUILogo.text", logo)
+	text:SetPoint("TOPCENTER", canvas, "BOTTOMCENTER", 0, 5)
+	text:SetFontSize(20)
+	text:SetFontColor(1, 1, 1, 1)
+	text:SetEffectGlow({strength = 3})
+	text:SetText("A modern style UI compilation for RIFT")
+
+	LibEKL.UI.SetFont(text, addonInfo.id, "MontserratBold")
+	
+	local fillParams = {
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0),
+		color = {
+			{ r = 1, g = 0.8078, b = 0, a = 1, position = 0 },  -- ffce00 at start
+			{ r = 1, g = 0.8078, b = 0, a = 1, position = 1 }   -- ffce00 at end
+		}
+	}
+	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
+	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 3 }
+	canvas:SetShape(path, fillParams, stroke)
 
 	local animateShow = coroutine.create(
 		function ()
 			for idx = 1, 100, 1 do
 				logo:SetAlpha(idx / 100)
+				canvas:SetAlpha(idx / 100)
+				text:SetAlpha(idx / 100)
+				coroutine.yield(idx)
+			end
+		end
+	)
+
+	local animateShine = coroutine.create(
+		function ()
+			for idx = 1, 100, 1 do
+				local progress = idx / 100
+				
+				local fillParams = {
+					type = "gradientLinear",
+					transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0),
+					color = {
+						{ r = 1, g = 0.8078, b = 0, a = 1, position = 0 },  -- ffce00 at start
+						{ r = 1, g = 1, b = 1, a = 1, position = progress },  -- White at progress position
+						{ r = 1, g = 0.8078, b = 0, a = 1, position = 1 }   -- ffce00 at end
+					}
+				}
+
+				canvas:SetShape(path, fillParams, stroke)
 				coroutine.yield(idx)
 			end
 		end
@@ -105,16 +154,21 @@ local function animateLogo ()
 		function ()
 			for idx = 1, 100, 1 do
 				logo:SetAlpha((100 - idx) / 100)
+				canvas:SetAlpha((100 - idx) / 100)
+				text:SetAlpha((100 - idx) / 100)
 				coroutine.yield(idx)
 			end
 		end
 	)
 
 	LibEKL.Coroutines.Add ({ func = animateShow, counter = 100, active = true, callBack = function ()
-		LibEKL.Coroutines.Add ({ func = animateHide, counter = 100, active = true, callBack = function ()
-			logo:destroy()
+		LibEKL.Coroutines.Add ({ func = animateShine, counter = 100, active = true, callBack = function ()
+			LibEKL.Coroutines.Add ({ func = animateHide, counter = 100, active = true, callBack = function ()
+				--logo:destroy()1
+				--canvas:destroy()
+			end})
 		end})
-	end})	
+	end})
 
 end
 
@@ -179,7 +233,9 @@ local function initializeAddon(_, addon)
 
 				if nkUISetup.modules.unitFrames and nkUISetup.modules.unitFrames.activate then
 					internalFunc.uiFrames()
-				end
+				end	
+	LibEKL.eventHandlers["LibEKL.InventoryManager"]["Update"], LibEKL.Events["LibEKL.InventoryManager"]["Update"] = Utility.Event.Create(addonInfo.identifier, "LibEKL.InventoryManagerUpdate")
+
 
 				if nkUISetup.modules.actionBars and nkUISetup.modules.actionBars.activate then
 					internalFunc.uiActionBars()
@@ -214,7 +270,7 @@ local function initializeAddon(_, addon)
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
-			animateLogo ()
+			if nkUISetup.showLogo then animateLogo () end
 
 		end, "nkUI.Unit.Availability.Full")
 		

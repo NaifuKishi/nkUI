@@ -128,7 +128,8 @@ local _defaults = {
         sct         = { activate = true,
                         messageOffset = -200 },
         tooltip     = { activate = true }
-    }
+    },
+    showLogo = true
 }
 
 local function scaleUI ()

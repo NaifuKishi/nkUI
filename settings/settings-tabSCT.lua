@@ -26,7 +26,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
         activateCheckbox:SetChecked(nkUISetup.modules.sct.activate, true)
 
-        local moduleActive = nkUISetup.modules.sct.activate
+        --local moduleActive = nkUISetup.modules.sct.activate
 
         --[[positionHeader = settingsUI.header ( name .. ".positionHeader", frame, "Vertical offsets")
         positionHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT" , 0, 15)
