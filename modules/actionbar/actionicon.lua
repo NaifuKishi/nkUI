@@ -61,8 +61,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local thisScale = 1
 	
 	-- Set the shape and border of the frame
-	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 1 })
-		
+	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 3 })
 
 	-- Create the texture for the icon
 	texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
@@ -425,6 +424,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				
 		thisStroke.r, thisStroke.g, thisStroke.b = mainColor.r, mainColor.g, mainColor.b
 		thisStroke.a = 0.6
+		thisStroke.thickness = 3
 
 		local newSize = (setup[3] * thisScale) 
 		
@@ -435,9 +435,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
         texture:SetWidth(newSize-4)
         texture:SetHeight(newSize-4)
 		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
-		
-		thisStroke.r, thisStroke.g, thisStroke.b, thisStroke.a = thisFill.r, thisFill.g, thisFill.b, 1
-		
+				
 		tint:SetWidth(newSize-4)
         tint:SetHeight(newSize-4)				
 		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
