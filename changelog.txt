@@ -4,6 +4,7 @@ V0.9.2
     - updates: Tweaked design of buff icons
     - updates: Tweaked design of action bar icons
     - updates: Removed version check from LibEKL
+    - fixes: One Bag - make sure to hide tooltip on bag close
     - fixes: One Bag - Fixed tooltip qty display
     - fixes: Unit Frames - Buffs on player pet got their timers back
     - fixes: Lower Bar - Fixed layering issue with level display

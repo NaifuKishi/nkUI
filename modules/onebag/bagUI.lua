@@ -130,6 +130,10 @@ function oneBag.createBagUI()
 
             setFreeBagSlots()
             updateCoin(_, {coin = true})
+        else
+            if uiElements.oneBagItemTooltip then
+                oneBag.hideItemTooltip ()
+            end
         end
 
         oSetVisible(self, visible)
