@@ -15,10 +15,6 @@ local mathpi        = math.pi
 
 uiElements.lowerBarModules = {}
 
-lowerBar.context = UI.CreateContext("nkUI.lowerbar")
-lowerBar.context:SetStrata('hud')
-lowerBar.context:SetLayer(2)
-
 lowerBar.contextRestricted = UI.CreateContext("nkUI.lowerbar.restricted")
 lowerBar.contextRestricted :SetStrata('hud')
 lowerBar.contextRestricted :SetSecureMode("restricted")
@@ -37,11 +33,11 @@ function lowerBar.build()
     -- Create a canvas behind the lower bar
 
     if not uiElements.lowerBarCanvas then
-        uiElements.lowerBarCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.context)
-        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -50)
-        uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
+        uiElements.lowerBarCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.contextRestricted)
+        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -60)
+        uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)        
 
-        local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
+        local stroke = {r = 1, g = 0, b = 0, a = 1, thickness = 1 }
 
         local path = {  {xProportional = 0, yProportional = 0},
                     {xProportional = 1, yProportional = 0},
@@ -53,11 +49,12 @@ function lowerBar.build()
         local fill = {  type = "gradientLinear", 
                         transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), 
                         color = {   { r = 0.678, g = 0.847, b = 0.902, a = 0, position = 0 },
-                                    { r = 0.678, g = 0.847, b = 0.902, a = .6, position = 1 }
+                                    { r = 0.678, g = 0.847, b = 0.902, a = 1, position = 1 }
                                 }
                     }
 
         uiElements.lowerBarCanvas:SetShape (path, fill, nil)
+        uiElements.lowerBarCanvas:SetVisible(true)
     end
 
     -- Load all modules

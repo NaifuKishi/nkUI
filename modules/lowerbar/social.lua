@@ -29,6 +29,7 @@ function lowerBar.social()
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "Montserrat")
     datasetSocial:SetEffectGlow({ strength = 1})
+    datasetSocial:SetLayer(10)
 
     local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
     datasetSocialIcon:SetPoint("CENTERRIGHT", datasetSocial, "CENTERLEFT", -5, 0)

@@ -24,6 +24,7 @@ function lowerBar.fps()
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetFPS:SetTextFont(addonInfo.id, "Montserrat")
     datasetFPS:SetEffectGlow({ strength = 1})
+    datasetFPS:SetLayer(10)
 
     local datasetFPSIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.fps.icon", datasetFPS)
     datasetFPSIcon:SetPoint("CENTERRIGHT", datasetFPS, "CENTERLEFT", -5, 0)

@@ -45,6 +45,7 @@ function lowerBar.faction()
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
+    datasetFactionBarBG:SetLayer(10)
     
     local datasetFactionBar = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrame", datasetFactionBarBG)
     datasetFactionBar:SetPoint("TOPLEFT", datasetFactionBarBG, "TOPLEFT")

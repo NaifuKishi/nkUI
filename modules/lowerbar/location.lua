@@ -29,6 +29,7 @@ function lowerBar.location()
     datasetLocation:SetTextFont(addonInfo.id, "Montserrat")
     datasetLocation:SetSecureMode('restricted')
     datasetLocation:SetEffectGlow({ strength = 1})
+    datasetLocation:SetLayer(10)
     
     function datasetLocation:Redraw()
         datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)

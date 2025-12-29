@@ -27,6 +27,7 @@ function lowerBar.lowerBarRoles()
     datasetRole:SetTextFont(addonInfo.id, "Montserrat")
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
+    datasetRole:SetLayer(10)
 
     local datasetRoleIcon = LibEKL.UICreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
     datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)

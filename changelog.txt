@@ -5,6 +5,7 @@ V0.9.0
     - updates: One Bag - ui will no longer be updated on bag events if bag is not displayed
     - updates: Lower Bar - added level text to Experience dataset
     - updates: Lower Bar - added CPU Usage to FPS counter
+    - updates: Lower Bar - Some minor tweaks to improve visibility
     - updates: Changed Libs to LibEKL and LibQB (Smaller footprint)
     - updates: Huge refactoring of code
     - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
