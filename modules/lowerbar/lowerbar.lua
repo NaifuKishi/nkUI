@@ -30,26 +30,30 @@ function lowerBar.build()
     data.aThird = halfWidth / 3
     data.aFourth = halfWidth / 4
 
+    local height = 80
+
     -- Create a canvas behind the lower bar
 
     if not uiElements.lowerBarCanvas then
         uiElements.lowerBarCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.contextRestricted)
-        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -60)
+        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -height)
         uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)        
 
         local stroke = {r = 1, g = 0, b = 0, a = 1, thickness = 1 }
 
         local path = {  {xProportional = 0, yProportional = 0},
-                    {xProportional = 1, yProportional = 0},
-                    {xProportional = 1, yProportional = 1},
-                    {xProportional = 0, yProportional = 1},
-                    {xProportional = 0, yProportional = 0}
-                    }
+                        {xProportional = 1, yProportional = 0},
+                        {xProportional = 1, yProportional = 1},
+                        {xProportional = 0, yProportional = 1},
+                        {xProportional = 0, yProportional = 0}}
+
+        local ratio = height / parentWidth
 
         local fill = {  type = "gradientLinear", 
-                        transform = Utility.Matrix.Create(2, 2, (mathpi / 2), 0, 0), 
-                        color = {   { r = 0.678, g = 0.847, b = 0.902, a = 0, position = 0 },
-                                    { r = 0.678, g = 0.847, b = 0.902, a = 1, position = 1 }
+                        transform = Utility.Matrix.Create(1, ratio, math.pi/2, 0, 0),
+                        color = {   { r = 0.1, g = 0.2, b = 0.4, a = 0.0, position = 0 },
+                                    { r = 0.1, g = 0.2, b = 0.4, a = 0.35, position = .5 },
+                                    { r = 0.1, g = 0.2, b = 0.4, a = 0.7, position = 1 }
                                 }
                     }
 
