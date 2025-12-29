@@ -13,10 +13,9 @@ local settingsUI = privateVars.settingsUI
 
 local stringFind = string.find
 
-local context = UI.CreateContext("nkUI.Settings")
-context:SetStrata('dialog')
-context:SetLayer(2)
-
+uiElements.settingsContext = UI.CreateContext("nkUI.Settings")
+uiElements.settingsContext:SetStrata('dialog')
+uiElements.settingsContext:SetLayer(10)
 
 ---------- init local variables ---------
 
@@ -334,7 +333,7 @@ function internalFunc.setupUI ()
     
     local name = "nkUI.config"
 
-    local config = LibEKL.UICreateFrame("nkWindow", name, context)
+    local config = LibEKL.UICreateFrame("nkWindow", name, uiElements.settingsContext)
     config:SetLayer(1)
     config:SetWidth(950)
     config:SetHeight(650)
@@ -354,6 +353,12 @@ function internalFunc.setupUI ()
             data.theme.windowEndColor
             }
     },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+
+    local nkUILogo = LibEKL.UICreateFrame("nkTexture", name .. ".logo", config)
+    nkUILogo:SetPoint("BOTTOMLEFT", config, "BOTTOMLEFT", 10, -10)
+    nkUILogo:SetWidth(90)
+    nkUILogo:SetHeight(89)
+    nkUILogo:SetTextureAsync("nkUI", "gfx/nkUILogo.png")
 
     local tabPane = LibEKL.UICreateFrame("nkTabPane", name .. ".tabPane", config:GetContent())
     tabPane:SetBorder(false)

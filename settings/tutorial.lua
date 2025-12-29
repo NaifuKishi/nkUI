@@ -19,13 +19,11 @@ local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local _events       = privateVars.events
 
+local stringFormat = string.format
+
 ---------- init local variables ---------
 
 local name = "tutorial"
-
-local context = UI.CreateContext("nkUI.Tutorial")
-context:SetStrata('dialog')
-context:SetLayer(2)
 
 ---------- init local function ---------
 
@@ -49,8 +47,8 @@ local function _createTutorialWindow()
     local name = "nkUI.tutorialWindow"
 
     -- Create the main tutorial window
-    local tutorialWindow = LibEKL.UICreateFrame("nkwindow", "nkUI.tutorialWindow", context)
-    tutorialWindow:SetLayer(99)
+    local tutorialWindow = LibEKL.UICreateFrame("nkwindow", "nkUI.tutorialWindow", uiElements.settingsContext)
+    tutorialWindow:SetLayer(2)
     tutorialWindow:SetTitle("nkUI Tutorial and setup")
     tutorialWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     tutorialWindow:SetWidth(600)
@@ -121,15 +119,14 @@ local function _createTutorialWindow()
     nextButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
     nextButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-
     -- Create tutorial steps
     local steps = {
         {
-            title = "Welcome to nkUI BETA 0.8.0",
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI. Please be aware that this is a work in progress and not all features are fully implemented yet.\n\nWhat's new:\n\n- New Quest Tracker module\n- Made ui movable\n- Redesigned settings\n- New One bag module",
-            image = "gfx/LibEKLLogo.png",
-            width = 300,
-            height = 79,
+            title = stringFormat("Welcome to nkUI BETA %s", addonInfo.toc.Version),
+            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI.",
+            image = "gfx/nkUILogo.png",
+            width = 200,
+            height = 197,
             position = "bottom",
         },
         {
