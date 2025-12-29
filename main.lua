@@ -218,7 +218,7 @@ local function initializeAddon(_, addon)
 
 		end, "nkUI.Unit.Availability.Full")
 		
-		LibEKL.managerV2.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+		LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

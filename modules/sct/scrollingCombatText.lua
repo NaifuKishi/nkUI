@@ -111,6 +111,8 @@ end
 -- @return The created text frame
 local function createTextFrame()
     local name = LibEKL.Tools.UUID()
+    local thisAddonID, thisFontName, thisFontSize, thisFontColor
+    local thisTextureSource, thisTexture
 
     local frame = LibEKL.UICreateFrame("nkText", name, context)
     frame:SetEffectGlow({ strength = 3 })
@@ -122,6 +124,40 @@ local function createTextFrame()
     icon:SetVisible(false)
     icon:SetWidth(24)
     icon:SetHeight(24)
+
+    local oSetTextFont = frame.SetTextFont
+    function frame:SetTextFont(addonID, fontName)
+        if addonID ~= thisAddonID or fontName ~= thisFontName then
+            oSetTextFont(self, addonID, fontName)
+            thisAddonID = addonID
+            thisFontName = fontName
+        end
+    end
+
+    local oSetFontSize = frame.SetFontSize
+    function frame:SetFontSize(fontSize)
+        if fontSize ~= thisFontSize then
+            oSetFontSize(self, fontSize)
+            thisFontSize = fontSize
+        end
+    end
+
+    local oSetFontColor = frame.SetFontColor
+    function frame:SetFontColor(r, g, b, a)
+        if not thisFontColor or r ~= thisFontColor or g ~= thisFontColor.g or b ~= thisFontColor.b or a ~= thisFontColor.a then
+            oSetFontColor(self, r, g, b, a)
+            thisFontColor = { r = r, g = g, b = b, a = a }
+        end
+    end
+
+    local oSetTextureAsync = frame.SetTextureAsync
+    function frame:SetTextureAsync(source, texture)
+        if source ~= thisTextureSource or texture ~= thisTexture then
+            oSetTextureAsync(self, source, texture)
+            thisTextureSource = source
+            thisTexture = texture
+        end
+    end
 
     -- Store the icon frame in the text frame for later access
     frame.icon = icon
@@ -151,6 +187,9 @@ end
 -- @param message The message to display
 -- @param duration How long to display the message
 function internalFunc.displayMessageAtTopCenter(message, duration)
+
+    local debugId = internalFunc.traceStart("sct.displayMessageAtTopCenter")
+
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -161,15 +200,19 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
 
     lastMessage = frame:GetName()
     messageY = messageY - 20
+    local coRoutineDebugID
 
     local start = InspectTimeFrame()
 
-    local animationCoroutine = coroutine.create(function()
+    local animationCoroutine = coroutine.create(function()      
         for idx = 1, duration * 100, 1 do
+            coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMessageAtTopCenter")
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
+                internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
                 return 9999
             end
+            internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
             coroutine.yield(idx)
         end
     end)
@@ -180,6 +223,7 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
             messageY = 0
         end
         releaseFrame(frame)
+        internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
     end
 
     LibEKL.Coroutines.Add({
@@ -188,39 +232,49 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
         counter = duration * 100,
         active = true
     })
+
+    internalFunc.traceEnd("sct.displayMessageAtTopCenter", debugId)
 end
 
 -- Displays a moving message on the screen
 -- @param message The message to display
 -- @param duration How long to display the message
 local function displayMovingMessage(message, duration)
+
+    local debugId = internalFunc.traceStart("sct.displayMovingMessage")
+
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
     frame:SetFontSize(28)
     frame:SetFontColor(0.678, 0.847, 0.902, 1)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     frame:SetVisible(true)
 
     local start = InspectTimeFrame()
     local startY = -200
     local endY = -400
+    local coRoutineDebugID
     
-    local animationCoroutine = coroutine.create(function()
+    local animationCoroutine = coroutine.create(function()        
+
         for idx = 1, duration * 100, 1 do
+            coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMovingMessage")
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
+                internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
                 return 9999
             end
             local t = elapsed / duration
             local currentY = startY + (endY - startY) * t
             frame:SetPoint("CENTER", UIParent, "CENTER", 0, currentY)
+            internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
             coroutine.yield(idx)
         end
     end)
 
     local callBack = function()
         releaseFrame(frame)
+        internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
     end
 
     LibEKL.Coroutines.Add({
@@ -229,6 +283,8 @@ local function displayMovingMessage(message, duration)
         counter = duration * 100,
         active = true
     })
+
+    internalFunc.traceEnd("sct.displayMovingMessage", debugId)
 end
 
 -- Animates a frame with combat text
@@ -239,6 +295,9 @@ end
 -- @param y The y position
 -- @param inComing Whether the damage is incoming
 local function animateFrame(frame, text, icon, x, y, inComing)
+
+    local debugId = internalFunc.traceStart("sct.animateFrame")
+
     frame:SetText(text, true)
     frame:SetVisible(true)
 
@@ -252,6 +311,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
     local startX, startY = x, y - 100
     local startAngle = mathRad(45)
     local endAngle = mathRad(-45)
+    local coRoutineDebugID
     
     if inComing == true then
         startAngle = mathRad(135)
@@ -260,23 +320,31 @@ local function animateFrame(frame, text, icon, x, y, inComing)
 
     local radius = 200
     
-    local animationCoroutine = coroutine.create(function()
+    local animationCoroutine = coroutine.create(function()        
+
         for idx = 1, 200, 1 do
+            coRoutineDebugID = internalFunc.traceStart("sct.cr.animateFrame")
+
             local elapsed = InspectTimeFrame() - start
             if elapsed > duration then
+                internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
                 return 9999
             end
             local t = elapsed / duration
             local currentAngle = startAngle + (endAngle - startAngle) * t
             local currentXOffset = radius * mathCos(currentAngle)
             local currentYOffset = radius * mathSin(currentAngle)
+
             frame:SetPoint("CENTER", UIParent, "CENTER", startX + currentXOffset, startY + currentYOffset + 100)
+            internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
+
             coroutine.yield(idx)
         end
     end)
     
     local callBack = function()
         releaseFrame(frame)
+        internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
     end
     
     LibEKL.Coroutines.Add({
@@ -285,11 +353,13 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         counter = 200,
         active = true
     })
+
+    internalFunc.traceEnd("sct.animateFrame", debugId)
 end
 
 -- Displays combat text on the screen
 -- @param sctText The text to display
--- @param icon The icon to display
+-- @param icon The icon to displayinternalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
 -- @param isPet Whether the damage is from a pet
 -- @param inComing Whether the damage is incoming
 -- @param crit Whether the damage is a critical hit
