@@ -417,7 +417,9 @@ local function validEvent(info)
     
     if LibEKL.Tools.Table.IsMember(localUnitsTypes, "player.pet") then
         petID = info.caster
-        petName = internalFunc.shortenName(info.casterName, 10)
+        if info.casterName then
+            petName = internalFunc.shortenName(info.casterName, 10)
+        end
         return true, true, false
     end
 
