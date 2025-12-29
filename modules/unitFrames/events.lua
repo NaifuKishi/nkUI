@@ -147,7 +147,7 @@ local function _eventBuffAdd(_, unit, buffs)
 	-- Handle unit frame buffs
 	if nkUISetup.modules.unitFrames.showBuffs then
 		local identifiers = LibEKLGetUnitTypes (unit)
-
+		
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
 				if not stringFind(value, "group") or groupStatus ~= "raid" then

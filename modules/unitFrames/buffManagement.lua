@@ -48,7 +48,7 @@ end
 
 function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, action)
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.manageBuffs", frame:GetName(), { unitID = unitID, buffUnit = buffUnit, buffs = buffs, action = action}) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.manageBuffs - " .. unitType .. " " .. action, frame:GetName(), { unitType = unitType, unitID = unitID, buffUnit = buffUnit, buffs = buffs, action = action}) end
 
     -- Buff management variables
     local unitBuffIcons = frame:GetBuffIcons() or {}
@@ -232,7 +232,7 @@ function internalFunc.processBuffs()
 
 	--- process pet
 
-	if data.playerPetID then
+	if LibEKL.Unit.GetUnitIDByType ("player.pet")  then
         local playerPetFrame = uiElements.frames["player.pet"]
         processIconTimers (playerPetFrame:GetBuffIcons())
         processIconTimers (playerPetFrame:GetDebuffIcons())
@@ -279,6 +279,9 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
 
     local debugId  
 	if nkDebug then debugId = nkDebug.traceStart (inspectAddonCurrent(), "nkUI internalFunc.processNewBuff") end
+
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.processNewBuff - " .. unitType, "parameters", { unitType = unitType, iconName = iconName, buffID = buffID, buffIdentifier = buffIdentifier, displayList = displayList}) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.processNewBuff - " .. unitType, "buffDetails", buffDetails) end
 
     if displayList[buffIdentifier] == nil then
 
