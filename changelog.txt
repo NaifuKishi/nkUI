@@ -1,4 +1,5 @@
 V0.9.0
+    - new: nkUI Logo at startup (can be disabled in the settings)
     - updates: Buff Bar - buffs and debuffs are now sorted by remaining time
     - updates: Unit Frames - buffs and debuffs are now sorted by remaining time
     - updates: Quest Tracker - Can now be moved by dragging the header

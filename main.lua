@@ -74,7 +74,7 @@ data.colors = {
 }
 				
 data.uiScale = 1
-local thisTutorialVersion = 80
+local thisTutorialVersion = 90
 
 
 -- Generate UI context
