@@ -9,7 +9,10 @@ local oneBag        = privateVars.oneBag
 
 ---------- local functions ---------
 
+local inspectCurrencyDetail = Inspect.Currency.Detail
+
 local stringFormat  = string.format
+local mathFloor     = math.floor
 
 local context = UI.CreateContext("nkUI.onebag")
 context:SetStrata('dialog')
@@ -47,16 +50,93 @@ function oneBag.createBagUI()
         oneBag.hideItemTooltip()
     end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
 
+
+    local currencyText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.currencyText", bagWindow)
+    currencyText:SetPoint("TOPRIGHT", bagWindow, "TOPRIGHT", -50, 12)
+    currencyText:SetFontSize(12)
+    currencyText:SetEffectGlow({ strength = 3})
+    currencyText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    currencyText:SetText("0")
+
+    LibEKL.UI.SetFont(currencyText, addonInfo.id, "MontserratSemiBold")    
+
+    local currencyIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.bagWindow.Currency.icon", bagWindow)
+    currencyIcon:SetPoint("CENTERRIGHT", currencyText, "CENTERLEFT", -5, 0)
+    currencyIcon:SetHeight(12)
+    currencyIcon:SetWidth(12)
+    currencyIcon:SetTextureAsync("nkUI", "gfx/iconCoins.png")    
+
+    local freeBagSlotsText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.BagSlotsText", bagWindow)
+    freeBagSlotsText:SetPoint("CENTERRIGHT", currencyIcon, "CENTERLEFT", -5, 0)
+    freeBagSlotsText:SetFontSize(12)
+    freeBagSlotsText:SetEffectGlow({ strength = 3})
+    freeBagSlotsText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    freeBagSlotsText:SetText("0")
+
+    LibEKL.UI.SetFont(freeBagSlotsText, addonInfo.id, "MontserratSemiBold")    
+
+    local bagIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.bagWindow.BagSlotsIcon.icon", bagWindow)
+    bagIcon:SetPoint("CENTERRIGHT", freeBagSlotsText, "CENTERLEFT", -5, 0)
+    bagIcon:SetHeight(12)
+    bagIcon:SetWidth(12)
+    bagIcon:SetTextureAsync("nkUI", "gfx/iconBag.png")
+
+    
+    local function updateCoin(_, currency)
+        if currency['coin'] == nil then return end
+        
+        local details = inspectCurrencyDetail('coin')
+        
+        if details ~= nil and details.stack ~= nil then
+            local platin = mathFloor(details.stack / 10000)
+            local gold = mathFloor((details.stack - (platin * 10000)) / 100)
+            local silver = details.stack - (platin * 10000) - (gold * 100)
+            
+            local textFormat = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font>'
+
+            currencyText:SetText(stringFormat(textFormat, platin, gold, silver), true)
+        end
+    end
+
+    local function setFreeBagSlots()
+        local freeBagCount = 0
+        local freeBagSlots = LibEKL.Inventory.getAvailableSlots()
+        if freeBagSlots ~= false then
+            freeBagCount = #freeBagSlots
+        end
+
+        freeBagSlotsText:SetText(stringFormat("%d",freeBagCount))
+    end
+
+    Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, a, b)
+        if bagWindow:GetVisible() then
+            setFreeBagSlots()
+            updateCoin(_, {coin = true})
+        end
+    end, "nkUI.LibEKL.InventoryManager.Update")
+
+    Command.Event.Attach(Event.Currency, function (_, data)
+        if bagWindow:GetVisible() then
+            updateCoin(_, data)
+        end
+    end, "nkUI.OneBag.Currency.Currency")
+        
     local oSetVisible = bagWindow.SetVisible
     function bagWindow:SetVisible(visible)
         if visible then
             LibEKL.Inventory.updateDB()
             oneBag.populateBag(true) 
             oneBag.getBagSlots()
+
+            setFreeBagSlots()
+            updateCoin(_, {coin = true})
         end
 
         oSetVisible(self, visible)
     end
+
+    setFreeBagSlots()
+    updateCoin(_, {coin = true})
     
     return bagWindow
 end
