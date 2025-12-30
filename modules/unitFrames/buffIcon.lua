@@ -105,7 +105,7 @@ function uiElements.icon (name, parent)
 	end
 	
 	function icon:ShowStack(flag)
-		stack:SetVisible(flag)SetAlpha
+		stack:SetVisible(flag)
 	end
 	
 	function icon:ShowBorder(flag)

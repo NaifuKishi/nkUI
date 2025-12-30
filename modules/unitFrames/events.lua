@@ -5,16 +5,16 @@ local addonInfo, privateVars = ...
 local data        	= privateVars.data
 local uiElements  	= privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
-local _events     	= privateVars.events
+local events     	= privateVars.events
 
 -- Cache frequently used functions and values
-local InspectBuffList     	= Inspect.Buff.List
-local InspectBuffDetail	  	= Inspect.Buff.Detail
-local InspectUnitLookup	  	= Inspect.Unit.Lookup
-local InspectUnitDetail	  	= Inspect.Unit.Detail
-local InspectUnitCastbar	= Inspect.Unit.Castbar
-local InspectTimeReal		= Inspect.Time.Real
-local InspectSystemWatchdog = Inspect.System.Watchdog
+local inspectBuffList     	= Inspect.Buff.List
+local inspectBuffDetail	  	= Inspect.Buff.Detail
+local inspectUnitLookup	  	= Inspect.Unit.Lookup
+local inspectUnitDetail	  	= Inspect.Unit.Detail
+local inspectUnitCastbar	= Inspect.Unit.Castbar
+local inspectTimeReal		= Inspect.Time.Real
+local inspectSystemWatchdog = Inspect.System.Watchdog
 
 local stringFormat	= string.format
 local stringMatch	= string.match
@@ -53,7 +53,7 @@ end
 
 ------------------------------ cast bar functions ------------------------------
 
-local function _eventCastBar(_, units) 
+local function eventCastBar(_, units) 
 
 	for unitID, state in pairs (units) do			
 
@@ -66,7 +66,7 @@ local function _eventCastBar(_, units)
 
 			if thisFrame then
 				if state == true then					
-					local details = InspectUnitCastbar(unitID)
+					local details = inspectUnitCastbar(unitID)
 
 					--dump(details)
 
@@ -79,11 +79,11 @@ local function _eventCastBar(_, units)
 						abilityName = details.abilityName,
 						duration = details.duration,
 						uninterruptible = details.uninterruptible,
-						start = InspectTimeReal()
+						start = inspectTimeReal()
 					}
 				else
 					if data[castBarName] and not data[castBarName].uninterruptible then 
-						if unitID ~= LibEKL.Unit.getPlayerDetails().id and InspectTimeReal() - data[castBarName].start < data[castBarName].duration then
+						if unitID ~= LibEKL.Unit.getPlayerDetails().id and inspectTimeReal() - data[castBarName].start < data[castBarName].duration then
 							local unitDetails = LibEKL.Unit.GetUnitDetail (unitID, true)
 							if unitDetails.health > 0 then
 								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)
@@ -100,13 +100,13 @@ local function _eventCastBar(_, units)
 
 end
 
-local function _processCastBars () 
+local function processCastBars () 
 
 	local playerCastBar = data["player.castbar"]
 
 	if playerCastBar then
 		local thisFrame = uiElements.frames["player.castbar"]
-		local remaining = playerCastBar.duration - (InspectTimeReal() - playerCastBar.start)
+		local remaining = playerCastBar.duration - (inspectTimeReal() - playerCastBar.start)
 		if remaining <= 0 then				
 			data["player.castbar"] = nil
 			thisFrame:SetVisible(false)
@@ -120,7 +120,7 @@ local function _processCastBars ()
 	if targetCastBar then
 		local thisFrame = uiElements.frames["player.target.castbar"]
 
-		local remaining = targetCastBar.duration - (InspectTimeReal() - targetCastBar.start)
+		local remaining = targetCastBar.duration - (inspectTimeReal() - targetCastBar.start)
 		if remaining <= 0 then				
 			data["player.target.castbar"] = nil
 			thisFrame:SetVisible(false)
@@ -132,7 +132,7 @@ end
 
 ------------------------------ buff functions ------------------------------
 
-local function _eventBuffAdd(_, unit, buffs)
+local function eventBuffAdd(_, unit, buffs)
 	
 	local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
 
@@ -147,7 +147,7 @@ local function _eventBuffAdd(_, unit, buffs)
 	-- Handle unit frame buffs
 	if nkUISetup.modules.unitFrames.showBuffs then
 		local identifiers = LibEKLGetUnitTypes (unit)
-		
+
 		if #identifiers > 0 then
 			for _, value in pairs(identifiers) do
 				if not stringFind(value, "group") or groupStatus ~= "raid" then
@@ -160,11 +160,11 @@ local function _eventBuffAdd(_, unit, buffs)
 	end
 end
 
-local function _eventBuffChange (_, unit, buffs)
+--[[local function eventBuffChange (_, unit, buffs)
 	if nkUISetup.modules.buffBar.activate == false then return end
-end
+end]]
 
-local function _eventBuffRemove (_, unit, buffs)
+local function eventBuffRemove (_, unit, buffs)
 
 	--if nkUISetup.modules.unitFrames.activate == false then return end
 
@@ -188,7 +188,7 @@ end
 
 ------------------------------ zone functions ------------------------------
 
-local function _fctZoneEvent(_, thisData)
+local function zoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
 		if k == LibEKL.Unit.getPlayerDetails().id then
@@ -199,7 +199,7 @@ local function _fctZoneEvent(_, thisData)
 	end
 end
 
-local function _fctRoleEvent (_, thisData)
+local function roleEvent (_, thisData)
 	
 	for unitID, v in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
@@ -215,12 +215,12 @@ end
 
 ------------------------------ update handler functions ------------------------------
 
-local function _fctUpdateHandler()
+local function updateHandler()
 	
 	-- run always
 
-	local _curTime = InspectTimeReal()
-	local _watchDog = InspectSystemWatchdog()
+	local _curTime = inspectTimeReal()
+	local _watchDog = inspectSystemWatchdog()
 	
 	-- run every 60 second
 	
@@ -239,7 +239,7 @@ local function _fctUpdateHandler()
 	-- run every 0.05 seconds
 	
 	if (_lastUpdate3 == nil or _curTime - _lastUpdate3 >= .05) then		
-		_processCastBars() 
+		processCastBars() 
 		_lastUpdate3 = _curTime
 	end
 	
@@ -247,9 +247,9 @@ end
 
 ------------------------------ init event system ------------------------------
 
-function _events.uiFramesInitEvents()	
+function events.uiFramesInitEvents()	
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.uiFramesInitEvents", "Startup", nil) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.uiFramesInitEvents", "Startup", nil) end
 
 	LibEKL.Unit.subscribe("player")
 	LibEKL.Unit.subscribe("player.target")
@@ -260,11 +260,11 @@ function _events.uiFramesInitEvents()
 		LibEKL.Unit.subscribe(stringFormat("group%02d", idx))
 	end
 
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, _events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, _events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Available, _events.available, "nkUI.LibEKL.Unit.Available")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Unavailable, _events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, _events.change, "nkUI.LibEKL.Unit.Change")	
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Available, events.available, "nkUI.LibEKL.Unit.Available")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Unavailable, events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, events.change, "nkUI.LibEKL.Unit.Change")	
 
 	--- in combat and out of combat alpha
 
@@ -273,22 +273,22 @@ function _events.uiFramesInitEvents()
 
 	--- stats changes
 
-	_events.uiFramesInitStatEvents()	
+	events.uiFramesInitStatEvents()	
 
 	--- cast bar
 
-	Command.Event.Attach(Event.Unit.Castbar, _eventCastBar, "nkUI.Unit.Castbar")
+	Command.Event.Attach(Event.Unit.Castbar, eventCastBar, "nkUI.Unit.Castbar")
 
 	--- buf management
 
-    Command.Event.Attach(Event.Buff.Add, _eventBuffAdd, "nkUI.Buff.Add")
-	Command.Event.Attach(Event.Buff.Change, _eventBuffChange, "nkUI.Buff.Change")
-	Command.Event.Attach(Event.Buff.Remove, _eventBuffRemove, "nkUI.Buff.Remove")
+    Command.Event.Attach(Event.Buff.Add, eventBuffAdd, "nkUI.Buff.Add")
+	--Command.Event.Attach(Event.Buff.Change, eventBuffChange, "nkUI.Buff.Change")
+	Command.Event.Attach(Event.Buff.Remove, eventBuffRemove, "nkUI.Buff.Remove")
 
-    Command.Event.Attach(Event.System.Update.Begin, _fctUpdateHandler, "nkUI.System.updateHandler")
+    Command.Event.Attach(Event.System.Update.Begin, updateHandler, "nkUI.System.updateHandler")
 
-	Command.Event.Attach(Event.Unit.Detail.Zone, _fctZoneEvent, "nkUI.Unit.Detail.Zone")
-	Command.Event.Attach(Event.Unit.Detail.Role, _fctRoleEvent, "nkUI.Unit.Detail.Role")
+	Command.Event.Attach(Event.Unit.Detail.Zone, zoneEvent, "nkUI.Unit.Detail.Zone")
+	Command.Event.Attach(Event.Unit.Detail.Role, roleEvent, "nkUI.Unit.Detail.Role")
 
 	----- initialize player, pet and target -----
 
@@ -327,16 +327,16 @@ function _events.uiFramesInitEvents()
 
 end
 
-function _events.playerAvailable (_, thisInfo, plusInfo)
+function events.playerAvailable (_, thisInfo, plusInfo)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", thisInfo) end
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.playerAvailable", "", plusInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.playerAvailable", "", thisInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.playerAvailable", "", plusInfo) end
 
 end
 
-function _events.groupStatus (_, groupType)
+function events.groupStatus (_, groupType)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.groupStatus", thisInfo, {}) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.groupStatus", thisInfo, {}) end
 	
 	if groupType == "group" then
 		for idx = 1, 20, 1 do
@@ -362,9 +362,9 @@ function _events.groupStatus (_, groupType)
 	end
 end
 
-function _events.available (_, units)
+function events.available (_, units)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.available", "", units) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.available", "", units) end
 
 	if units == nil then return end
 
@@ -374,7 +374,7 @@ function _events.available (_, units)
 		if stringMatch(identifier, "^group(%d+)$") then
 			local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
 
-			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.available", stringFormat("%s %d", groupStatus, groupSize), units) end
+			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.available", stringFormat("%s %d", groupStatus, groupSize), units) end
 
 			if groupStatus == 'group' then 
 				frame = uiElements.frames[identifier] 
@@ -394,9 +394,9 @@ function _events.available (_, units)
 	
 end
 
-function _events.unavailable (_, units)
+function events.unavailable (_, units)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.unavailable", "units", units) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.unavailable", "units", units) end
 
 	for unitId, _ in pairs (units) do
 	
@@ -409,9 +409,9 @@ function _events.unavailable (_, units)
 
 end
 
-function _events.change (_, unitID, identifier)
+function events.change (_, unitID, identifier)
 
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("%s %s", unitID, identifier), nil) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("%s %s", unitID, identifier), nil) end
 	
 	local frame
 
@@ -420,7 +420,7 @@ function _events.change (_, unitID, identifier)
 
 		local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
 
-		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("%s %d", groupStatus, groupSize), {}) end
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("%s %d", groupStatus, groupSize), {}) end
 
 		if groupStatus == 'group' then 
 			frame = uiElements.frames[identifier] 
@@ -444,7 +444,7 @@ function _events.change (_, unitID, identifier)
 			end
 		end
 	else
-		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_events.change", stringFormat("no frame %s", identifier), nil) end
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("no frame %s", identifier), nil) end
 	end
 	
 end

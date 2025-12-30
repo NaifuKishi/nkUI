@@ -130,6 +130,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
                         internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".debuff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitDebuffDisplayList, unitDebuffIcons, frame)
 
                         if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        --if InspectSystemSecure() == false then
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
@@ -142,6 +143,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
                         internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".buff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitBuffDisplayList, unitBuffIcons, frame)
                         
                         if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
+                        --if InspectSystemSecure() == false then
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
@@ -236,7 +238,7 @@ function internalFunc.processBuffs()
 
 	--- process target
 
-	if LibEKL.Unit.GetUnitByIdentifier("player.target") then
+    if LibEKL.Unit.GetUnitByIdentifier("player.target") then
         local playerTarget = uiElements.frames["player.target"]
         processIconTimers (playerTarget:GetBuffIcons())
         processIconTimers (playerTarget:GetDebuffIcons())
@@ -250,8 +252,10 @@ function internalFunc.processBuffs()
 
         for idx = 1, 5, 1 do
             local groupName = stringFormat("group%02d", idx)
+            local id = LibEKL.Unit.GetUnitIDByType(groupName)
 
-            if LibEKL.Unit.GetUnitByIdentifier(groupName) then
+            --if LibEKL.Unit.GetUnitByIdentifier(groupName) then
+            if id and #id >0 then
                 local groupFrame = uiElements.frames[groupName]
                 processIconTimers (groupFrame:GetBuffIcons())
                 processIconTimers (groupFrame:GetDebuffIcons())
