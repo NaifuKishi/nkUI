@@ -438,10 +438,8 @@ function events.change (_, unitID, identifier)
 			frame:SetUnitID(nil)
 			frame:ClearBuffs()
 		else		
-			if frame then
-				internalFunc.updateUnit (frame, unitID, identifier) 
-				frame:SetVisible(true)
-			end
+			internalFunc.updateUnit (frame, unitID, identifier) 
+			frame:SetVisible(true)
 		end
 	else
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("no frame %s", identifier), nil) end

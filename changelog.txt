@@ -4,6 +4,7 @@ V0.9.3
     - fixes: QuestTracker - fixed an error condition
     - fixes: Unit frames - buffs will always be fully visible on group frames
     - fixes: Unit frames - timers will now work on player in group frames
+    - fixes: Unit frames - buffs now initalized on target frame on target change
 
 V0.9.2
     - new: One Bag - Free bag slots and currency is shown in header of bag

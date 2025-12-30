@@ -707,6 +707,9 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     if stringFind (identifier, "group") and groupStatus ~= 'raid' then
         local buffs = InspectBuffList(unitID)
         if (buffs) then frame:addBuff(unitID, buffs) end
+    elseif identifier == "player.target" then
+        local buffs = InspectBuffList(unitID)
+        if (buffs) then frame:addBuff(unitID, buffs) end
     end
 
 end
