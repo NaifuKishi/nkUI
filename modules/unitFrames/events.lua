@@ -223,6 +223,20 @@ local function afkEvent (_, thisData)
 	end	
 end
 
+local function offlineEvent (_, thisData)
+	
+	for unitID, v in pairs(thisData) do
+		local unitTypes = LibEKLGetUnitTypes (unitID)
+		for _, thisType in pairs (unitTypes) do
+			local frame = internalFunc.getFrameByIdentifier(thisType)
+			LibEKL.Unit.GetUnitDetail(unitID, true)
+			internalFunc.updateUnit (frame, unitID, thisType)
+		end
+	end	
+end
+
+
+
 ------------------------------ update handler functions ------------------------------
 
 local function updateHandler()
@@ -300,6 +314,7 @@ function events.uiFramesInitEvents()
 	Command.Event.Attach(Event.Unit.Detail.Zone, zoneEvent, "nkUI.Unit.Detail.Zone")
 	Command.Event.Attach(Event.Unit.Detail.Role, roleEvent, "nkUI.Unit.Detail.Role")
 	Command.Event.Attach(Event.Unit.Detail.Afk, afkEvent, "nkUI.Unit.Detail.Afk")
+	Command.Event.Attach(Event.Unit.Detail.Offline, offlineEvent, "nkUI.Unit.Detail.Offline")
 
 	----- initialize player, pet and target -----
 

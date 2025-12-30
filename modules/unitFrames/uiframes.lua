@@ -486,7 +486,17 @@ function frameManager.get(unitType, unitFrameType, setup)
         if flag == nil then            
             afkIcon:SetVisible(false)
         else
+            afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
             afkIcon:SetVisible(flag)        
+        end
+    end
+
+    function unitFrame:SetOffline(flag)
+        if flag == nil then            
+            afkIcon:SetVisible(false)
+        else
+            afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconOffline.png")
+            afkIcon:SetVisible(flag)
         end
     end
 
@@ -721,7 +731,13 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     frame:SetTier(details.tier)
     frame:SetRare(details.guaranteedLoot)
 
-    frame:SetAFK(details.afk)
+    if details.afk then
+        frame:SetAFK(details.afk)
+    elseif details.offline then
+        frame:SetOffline(details.offline)
+    else
+        frame:SetAFK()
+    end
 
     frame:ClearBuffs()
 
