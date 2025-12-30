@@ -32,12 +32,12 @@ data.unitFramesBuild = false
 uiElements.frames = {}
 uiElements.unitFramesContext = UI.CreateContext("nkUI.unitFrames")
 uiElements.unitFramesContext:SetStrata('hud')
-uiElements.unitFramesContext:SetLayer(2)
+uiElements.unitFramesContext:SetLayer(1)
 
 uiElements.unitFramesContextSecure = UI.CreateContext("nkUI.unitFrames.secure")
-uiElements.unitFramesContextSecure:SetStrata('tutorial')
+uiElements.unitFramesContextSecure:SetStrata('hud')
 uiElements.unitFramesContextSecure:SetSecureMode("restricted")
-uiElements.unitFramesContextSecure:SetLayer(2)
+uiElements.unitFramesContextSecure:SetLayer(99)
 
 ---------- init local variables ---------
 
@@ -182,8 +182,9 @@ function frameManager.get(unitType, unitFrameType, setup)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
-    secureFrame:SetBackgroundColor(0, 0, 0, 0)
+    secureFrame:SetBackgroundColor(1, 0, 0, 1)
     secureFrame:SetSecureMode("restricted")
+    secureFrame:SetVisible(false)
 
     function unitFrame:SetMacro (newMacro)
         secureFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, newMacro)
@@ -196,9 +197,9 @@ function frameManager.get(unitType, unitFrameType, setup)
         	end
     end
 
-    function unitFrame:MouseOverUnit(unitID)
+    function unitFrame:MouseOverUnit(unitID)        
         if InspectSystemSecure() == false then
-            secureFrame:SetMouseoverUnit(unitID)
+            secureFrame:MouseoverUnit(unitID)
         end
     end
 
@@ -458,7 +459,22 @@ function frameManager.get(unitType, unitFrameType, setup)
     local oSetVisible = unitFrame.SetVisible
     function unitFrame:SetVisible (flag)    
         oSetVisible(self, flag)
-        if flag == false then unitFrame:MouseOverUnit(nil) end
+        secureFrame:SetVisible(flag)
+        if flag == false then 
+            secureFrame:MouseOverUnit(nil)
+        end
+    end
+
+    local oClearPoint = unitFrame.ClearPoint
+    function unitFrame:ClearPoint(point)
+        oClearPoint(self, point)
+        secureFrame:ClearPoint(point)
+    end
+
+    local oSetPoint = unitFrame.SetPoint
+    function unitFrame:SetPoint(from, object, to , x ,y)
+        oSetPoint(self, from, object, to, x, y)
+        secureFrame:SetPoint(from, object, to, x, y)
     end
 
     function unitFrame:SetTier(newTier)
@@ -698,9 +714,15 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
 
+    --print (identifier, unitID)
+
     frame:SetUnitID(unitID)
     frame:ContextMenu(unitID)
     frame:MouseOverUnit(unitID)
+
+    --print (identifier, details.name)
+
+    frame:SetMacro(stringFormat("/target %s", details.name))
 
     frame:SetName(details.name)
     frame:SetCalling(details.calling)
