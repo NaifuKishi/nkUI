@@ -103,6 +103,10 @@ local frameManager = {
         - SetBuffIcons(icons): Sets the buff icons collection
         - SetDebuffIcons(icons): Sets the debuff icons collection
         - SetBuffDisplayList(list): Sets the buff display list
+    Process:
+        1. Checks if a frame already exists for the specified unit type
+        2. If not, checks the frame pool for available frames to reuse
+        3. If no reusable frames are available, creates a new frame
         - SetDebuffDisplayList(list): Sets the debuff display list
         - addBuff(buffUnit, buffs): Adds buffs to the frame
         - changeBuff(unit, buffs): Changes buffs on the frame
@@ -330,6 +334,15 @@ function frameManager.get(unitType, unitFrameType, setup)
     rareIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconRare2.png")
     rareIcon:SetPoint("CENTERRIGHT", tierIcon, "CENTERLEFT", -setup.margins.tierIcon, 0)
 
+    local iconHeight = unitFrame:GetHeight() - 2
+
+    local afkIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".afkIcon", unitFrame)
+    afkIcon:SetLayer(99)
+    afkIcon:SetHeight(iconHeight)
+    afkIcon:SetWidth(iconHeight)
+    afkIcon:SetVisible(false) 
+    afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
+    afkIcon:SetPoint("CENTER", unitFrame, "CENTER")
     
     function unitFrame:Redraw()        
         unitFrame:SetWidth(setup.width)
@@ -466,6 +479,14 @@ function frameManager.get(unitType, unitFrameType, setup)
             rareIcon:SetVisible(false)
         else
             rareIcon:SetVisible(flag)        
+        end
+    end
+
+    function unitFrame:SetAFK(flag)
+        if flag == nil then            
+            afkIcon:SetVisible(false)
+        else
+            afkIcon:SetVisible(flag)        
         end
     end
 
@@ -699,6 +720,8 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     frame:SetRole(details.role)
     frame:SetTier(details.tier)
     frame:SetRare(details.guaranteedLoot)
+
+    frame:SetAFK(details.afk)
 
     frame:ClearBuffs()
 

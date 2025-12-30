@@ -211,7 +211,17 @@ local function roleEvent (_, thisData)
 	end	
 end
 
-
+local function afkEvent (_, thisData)
+	
+	for unitID, v in pairs(thisData) do
+		local unitTypes = LibEKLGetUnitTypes (unitID)
+		for _, thisType in pairs (unitTypes) do
+			local frame = internalFunc.getFrameByIdentifier(thisType)
+			LibEKL.Unit.GetUnitDetail(unitID, true)
+			internalFunc.updateUnit (frame, unitID, thisType)
+		end
+	end	
+end
 
 ------------------------------ update handler functions ------------------------------
 
@@ -289,6 +299,7 @@ function events.uiFramesInitEvents()
 
 	Command.Event.Attach(Event.Unit.Detail.Zone, zoneEvent, "nkUI.Unit.Detail.Zone")
 	Command.Event.Attach(Event.Unit.Detail.Role, roleEvent, "nkUI.Unit.Detail.Role")
+	Command.Event.Attach(Event.Unit.Detail.Afk, afkEvent, "nkUI.Unit.Detail.Afk")
 
 	----- initialize player, pet and target -----
 
