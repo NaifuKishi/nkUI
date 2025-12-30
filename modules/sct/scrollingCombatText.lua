@@ -9,10 +9,10 @@ local events        = privateVars.events
 
 ---------- init local variables ---------
 
-local InspectTimeFrame          = Inspect.Time.Frame
-local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
-local InspectAbilityDetail      = Inspect.Ability.Detail
-local InspectExperience         = Inspect.Experience
+local inspectTimeFrame          = Inspect.Time.Frame
+local inspectAbilityNewDetail   = Inspect.Ability.New.Detail
+local inspectAbilityDetail      = Inspect.Ability.Detail
+local inspectExperience         = Inspect.Experience
 
 local LibEKLUnitGetUnitDetail    = LibEKL.Unit.GetUnitDetail
 
@@ -84,7 +84,7 @@ local function getAbilityIcon(info)
 
     if abilityNew ~= nil then
         if iconCache[abilityNew] == nil then
-            local details = InspectAbilityNewDetail(abilityNew)
+            local details = inspectAbilityNewDetail(abilityNew)
             if details then
                 iconCache[abilityNew] = details.icon
                 icon = details.icon
@@ -94,7 +94,7 @@ local function getAbilityIcon(info)
         end
     else
         if iconCache[ability] == nil then
-            local details = InspectAbilityDetail(ability)
+            local details = inspectAbilityDetail(ability)
             if details then
                 iconCache[ability] = details.icon
                 icon = details.icon
@@ -202,12 +202,12 @@ function internalFunc.displayMessageAtTopCenter(message, duration)
     messageY = messageY - 20
     local coRoutineDebugID
 
-    local start = InspectTimeFrame()
+    local start = inspectTimeFrame()
 
     local animationCoroutine = coroutine.create(function()      
         for idx = 1, duration * 100, 1 do
             coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMessageAtTopCenter")
-            local elapsed = InspectTimeFrame() - start
+            local elapsed = inspectTimeFrame() - start
             if elapsed > duration then
                 internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
                 return 9999
@@ -250,7 +250,7 @@ local function displayMovingMessage(message, duration)
     frame:SetFontColor(0.678, 0.847, 0.902, 1)
     frame:SetVisible(true)
 
-    local start = InspectTimeFrame()
+    local start = inspectTimeFrame()
     local startY = -200
     local endY = -400
     local coRoutineDebugID
@@ -259,7 +259,7 @@ local function displayMovingMessage(message, duration)
 
         for idx = 1, duration * 100, 1 do
             coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMovingMessage")
-            local elapsed = InspectTimeFrame() - start
+            local elapsed = inspectTimeFrame() - start
             if elapsed > duration then
                 internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
                 return 9999
@@ -306,7 +306,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         frame.icon:SetVisible(true)
     end
 
-    local start = InspectTimeFrame()
+    local start = inspectTimeFrame()
     local duration = 1.5
     local startX, startY = x, y - 100
     local startAngle = mathRad(45)
@@ -325,7 +325,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         for idx = 1, 200, 1 do
             coRoutineDebugID = internalFunc.traceStart("sct.cr.animateFrame")
 
-            local elapsed = InspectTimeFrame() - start
+            local elapsed = inspectTimeFrame() - start
             if elapsed > duration then
                 internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
                 return 9999
@@ -537,13 +537,13 @@ local function handleCooldownStart (_, info)
                 newAbilities = true
             end
             
-            abilityTimer[k] = InspectTimeFrame()
+            abilityTimer[k] = inspectTimeFrame()
         end
     end
 
     if newAbilities == false then return end
 
-    local details = InspectAbilityNewDetail(abilities)
+    local details = inspectAbilityNewDetail(abilities)
 
     for k, v in pairs (details) do
         abilityCache[k] = v
@@ -554,7 +554,7 @@ end
 local function handleCooldownEnd (_, info)
 
     for key, details in pairs (info) do
-        if abilityCache[key] ~= nil and abilityTimer[key] ~= nil and InspectTimeFrame() - abilityTimer[key] >= 10 then
+        if abilityCache[key] ~= nil and abilityTimer[key] ~= nil and inspectTimeFrame() - abilityTimer[key] >= 10 then
             abilityTimer[key] = nil
             internalFunc.displayMessageAtTopCenter(stringFormat("%s ready", abilityCache[key].name), 1.5)
         end
@@ -564,7 +564,7 @@ end
 
 function internalFunc.sctInit()
     
-    local experience = InspectExperience()
+    local experience = inspectExperience()
     lastAccumulated = experience.accumulated    
 
     Command.Event.Attach(Event.Combat.Damage, handleCombatDamage, "nkUI.SCT.Combat.Damage")
@@ -581,7 +581,7 @@ function internalFunc.sctInit()
     Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
         if lastAccumulated == nil then lastAccumulated = accumulated end
         local gain = accumulated - lastAccumulated
-        if gain == 0 then return end
+        if gain <= 0 then return end
         displayMovingMessage(stringFormat("%d exp", gain), 2)
         lastAccumulated = accumulated
     end, "nkui.SCT.TEMPORARY.Experience")

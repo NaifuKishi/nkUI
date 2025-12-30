@@ -1,3 +1,6 @@
+V0.9.5
+    - fixes: SCT - fixed SCT showing negative gain when gaining level
+
 V0.9.4
     - updates: unit frames optimized buff icon design
     - fixes: Fixed and error when leaving combat    
