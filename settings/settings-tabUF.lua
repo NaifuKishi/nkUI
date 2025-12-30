@@ -218,8 +218,8 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             roleIconSize:AdjustValue(thisSettings.iconSizes.role)            
         end
 
-        if unitType ~= "raid" and unitType ~= "group" and unitType ~= "player.pet" then
-            combatIconSize = settingsUI.slider (name .. ".combatIconSize", frame, "Combat icon <font color='#3399FF'>%d</font>", true, function (newValue)
+        if unitType ~= "raid" and unitType ~= "player.pet" then
+            combatIconSize = settingsUI.slider (name .. ".combatIconSize", frame, "Combat / Mark icon <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.iconSizes.combat = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -230,16 +230,19 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             combatIconSize:SetPrecision(1)
             combatIconSize:AdjustValue(thisSettings.iconSizes.combat)
 
-            tierIconSize = settingsUI.slider (name .. ".tierIconSize", frame, "Tier icon <font color='#3399FF'>%d</font>", true, function (newValue)
-                thisSettings.iconSizes.tier = newValue
-                internalFunc.uiFrameRedraw(unitType)
-            end)
+            if unitType ~= "group" then
 
-            tierIconSize:SetPoint("TOPLEFT", combatIconSize, "TOPRIGHT", 30, 0)
-            tierIconSize:SetRange(10, 40)
-            tierIconSize:SetMidValue(25)
-            tierIconSize:SetPrecision(1)
-            tierIconSize:AdjustValue(thisSettings.iconSizes.tier)
+                tierIconSize = settingsUI.slider (name .. ".tierIconSize", frame, "Tier icon <font color='#3399FF'>%d</font>", true, function (newValue)
+                    thisSettings.iconSizes.tier = newValue
+                    internalFunc.uiFrameRedraw(unitType)
+                end)
+
+                tierIconSize:SetPoint("TOPLEFT", combatIconSize, "TOPRIGHT", 30, 0)
+                tierIconSize:SetRange(10, 40)
+                tierIconSize:SetMidValue(25)
+                tierIconSize:SetPrecision(1)
+                tierIconSize:AdjustValue(thisSettings.iconSizes.tier)
+            end
         end
 
         if  thisSettings.buffs ~= nil then
@@ -248,7 +251,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
 
             buffSizeHeader = settingsUI.header ( name .. ".buffSizeHeader", frame, "Buff display setup")
 
-            if unitType ~= "raid" and unitType ~= "group" and unitType ~= "player.pet" then
+            if unitType ~= "raid" and unitType ~= "player.pet" then
                 buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT" , 0, 15)
             elseif unitType ~= "player.pet" then
                 buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT" , 0, 15)

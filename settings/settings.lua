@@ -75,7 +75,7 @@ local _defaults = {
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10, level = 10},
                                                         margins = { name = 10, health = 10, energy = 10, planar = 3, combatIcon = 5, roleIcon = 5, tierIcon = 5, group = 80, level = 3 },
-                                                        iconSizes = {combat = 0, role = 15, tier = 0 },
+                                                        iconSizes = {combat = 30, role = 15, tier = 0 },
                                                         buffs = { width = 26, height = 26, timer = 10, stack = 8, label = 8 }
                                                     },
                                     raid            = { x = -1590, y = -500, width = 100, height = 45,
@@ -203,6 +203,12 @@ function internalFunc.setupDefaults()
 
         scaleUI ()
     end
+
+    -- fix for version 0.9.5
+
+    --if nkUISetup.modules.unitFrames.frames.group.iconSizes.combat == nil then
+        --nkUISetup.modules.unitFrames.frames.group.iconSizes.combat = 30
+    --end
     
     -- check for new char
 

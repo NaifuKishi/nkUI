@@ -27,13 +27,13 @@ local LibEKLGetUnitDetail  = LibEKL.Unit.GetUnitDetail
 
 ---------- init global variables ---------
 
-local marks = { mark1 = "1", mark2 = "2", mark3 = "3", mark4 = "4", mark5 = "5", mark6 = "6", mark7 = "7", mark8 = "8",
-                mark9 = "Tank", mark10 = "Heal", mark11 = "Damage", mark12 = "Support",
-                mark13 = "Arrow", mark14 = "Skull", mark15 = "Avoid", mark16 = "Smile", mark17 = "Squirrel", mark18 = "Crown",
-                mark19 = "Heal 2", mark20 = "Heal 3", mark21 = "Heal 4",
-                mark22 = "Heart", mark23 = "Heart Left Side", mark24 = "Heart Right Side", mark25 = "Radioactive", mark26 = "Sad", 
-                mark27 = "Tank 2", mark28 = "Tank 3", mark29 = "Tank 4", mark30 = "Luck"
-            }
+local markIcons = { mark1 = "markIcon1.png", mark2 = "markIcon2.png", mark3 = "markIcon3.png", mark4 = "markIcon4.png", mark5 = "markIcon5.png", mark6 = "markIcon6.png", mark7 = "markIcon7.png", mark8 = "markIcon8.png",
+                    mark9 = "markIconTank1.png", mark10 = "markIconHeal1.png", mark11 = "markIconDPS.png", mark12 = "markIconSupport.png",
+                    mark13 = "markIconArrow.png", mark14 = "markIconSkull.png", mark15 = "markIconAvoid.png", mark16 = "markIconSmile.png", mark17 = "markIconSquirrel.png", mark18 = "markIconCrown.png",
+                    mark19 = "markIconHeal2.png", mark20 = "markIconHeal3.png", mark21 = "markIconHeal4.png",
+                    mark22 = "markIconHeart.png", mark23 = "markIconHeartLeftSide.png", mark24 = "markIconHeartRightSide.png", mark25 = "markIconRadioactive.png", mark26 = "markIconSad.png", 
+                    mark27 = "markIconTank2.png", mark28 = "markIconTank3.png", mark29 = "markIconTank4.png", mark30 = "markIconLuck.png"
+                }
 
 data.unitFramesBuild = false
 
@@ -63,64 +63,6 @@ local frameManager = {
     framePool = {}
 }
 
---[[
-   _frameManager.get
-    Description:
-        Retrieves or creates a unit frame for a specific unit type. This function manages a pool of reusable frames to optimize performance.
-    Parameters:
-        unitType (string): The type of unit (e.g., "player", "target", "player.pet")
-        scale (number): The scaling factor for the frame size
-        x (number): The x-coordinate position for the frame
-        y (number): The y-coordinate position for the frame
-        reverse (boolean): Whether to position the frame from the right side
-    Returns:
-        frame (table): The configured unit frame with all child elements and functionality
-    Process:
-        1. Checks if a frame already exists for the specified unit type
-        2. If not, checks the frame pool for available frames to reuse
-        3. If no reusable frames are available, creates a new frame
-        4. Configures the frame with the specified parameters
-        5. Sets up the frame's visual elements (health bar, name text, etc.)
-        6. Implements frame-specific functionality (buff management, unit details, etc.)
-        7. Adds the frame to the active frames collection
-    Notes:
-        - The function maintains a pool of reusable frames to optimize performance
-        - Frames are created with secure and non-secure components for proper UI functionality
-        - The frame includes various visual elements like health bar, name text, and energy text
-        - Buff management functionality is implemented for tracking buffs and debuffs
-        - The frame supports unit details like health, energy, and planar values
-        - Positioning can be reversed for right-aligned frames
-        - Each frame is uniquely identified and can be accessed by unit type
-    Available Methods:
-        - SetMacro(newMacro): Sets the macro to be executed when the frame is clicked
-        - ContextMenu(unitID): Sets up the context menu for the frame
-        - SetUnitID(newId): Sets the unit ID associated with the frame
-        - GetUnitID(): Returns the unit ID associated with the frame
-        - GetScale(): Returns the scaling factor of the frame
-        - SetCalling(calling): Sets the calling color for the frame
-        - SetName(name): Sets the unit name text
-        - SetPlanar(planar): Sets the planar value text
-        - SetEnergy(energy): Sets the energy value text
-        - SetHealthMax(newHealthMax): Sets the maximum health value
-        - SetHealth(health): Updates the health bar and text
-        - ProcessUnitDetails(newUnitID): Updates the frame with unit details
-        - GetBuffIcons(): Returns the buff icons collection
-        - GetDebuffIcons(): Returns the debuff icons collection
-        - GetBuffDisplayList(): Returns the buff display list
-        - GetDebuffDisplayList(): Returns the debuff display list
-        - SetBuffIcons(icons): Sets the buff icons collection
-        - SetDebuffIcons(icons): Sets the debuff icons collection
-        - SetBuffDisplayList(list): Sets the buff display list
-    Process:
-        1. Checks if a frame already exists for the specified unit type
-        2. If not, checks the frame pool for available frames to reuse
-        3. If no reusable frames are available, creates a new frame
-        - SetDebuffDisplayList(list): Sets the debuff display list
-        - addBuff(buffUnit, buffs): Adds buffs to the frame
-        - changeBuff(unit, buffs): Changes buffs on the frame
-        - ClearBuffs(): Clears all buffs from the frame
-        - removeBuff(buffUnit, buffs): Removes buffs from the frame
-]]
 function frameManager.get(unitType, unitFrameType, setup)
 
     local unitFrameWidth
@@ -310,11 +252,19 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     local combatIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".combatIcon", unitFrame)
     combatIcon:SetLayer(99)
-    combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -setup.margins.combatIcon, 0)
+    combatIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERLEFT", -5, 0)
     combatIcon:SetHeight(setup.iconSizes.combat)
     combatIcon:SetWidth(setup.iconSizes.combat)
     combatIcon:SetVisible(false)
     combatIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconCombat.png")
+
+    local markIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".markIcon", unitFrame)
+    markIcon:SetLayer(99)
+    markIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERRIGHT",5, 0)
+    markIcon:SetHeight(setup.iconSizes.combat)
+    markIcon:SetWidth(setup.iconSizes.combat * 2)
+    markIcon:SetVisible(false)
+    markIcon:SetTextureAsync(addonInfo.identifier, "gfx/markIcon1.png")
 
     local roleIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".roleIcon", unitFrame)
     roleIcon:SetLayer(99)
@@ -550,16 +500,14 @@ function frameManager.get(unitType, unitFrameType, setup)
         end
     end
 
-    function unitFrame:SetMark(flag)
-        print (flag)
-        --[[
-        if flag == nil then            
-            stateIcon:SetVisible(false)
+    function unitFrame:SetMark(newMark)        
+        if newMark == nil or newMark == false then
+            markIcon:SetVisible(false)
         else
-            stateIcon:SetTextureAsync(addonInfo.identifier, marks[flag])
-            stateIcon:SetVisible(flag)
+            local thisMark = stringFormat("gfx/%s", markIcons[stringFormat("mark%s", newMark)])
+            markIcon:SetTextureAsync(addonInfo.identifier, thisMark)
+            markIcon:SetVisible(true)
         end
-        ]]
     end
 
     function unitFrame:SetRole(newRole)
@@ -758,9 +706,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     if details == nil then return end
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.updateUnit", stringFormat("%s - %s", details.name, details.calling), details) end
-
-    --print (identifier, unitID)
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.updateUnit " .. identifier, stringFormat("%s - %s", details.name, details.calling), details) end
 
     frame:SetUnitID(unitID)
     frame:ContextMenu(unitID)
@@ -807,9 +753,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
         frame:SetAFK()
     end
 
-    if details.mark then
-        frame:SetMark(details.mark)
-    end
+    frame:SetMark(details.mark)
 
     frame:ClearBuffs()
 

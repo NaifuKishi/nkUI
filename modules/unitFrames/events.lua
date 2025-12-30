@@ -199,7 +199,7 @@ local function zoneEvent(_, thisData)
 	end
 end
 
-local function unitDetailsEvent (_, thisData)	
+local function unitDetailsEvent (_, thisData)
 	for unitID, v in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
@@ -211,7 +211,7 @@ local function unitDetailsEvent (_, thisData)
 end
 
 local function readyCheckEvent (_, thisData)
-	
+
 	for unitID, response in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
@@ -302,6 +302,7 @@ function events.uiFramesInitEvents()
 	Command.Event.Attach(Event.Unit.Detail.Offline, unitDetailsEvent, "nkUI.Unit.Detail.Offline")
 	Command.Event.Attach(Event.Unit.Detail.Mark, unitDetailsEvent, "nkUI.Unit.Detail.Mark")
 	Command.Event.Attach(Event.Unit.Detail.Ready, readyCheckEvent, "nkUI.Unit.Detail.Ready")
+	Command.Event.Attach(Event.Unit.Detail.Mark, unitDetailsEvent, "nkUI.Unit.Detail.Mark")
 
 	----- initialize player, pet and target -----
 
