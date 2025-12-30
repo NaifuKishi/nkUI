@@ -118,8 +118,8 @@ function uiElements.icon (name, parent)
 			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 3, 3)
 			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -3, -3)
 		else
-			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 0, 0)
-			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", 0, 0)
+			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
+			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
 		end
 	end
 	

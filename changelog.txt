@@ -1,5 +1,6 @@
 V0.9.4
-    - fixes: Fixed and error when leaving combat
+    - updates: unit frames optimized buff icon design
+    - fixes: Fixed and error when leaving combat    
 
 V0.9.3
     - new: Unit Frames - Supporting raid marks
