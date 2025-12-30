@@ -482,13 +482,25 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	end
 
+	-- due to the out event triggering when hover the texture we only want the frame events to run if texture is not visible
+
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
-		frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
+		if not texture:GetVisible() then 
+			frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
+		end
 	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.In")
 
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
-		frame:SetDesign ()
+		if not texture:GetVisible() then frame:SetDesign () end
 	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.Out")
+
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
+		frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
+	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.In")		
+
+	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
+		frame:SetDesign ()
+	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
 	
 	--[[
 	Attach event handlers
@@ -515,8 +527,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			dialog:SetButtonLabelColor (data.theme.labelColor)
 			dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 			dialog:SetButtonEffect({ strength = 3 })
-			dialog:SetHeight(275)
-
+			dialog:SetHeight(300)
+			
 			dialog:SetColor({	type = "gradientLinear",
 								transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
 								color = {
