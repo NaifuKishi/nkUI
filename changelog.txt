@@ -1,3 +1,6 @@
+V0.9.4
+    - fixes: Fixed and error when leaving combat
+
 V0.9.3
     - new: Unit Frames - Supporting raid marks
     - new: Unit Frames - Ready check is now supported

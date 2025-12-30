@@ -132,25 +132,29 @@ function frameManager.get(unitType, unitFrameType, setup)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
-    secureFrame:SetBackgroundColor(1, 0, 0, 0)
+    --secureFrame:SetBackgroundColor(1, 0, 0, 1)
     secureFrame:SetSecureMode("restricted")
     secureFrame:SetVisible(false)
 
     function unitFrame:SetMacro (newMacro)
-        secureFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, newMacro)
+        LibEKL.Events.AddInsecure(function ()
+            secureFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, newMacro)
+        end)
     end
 
     function unitFrame:ContextMenu(unitID)
-        secureFrame.Event.RightClick =
-        	function()
-                if thisUnitID then Command.Unit.Menu(thisUnitID) end
-        	end
+        LibEKL.Events.AddInsecure(function ()
+            secureFrame.Event.RightClick =
+                function()
+                    if unitID then Command.Unit.Menu(unitID) end
+                end
+            end)
     end
 
-    function unitFrame:MouseOverUnit(unitID)        
-        if InspectSystemSecure() == false then
+    function unitFrame:MouseOverUnit(unitID)
+        LibEKL.Events.AddInsecure(function ()
             secureFrame:SetMouseoverUnit(unitID)
-        end
+        end)        
     end
 
     local healthFrame = LibEKL.UICreateFrame("nkCanvas", thisName .. ".healthFrame", unitFrame)
@@ -428,12 +432,22 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:GetScale() return scale end
     function unitFrame:GetBuffSetup() return setup.buffs end
 
+    local function hideSecureFrame()
+        secureFrame:SetVisible(false)
+        secureFrame:SetMouseoverUnit(nil)
+    end
+
+    local function showSecureFrame()
+        secureFrame:SetVisible(true)
+    end
+
     local oSetVisible = unitFrame.SetVisible
     function unitFrame:SetVisible (flag)    
         oSetVisible(self, flag)
-        secureFrame:SetVisible(flag)
-        if flag == false then 
-            secureFrame:SetMouseoverUnit(nil)
+        if flag == false then
+            LibEKL.Events.AddInsecure(hideSecureFrame)
+        else
+            LibEKL.Events.AddInsecure(showSecureFrame)
         end
     end
 

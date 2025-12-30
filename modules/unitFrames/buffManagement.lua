@@ -289,11 +289,11 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
             --local icon = internalFunc.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
             local icon = internalFunc.iconManager.get(unitType, iconName)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
-            if unitType == "buffbar" then
+            --if unitType == "buffbar" then
                 icons[buffIdentifier].icon:ShowBorder(true)
-            else
-                icons[buffIdentifier].icon:ShowBorder(false)
-            end
+            --else
+                --icons[buffIdentifier].icon:ShowBorder(false)
+            --end
             icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
             icons[buffIdentifier].icon:SetTexture("Rift", buffDetails.icon)
             icons[buffIdentifier].icon:SetParent(parent)
