@@ -3,6 +3,7 @@ V0.9.3
     - new: Unit Frames - Ready check is now supported
     - new: Unit Frames - AFK status of a unit is now being shown
     - new: Unit Frames - Offline status of a unit is now being shown
+    - new: Settings - added option to disable minimap icon frame
     - fixes: Actionbar - improve message of actionbar interactive mode
     - fixes: Actionbar - dropping skills on actionbar works again
     - fixes: QuestTracker - fixed an error condition

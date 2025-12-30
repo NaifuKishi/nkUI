@@ -237,8 +237,6 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.unitFrames and nkUISetup.modules.unitFrames.activate then
 					internalFunc.uiFrames()
 				end	
-	LibEKL.eventHandlers["LibEKL.InventoryManager"]["Update"], LibEKL.Events["LibEKL.InventoryManager"]["Update"] = Utility.Event.Create(addonInfo.identifier, "LibEKL.InventoryManagerUpdate")
-
 
 				if nkUISetup.modules.actionBars and nkUISetup.modules.actionBars.activate then
 					internalFunc.uiActionBars()
@@ -279,7 +277,9 @@ local function initializeAddon(_, addon)
 
 		end, "nkUI.Unit.Availability.Full")
 		
-		LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+		if nkUISetup.useManager then
+			LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+		end
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

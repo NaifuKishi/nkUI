@@ -13,7 +13,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabTheme (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local logoComboBox, themeComboBox
+    local logoComboBox, themeComboBox, managerComboBox
 
     function frame:build()
 
@@ -23,6 +23,14 @@ function settingsUI.uiConfigTabTheme (name, parent)
 
         logoComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
         logoComboBox:SetChecked(nkUISetup.showLogo, true)
+
+        managerComboBox = settingsUI.checkbox(name .. ".managerComboBox", frame, "Minimap icon frame", true, function(newValue)        
+            nkUISetup.useManager = newValue
+            LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        managerComboBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
+        managerComboBox:SetChecked(nkUISetup.useManager, true)
 
         local themeList = {{ label = "Rift", value = "rift"}, { label = "WoW", value = "wow" }}        
     
@@ -35,8 +43,7 @@ function settingsUI.uiConfigTabTheme (name, parent)
 
         themeComboBox:SetSelection(themeList)     
         themeComboBox:SetSelectedValue(currentTheme, false)
-        themeComboBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
-
+        themeComboBox:SetPoint("TOPLEFT", managerComboBox, "BOTTOMLEFT", 0, 10)        
        
     end
 

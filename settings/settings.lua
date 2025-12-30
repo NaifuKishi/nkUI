@@ -129,7 +129,8 @@ local _defaults = {
                         messageOffset = -200 },
         tooltip     = { activate = true }
     },
-    showLogo = true
+    showLogo = true,
+    useManager = true
 }
 
 local function scaleUI ()
@@ -204,11 +205,11 @@ function internalFunc.setupDefaults()
         scaleUI ()
     end
 
-    -- fix for version 0.9.5
+    -- fix for version 0.9.3
 
-    --if nkUISetup.modules.unitFrames.frames.group.iconSizes.combat == nil then
-        --nkUISetup.modules.unitFrames.frames.group.iconSizes.combat = 30
-    --end
+    if nkUISetup.modules.unitFrames.frames.group.iconSizes.combat == 0 then
+        nkUISetup.modules.unitFrames.frames.group.iconSizes.combat = 30
+    end
     
     -- check for new char
 
@@ -395,12 +396,6 @@ function internalFunc.setupUI ()
     local paneTabUnitFrameBasic = settingsUI.uiConfigTabUFBasic(name .. ".tab.UnitFrameBasic", tabPane)
 
     local paneTabUnitFrames = settingsUI.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
-
-    --local EnKaiLogo = LibEKL.UICreateFrame("nkTexture", name .. ".EnKaiLogo", config)
-    --EnKaiLogo:SetTextureAsync(LibEKL.art.GetThemeLogo()[1],LibEKL.art.GetThemeLogo()[2])
-    --EnKaiLogo:SetPoint("BOTTOMLEFT", config:GetContent(), "BOTTOMLEFT", 10, -5)
-    ---EnKaiLogo:SetWidth(125)
-    --EnKaiLogo:SetHeight(33)
 
     local versionText = LibEKL.UICreateFrame("nkText", name .. ".versionText", config)
     versionText:SetFontSize(11)
