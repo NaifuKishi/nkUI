@@ -129,8 +129,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
 
                         internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".debuff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitDebuffDisplayList, unitDebuffIcons, frame)
 
-                        --if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
-                        if InspectSystemSecure() == false then
+                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitDebuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
@@ -142,8 +141,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
 
                         internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".buff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitBuffDisplayList, unitBuffIcons, frame)
                         
-                        --if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
-                        if InspectSystemSecure() == false then
+                        if InspectSystemSecure() == false and stringFind(unitType, "group") == false then
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha) 
                         else
                             unitBuffIcons[buffIdentifier].icon:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)  
