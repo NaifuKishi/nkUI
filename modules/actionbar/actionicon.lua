@@ -74,6 +74,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
 	tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
 	tint:SetVisible(false)
+	tint:SetMouseMasking("limited")
+	tint:SetVisible(false)
 	tint:SetLayer(2)
 	
 	-- Create the cooldown text
@@ -404,7 +406,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	--[[
       Function to set the design
-      @param {string} design - The design to apply
+      @param {string} design - The design to applytint
     ]]
 	function frame:SetDesign (design)
 
@@ -480,27 +482,27 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	end
 
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
 		frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
-	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.In")
+	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.In")
 
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
 		frame:SetDesign ()
-	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
+	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.Out")
 	
 	--[[
 	Attach event handlers
 	Sets up mouse event handlers for the action icon
 	]]
-	texture:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
 		fctCheckDrop()
-	end, texture:GetName() .. ".UI.Input.Mouse.Left.Up")
+	end, frame:GetName() .. ".UI.Input.Mouse.Left.Up")
 
-	texture:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
 		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			fctEditMacro()
 		else
-			local dialog = LibEKL.UI.confirmDialog ('This bar is not flagged as interactive. Do you want to change this bar to interactive mode?', function()
+			local dialog = LibEKL.UI.confirmDialog ('This bar is not flagged as interactive. Macros can be defined on interactive bars. However these bars cannot be hidden in combat.\n\nDo you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				fctEditMacro()
@@ -513,6 +515,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			dialog:SetButtonLabelColor (data.theme.labelColor)
 			dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 			dialog:SetButtonEffect({ strength = 3 })
+			dialog:SetHeight(275)
 
 			dialog:SetColor({	type = "gradientLinear",
 								transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
@@ -524,10 +527,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
-	texture:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
         frame:ClearItem()
 		data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
-	end, texture:GetName() .. ".UI.Input.Mouse.Right.Down")
+	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 	
 	return frame
 

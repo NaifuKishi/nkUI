@@ -181,7 +181,7 @@ function questTracker.fillLog ()
 	
 	nkUISetup.modules.questtracker.collapseState = newCollapseState
 	
-	if (#data.addQuestList == 0) then uiElements.questTracker:GetContent():SetVisible(true) end
+	--if (#data.addQuestList == 0) then uiElements.questTracker:GetContent():SetVisible(true) end
 		 
 end
 
