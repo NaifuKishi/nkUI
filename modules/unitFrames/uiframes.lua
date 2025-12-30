@@ -27,6 +27,14 @@ local LibEKLGetUnitDetail  = LibEKL.Unit.GetUnitDetail
 
 ---------- init global variables ---------
 
+local marks = { mark1 = "1", mark2 = "2", mark3 = "3", mark4 = "4", mark5 = "5", mark6 = "6", mark7 = "7", mark8 = "8",
+                mark9 = "Tank", mark10 = "Heal", mark11 = "Damage", mark12 = "Support",
+                mark13 = "Arrow", mark14 = "Skull", mark15 = "Avoid", mark16 = "Smile", mark17 = "Squirrel", mark18 = "Crown",
+                mark19 = "Heal 2", mark20 = "Heal 3", mark21 = "Heal 4",
+                mark22 = "Heart", mark23 = "Heart Left Side", mark24 = "Heart Right Side", mark25 = "Radioactive", mark26 = "Sad", 
+                mark27 = "Tank 2", mark28 = "Tank 3", mark29 = "Tank 4", mark30 = "Luck"
+            }
+
 data.unitFramesBuild = false
 
 uiElements.frames = {}
@@ -182,7 +190,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
-    secureFrame:SetBackgroundColor(1, 0, 0, 1)
+    secureFrame:SetBackgroundColor(1, 0, 0, 0)
     secureFrame:SetSecureMode("restricted")
     secureFrame:SetVisible(false)
 
@@ -199,7 +207,7 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     function unitFrame:MouseOverUnit(unitID)        
         if InspectSystemSecure() == false then
-            secureFrame:MouseoverUnit(unitID)
+            secureFrame:SetMouseoverUnit(unitID)
         end
     end
 
@@ -337,13 +345,13 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     local iconHeight = unitFrame:GetHeight() - 2
 
-    local afkIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".afkIcon", unitFrame)
-    afkIcon:SetLayer(99)
-    afkIcon:SetHeight(iconHeight)
-    afkIcon:SetWidth(iconHeight)
-    afkIcon:SetVisible(false) 
-    afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
-    afkIcon:SetPoint("CENTER", unitFrame, "CENTER")
+    local stateIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".stateIcon", unitFrame)
+    stateIcon:SetLayer(99)
+    stateIcon:SetHeight(iconHeight)
+    stateIcon:SetWidth(iconHeight)
+    stateIcon:SetVisible(false) 
+    stateIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
+    stateIcon:SetPoint("CENTER", unitFrame, "CENTER")
     
     function unitFrame:Redraw()        
         unitFrame:SetWidth(setup.width)
@@ -423,10 +431,24 @@ function frameManager.get(unitType, unitFrameType, setup)
             combatIcon:SetVisible(true)
         end
 
-        if unitType == "player" or unitType == "player.target" then
+        if unitType == "player" or unitType == "playstateIcer.target" then
             unitFrame:SetTier("raid")
         end
 
+        nameText:ClearAll()
+        nameText:SetFontSize(setup.fontSizes.name)
+
+        healthText:ClearAll()
+        healthText:SetFontSize(setup.fontSizes.health)
+
+        energyText:ClearAll()
+        energyText:SetFontSize(setup.fontSizes.energy)
+
+        levelText:ClearAll()
+        levelText:SetFontSize(setup.fontSizes.level)
+        
+        planarText:ClearAll()
+        planarText:SetFontSize(setup.fontSizes.planar)
         unitFrame:ProcessUnitDetails (LibEKL.Unit.getPlayerDetails().id)
         unitFrame:SetRole("dps")
         
@@ -461,7 +483,7 @@ function frameManager.get(unitType, unitFrameType, setup)
         oSetVisible(self, flag)
         secureFrame:SetVisible(flag)
         if flag == false then 
-            secureFrame:MouseOverUnit(nil)
+            secureFrame:SetMouseoverUnit(nil)
         end
     end
 
@@ -500,20 +522,44 @@ function frameManager.get(unitType, unitFrameType, setup)
 
     function unitFrame:SetAFK(flag)
         if flag == nil then            
-            afkIcon:SetVisible(false)
+            stateIcon:SetVisible(false)
         else
-            afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
-            afkIcon:SetVisible(flag)        
+            stateIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
+            stateIcon:SetVisible(flag)        
         end
     end
 
     function unitFrame:SetOffline(flag)
         if flag == nil then            
-            afkIcon:SetVisible(false)
+            stateIcon:SetVisible(false)
         else
-            afkIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconOffline.png")
-            afkIcon:SetVisible(flag)
+            stateIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconOffline.png")
+            stateIcon:SetVisible(flag)
         end
+    end
+
+    function unitFrame:SetReadyCheck(response)
+        if response == "nil" then
+            stateIcon:SetVisible(false)
+        elseif response == false then
+            stateIcon:SetTextureAsync("Rift", "raid_icon_notready.png.dds")
+            stateIcon:SetVisible(true)
+        else
+            stateIcon:SetTextureAsync("Rift", "raid_icon_ready.png.dds")
+            stateIcon:SetVisible(true)
+        end
+    end
+
+    function unitFrame:SetMark(flag)
+        print (flag)
+        --[[
+        if flag == nil then            
+            stateIcon:SetVisible(false)
+        else
+            stateIcon:SetTextureAsync(addonInfo.identifier, marks[flag])
+            stateIcon:SetVisible(flag)
+        end
+        ]]
     end
 
     function unitFrame:SetRole(newRole)
@@ -759,6 +805,10 @@ function internalFunc.updateUnit (frame, unitID, identifier)
         frame:SetOffline(details.offline)
     else
         frame:SetAFK()
+    end
+
+    if details.mark then
+        frame:SetMark(details.mark)
     end
 
     frame:ClearBuffs()

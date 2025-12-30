@@ -199,8 +199,7 @@ local function zoneEvent(_, thisData)
 	end
 end
 
-local function roleEvent (_, thisData)
-	
+local function unitDetailsEvent (_, thisData)	
 	for unitID, v in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
@@ -211,31 +210,17 @@ local function roleEvent (_, thisData)
 	end	
 end
 
-local function afkEvent (_, thisData)
+local function readyCheckEvent (_, thisData)
 	
-	for unitID, v in pairs(thisData) do
+	for unitID, response in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
-			LibEKL.Unit.GetUnitDetail(unitID, true)
-			internalFunc.updateUnit (frame, unitID, thisType)
+			frame:SetReadyCheck(response)
 		end
 	end	
+
 end
-
-local function offlineEvent (_, thisData)
-	
-	for unitID, v in pairs(thisData) do
-		local unitTypes = LibEKLGetUnitTypes (unitID)
-		for _, thisType in pairs (unitTypes) do
-			local frame = internalFunc.getFrameByIdentifier(thisType)
-			LibEKL.Unit.GetUnitDetail(unitID, true)
-			internalFunc.updateUnit (frame, unitID, thisType)
-		end
-	end	
-end
-
-
 
 ------------------------------ update handler functions ------------------------------
 
@@ -311,10 +296,12 @@ function events.uiFramesInitEvents()
 
     Command.Event.Attach(Event.System.Update.Begin, updateHandler, "nkUI.System.updateHandler")
 
-	Command.Event.Attach(Event.Unit.Detail.Zone, zoneEvent, "nkUI.Unit.Detail.Zone")
-	Command.Event.Attach(Event.Unit.Detail.Role, roleEvent, "nkUI.Unit.Detail.Role")
-	Command.Event.Attach(Event.Unit.Detail.Afk, afkEvent, "nkUI.Unit.Detail.Afk")
-	Command.Event.Attach(Event.Unit.Detail.Offline, offlineEvent, "nkUI.Unit.Detail.Offline")
+	Command.Event.Attach(Event.Unit.Detail.Zone, unitDetailsEvent, "nkUI.Unit.Detail.Zone")
+	Command.Event.Attach(Event.Unit.Detail.Role, unitDetailsEvent, "nkUI.Unit.Detail.Role")
+	Command.Event.Attach(Event.Unit.Detail.Afk, unitDetailsEvent, "nkUI.Unit.Detail.Afk")
+	Command.Event.Attach(Event.Unit.Detail.Offline, unitDetailsEvent, "nkUI.Unit.Detail.Offline")
+	Command.Event.Attach(Event.Unit.Detail.Mark, unitDetailsEvent, "nkUI.Unit.Detail.Mark")
+	Command.Event.Attach(Event.Unit.Detail.Ready, readyCheckEvent, "nkUI.Unit.Detail.Ready")
 
 	----- initialize player, pet and target -----
 
