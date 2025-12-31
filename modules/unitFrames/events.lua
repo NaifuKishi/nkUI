@@ -32,6 +32,7 @@ local function _fctSecureEnter()
 
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
+	uiElements.frames["player.target.target"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(true)
 
 	uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
@@ -45,6 +46,7 @@ local function _fctSecureLeave()
 
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
+	uiElements.frames["player.target.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player.ressourcebar"]:SetVisible(false)
 
 	uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
@@ -262,6 +264,7 @@ function events.uiFramesInitEvents()
 
 	LibEKL.Unit.subscribe("player")
 	LibEKL.Unit.subscribe("player.target")
+	LibEKL.Unit.subscribe("player.target.target")
 	LibEKL.Unit.subscribe("player.pet")
 	LibEKL.Unit.subscribe("focus")
 

@@ -113,6 +113,13 @@ function internalFunc.initMove ()
         end))
     end
 
+    if uiElements.frames["player.target.target"] then
+        table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.target"], "ToT FRAME", function (newX, newY)
+            nkUISetup.modules.unitFrames.frames.targetOfTarget.x = newX
+            nkUISetup.modules.unitFrames.frames.targetOfTarget.y = newY        
+        end))
+    end
+
     if uiElements.frames["focus"] then
         table.insert(moveFrames, _moveFrame (uiElements.frames["focus"], "FOCUS FRAME", function (newX, newY)
             nkUISetup.modules.unitFrames.frames.focus.x = newX

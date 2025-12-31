@@ -64,6 +64,12 @@ local _defaults = {
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
                                                         buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10 }
                                                     },
+                                    targetOfTarget= { x = 525, y = 305, width = 150, height = 25,
+                                                        reverse = true,
+                                                        fontSizes = {name = 10, health = 16, energy = 8, planar = 7, level = 7}, 
+                                                        margins = { name = 9, health = 9, energy = 7, planar = 2, combatIcon = 3, roleIcon = 3, tierIcon = 3, level = 2 },
+                                                        iconSizes = {combat = 18, role = 12, tier = 12 },
+                                                    },
                                     focus           = { x = -900, y = 250, width = 185, height = 25,
                                                         reverse = false,
                                                         fontSizes = {name = 12, health = 20, energy = 10, planar = 10, level = 10},                     
@@ -140,7 +146,7 @@ local function scaleUI ()
     if parentWidth == 3440 then return end
 
     data.uiScale = parentWidth / 3440
-
+    
     nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
     nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
 
@@ -158,6 +164,9 @@ local function scaleUI ()
 
     nkUISetup.modules.unitFrames.frames.target.x = nkUISetup.modules.unitFrames.frames.target.x * data.uiScale
     nkUISetup.modules.unitFrames.frames.target.y = nkUISetup.modules.unitFrames.frames.target.y * data.uiScale
+
+    nkUISetup.modules.unitFrames.frames.targetOfTarget.x = nkUISetup.modules.unitFrames.frames.targetOfTarget.x * data.uiScale
+    nkUISetup.modules.unitFrames.frames.targetOfTarget.y = nkUISetup.modules.unitFrames.frames.targetOfTarget.y * data.uiScale
 
     nkUISetup.modules.unitFrames.frames.playerPet.x = nkUISetup.modules.unitFrames.frames.playerPet.x * data.uiScale
     nkUISetup.modules.unitFrames.frames.playerPet.y = nkUISetup.modules.unitFrames.frames.playerPet.y * data.uiScale
@@ -196,6 +205,8 @@ end
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
 function internalFunc.setupDefaults()
+
+    nkUISetup.modules.unitFrames.frames.targetOfTarget = nil
 
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults

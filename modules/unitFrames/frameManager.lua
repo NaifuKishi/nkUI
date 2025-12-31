@@ -5,25 +5,14 @@ local addonInfo, privateVars = ...
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
-local _events       = privateVars.events
 
 ---------- init local variables ---------
 
 -- Cache frequently used functions and values
-local InspectUnitDetail     = Inspect.Unit.Detail
-local InspectBuffDetail     = Inspect.Buff.Detail
-local InspectBuffList       = Inspect.Buff.List
-local InspectUnitLookup     = Inspect.Unit.Lookup
-local InspectSystemSecure   = Inspect.System.Secure
+local inspectUnitDetail     = Inspect.Unit.Detail
 
 local mathFloor     = math.floor
-local mathpi        = math.pi
 local stringFormat  = string.format
-local stringLen     = string.len
-local stringSub     = string.sub
-local stringFind    = string.find
-
-local LibEKLGetUnitDetail  = LibEKL.Unit.GetUnitDetail
 
 ---------- init global variables ---------
 
@@ -35,9 +24,6 @@ local markIcons = { mark1 = "markIcon1.png", mark2 = "markIcon2.png", mark3 = "m
                     mark27 = "markIconTank2.png", mark28 = "markIconTank3.png", mark29 = "markIconTank4.png", mark30 = "markIconLuck.png"
                 }
 
-data.unitFramesBuild = false
-
-uiElements.frames = {}
 uiElements.unitFramesContext = UI.CreateContext("nkUI.unitFrames")
 uiElements.unitFramesContext:SetStrata('hud')
 uiElements.unitFramesContext:SetLayer(1)
@@ -51,10 +37,6 @@ uiElements.unitFramesContextSecure:SetLayer(99)
 
 local name = "uiFrames"
 
----------- init variables ---------
-
-local callingColor = {}
-
 ---------- local function block ---------
 
 -- Create a frame manager
@@ -63,7 +45,7 @@ local frameManager = {
     framePool = {}
 }
 
-function frameManager.get(unitType, unitFrameType, setup)
+function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
     local unitFrameWidth
     local frameWidth, frameHeight = setup.width, setup.height
@@ -421,10 +403,29 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:SetDebuffDisplayList(list) unitDebuffDisplayList = list end
     function unitFrame:SetBuffId2BuffTypeList(list) unitBuffId2BuffType = list end    
 
-    function unitFrame:addBuff(buffUnit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") end
-    function unitFrame:changeBuff(unit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") end
-    function unitFrame:ClearBuffs() internalFunc.manageBuffs(self, unitType, thisUnitID, nil, nil, "clear") end
-    function unitFrame:removeBuff(buffUnit, buffs) internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "remove") end
+    function unitFrame:addBuff(buffUnit, buffs) 
+        if unitFrameType ~= "raid" then
+            internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "add") 
+        end
+    end
+
+    function unitFrame:changeBuff(unit, buffs) 
+        if unitFrameType ~= "raid" then
+            internalFunc.manageBuffs(self, unitType, thisUnitID, unit, buffs, "change") 
+        end
+    end
+    
+    function unitFrame:ClearBuffs() 
+        if unitFrameType ~= "raid" then
+            internalFunc.manageBuffs(self, unitType, thisUnitID, nil, nil, "clear") 
+        end
+    end
+    
+    function unitFrame:removeBuff(buffUnit, buffs) 
+        if unitFrameType ~= "raid" then
+            internalFunc.manageBuffs(self, unitType, thisUnitID, buffUnit, buffs, "remove") 
+        end
+    end
 
     function unitFrame:SetUnitID (newId) thisUnitID = newId end
     function unitFrame:GetUnitID () return thisUnitID end
@@ -458,11 +459,16 @@ function frameManager.get(unitType, unitFrameType, setup)
     end
 
     local oSetPoint = unitFrame.SetPoint
-    function unitFrame:SetPoint(from, object, to , x ,y)
-        oSetPoint(self, from, object, to, x, y)
-        secureFrame:SetPoint(from, object, to, x, y)
+    function unitFrame:SetPoint(from, object, to, x, y)
+        if x and y then
+            oSetPoint(self, from, object, to, x, y)
+            secureFrame:SetPoint(from, object, to, x, y)
+        else
+            oSetPoint(self, from, object, to)
+            secureFrame:SetPoint(from, object, to)
+        end        
     end
-
+    
     function unitFrame:SetTier(newTier)
 
         if newTier == "group" then
@@ -550,7 +556,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     function unitFrame:SetCalling (calling)
         if calling == "primalist" then energyText:SetVisible(false) end
 
-        local fill = callingColor[calling or "default"]
+        local fill = data.callingColor[calling or "default"]
         healthFrame:SetShape (path, fill, nil)            
     end
 
@@ -638,7 +644,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     end
 
     function unitFrame:ProcessUnitDetails (newUnitID)
-        local details = InspectUnitDetail(newUnitID)
+        local details = inspectUnitDetail(newUnitID)
         if (details) then
 
             unitFrame:MouseOverUnit(unitID)
@@ -668,20 +674,7 @@ function frameManager.get(unitType, unitFrameType, setup)
     return unitFrame
 end
 
---[[
-   _frameManager.clearAll
-    Description:
-        Clears all active unit frames and returns them to the pool. This function is used to reset the frame manager.
-    Process:
-        1. Iterates through all active frames
-        2. Hides each frame and adds it to the frame pool
-        3. Clears the active frames collection
-    Notes:
-        - This function is useful for resetting the UI state
-        - All frames are returned to the pool for potential reuse
-        - The active frames collection is emptied after processing
-]]
-function frameManager.release(unitType)
+function internalFunc.FrameManagerRelease(unitType)
     if frameManager.activeFrames[unitType] then
         frameManager.activeFrames[unitType]:SetVisible(false)
         table.insert(frameManager.framePool, frameManager.activeFrames[unitType])
@@ -689,344 +682,10 @@ function frameManager.release(unitType)
     end
 end
 
-
---[[
-   _frameManager.clearAll
-    Description:
-        Clears all active unit frames and returns them to the pool. This function is used to reset the frame manager.
-    Process:
-        1. Iterates through all active frames
-        2. Hides each frame and adds it to the frame pool
-        3. Clears the active frames collection
-    Notes:
-        - This function is useful for resetting the UI state
-        - All frames are returned to the pool for potential reuse
-        - The active frames collection is emptied after processing
-]]
-function frameManager.clearAll()
+function internalFunc.FrameManagerClearAll()
     for k, v in pairs(frameManager.activeFrames) do
         v:SetVisible(false)
         table.insert(frameManager.framePool, v)
     end
     frameManager.activeFrames = {}
-end
-
-
-function internalFunc.updateUnit (frame, unitID, identifier)
-
-    if frame == nil then return end
-
-    local details = LibEKLGetUnitDetail(unitID)
-
-    if details == nil then return end
-
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.updateUnit " .. identifier, stringFormat("%s - %s", details.name, details.calling), details) end
-
-    frame:SetUnitID(unitID)
-    frame:ContextMenu(unitID)
-    frame:MouseOverUnit(unitID)
-
-    --print (identifier, details.name)
-
-    frame:SetMacro(stringFormat("/target %s", details.name))
-
-    frame:SetName(details.name)
-    frame:SetCalling(details.calling)
-
-    if details.heatlthMax then 
-        frame:SetHealthMax(details.healthMax) 
-    else
-        frame:SetHealthMax(details.health) 
-    end
-    
-    frame:SetHealth(details.health)
-
-    if (details.energy) then
-        frame:SetEnergyMax(details.energyMax or details.energy)
-        frame:SetEnergy(details.energy)        
-    elseif (details.power) then
-        frame:SetEnergy(details.power)
-    elseif (details.mana) then
-        frame:SetEnergy(details.mana)
-    elseif (details.focus) then
-        frame:SetEnergy(details.focus - 100)
-    end
-
-    frame:SetPlanar(details.planar)
-    frame:SetLevel(details.level)
-
-    frame:SetRole(details.role)
-    frame:SetTier(details.tier)
-    frame:SetRare(details.guaranteedLoot)
-
-    if details.afk then
-        frame:SetAFK(details.afk)
-    elseif details.offline then
-        frame:SetOffline(details.offline)
-    else
-        frame:SetAFK()
-    end
-
-    frame:SetMark(details.mark)
-
-    frame:ClearBuffs()
-
-    local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
-
-    if stringFind (identifier, "group") and groupStatus ~= 'raid' then
-        local buffs = InspectBuffList(unitID)
-        if (buffs) then frame:addBuff(unitID, buffs) end
-    elseif identifier == "player.target" then
-        local buffs = InspectBuffList(unitID)
-        if (buffs) then frame:addBuff(unitID, buffs) end
-    end
-
-end
-
---[[
-   internalFunc.uiFrames
-    Description:
-        Initializes and sets up the unit frames for player, player pet, and target. This function creates and configures the main UI elements.
-    Process:
-        1. Uses the frame manager to get frames for player, player pet, and target
-        2. Configures each frame with appropriate parameters
-        3. Sets up event handlers for each frame
-        4. Creates and configures resource bars and cast bars
-        5. Sets up update functions for each frame
-        6. Stores the frames in the uiElements.frames collection
-        7. Initializes events for the UI frames
-    Notes:
-        - This function sets up the core UI elements for the addon
-        - Each frame is configured with appropriate macros and event handlers
-        - Resource bars and cast bars are created and linked to the frames
-        - The function ensures proper initialization of all UI components
-        - Events are initialized to handle updates and interactions
-]]
-function internalFunc.uiFrames()
-
-    callingColor = data.colors.callings[nkUISetup.modules.unitFrames.colorScheme]
-
-    uiElements.frames = {}
-
-    local buffBarHolder = LibEKL.UICreateFrame("nkFrame", "nkUI.buffBar.holder", uiElements.unitFramesContext)
-    buffBarHolder:SetPoint("CENTER", UIParent, "CENTER", nkUISetup.modules.buffBar.x, nkUISetup.modules.buffBar.y)
-    uiElements.frames["buffBar"] = buffBarHolder
-
-        -- Use the frame manager to get frames
-    local player = frameManager.get("player", false, nkUISetup.modules.unitFrames.frames.player)
-    player:SetUnitID(Inspect.Unit.Lookup('player'))
-    player:SetVisible(true)
-    player:SetMacro("/target @self")
-
-    uiElements.frames["player"] = player
-
-    local playerRessourceBar = internalFunc.ressourcBar("player", nkUISetup.modules.unitFrames.frames.ressourceBar)
-    local playerCastbar = internalFunc.createCastBar("player", nkUISetup.modules.unitFrames.frames.playerCastBar)
-
-    uiElements.frames["player.castbar"] = playerCastbar
-    uiElements.frames["player.ressourcebar"] = playerRessourceBar  
-
-    local playerPet = frameManager.get("player.pet", false, nkUISetup.modules.unitFrames.frames.playerPet)
-    playerPet:SetMacro("/target @pet")
-
-    uiElements.frames["player.pet"] = playerPet
-
-    local target = frameManager.get("target", false, nkUISetup.modules.unitFrames.frames.target)
-    local targetCastbar = internalFunc.createCastBar("player.target", nkUISetup.modules.unitFrames.frames.targetCastBar)
-
-    uiElements.frames["player.target.castbar"] = targetCastbar
-    uiElements.frames["player.target"] = target
-
-    local focus = frameManager.get("focus", false, nkUISetup.modules.unitFrames.frames.focus)
-    focus:SetMacro("/target @focus")
-    uiElements.frames["focus"] = focus
-
-    local setup = nkUISetup.modules.unitFrames.frames.group
-
-    local from, object, to, x, y = "CENTER", UIParent, "CENTER", setup.x, setup.y
-
-    for idx = 1, 5, 1 do
-        local group = frameManager.get(stringFormat("group%02d", idx), "group", setup)
-        group:ClearPoint("CENTER")
-        group:SetPoint(from, object, to, x, y)
-        group:SetMacro(stringFormat("/target @group%02d", idx))
-        --group:SetVisible(true)
-        --internalFunc.updateUnit (group, LibEKL.Unit.getPlayerDetails().id)
-
-        uiElements.frames[stringFormat("group%02d", idx)] = group
-
-        from, to, object, x, y = "TOPLEFT", "BOTTOMLEFT", group, 0, 100 * data.uiScale
-    end
-
-    setup = nkUISetup.modules.unitFrames.frames.raid
-
-    local from, object, to, x, y = "CENTER", UIParent, "CENTER", setup.x, setup.y
-    local firstRaid
-
-    for idx1 = 0, 3, 1 do
-        for idx2 = 1, 5, 1 do
-            local index = idx1 * 5 + idx2
-
-            local raid = frameManager.get(stringFormat("raid%02d", index), "raid", setup)
-            raid:ClearPoint("CENTER")
-            raid:SetPoint(from, object, to, x, y)
-            raid:SetMacro(stringFormat("/target @group%02d", index))
-            --raid:SetVisible(true)
-            --internalFunc.updateUnit (raid, LibEKL.Unit.getPlayerDetails().id)
-            uiElements.frames[stringFormat("raid%02d", index)] = raid
-
-            from, to, object, x, y = "TOPLEFT", "TOPRIGHT", raid, 2, 0
-
-            if idx2 == 1 then firstRaid = raid end
-        end
-
-        to, object, x, y = "BOTTOMLEFT", firstRaid, 0, 2
-    end
-
-    function playerRessourceBar:update (unitID)
-        if (unitID == LibEKL.Unit.getPlayerDetails().id) then
-            local details = LibEKLGetUnitDetail(unitID)
-
-            if details.combo then playerRessourceBar:SetCombo(details.combo) end
-
-            if details.focus then
-                playerRessourceBar:SetRessourceType("focus")
-                playerRessourceBar:SetRessourceMax(200)
-            end
-
-            if details.charge then
-                playerRessourceBar:SetCharge(details.charge)
-            end
-
-            if details.energy then
-                playerRessourceBar:SetRessourceType("energy")
-                playerRessourceBar:SetRessourceMax(details.energyMax)
-                playerRessourceBar:SetRessource(details.energy)
-            elseif details.power then
-                playerRessourceBar:SetRessourceType("power")
-                playerRessourceBar:SetRessourceMax(details.power)
-                playerRessourceBar:SetRessource(details.power)
-            elseif details.mana then
-                playerRessourceBar:SetRessourceType("mana")
-                playerRessourceBar:SetRessourceMax(details.mana)
-                playerRessourceBar:SetRessource(details.mana)
-            end
-        end
-    end    
-
-    uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-    uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-    uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-    uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-
-   _events.uiFramesInitEvents()
-	
-end
-
---[[
-   internalFunc.uiFramesToggle
-    Description:
-        Toggles the visibility of the unit frames. This function controls whether the UI elements are shown or hidden.
-    Parameters:
-        value (boolean): Whether to show or hide the frames
-    Process:
-        1. Checks if the frames need to be initialized
-        2. If initializing, calls internalFunc.uiFrames() to create the frames
-        3. Updates the player and resource bar with current unit details
-        4. Iterates through all frames and sets their visibility based on the value parameter
-        5. Ensures the player and target frames are always visible when toggled on
-    Notes:
-        - This function provides a simple way to show or hide the UI
-        - Initialization is performed only when needed
-        - The function ensures proper visibility state for all frames
-        - Player and target frames are always shown when toggled on
-]]
-function internalFunc.uiFramesToggle(value)
-
-    if value == true and not uiElements.frames["player"] then
-        internalFunc.uiFrames ()
-        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.Unit.getPlayerDetails().id, "player")
-        uiElements.frames["player.ressourcebar"]:update (LibEKL.Unit.getPlayerDetails().id)
-    end
-
-    if uiElements.frames then        
-        for k, v in pairs (uiElements.frames) do
-            v:SetVisible(false)
-        end
-    end
-
-    uiElements.frames["player"]:SetVisible(value)
-    uiElements.frames["player.target"]:SetVisible(value)
-
-end
-
-function internalFunc.uiFramesRemoveBuffs()
-
-    local buffs = InspectBuffList(LibEKL.Unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
-
-    local targetFrame = uiElements.frames["player.target"]
-    local targetID = LibEKL.Unit.GetUnitByIdentifier("player.target")
-
-    if targetFrame:GetVisible() and targetID ~= nil then        
-        local buffs = InspectBuffList(targetID)
-        if (buffs) then targetFrame:removeBuff(targetID, buffs) end
-    end
-
-    local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = LibEKL.Unit.GetUnitByIdentifier("player.pet")
-
-    if playerPetFrame:GetVisible() and playerPetID ~= nil then        
-        local buffs = InspectBuffList(playerPetID)
-        if (buffs) then playerPetFrame:removeBuff(playerPetID, buffs) end
-    end
-
-end
-
-function internalFunc.uiFramesLoadAllBuffs()
-
-    local buffs = InspectBuffList(LibEKL.Unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
-
-    local targetFrame = uiElements.frames["player.target"]
-
-    local targetID = LibEKL.Unit.GetUnitByIdentifier("player.target")
-
-    if targetFrame:GetVisible() and targetID ~= nil then        
-        local buffs = InspectBuffList(targetID)
-        if (buffs) then targetFrame:addBuff(targetID, buffs) end
-    end
-
-    local playerPetFrame = uiElements.frames["player.pet"]
-    local playerPetID = LibEKL.Unit.GetUnitByIdentifier("player.pet")
-
-    if playerPetFrame:GetVisible() and playerPetID ~= nil then        
-        local buffs = InspectBuffList(playerPetID)
-        if (buffs) then playerPetFrame:addBuff(playerPetID, buffs) end
-    end
-end
-
-function internalFunc.getFrameByIdentifier(identifier)
-    return uiElements.frames[identifier]
-end
-
-function internalFunc.uiFrameRedraw(bar)
-
-    if bar == "group" then
-        for idx = 1, 5, 1 do
-            uiElements.frames[stringFormat("group%02d", idx)]:SetVisible(true)
-            uiElements.frames[stringFormat("group%02d", idx)]:Redraw()
-        end
-    elseif bar == "raid" then
-        for idx = 1, 20, 1 do
-            uiElements.frames[stringFormat("raid%02d", idx)]:SetVisible(true)
-            uiElements.frames[stringFormat("raid%02d", idx)]:Redraw()
-        end
-    else
-        uiElements.frames[bar]:SetVisible(true) 
-        uiElements.frames[bar]:Redraw() 
-    end
-
-    LibEKL.UI.reloadDialog ("nkUI")
-
 end

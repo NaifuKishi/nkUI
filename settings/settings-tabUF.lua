@@ -43,7 +43,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         heightSlider:SetPrecision(1)
         heightSlider:AdjustValue(thisSettings.height)
 
-        if unitType ~= "raid" and unitType ~= "group" then
+        if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "group" then
             reverseCheckbox = settingsUI.checkbox(name .. ".reverseCheckbox", frame, "Reverse display", true, function(newValue)        
                 thisSettings.reverse = newValue
                 internalFunc.uiFrameRedraw(unitType)
@@ -57,7 +57,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         
         fontSizesHeader = settingsUI.header ( name .. ".fontSizesHeader", frame, "Text sizes")
 
-        if unitType ~= "raid" and unitType ~= "group" then
+        if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "group" then
             fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT" , 0, 15)
         else
             fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
@@ -74,129 +74,56 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         nameFontSize:SetPrecision(1)
         nameFontSize:AdjustValue(thisSettings.fontSizes.name)
 
-        healthFontSize = settingsUI.slider (name .. ".healthFontSize", frame, "Health text <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.fontSizes.health = newValue
-            internalFunc.uiFrameRedraw(unitType)
-        end)
+        if unitType ~= "raid" and unitType ~= "target.target" then
+            healthFontSize = settingsUI.slider (name .. ".healthFontSize", frame, "Health text <font color='#3399FF'>%d</font>", true, function (newValue)
+                thisSettings.fontSizes.health = newValue
+                internalFunc.uiFrameRedraw(unitType)
+            end)
 
-        healthFontSize:SetPoint("TOPLEFT", nameFontSize, "TOPRIGHT", 30, 0)
-        healthFontSize:SetRange(10, 40)
-        healthFontSize:SetMidValue(25)
-        healthFontSize:SetPrecision(1)
-        healthFontSize:AdjustValue(thisSettings.fontSizes.health)
+            healthFontSize:SetPoint("TOPLEFT", nameFontSize, "TOPRIGHT", 30, 0)
+            healthFontSize:SetRange(10, 40)
+            healthFontSize:SetMidValue(25)
+            healthFontSize:SetPrecision(1)
+            healthFontSize:AdjustValue(thisSettings.fontSizes.health)
 
-        energyFontSize = settingsUI.slider (name .. ".energyFontSize", frame, "Energy text <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.fontSizes.energy = newValue
-            internalFunc.uiFrameRedraw(unitType)
-        end)
+            energyFontSize = settingsUI.slider (name .. ".energyFontSize", frame, "Energy text <font color='#3399FF'>%d</font>", true, function (newValue)
+                thisSettings.fontSizes.energy = newValue
+                internalFunc.uiFrameRedraw(unitType)
+            end)
 
-        energyFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
-        energyFontSize:SetRange(10, 40)
-        energyFontSize:SetMidValue(25)
-        energyFontSize:SetPrecision(1)
-        energyFontSize:AdjustValue(thisSettings.fontSizes.energy)
+            energyFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
+            energyFontSize:SetRange(10, 40)
+            energyFontSize:SetMidValue(25)
+            energyFontSize:SetPrecision(1)
+            energyFontSize:AdjustValue(thisSettings.fontSizes.energy)
 
-        planarFontSize = settingsUI.slider (name .. ".planarFontSize", frame, "Planar text <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.fontSizes.planar = newValue
-            internalFunc.uiFrameRedraw(unitType)
-        end)
+            planarFontSize = settingsUI.slider (name .. ".planarFontSize", frame, "Planar text <font color='#3399FF'>%d</font>", true, function (newValue)
+                thisSettings.fontSizes.planar = newValue
+                internalFunc.uiFrameRedraw(unitType)
+            end)
 
-        planarFontSize:SetPoint("TOPLEFT", energyFontSize, "TOPRIGHT", 30, 0)
-        planarFontSize:SetRange(10, 40)
-        planarFontSize:SetMidValue(25)
-        planarFontSize:SetPrecision(1)
-        planarFontSize:AdjustValue(thisSettings.fontSizes.planar)
+            planarFontSize:SetPoint("TOPLEFT", energyFontSize, "TOPRIGHT", 30, 0)
+            planarFontSize:SetRange(10, 40)
+            planarFontSize:SetMidValue(25)
+            planarFontSize:SetPrecision(1)
+            planarFontSize:AdjustValue(thisSettings.fontSizes.planar)
+        end
 
         levelFontSize = settingsUI.slider (name .. ".levelFontSize", frame, "Level text <font color='#3399FF'>%d</font>", true, function (newValue)
             thisSettings.fontSizes.level = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
 
-        levelFontSize:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT", 0, 5)
+        if unitType ~= "raid" and unitType ~= "target.target" then
+            levelFontSize:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT", 0, 5)
+        else
+            levelFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
+        end
+
         levelFontSize:SetRange(10, 40)
         levelFontSize:SetMidValue(25)
         levelFontSize:SetPrecision(1)
         levelFontSize:AdjustValue(thisSettings.fontSizes.level)
-
-        --[[
-        -- margins
-
-        marginsHeader = LibEKL.UICreateFrame("nkText", name .. ".marginsHeader", frame)
-        marginsHeader:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT" , 0, 10)
-        marginsHeader:SetFontSize(14)
-        marginsHeader:SetText("Offsets")
-        marginsHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
-
-        nameMargins = settingsUI.slider (name .. ".nameMargins", frame, "Name offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.name = newValue
-        end)
-
-        nameMargins:SetPoint("TOPLEFT", marginsHeader, "BOTTOMLEFT", 0, 10)
-        nameMargins:SetRange(-40, 40)
-        nameMargins:SetMidValue(0)
-        nameMargins:SetPrecision(1)
-        nameMargins:AdjustValue(thisSettings.margins.name)
-
-        healthMargins = settingsUI.slider (name .. ".healthMargins", frame, "Health offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.health = newValue
-        end)
-
-        healthMargins:SetPoint("TOPLEFT", nameMargins, "TOPRIGHT", 30, 0)
-        healthMargins:SetRange(-40, 40)
-        healthMargins:SetMidValue(0)
-        healthMargins:SetPrecision(1)
-        healthMargins:AdjustValue(thisSettings.margins.health)
-
-        energyMargins = settingsUI.slider (name .. ".energyMargins", frame, "Energy offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.energy = newValue
-        end)
-
-        energyMargins:SetPoint("TOPLEFT", nameMargins, "BOTTOMLEFT", 0, 5)
-        energyMargins:SetRange(-40, 40)
-        energyMargins:SetMidValue(0)
-        energyMargins:SetPrecision(1)
-        energyMargins:AdjustValue(thisSettings.margins.energy)
-
-        planarMargins = settingsUI.slider (name .. ".planarMargins", frame, "Planar offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.planar = newValue
-        end)
-
-        planarMargins:SetPoint("TOPLEFT", energyMargins, "TOPRIGHT", 30, 0)
-        planarMargins:SetRange(-40, 40)
-        planarMargins:SetMidValue(0)
-        planarMargins:SetPrecision(1)
-        planarMargins:AdjustValue(thisSettings.margins.planar)        
-
-        combatIconMargins = settingsUI.slider (name .. ".combatIconMargins", frame, "Combat Icon offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.combatIcon = newValue
-        end)        
-
-        combatIconMargins:SetPoint("TOPLEFT", energyMargins, "BOTTOMLEFT", 0, 15)
-        combatIconMargins:SetRange(-40, 40)
-        combatIconMargins:SetMidValue(0)
-        combatIconMargins:SetPrecision(1)
-        combatIconMargins:AdjustValue(thisSettings.margins.combatIcon)
-
-        roleIconMargins = settingsUI.slider (name .. ".roleIconMargins", frame, "Role icon offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.roleIcon = newValue
-        end)
-
-        roleIconMargins:SetPoint("TOPLEFT", combatIconMargins, "BOTTOMLEFT", 0, 5)
-        roleIconMargins:SetRange(-40, 40)
-        roleIconMargins:SetMidValue(0)
-        roleIconMargins:SetPrecision(1)
-        roleIconMargins:AdjustValue(thisSettings.margins.roleIcon)
-
-        tierIconMargins = settingsUI.slider (name .. ".tierIconMargins", frame, "Tier icon offset <font color='#3399FF'>%d</font>", true, function (newValue)
-            thisSettings.margins.tierIcon = newValue
-        end)
-
-        tierIconMargins:SetPoint("TOPLEFT", combatIconMargins, "TOPRIGHT", 30, 0)
-        tierIconMargins:SetRange(-40, 40)
-        tierIconMargins:SetMidValue(0)
-        tierIconMargins:SetPrecision(1)
-        tierIconMargins:AdjustValue(thisSettings.margins.tierIcon)
-]]
 
         -- icon sizes       
 
@@ -218,7 +145,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             roleIconSize:AdjustValue(thisSettings.iconSizes.role)            
         end
 
-        if unitType ~= "raid" and unitType ~= "player.pet" then
+        if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "player.pet" then
             combatIconSize = settingsUI.slider (name .. ".combatIconSize", frame, "Combat / Mark icon <font color='#3399FF'>%d</font>", true, function (newValue)
                 thisSettings.iconSizes.combat = newValue
                 internalFunc.uiFrameRedraw(unitType)
@@ -251,7 +178,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
 
             buffSizeHeader = settingsUI.header ( name .. ".buffSizeHeader", frame, "Buff display setup")
 
-            if unitType ~= "raid" and unitType ~= "player.pet" then
+            if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "player.pet" then
                 buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT" , 0, 15)
             elseif unitType ~= "player.pet" then
                 buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT" , 0, 15)

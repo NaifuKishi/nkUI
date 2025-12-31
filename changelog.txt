@@ -1,4 +1,5 @@
 V0.9.5
+    - new: Unit Frames - added target of target frame
     - new: Lower Bar - added Vitality display
     - updates: Generic - Added warning messages when performing actions not allowed while in combat
     - fixes: SCT - fixed SCT showing negative gain when gaining level
