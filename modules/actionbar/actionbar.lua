@@ -185,20 +185,9 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
 
 end
 
-function combatWarning (func)
+function combatWarning ()
 
-    local dialog
-
-    local noFunc = function ()
-        dialog:SetVisible(false)
-    end
-
-    local yesFunc = function ()
-        dialog:SetVisible(false)
-        func()
-    end
-
-    dialog = LibEKL.UI.confirmDialog ("This action can only be performed while out of combat.\n\nDo you want to run it as soon as combat ends?", yesFunc, noFunc)
+    local dialog = LibEKL.UI.messageDialog ("This action can only be performed while out of combat.")
     dialog:SetTitle("nkUI")
     dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     dialog:SetTitleFontSize (20)
@@ -212,7 +201,7 @@ function combatWarning (func)
     dialog:SetButtonLabelColor (data.theme.labelColor)
     dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
     dialog:SetButtonEffect({ strength = 3 })
-    dialog:SetHeight(200)
+    dialog:SetHeight(150)
     dialog:SetWarn(true)
 
     dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2 ) - (dialog:GetWidth() / 2), 100)

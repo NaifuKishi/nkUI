@@ -464,21 +464,6 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		internalFunc.uiAddToGarbageCollector ('nkFrame', frame, name)
 	end
 
-	--[[
-	Function to edit macro
-	Opens the macro editor dialog for the current action icon
-	]]
-	local function fctEditMacro ()
-		internalFunc.checkSecureAction(function()
-			if uiElements.macroEdit == nil then
-				uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
-			end
-			
-			uiElements.macroEdit:SetVisible(true)
-			uiElements.macroEdit:SetButton(barIndex, buttonIndex)
-		end)
-	end
-
 	-- due to the out event triggering when hover the texture we only want the frame events to run if texture is not visible
 
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
@@ -498,6 +483,20 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
 		frame:SetDesign ()
 	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
+
+
+	--[[
+	Function to edit macro
+	Opens the macro editor dialog for the current action icon
+	]]
+	local function editMacroDialog ()
+		if uiElements.macroEdit == nil then
+			uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
+		end
+		
+		uiElements.macroEdit:SetVisible(true)
+		uiElements.macroEdit:SetButton(barIndex, buttonIndex)
+	end
 	
 	--[[
 	Attach event handlers
@@ -511,12 +510,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	local function editMacro()
 		if data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].interactive == true then
-			fctEditMacro()
+			editMacroDialog()
 		else
 			local dialog = LibEKL.UI.confirmDialog ('This bar is not flagged as interactive. Macros can be defined on interactive bars. However these bars cannot be hidden in combat.\n\nDo you want to change this bar to interactive mode?', function()
 				data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
-				fctEditMacro()
+				editMacroDialog()
 			end)
 
 			dialog:SetTitle("nkUI")
