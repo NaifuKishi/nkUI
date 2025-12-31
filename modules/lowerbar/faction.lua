@@ -41,7 +41,7 @@ function lowerBar.faction()
     end
     
     local datasetFactionBarBG = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrameBG", lowerBar.contextRestricted)
-    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aThird - 10, -9)
+    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aFourth - 10, -9)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)

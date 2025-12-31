@@ -29,7 +29,7 @@ function lowerBar.currency()
     end
     
     local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
-    datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aThird - 10, -5)
+    datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aFourth - 10, -5)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetCurrency:SetTextFont(addonInfo.id, "Montserrat")

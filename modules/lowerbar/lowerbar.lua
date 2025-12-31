@@ -70,6 +70,7 @@ function lowerBar.build()
     lowerBar.faction()
     lowerBar.social()
     lowerBar.lowerBarRoles()
+    lowerBar.vitality()
 end
 
 -- Initializes the lower bar

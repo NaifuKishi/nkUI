@@ -25,6 +25,7 @@ RunOnStartup = {
 	"modules/lowerbar/roles.lua",
 	"modules/lowerbar/social.lua",
 	"modules/lowerbar/timeDate.lua",
+	"modules/lowerbar/vitality.lua",
 
 	"modules/chat/chat.lua",
 
