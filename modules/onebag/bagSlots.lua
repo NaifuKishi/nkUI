@@ -96,8 +96,14 @@ local function bagSlot(name, parent, riftSlot)
 
     icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         if not isLocked then return end        
-        local dialog = LibEKL.UI.messageDialog ("Please use the standard UI to purchase additional bag slots.\n\nThis is a RIFT limitiation.")
-        
+        local dialog = LibEKL.UI.messageDialog ("Please use the standard UI\nto purchase additional bag slots.\n\nThis is a RIFT limitiation.")
+        dialog:SetTitle("nkUI")
+        dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+        dialog:SetTitleFontSize (20)
+        dialog:SetHeight(250)
+        dialog:SetTitleAlign("center")
+        dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
         dialog:SetFont(addonInfo.id, "MontserratSemiBold")
         dialog:SetEffectGlow({ strength = 3 })
         dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")

@@ -1,19 +1,15 @@
 know bug list
-
-    - buff timers on pet not working properly
-    - buffs on groups look funky
-    - alpha of buffs of player in group takes the ones from the settings instead of 100%
+    
     - out of range indicator on weapon switch    
 
 ToDo
 
+    - mark unusable items in one bag
     - add key indicator to action bar (just for visual reference)
     - onebag add compare tooltip to items
-    - check why the addbuff is called so often
     - finish cooldown icons
     - faction update in sct
     - group update bug on death
-    - afk display on unit frame
     - Add Target of Target frame
     - Macro for raid / group frames (click healing)
     - Combined stats event with caching?

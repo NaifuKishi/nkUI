@@ -15,8 +15,9 @@ local events = privateVars.events
 
 -- Cache frequently used functions and values
 
-local inspectRoleList = Inspect.Role.List
-local inspectTimeFrame = Inspect.Time.Frame
+local inspectRoleList       = Inspect.Role.List
+local inspectTimeFrame      = Inspect.Time.Frame
+local inspectSystemSecure   = Inspect.System.Secure
 
 local stringFormat = string.format
 
@@ -181,6 +182,58 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     end
 
     return actionBar
+
+end
+
+function combatWarning (func)
+
+    local dialog
+
+    local noFunc = function ()
+        dialog:SetVisible(false)
+    end
+
+    local yesFunc = function ()
+        dialog:SetVisible(false)
+        func()
+    end
+
+    dialog = LibEKL.UI.confirmDialog ("This action can only be performed while out of combat.\n\nDo you want to run it as soon as combat ends?", yesFunc, noFunc)
+    dialog:SetTitle("nkUI")
+    dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+    dialog:SetTitleFontSize (20)
+    dialog:SetTitleAlign("center")
+    dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
+    dialog:SetFont(addonInfo.id, "MontserratSemiBold")
+    dialog:SetEffectGlow({ strength = 3 })
+    dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
+    dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+    dialog:SetButtonLabelColor (data.theme.labelColor)
+    dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    dialog:SetButtonEffect({ strength = 3 })
+    dialog:SetHeight(200)
+    dialog:SetWarn(true)
+
+    dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2 ) - (dialog:GetWidth() / 2), 100)
+    
+    dialog:SetColor({	type = "gradientLinear",
+                        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+                        color = {
+                            data.theme.windowStartColor,
+                            data.theme.windowEndColor
+                            }
+                    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+
+end
+
+function internalFunc.checkSecureAction(func)
+
+    if inspectSystemSecure() then
+        combatWarning (func)
+    else
+        func()
+    end
 
 end
 

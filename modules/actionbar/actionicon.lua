@@ -17,11 +17,10 @@ local events     	= privateVars.events
 
 -- Cache frequently used functions and values
 local inspectTimeFrame 			= Inspect.Time.Frame
-local InspectItemDetail			= Inspect.Item.Detail
-local InspectSystemSecure		= Inspect.System.Secure
-local InspectCursor				= Inspect.Cursor
-local InspectTEMPORARYRole		= Inspect.TEMPORARY.Role
-local InspectAbilityNewDetail	= Inspect.Ability.New.Detail
+local inspectItemDetail			= Inspect.Item.Detail
+local inspectCursor				= Inspect.Cursor
+local inspectTEMPORARYRole		= Inspect.TEMPORARY.Role
+local inspectAbilityNewDetail	= Inspect.Ability.New.Detail
 
 local stringGSub        		= string.gsub
 local mathFloor					= math.floor
@@ -216,12 +215,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	local function fctCheckDrop ()
 	
-		if InspectSystemSecure() == true then return end
-		local cType, cHeld = InspectCursor()
+		local cType, cHeld = inspectCursor()
 		
 		if cType == 'item' or cType == 'ability' then
 			frame:SetItem(cType, cHeld, nil)
-			data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil }
+			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil }
 		end
 		
 		Command.Cursor(nil)
@@ -262,7 +260,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		--tint:SetVisible(false)
 
 		if macroFrame then
-			macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil)
+			LibEKL.Events.AddInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil) end, nil, nil)
 		end
 
         texture:SetVisible(false)
@@ -271,7 +269,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	function frame:CheckState()
 		if thisItemType ~= "ability" then return end
 
-		local err, thisDetails = pcall(InspectAbilityNewDetail, itemKey)
+		local err, thisDetails = pcall(inspectAbilityNewDetail, itemKey)
 
 		if err and thisDetails ~= nil then
 			frame:SetOOR(thisDetails.outOfRange)
@@ -316,12 +314,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		local err, thisDetails, macro
 		
 		if thisItemType == 'item' then
-			err, thisDetails = pcall(InspectItemDetail, itemKey)
+			err, thisDetails = pcall(inspectItemDetail, itemKey)
 			if err and thisDetails ~= nil then
 				macro = "use " .. stringGSub(thisDetails.name, "\n", "")
 			end
 		elseif thisItemType == "ability" then
-			err, thisDetails = pcall(InspectAbilityNewDetail, itemKey)
+			err, thisDetails = pcall(inspectAbilityNewDetail, itemKey)
 
 			if err and thisDetails ~= nil then
 				frame:SetOOR(thisDetails.outOfRange)
@@ -361,8 +359,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			LibEKL.Events.AddInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, macro) end, nil, nil)
 			macroFrame:SetVisible(true)
 			
-		elseif macroFrame ~= nil then			
-			macroFrame:SetVisible(false)
+		elseif macroFrame ~= nil then
+			LibEKL.Events.AddInsecure(function() macroFrame:SetVisible(false) end, nil, nil)
 		end
 
 
@@ -470,16 +468,15 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	Function to edit macro
 	Opens the macro editor dialog for the current action icon
 	]]
-	local function fctEditMacro () 
-	
-		if InspectSystemSecure() == true then return end
-		if uiElements.macroEdit == nil then
-			uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
-		end
-		
-		uiElements.macroEdit:SetVisible(true)
-		uiElements.macroEdit:SetButton(barIndex, buttonIndex)
-	
+	local function fctEditMacro ()
+		internalFunc.checkSecureAction(function()
+			if uiElements.macroEdit == nil then
+				uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
+			end
+			
+			uiElements.macroEdit:SetVisible(true)
+			uiElements.macroEdit:SetButton(barIndex, buttonIndex)
+		end)
 	end
 
 	-- due to the out event triggering when hover the texture we only want the frame events to run if texture is not visible
@@ -507,18 +504,26 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	Sets up mouse event handlers for the action icon
 	]]
 	frame:EventAttach(Event.UI.Input.Mouse.Left.Up, function (self)
-		fctCheckDrop()
+		internalFunc.checkSecureAction(function()
+			fctCheckDrop()
+		end)			
 	end, frame:GetName() .. ".UI.Input.Mouse.Left.Up")
 
-	frame:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
-		if data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive == true then
+	local function editMacro()
+		if data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].interactive == true then
 			fctEditMacro()
 		else
 			local dialog = LibEKL.UI.confirmDialog ('This bar is not flagged as interactive. Macros can be defined on interactive bars. However these bars cannot be hidden in combat.\n\nDo you want to change this bar to interactive mode?', function()
-				data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].interactive = true
+				data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].interactive = true
 				parent:SetInteractive(true)
 				fctEditMacro()
 			end)
+
+			dialog:SetTitle("nkUI")
+			dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+			dialog:SetTitleFontSize (20)    
+			dialog:SetTitleAlign("center")
+			dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
 
 			dialog:SetFont(addonInfo.id, "MontserratSemiBold")
 			dialog:SetEffectGlow({ strength = 3 })
@@ -527,7 +532,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			dialog:SetButtonLabelColor (data.theme.labelColor)
 			dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 			dialog:SetButtonEffect({ strength = 3 })
-			dialog:SetHeight(300)
+			dialog:SetHeight(200)
 			
 			dialog:SetColor({	type = "gradientLinear",
 								transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
@@ -537,11 +542,19 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 									}
 							},  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
 		end
+	end
+
+	frame:EventAttach(Event.UI.Input.Mouse.Middle.Down, function (self)
+		internalFunc.checkSecureAction(function()
+			editMacro()
+		end)		
 	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
 	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
-        frame:ClearItem()
-		data.actionBarSetup.roles[InspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
+		internalFunc.checkSecureAction(function()
+			frame:ClearItem()
+			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
+		end)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 	
 	return frame
