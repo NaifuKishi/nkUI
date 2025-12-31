@@ -133,7 +133,8 @@ local _defaults = {
                     },
         sct         = { activate = true,
                         messageOffset = -200,
-                        showExpGains = true
+                        showExpGains = true,
+                        showLoot = true
                     },
         tooltip     = { activate = true }
     },

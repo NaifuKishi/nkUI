@@ -76,23 +76,8 @@ function oneBag.createItemIcon(name, parent)
     end
     
     function itemFrame:SetRarity(rarity)
-        if rarity == "sellable" then
-            itemFrame:SetBackgroundColor(0.5, 0.5, 0.5, 1)
-        elseif rarity == "uncommon" then
-            itemFrame:SetBackgroundColor(0, 1, 0, 1)
-        elseif rarity == "rare" then
-            itemFrame:SetBackgroundColor(0, 0, 1, 1)
-        elseif rarity == "epic" then
-            itemFrame:SetBackgroundColor(0.5, 0, 0.5, 1)
-        elseif rarity == "relic" then
-            itemFrame:SetBackgroundColor(0.5, 0.5, 0, 1)
-        elseif rarity == "transcendent" then
-            itemFrame:SetBackgroundColor(1, 0.5, 0, 1)
-        elseif rarity == "quest" then
-            itemFrame:SetBackgroundColor(0.8, 0.6, 0.2, 1)
-        else
-            itemFrame:SetBackgroundColor(1, 1, 1, 1)
-        end
+        local color = LibEKL.Inventory.GetItemColor(rarity)
+        itemFrame:SetBackgroundColor(color.r, color.g, color.b, 1)
     end
     
     function itemFrame:SetBound(bind, bound)

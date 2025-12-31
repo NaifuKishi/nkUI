@@ -81,10 +81,6 @@ function internalFunc.oneBagInit()
             end
             oneBag.populateBag()
         end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
-
-        --[[Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, items)
-            -- Handle inventory updates
-        end, "nkUI.OneBag.LibEKL.InventoryManager.Update")]]
     end
 
     oneBag.populateBag()

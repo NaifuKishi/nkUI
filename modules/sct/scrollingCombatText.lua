@@ -239,20 +239,18 @@ end
 -- Displays a moving message on the screen
 -- @param message The message to display
 -- @param duration How long to display the message
-local function displayMovingMessage(message, duration)
+local function displayMovingMessage(message, duration, startY, endY, fontSize)
 
     local debugId = internalFunc.traceStart("sct.displayMovingMessage")
 
     local frame = getFrame()
     frame:SetText(message, true)
     frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    frame:SetFontSize(28)
+    frame:SetFontSize(fontSize)
     frame:SetFontColor(0.678, 0.847, 0.902, 1)
     frame:SetVisible(true)
 
     local start = inspectTimeFrame()
-    local startY = -200
-    local endY = -400
     local coRoutineDebugID
     
     local animationCoroutine = coroutine.create(function()        
@@ -583,11 +581,28 @@ function internalFunc.sctInit()
             if lastAccumulated == nil then lastAccumulated = accumulated end
             local gain = accumulated - lastAccumulated
             if gain <= 0 then return end
-            displayMovingMessage(stringFormat("%d exp", gain), 2)
+            displayMovingMessage(stringFormat("%d exp", gain), 2, -200, -400, 28)
             lastAccumulated = accumulated
         end, "nkui.SCT.TEMPORARY.Experience")
     end
 
+    if nkUISetup.modules.sct.showLoot then
+        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, items)
+
+            local modY = 0
+
+            for item, qty in pairs (items) do
+                local itemDetails = LibEKL.Inventory.GetItemByKey (item)
+                if itemDetails then
+                    local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
+                    local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
+                    displayMovingMessage(stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name), 2, 300 + modY, 100 + modY, 20)
+                    modY = modY + 20
+                end
+            end
+        end, "nkUI.SCT.LibEKL.InventoryManager.SlotUpdate")
+    end
+        
     sctInit = true
 end
 
@@ -613,6 +628,10 @@ function internalFunc.sctToggle(value)
 
         if nkUISetup.modules.sct.showExpGains then
             Command.Event.Detach(Event.TEMPORARY.Experience, nil, "nkui.SCT.TEMPORARY.Experience")
+        end
+
+        if nkUISetup.modules.sct.showExpGains then
+            Command.Event.Detach(LibEKL.Events["LibEKL.InventoryManager"].Update, nil, "nkUI.SCT.LibEKL.InventoryManager.SlotUpdate")
         end
 
         sctInit = false

@@ -12,7 +12,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabSCT (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local activateCheckbox, showXPCheckbox
+    local activateCheckbox, showXPCheckbox, showLootCheckbox
 
     function frame:build()
 
@@ -33,6 +33,14 @@ function settingsUI.uiConfigTabSCT (name, parent)
 
         showXPCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 10)
         showXPCheckbox:SetChecked(nkUISetup.modules.sct.showExpGains, true)
+
+        showLootCheckbox = settingsUI.checkbox(name .. ".showLootCheckbox", frame, "Show Loot gains", true, function(newValue)        
+             nkUISetup.modules.sct.showLoot = newValue
+             LibEKL.UI.reloadDialog ("nkUI")
+        end)
+
+        showLootCheckbox:SetPoint("TOPLEFT", showXPCheckbox, "BOTTOMLEFT", 0, 10)
+        showLootCheckbox:SetChecked(nkUISetup.modules.sct.showLoot, true)
 
     end
 
