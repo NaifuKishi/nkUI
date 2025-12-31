@@ -578,13 +578,15 @@ function internalFunc.sctInit()
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
     Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
 
-    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
-        if lastAccumulated == nil then lastAccumulated = accumulated end
-        local gain = accumulated - lastAccumulated
-        if gain <= 0 then return end
-        displayMovingMessage(stringFormat("%d exp", gain), 2)
-        lastAccumulated = accumulated
-    end, "nkui.SCT.TEMPORARY.Experience")
+    if nkUISetup.modules.sct.showExpGains then
+        Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
+            if lastAccumulated == nil then lastAccumulated = accumulated end
+            local gain = accumulated - lastAccumulated
+            if gain <= 0 then return end
+            displayMovingMessage(stringFormat("%d exp", gain), 2)
+            lastAccumulated = accumulated
+        end, "nkui.SCT.TEMPORARY.Experience")
+    end
 
     sctInit = true
 end
@@ -609,7 +611,9 @@ function internalFunc.sctToggle(value)
         Command.Event.Detach(Event.Ability.New.Cooldown.Begin, nil, "nkUI.SCT.Ability.New.Cooldown.Begin")
         Command.Event.Detach(Event.Ability.New.Cooldown.End, nil, "nkUI.SCT.Ability.New.Cooldown.End")
 
-        Command.Event.Detach(Event.TEMPORARY.Experience, nil, "nkui.SCT.TEMPORARY.Experience")
+        if nkUISetup.modules.sct.showExpGains then
+            Command.Event.Detach(Event.TEMPORARY.Experience, nil, "nkui.SCT.TEMPORARY.Experience")
+        end
 
         sctInit = false
 

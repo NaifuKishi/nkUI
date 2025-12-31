@@ -132,7 +132,9 @@ local _defaults = {
                         buffs = { width = 40, height = 40, timer = 14, stack = 12, label = 10}            
                     },
         sct         = { activate = true,
-                        messageOffset = -200 },
+                        messageOffset = -200,
+                        showExpGains = true
+                    },
         tooltip     = { activate = true }
     },
     showLogo = true,
@@ -205,8 +207,6 @@ end
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
 function internalFunc.setupDefaults()
-
-    nkUISetup.modules.unitFrames.frames.targetOfTarget = nil
 
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults

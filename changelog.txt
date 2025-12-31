@@ -1,8 +1,11 @@
 V0.9.5
     - new: Unit Frames - added target of target frame
     - new: Lower Bar - added Vitality display
+    - new: SCT - added option to settings to suppress XP gains
     - updates: Generic - Added warning messages when performing actions not allowed while in combat
     - fixes: SCT - fixed SCT showing negative gain when gaining level
+    - fixes: Settings - removed invalid settings from raid settings
+    - fixes: Settings - fixed frame moving throwing error
 
 V0.9.4
     - updates: unit frames optimized buff icon design
