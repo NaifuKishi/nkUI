@@ -88,27 +88,6 @@ uiElements.contextTooltip:SetLayer(99)
 
 local function animateLogo ()
 
-	local logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextTooltip )
-	logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	logo:SetWidth(256)
-	logo:SetHeight(253)
-	logo:SetAlpha(0)
-	logo:SetTextureAsync("nkUI", "gfx/nkUILogo.png")
-
-	local canvas = LibEKL.UICreateFrame("nkCanvas", "nkUILogo.line", logo)
-	canvas:SetPoint("TOPCENTER", logo, "BOTTOMCENTER", 0, -15) -- Position below the logo
-	canvas:SetWidth(300)
-	canvas:SetHeight(10)
-	
-	local text = LibEKL.UICreateFrame("nkText", "nkUILogo.text", logo)
-	text:SetPoint("TOPCENTER", canvas, "BOTTOMCENTER", 0, 5)
-	text:SetFontSize(20)
-	text:SetFontColor(1, 1, 1, 1)
-	text:SetEffectGlow({strength = 3})
-	text:SetText("A modern style UI compilation for RIFT")
-
-	LibEKL.UI.SetFont(text, addonInfo.id, "MontserratBold")
-	
 	local fillParams = {
 		type = "gradientLinear",
 		transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0),
@@ -119,14 +98,43 @@ local function animateLogo ()
 	}
 	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
 	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 3 }
-	canvas:SetShape(path, fillParams, stroke)
+
+	if uiElements.logo == nil then
+		uiElements.logo = LibEKL.UICreateFrame("nkTexture", "nkUILogo", uiElements.contextTooltip )
+	
+		uiElements.logo:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		uiElements.logo:SetWidth(256)
+		uiElements.logo:SetHeight(253)
+		uiElements.logo:SetAlpha(0)
+		uiElements.logo:SetTextureAsync("nkUI", "gfx/nkUILogo.png")
+
+		uiElements.logoCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUILogo.line", uiElements.logo)
+		uiElements.logoCanvas:SetPoint("TOPCENTER", uiElements.logo, "BOTTOMCENTER", 0, -15) -- Position below the logo
+		uiElements.logoCanvas:SetWidth(300)
+		uiElements.logoCanvas:SetHeight(10)
+		
+		uiElements.logoText = LibEKL.UICreateFrame("nkText", "nkUILogo.text", uiElements.logo)
+		uiElements.logoText:SetPoint("TOPCENTER", uiElements.logo, "BOTTOMCENTER", 0, 5)
+		uiElements.logoText:SetFontSize(20)
+		uiElements.logoText:SetFontColor(1, 1, 1, 1)
+		uiElements.logoText:SetEffectGlow({strength = 3})
+		uiElements.logoText:SetText("A modern style UI compilation for RIFT")
+
+		LibEKL.UI.SetFont(uiElements.logoText, addonInfo.id, "MontserratBold")
+
+		uiElements.logoCanvas:SetShape(path, fillParams, stroke)			
+	else
+		uiElements.logo:SetVisible(true)
+		uiElements.logoCanvas:SetVisible(true)
+		uiElements.logoText:SetVisible(true)
+	end
 
 	local animateShow = coroutine.create(
 		function ()
 			for idx = 1, 100, 1 do
-				logo:SetAlpha(idx / 100)
-				canvas:SetAlpha(idx / 100)
-				text:SetAlpha(idx / 100)
+				uiElements.logo:SetAlpha(idx / 100)
+				uiElements.logoCanvas:SetAlpha(idx / 100)
+				uiElements.logoText:SetAlpha(idx / 100)
 				coroutine.yield(idx)
 			end
 		end
@@ -147,7 +155,7 @@ local function animateLogo ()
 					}
 				}
 
-				canvas:SetShape(path, fillParams, stroke)
+				uiElements.logoCanvas:SetShape(path, fillParams, stroke)
 				coroutine.yield(idx)
 			end
 		end
@@ -156,9 +164,9 @@ local function animateLogo ()
 	local animateHide = coroutine.create(
 		function ()
 			for idx = 1, 100, 1 do
-				logo:SetAlpha((100 - idx) / 100)
-				canvas:SetAlpha((100 - idx) / 100)
-				text:SetAlpha((100 - idx) / 100)
+				uiElements.logo:SetAlpha((100 - idx) / 100)
+				uiElements.logoCanvas:SetAlpha((100 - idx) / 100)
+				uiElements.logoText:SetAlpha((100 - idx) / 100)
 				coroutine.yield(idx)
 			end
 		end
@@ -167,8 +175,9 @@ local function animateLogo ()
 	LibEKL.Coroutines.Add ({ func = animateShow, counter = 100, active = true, callBack = function ()
 		LibEKL.Coroutines.Add ({ func = animateShine, counter = 100, active = true, callBack = function ()
 			LibEKL.Coroutines.Add ({ func = animateHide, counter = 100, active = true, callBack = function ()
-				--logo:destroy()1
-				--canvas:destroy()
+				uiElements.logo:SetVisible(false)
+				uiElements.logoCanvas:SetVisible(false)
+				uiElements.logoText:SetVisible(false)
 			end})
 		end})
 	end})
@@ -189,6 +198,8 @@ local function commandHandler (commandline)
 		if nkUISetup and nkUISetup.modules and nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 			internalFunc.oneBagInit()
 		end
+	elseif stringFind(commandline, "logo") then
+		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	else
 		internalFunc.setupInit ()
 	end
@@ -204,7 +215,7 @@ end
 ]]
 local function initializeAddon(_, addon)
 	if addon == addonInfo.identifier then
-		table.insert(Command.Slash.Register("nkui"), {commandHandler, "nkUI", "commandHandler"})
+		table.insert(Command.Slash.Register("nkui"), {commandHandler, "nkUI", "commandHandler"})		
 		
         LibEKL.UI.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")
         LibEKL.UI.registerFont(addonInfo.id, "MontserratSemiBold", "fonts/Montserrat-SemiBold.ttf")

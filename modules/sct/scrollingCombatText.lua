@@ -611,7 +611,7 @@ function internalFunc.sctInit()
                 end
             end
 
-            if lastUpdate ~= nil and inspectTimeFrame() - lastUpdate <= .2 and count == 1 then
+            if lastUpdate ~= nil and inspectTimeFrame() - lastUpdate <= 1 and count == 1 then
                 modY = modY + 20
             else
                 modY = 0
