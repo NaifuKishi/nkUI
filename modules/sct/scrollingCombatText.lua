@@ -586,21 +586,40 @@ function internalFunc.sctInit()
         end, "nkui.SCT.TEMPORARY.Experience")
     end
 
+    local lastUpdate
+    local modY = 0
+
     if nkUISetup.modules.sct.showLoot then
         Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, items)
-
-            local modY = 0
+                
+            local count = 0
 
             for item, qty in pairs (items) do
-                local itemDetails = LibEKL.Inventory.GetItemByKey (item)
-                if itemDetails then
-                    local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
-                    local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
-                    displayMovingMessage(stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name), 2, 300 + modY, 100 + modY, 20)
-                    modY = modY + 20
+                if qty > 0 then
+                    local itemDetails = LibEKL.Inventory.GetItemByKey (item)
+                    if itemDetails then
+
+                        local slot = LibEKL.Inventory.GetSlotByItemId(item)
+                        if not stringFind(slot, "seqp") then
+                            local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
+                            local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
+                            displayMovingMessage(stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name), 2, 300 + modY, 100 + modY, 20)
+                            modY = modY + 20                    
+                            count = count + 1
+                        end
+                    end
                 end
             end
-        end, "nkUI.SCT.LibEKL.InventoryManager.SlotUpdate")
+
+            if lastUpdate ~= nil and inspectTimeFrame() - lastUpdate <= .2 and count == 1 then
+                modY = modY + 20
+            else
+                modY = 0
+            end
+
+            lastUpdate = inspectTimeFrame()
+            
+        end, "nkUI.SCT.LibEKL.InventoryManager.Update")
     end
         
     sctInit = true
