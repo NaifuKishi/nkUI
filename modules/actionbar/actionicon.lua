@@ -47,10 +47,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local thisItemKey, thisItemType, thisMacroIcon, thisMacroCDType, thisMacroCDKey
 
 	local cooldownActive = false
+	local lastCooldown
 	local interactive = false
 	local isOOR, isUsable = false, true
-
-	local lastCooldown
+	
+	local thisDesign = "DEFAULT"
 
 	-- Shape path for the icon	
 	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
@@ -62,31 +63,67 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	-- Set the shape and border of the frame
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 3 })
 
-	-- Create the texture for the icon
-	texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
-	texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
-	texture:SetMouseMasking("limited")
-	texture:SetVisible(false)
-	texture:SetLayer(1)
+	local function createTexture ()
 
-	-- Create the tint canvas
-	tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
-	tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
-	tint:SetVisible(false)
-	tint:SetMouseMasking("limited")
-	tint:SetVisible(false)
-	tint:SetLayer(2)
-	
-	-- Create the cooldown text
-	cooldown = LibEKL.UICreateFrame("nkText", name .. '.cooldown', frame)
-	cooldown:SetVisible(false)
-	cooldown:SetFontSize(18)
-	cooldown:SetPoint("CENTER", texture, "CENTER")
-	cooldown:SetFontColor (1, 1, 1, 1)
-	cooldown:SetEffectGlow({ strength = 3 })
-	cooldown:SetLayer(99)
+		--print (name, "createTexture")
+
+		-- Create the texture for the icon
+		texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
+		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
+		texture:SetMouseMasking("limited")
+		texture:SetVisible(false)
+		texture:SetLayer(1)
+
+		local setup = data.actionBarDesigns[thisDesign] 
+		local newSize = (setup[3] * thisScale) 
+		texture:SetWidth(newSize-4)
+		texture:SetHeight(newSize-4)		
+
+		texture:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
+			frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
+		end, texture:GetName() .. ".UI.Input.Mouse.Cursor.In")		
+
+		texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
+			frame:SetDesign ()
+		end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
+	end
+
+	local function createTint()
+		--print ("createTint")
+
+		-- Create the tint canvas
+		tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
+		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
+		tint:SetVisible(false)
+		tint:SetMouseMasking("limited")
+		tint:SetVisible(false)
+		tint:SetLayer(2)
+
+		local setup = data.actionBarDesigns[thisDesign] 
+		local newSize = (setup[3] * thisScale) 
+		tint:SetWidth(newSize-4)
+		tint:SetHeight(newSize-4)
+	end
+
+	local function createCooldown()
+		-- Create the cooldown text
+		cooldown = LibEKL.UICreateFrame("nkText", name .. '.cooldown', frame)
+		cooldown:SetVisible(false)
+		cooldown:SetFontSize(18)
+		cooldown:SetPoint("CENTER", texture, "CENTER")
+		cooldown:SetFontColor (1, 1, 1, 1)
+		cooldown:SetEffectGlow({ strength = 3 })
+		cooldown:SetLayer(99)
+	end
 
 	function frame:SetTint(state)
+		if state == nil then
+			if tint then tint:SetVisible(false) end
+			return
+		end
+
+		if not tint then createTint() end			
+		tint:SetVisible(true)
 
 		if state == "cooldown" then
 			tint:SetShape(path, {type = 'solid', r = 1, g = 1, b = 1, a = .4}, nil)
@@ -94,13 +131,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			tint:SetShape(path, {type = 'solid', r = 1, g = 0, b = 0, a = .6}, nil)
 		elseif state == "unusable" and not isOOR then
 			tint:SetShape(path, {type = 'solid', r = 0, g = 0, b = 0, a = .8}, nil)
-		end
-
-		if state then
-			tint:SetVisible(true)
-		else
-			tint:SetVisible(false)
-		end
+		end		
 	end
 	
 	--[[
@@ -111,6 +142,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 		if duration == nil or cooldownActive == true then return end
 
+		if not cooldown then createCooldown()  end
+
 		local start = inspectTimeFrame()
 		local lastRemaining
 
@@ -119,7 +152,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				local thisRemaining = duration - (inspectTimeFrame() - start)
 				local checkRemaining = mathFloor(thisRemaining * 10) / 10
 
-				if checkRemaining <= 0 then 
+				if checkRemaining <= 0 then
 					cooldown:SetVisible(false)
 					frame:SetTint()
 					return 9999 
@@ -149,13 +182,17 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
       @param {string|number} timer - The cooldown timer text or number      
     ]]
 	function frame:SetCooldown(timer)
-	
+
 		if timer == nil then
-			cooldown:SetVisible(false)
-			frame:SetTint()
-			cooldown:SetFontColor (1, 1, 1, 1)
+			if cooldown then
+				cooldown:SetVisible(false)
+				cooldown:SetFontColor (1, 1, 1, 1)
+			end
+			frame:SetTint()			
 			cooldownActive = false
 		else
+			if not cooldown then createCooldown() end
+
 			if cooldownActive == false then
 				cooldownActive = true		
 				cooldown:SetVisible(true)
@@ -181,7 +218,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		isOOR = flag
 	
 		if flag == true then
-			tint:SetVisible(true)
+			if tint then tint:SetVisible(true) end
 			frame:SetTint("oor")
 		else
 			if isUsable then
@@ -201,7 +238,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		isUsable = flag
 	
 		if flag == true then
-			if not isOOR then
+			if not isOOR then				
 				frame:SetTint()
 			end
 		else
@@ -232,9 +269,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:ClearItem()
 		
-		LibEKL.UI.attachItemTooltip (texture, nil)
-		LibEKL.UI.attachAbilityTooltip (texture, nil)
-		LibEKL.UI.attachGenericTooltip (texture, nil)
+		if texture then
+			LibEKL.UI.attachItemTooltip (texture, nil)
+			LibEKL.UI.attachAbilityTooltip (texture, nil)
+			LibEKL.UI.attachGenericTooltip (texture, nil)
+		end
 				
 		if thisMacroCDType ~= nil then
 			LibEKL.Cooldowns.Unsubscribe(thisMacroCDType, thisMacroCDKey)
@@ -263,7 +302,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			LibEKL.Events.AddInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil) end, nil, nil)
 		end
 
-        texture:SetVisible(false)
+		if texture then texture:SetVisible(false) end
 	end
 	
 	function frame:CheckState()
@@ -333,10 +372,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 			
 		if err and thisDetails ~= nil and thisDetails.icon ~= nil then
+			if not texture then createTexture() end
 			texture:SetTextureAsync("Rift", thisDetails.icon)
 			texture:SetVisible(true)
 		else
-			texture:SetVisible(false)
+			if texture then texture:SetVisible(false) end
 		end
 
 		if interactive then
@@ -363,17 +403,18 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			LibEKL.Events.AddInsecure(function() macroFrame:SetVisible(false) end, nil, nil)
 		end
 
-
-        local tooltipTarget = texture
-		if interactive then tooltipTarget = macroFrame end
-						
-		if thisItemType == 'item' then
-			LibEKL.UI.attachItemTooltip (tooltipTarget, itemKey)
-		elseif thisItemType == "ability" then
-			LibEKL.UI.attachAbilityTooltip (tooltipTarget, itemKey)
-			LibEKL.UI.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
-		else -- macro
-			LibEKL.UI.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
+		if texture then
+			local tooltipTarget = texture
+			if interactive then tooltipTarget = macroFrame end
+							
+			if thisItemType == 'item' then
+				LibEKL.UI.attachItemTooltip (tooltipTarget, itemKey)
+			elseif thisItemType == "ability" then
+				LibEKL.UI.attachAbilityTooltip (tooltipTarget, itemKey)
+				LibEKL.UI.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
+			else -- macro
+				LibEKL.UI.attachGenericTooltip (tooltipTarget, "nkUI macro", macro)
+			end
 		end
 	end
 	
@@ -408,8 +449,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:SetDesign (design)
 
-		if design == nil then design = DEFAULT_DESIGN end
-		local setup = data.actionBarDesigns[design] 
+		if design == nil then 
+			thisDesign = DEFAULT_DESIGN 
+		else
+			thisDesign = design
+		end
+		
+		local setup = data.actionBarDesigns[thisDesign] 
 		
 		path = setup[4]
 
@@ -432,13 +478,17 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		frame:SetHeight(newSize)
 		frame:SetShape(path, thisFill, thisStroke)
 
-        texture:SetWidth(newSize-4)
-        texture:SetHeight(newSize-4)
-		texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
-				
-		tint:SetWidth(newSize-4)
-        tint:SetHeight(newSize-4)				
-		tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
+		if texture then
+			texture:SetWidth(newSize-4)
+			texture:SetHeight(newSize-4)
+			texture:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
+		end
+			
+		if tint then
+			tint:SetWidth(newSize-4)
+        	tint:SetHeight(newSize-4)				
+			tint:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, 3)
+		end
 	end
 	
 	--[[
@@ -467,22 +517,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	-- due to the out event triggering when hover the texture we only want the frame events to run if texture is not visible
 
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
-		if not texture:GetVisible() then 
+		if not texture or not texture:GetVisible() then 
 			frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
 		end
 	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.In")
 
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
-		if not texture:GetVisible() then frame:SetDesign () end
+		if not texture or not texture:GetVisible() then frame:SetDesign () end
 	end, frame:GetName() .. ".UI.Input.Mouse.Cursor.Out")
-
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
-		frame:SetShape(path, fill, {r = 1, g = 1, b = 1, a = 1, thickness = 1 })
-	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.In")		
-
-	texture:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
-		frame:SetDesign ()
-	end, texture:GetName() .. ".UI.Input.Mouse.Cursor.Out")
 
 
 	--[[
@@ -547,7 +589,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		internalFunc.checkSecureAction(function()
 			editMacro()
 		end)		
-	end, texture:GetName() .. ".UI.Input.Mouse.Middle.Down")
+	end, frame:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
 	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 		internalFunc.checkSecureAction(function()
