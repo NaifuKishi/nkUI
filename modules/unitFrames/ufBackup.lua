@@ -348,7 +348,7 @@ function frameManager.get(unitType, unitFrameType, setup)
             planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
             roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.roleIcon, 0)
             
-            if string.find(unitType, "raid") then
+            if stringFind(unitType, "raid") then
                 nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
             else            
                 nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
@@ -360,14 +360,14 @@ function frameManager.get(unitType, unitFrameType, setup)
             planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", setup.margins.planar, 0)
             roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", setup.margins.roleIcon, 0)
 
-            if string.find(unitType, "raid") then
+            if stringFind(unitType, "raid") then
                 nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
             else
                 nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
             end
         end
         
-        if string.find(unitType, "raid") == nil then
+        if stringFind(unitType, "raid") == nil then
             local buffIcons = unitFrame:GetBuffIcons()
             local debuffIcons = unitFrame:GetDebuffIcons()
 

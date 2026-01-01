@@ -35,12 +35,12 @@ function lowerBar.vitality()
     
     local details = LibEKL.Unit.getPlayerDetails()
     if details ~= nil then		
-        datasetVitality:SetText(string.format("%d%% Vitality", details.vitality))
+        datasetVitality:SetText(stringFormat("%d%% Vitality", details.vitality))
     end
     
     local function vitalityChange(_, units)
         if units[LibEKL.Unit.getPlayerID()] == nil then return end        
-        datasetVitality:SetText(string.format("%d%% Vitality", units[LibEKL.Unit.getPlayerID()]))
+        datasetVitality:SetText(stringFormat("%d%% Vitality", units[LibEKL.Unit.getPlayerID()]))
     end
     
     Command.Event.Attach(Event.Unit.Detail.Vitality, vitalityChange, "nkUI.lowerBar.Vitality.Unit.Detail.Vitality")

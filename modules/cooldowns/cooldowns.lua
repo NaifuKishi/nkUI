@@ -12,6 +12,7 @@ local InspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local InspectTimeFrame          = Inspect.Time.Frame
 
 local mathFloor                 = math.floor
+local stringFormat             = string.format
 
 -- init local variables
 local cdInit = false
@@ -107,7 +108,7 @@ local function updateCooldownBar(cooldown)
     
     -- Display remaining time in minutes
     local minutes = mathFloor(remainingTime / 60)
-    cooldown.display.timer:SetText(string.format("%d", minutes))
+    cooldown.display.timer:SetText(stringFormat("%d", minutes))
 end
 
 -- Updates the display of all active cooldowns

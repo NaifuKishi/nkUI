@@ -515,9 +515,9 @@ local function handleCombatHeal(self, info)
     --dump (info)
 
     if info.overheal then
-        healText = string.format(TEXT_OVERHEAL, internalFunc.shortenName(info.casterName, 10), info.overheal)
+        healText = stringFormat(TEXT_OVERHEAL, internalFunc.shortenName(info.casterName, 10), info.overheal)
     else
-        healText = string.format(TEXT_HEAL, internalFunc.shortenName(info.casterName, 10), info.heal)
+        healText = stringFormat(TEXT_HEAL, internalFunc.shortenName(info.casterName, 10), info.heal)
     end
     
     displayText(healText, icon, isPet, true, "heal")

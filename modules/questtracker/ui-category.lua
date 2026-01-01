@@ -7,8 +7,10 @@ local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 
-local oInspectMouse			= Inspect.Mouse
-local oInspectSystemSecure	= Inspect.System.Secure
+local inspectMouse			= Inspect.Mouse
+local inspectSystemSecure	= Inspect.System.Secure
+
+local stringFormat			= string.format
 
 ---------- init local variables ---------
 
@@ -36,7 +38,7 @@ local function abandonQuestCategory ()
 		uiElements.menuCategory:SetVisible(false)
 	end
 
-	local text = string.format(privateVars.langTexts.abandonAllQuestsConfirm, privateVars.langTexts.showCategoryCheckbox[categoryMenuCategory])
+	local text = stringFormat(privateVars.langTexts.abandonAllQuestsConfirm, privateVars.langTexts.showCategoryCheckbox[categoryMenuCategory])
 
 	LibEKL.UI.confirmDialog (text, yesFunc, noFunc) 
 
@@ -54,7 +56,7 @@ local function showMenuCategory (parent, category)
 	end
 
 	local menuCategory = uiElements.menuCategory
-	local mouse = oInspectMouse()
+	local mouse = inspectMouse()
 
 	menuCategory:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
 	menuCategory:SetVisible(true)  
@@ -356,7 +358,7 @@ function questTracker.questCategory(category, parent)
 
 		if updateContent == true then
 
-			if oInspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
+			if inspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
 
 			for idx = 1, #questEntries, 1 do
 				questEntries[idx]:SetTitleColor(nkUISetup.modules.questtracker.categoryColor[category])

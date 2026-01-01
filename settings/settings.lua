@@ -11,7 +11,8 @@ privateVars.settingsUI = {}
 
 local settingsUI = privateVars.settingsUI
 
-local stringFind = string.find
+local stringFind    = string.find
+local stringFormat  = string.format
 
 uiElements.settingsContext = UI.CreateContext("nkUI.Settings")
 uiElements.settingsContext:SetStrata('dialog')
@@ -411,7 +412,7 @@ function internalFunc.setupUI ()
 
     local versionText = LibEKL.UICreateFrame("nkText", name .. ".versionText", config)
     versionText:SetFontSize(11)
-    versionText:SetText(string.format("Version %s", addonInfo.toc.Version))
+    versionText:SetText(stringFormat("Version %s", addonInfo.toc.Version))
     versionText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
     versionText:SetPoint("BOTTOMRIGHT", tabPane, "BOTTOMRIGHT", -5, -5)
     versionText:SetLayer(99)

@@ -9,7 +9,9 @@ local lowerBar      = privateVars.lowerBar
 ---------- init variables ---------
 
 local inspectAddonCpu	= Inspect.Addon.Cpu
-local InspectTimeFrame  = Inspect.Time.Frame
+local inspectTimeFrame  = Inspect.Time.Frame
+
+local stringFormat		= string.format
 
 ---------- addon internal function block ---------
 
@@ -31,7 +33,7 @@ function plugins.cpu ()
 				end
 			end
 
-			plugin:SetTitle(string.format(privateVars.langTexts.plugins.cpu, total * 100))
+			plugin:SetTitle(stringFormat(privateVars.langTexts.plugins.cpu, total * 100))
 		end
 	end
 	

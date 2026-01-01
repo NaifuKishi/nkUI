@@ -31,7 +31,7 @@ local function _eventHealth (_, info)
 				local realIdentifier = identifiers[idx]
 				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.getGroupStatus () == "raid" then
 					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
-					realIdentifier = string.format("raid%02d", tonumber(groupID))
+					realIdentifier = stringFormat("raid%02d", tonumber(groupID))
 				end
 
 				local frame = internalFunc.getFrameByIdentifier(realIdentifier)
@@ -56,7 +56,7 @@ local function _eventHealthMax (_, info)
 				local realIdentifier = identifiers[idx]
 				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.getGroupStatus () == "raid" then
 					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
-					realIdentifier = string.format("raid%02d", tonumber(groupID))
+					realIdentifier = stringFormat("raid%02d", tonumber(groupID))
 				end
 
 				local frame = internalFunc.getFrameByIdentifier(realIdentifier)

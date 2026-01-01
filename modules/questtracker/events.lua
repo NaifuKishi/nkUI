@@ -9,7 +9,10 @@ local questTracker	= privateVars.questTracker
 local inspectSystemSecure	= Inspect.System.Secure
 local inspectTimeReal		= Inspect.Time.Real
 local inspectQuestDetail	= Inspect.Quest.Detail
-local inspectItemDetail	= Inspect.Item.Detail
+local inspectItemDetail		= Inspect.Item.Detail
+
+local stringFind			= string.find
+local stringFormat			= string.format
 
 ---------- init local variables ---------
 
@@ -70,11 +73,11 @@ local function questAdd(list)
 							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
-							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and string.find(details.tag, "weekly") == nil then
+							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and stringFind(details.tag, "weekly") == nil then
 								uiElements.areaQuestUI:AddQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
 							end
 
-							--if string.find(details.name, "Das goldene Ticket") ~= nil then dump(details) end
+							--if stringFind(details.name, "Das goldene Ticket") ~= nil then dump(details) end
 							
 							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
 						end
@@ -305,6 +308,6 @@ function questTracker.eventSystemUpdate()
 		lastQuestUpdate = inspectTimeReal()
 		forceUpdate = false
 
-		uiElements.questTracker:SetTitle(string.format("Quests (%d)", uiElements.questTracker:GetQuestCount()))
+		uiElements.questTracker:SetTitle(stringFormat("Quests (%d)", uiElements.questTracker:GetQuestCount()))
 	end
 end

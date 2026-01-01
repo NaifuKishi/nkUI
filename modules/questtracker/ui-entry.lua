@@ -9,6 +9,8 @@ local uiElements	= privateVars.uiElements
 local inspectQuestDetail	= Inspect.Quest.Detail
 local inspectMouse			= Inspect.Mouse
 
+local stringFormat			= string.format
+
 ---------- init local variables ---------
 
 local questMenuKey
@@ -45,7 +47,7 @@ local function abandonQuest ()
 	local flag, quest = pcall(inspectQuestDetail, questMenuKey)
 	if flag == false then return end
 	
-	local text = string.format(privateVars.langTexts.abandonQuestConfirm, quest.name)
+	local text = stringFormat(privateVars.langTexts.abandonQuestConfirm, quest.name)
 
 	LibEKL.UI.confirmDialog (text, yesFunc, noFunc) 
 	
@@ -271,7 +273,7 @@ function questTracker.questEntry (key, parent, counter)
 		thisObjective:SetVisible(true)
 		thisObjective:SetWidth(subFrame:GetWidth()-15)
 		thisObjective:SetWordwrap(true)		
-		thisObjective:SetText(string.format("%s", description))
+		thisObjective:SetText(stringFormat("%s", description))
 		thisObjective.complete = complete
 		
 		if complete == true then

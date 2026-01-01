@@ -226,7 +226,7 @@ local function readyCheckEvent (_, thisData)
 			
 			if stringFind(thisType, "group") and groupStatus == "raid" then
 				local groupIndex = stringMatch(thisType, "^group(%d+)$")
-				frame = internalFunc.getFrameByIdentifier(string.format("raid%s", groupIndex))
+				frame = internalFunc.getFrameByIdentifier(stringFormat("raid%s", groupIndex))
 			else				
 				frame = internalFunc.getFrameByIdentifier(thisType)
 			end
@@ -304,7 +304,7 @@ function unitChange (_, unitID, identifier)
 			frame = uiElements.frames[identifier] 
 		else
 			local groupIndex = stringMatch(identifier, "^group(%d+)$")
-			frame = uiElements.frames[string.format("raid%s", groupIndex)] 
+			frame = uiElements.frames[stringFormat("raid%s", groupIndex)] 
 		end
 	else
 		frame = uiElements.frames[identifier]
@@ -350,7 +350,7 @@ function unitAvailable (_, units)
 				frame = uiElements.frames[identifier] 
 			else
 				local groupIndex = stringMatch(identifier, "^group(%d+)$")
-				frame = uiElements.frames[string.format("raid%s", groupIndex )] 
+				frame = uiElements.frames[stringFormat("raid%s", groupIndex )] 
 			end
 		else
 			frame = uiElements.frames[identifier]
