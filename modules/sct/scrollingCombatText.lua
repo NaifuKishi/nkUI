@@ -61,6 +61,9 @@ local lastMessage, messageY = nil, 0
 local petID, petName   
 local lastAccumulated = 0
 
+local lastInventoryUpdate
+local inventoryUpdateModY = 0
+
 local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
@@ -560,6 +563,45 @@ local function handleCooldownEnd (_, info)
 
 end
 
+local function handleInventoryUpdate(_, items)
+    local count = 0
+    local currentTime = inspectTimeFrame()
+
+    -- Reset y-position if more than 1 second has passed since last update
+    if lastInventoryUpdate ~= nil and currentTime - lastInventoryUpdate > 1 then
+        inventoryUpdateModY = 0
+    end
+
+    for item, qty in pairs(items) do
+        if qty > 0 then
+            local itemDetails = LibEKL.Inventory.GetItemByKey(item)
+            if itemDetails then
+                local slot = LibEKL.Inventory.GetSlotByItemId(item)
+                if not stringFind(slot, "seqp") then
+                    local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
+                    local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
+
+                    -- Display the item message with current y-position
+                    displayMovingMessage(
+                        stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name),
+                        2,
+                        300 + inventoryUpdateModY,
+                        100 + inventoryUpdateModY,
+                        20
+                    )
+
+                    -- Increment y-position for next item
+                    inventoryUpdateModY = inventoryUpdateModY + 20
+                    count = count + 1
+                end
+            end
+        end
+    end
+
+    -- Update the last inventory update time
+    lastInventoryUpdate = currentTime
+end
+
 function internalFunc.sctInit()
     
     local experience = inspectExperience()
@@ -586,40 +628,8 @@ function internalFunc.sctInit()
         end, "nkui.SCT.TEMPORARY.Experience")
     end
 
-    local lastUpdate
-    local modY = 0
-
     if nkUISetup.modules.sct.showLoot then
-        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, items)
-                
-            local count = 0
-
-            for item, qty in pairs (items) do
-                if qty > 0 then
-                    local itemDetails = LibEKL.Inventory.GetItemByKey (item)
-                    if itemDetails then
-
-                        local slot = LibEKL.Inventory.GetSlotByItemId(item)
-                        if not stringFind(slot, "seqp") then
-                            local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
-                            local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
-                            displayMovingMessage(stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name), 2, 300 + modY, 100 + modY, 20)
-                            modY = modY + 20                    
-                            count = count + 1
-                        end
-                    end
-                end
-            end
-
-            if lastUpdate ~= nil and inspectTimeFrame() - lastUpdate <= 1 and count == 1 then
-                modY = modY + 20
-            else
-                modY = 0
-            end
-
-            lastUpdate = inspectTimeFrame()
-            
-        end, "nkUI.SCT.LibEKL.InventoryManager.Update")
+        Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, handleInventoryUpdate, "nkUI.SCT.LibEKL.InventoryManager.Update")
     end
         
     sctInit = true
