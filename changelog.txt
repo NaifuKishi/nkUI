@@ -1,6 +1,7 @@
 V0.9.6
     - updates: Unit Frames - Upated icon display of raid frames
-    - updates: Unit Frames - minor cast bar tweak
+    - updates: Unit Frames - minor cast bar design tweak
+    - updates: Unit Frames - minor design tweak    
     - updates: Some updates on actionbars to improve generall performance    
     - fixes: Scrolling Combat Text - loot message now show more consistent
     - fixes: Unit Frames - Fixed ready check on raid frames

@@ -138,15 +138,14 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     healthFrame:SetLayer(1)
 
     if setup.reverse then
-        healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -1, 1)
+        healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -3, 3)
     else
-        healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 1, 1)
+        healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 3, 3)
     end
 
-    healthFrame:SetWidth((frameWidth -2))
-    healthFrame:SetHeight((frameHeight -2))  
+    healthFrame:SetWidth((frameWidth - 6))
+    healthFrame:SetHeight((frameHeight -6))  
 
-    local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     local path = {  {xProportional = 0, yProportional = 0},
                   {xProportional = 1, yProportional = 0},
                   {xProportional = 1, yProportional = 1},
@@ -301,8 +300,8 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         secureFrame:SetHeight(setup.height)
         
         healthFrame:ClearAll()
-        healthFrame:SetWidth((setup.width -2))
-        healthFrame:SetHeight((setup.height -2))
+        healthFrame:SetWidth((setup.width -4))
+        healthFrame:SetHeight((setup.height -4))
 
         nameText:ClearAll()
         nameText:SetFontSize(setup.fontSizes.name)
@@ -330,7 +329,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         tierIcon:SetWidth(setup.iconSizes.tier)
 
         if setup.reverse then            
-            healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -1, 1)
+            healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -3, 3)
             healthText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, setup.margins.health)
             energyText:SetPoint("TOPLEFT", unitFrame, "BOTTOMLEFT", 2, -setup.margins.energy)
             planarText:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -setup.margins.planar, 0)
@@ -342,7 +341,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
                 nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
             end
         else
-            healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 1, 1)
+            healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 3, 3)
             healthText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, setup.margins.health)
             energyText:SetPoint("TOPRIGHT", unitFrame, "BOTTOMRIGHT", -2, -setup.margins.energy)
             planarText:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", setup.margins.planar, 0)
@@ -644,7 +643,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         else
             local playerHealthPercent = health / healthMax
             healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
-            healthFrame:SetWidth(unitFrameWidth * playerHealthPercent)
+            healthFrame:SetWidth((unitFrameWidth-4) * playerHealthPercent)
         end
     end
 
