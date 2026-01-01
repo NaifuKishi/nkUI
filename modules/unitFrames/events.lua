@@ -216,14 +216,24 @@ end
 
 local function readyCheckEvent (_, thisData)
 
+	local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+
 	for unitID, response in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
+
 		for _, thisType in pairs (unitTypes) do
-			local frame = internalFunc.getFrameByIdentifier(thisType)
-			if frame then
-				frame:SetReadyCheck(response)
+			local frame
+			
+			if stringFind(thisType, "group") and groupStatus == "raid" then
+				local groupIndex = stringMatch(thisType, "^group(%d+)$")
+				frame = internalFunc.getFrameByIdentifier(string.format("raid%s", groupIndex))
+			else				
+				frame = internalFunc.getFrameByIdentifier(thisType)
 			end
+
+			if frame then frame:SetReadyCheck(response) end
 		end
+
 	end	
 
 end
@@ -240,7 +250,7 @@ local function showHideGroupRaidFrames(framePrefix, unitPrefix, count, flag)
 			--local unitID = LibEKL.Unit.GetUnitByIdentifier (stringFormat("%s%02d", unitPrefix, idx))			
 			local unitType = stringFormat("%s%02d", unitPrefix, idx)
 			local unitDetails = LibEKL.Unit.GetUnitIDByType (unitType)
-			if (unitDetails) then
+			if unitDetails then
 				frame:SetVisible(true)
 				internalFunc.updateUnit (frame, unitDetails[1], unitType)
 				--frame:SetUnitID(unitDetails[0])
