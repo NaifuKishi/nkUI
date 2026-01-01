@@ -1,3 +1,6 @@
+V0.9.6
+    - fixes: Unit Frames - Fixed a ready check error
+
 V0.9.5
     - new: Unit Frames - added target of target frame
     - new: Lower Bar - added Vitality display

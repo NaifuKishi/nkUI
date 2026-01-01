@@ -218,7 +218,9 @@ local function readyCheckEvent (_, thisData)
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
-			frame:SetReadyCheck(response)
+			if frame then
+				frame:SetReadyCheck(response)
+			end
 		end
 	end	
 

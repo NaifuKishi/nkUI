@@ -10,7 +10,6 @@ ToDo
     - finish cooldown icons
     - faction update in sct
     - group update bug on death
-    - Add Target of Target frame
     - Macro for raid / group frames (click healing)
     - Combined stats event with caching?
     - add blocked handling? (only works for group members)
