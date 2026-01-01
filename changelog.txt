@@ -1,4 +1,5 @@
 V0.9.6
+    - updates: Unit Frames - Upated icon display of raid frames
     - fixes: Unit Frames - Removed grey bars from empty raid slots
     - fixes: Unit Frames - Fixed missing units in raidframes when switching between group1 and other groups
     - fixes: Unit Frames - Fixed a ready check error

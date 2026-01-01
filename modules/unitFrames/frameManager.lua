@@ -157,7 +157,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     local nameText = LibEKL.UICreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
     if unitFrameType == "raid" then
-        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
+        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)        
     elseif setup.reverse then
         nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
     else
@@ -253,7 +253,9 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     roleIcon:SetWidth(setup.iconSizes.role)
     roleIcon:SetVisible(false)
 
-    if setup.reverse then
+    if string.find(unitType, "raid") then
+        roleIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4, 0)
+    elseif setup.reverse then
         roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.roleIcon, 0)
     else
         roleIcon:SetPoint("CENTERLEFT", nameText, "CENTERRIGHT", setup.margins.roleIcon, 0)
@@ -275,6 +277,9 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     rareIcon:SetPoint("CENTERRIGHT", tierIcon, "CENTERLEFT", -setup.margins.tierIcon, 0)
 
     local iconHeight = unitFrame:GetHeight() - 2
+    if string.find(unitType, "raid") then
+        iconHeight = setup.iconSizes.role
+    end
 
     local stateIcon = LibEKL.UICreateFrame("nkTexture", thisName .. ".stateIcon", unitFrame)
     stateIcon:SetLayer(99)
@@ -282,7 +287,12 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     stateIcon:SetWidth(iconHeight)
     stateIcon:SetVisible(false) 
     stateIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconAFK.png")
-    stateIcon:SetPoint("CENTER", unitFrame, "CENTER")
+    
+    if string.find(unitType, "raid") then
+        stateIcon:SetPoint("CENTERLEFT", unitFrame, "CENTERLEFT", 4, 0)
+    else
+        stateIcon:SetPoint("CENTER", unitFrame, "CENTER")
+    end
     
     function unitFrame:Redraw()        
         unitFrame:SetWidth(setup.width)
