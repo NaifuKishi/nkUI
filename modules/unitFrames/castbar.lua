@@ -35,8 +35,8 @@ function internalFunc.createCastBar (unitType, setup)
 	castbar:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)		
 
 	local castbarFill = LibEKL.UICreateFrame("nkCanvas", thisName .. ".castBar.Inner", castbar)
-	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 0, 0)
-	castbarFill:SetHeight(setup.height )
+	castbarFill:SetPoint("CENTERLEFT", castbar, "CENTERLEFT", 2, 0)
+	castbarFill:SetHeight(setup.height - 4 )
 	castbarFill:SetLayer(1)
 	
 	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
@@ -71,7 +71,7 @@ function internalFunc.createCastBar (unitType, setup)
 	
 	function castbar:SetTimer (remaining, duration)
 		local percent = 1 / duration * (duration - remaining)
-		castbarFill:SetWidth((setup.width) * percent)		
+		castbarFill:SetWidth((setup.width - 4) * percent)		
 		castBarTimer:SetText(string.format("%.1f", remaining))
 	end
 
