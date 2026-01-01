@@ -432,7 +432,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         end
     end
 
-    function unitFrame:SetUnitID (newID) thisUnitID = newId end
+    function unitFrame:SetUnitID (newID) thisUnitID = newID end
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
