@@ -23,9 +23,11 @@ local stringSub		= string.sub
 
 local LibEKLGetUnitTypes	= LibEKL.Unit.getUnitTypes
 
+local lastGroupType
+
 ------------------------------ combat functions ------------------------------
 
-local function _fctSecureEnter()
+local function secureEnter()
 
 	uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.combatAlpha)
 	uiElements.frames["player"]:SetCombat(true)
@@ -39,7 +41,7 @@ local function _fctSecureEnter()
 
 end
 
-local function _fctSecureLeave()
+local function secureLeave()
 	
 	uiElements.frames["player"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player"]:SetCombat(false)
@@ -226,6 +228,148 @@ local function readyCheckEvent (_, thisData)
 
 end
 
+------------------------------ group and raid events ------------------------------
+
+local function showHideGroupRaidFrames(framePrefix, unitPrefix, count, flag)
+	for idx = 1, count, 1 do
+		local frameType = stringFormat("%s%02d", framePrefix, idx)
+		local frame = uiElements.frames[frameType]
+
+		if flag then
+
+			--local unitID = LibEKL.Unit.GetUnitByIdentifier (stringFormat("%s%02d", unitPrefix, idx))			
+			local unitType = stringFormat("%s%02d", unitPrefix, idx)
+			local unitDetails = LibEKL.Unit.GetUnitIDByType (unitType)
+			if (unitDetails) then
+				frame:SetVisible(true)
+				internalFunc.updateUnit (frame, unitDetails[1], unitType)
+				--frame:SetUnitID(unitDetails[0])
+			else
+				frame:SetVisible(false)
+			end
+		else
+			frame:SetVisible(false)
+		end
+	end
+end
+
+local function processGroupStatus (_, groupType)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "processGroupStatus", groupType, {}) end
+
+	if groupType == lastGroupType then return end
+	
+	if groupType == "group" then
+		showHideGroupRaidFrames("raid", "group", 20, false)
+		showHideGroupRaidFrames("group", "group", 5, true)
+	elseif groupType == "raid" then
+		showHideGroupRaidFrames("raid", "group", 20, true)
+		showHideGroupRaidFrames("group", "group", 5, false)
+	else
+		showHideGroupRaidFrames("raid", "group", 20, false)
+		showHideGroupRaidFrames("group", "group", 5, false)
+	end
+
+	lastGroupType =groupType
+
+end
+
+------------------------------ unit events ------------------------------
+
+function unitChange (_, unitID, identifier)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitChange", "------------------------", nil) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitChange", stringFormat("%s %s", unitID, identifier), nil) end
+	
+	local frame
+
+	if stringMatch(identifier, "^group(%d+)$") then
+		-- only process group if group status matches
+
+		local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitChange - group status", stringFormat("%s %d", groupStatus, groupSize), {}) end
+
+		if groupStatus == 'group' then 
+			frame = uiElements.frames[identifier] 
+		else
+			local groupIndex = stringMatch(identifier, "^group(%d+)$")
+			frame = uiElements.frames[string.format("raid%s", groupIndex)] 
+		end
+	else
+		frame = uiElements.frames[identifier]
+	end
+
+	if frame then
+		if unitID == false then
+			frame:SetVisible(false)
+			frame:SetUnitID(nil)
+			frame:ClearBuffs()
+		else
+			internalFunc.updateUnit (frame, unitID, identifier) 
+			frame:SetVisible(true)
+		end
+	else
+		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitChange", stringFormat("no frame %s", identifier), nil) end
+	end
+	
+end
+
+--[[function playerAvailable (_, thisInfo, plusInfo)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "playerAvailable", "", thisInfo) end
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "playerAvailable", "", plusInfo) end
+
+end]]
+
+function unitAvailable (_, units)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitAvailable", "", units) end
+
+	if units == nil then return end
+
+	for unitID, identifier in pairs (units) do
+		local frame
+		
+		if stringMatch(identifier, "^group(%d+)$") then
+			local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+
+			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitAvailable", stringFormat("%s %d", groupStatus, groupSize), units) end
+
+			if groupStatus == 'group' then 
+				frame = uiElements.frames[identifier] 
+			else
+				local groupIndex = stringMatch(identifier, "^group(%d+)$")
+				frame = uiElements.frames[string.format("raid%s", groupIndex )] 
+			end
+		else
+			frame = uiElements.frames[identifier]
+		end		
+
+		if frame then
+			internalFunc.updateUnit (frame, unitID, identifier) 
+			frame:SetVisible(true)
+		end
+	end
+	
+end
+
+function unitUnavailable (_, units)
+
+	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitUnavailable", "units", units) end
+
+	for unitId, _ in pairs (units) do
+	
+		local unitTypes = LibEKLGetUnitTypes (unitId)
+		for _, thisType in pairs (unitTypes) do
+			local frame = internalFunc.getFrameByIdentifier(thisType)
+			if frame then frame:SetVisible(false) end
+		end
+	end
+
+end
+
+
 ------------------------------ update handler functions ------------------------------
 
 local function updateHandler()
@@ -274,16 +418,16 @@ function events.uiFramesInitEvents()
 		LibEKL.Unit.subscribe(stringFormat("group%02d", idx))
 	end
 
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, events.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, events.groupStatus, "nkUI.LibEKL.Unit.GroupStatus")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Available, events.available, "nkUI.LibEKL.Unit.Available")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Unavailable, events.unavailable, "nkUI.LibEKL.Unit.Unavailable")
-	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, events.change, "nkUI.LibEKL.Unit.Change")	
+	--Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, processGroupStatus, "nkUI.LibEKL.Unit.GroupStatus")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Available, unitAvailable, "nkUI.LibEKL.Unit.Available")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Unavailable, unitUnavailable, "nkUI.LibEKL.Unit.Unavailable")
+	Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, unitChange, "nkUI.LibEKL.Unit.Change")	
 
 	--- in combat and out of combat alpha
 
-	Command.Event.Attach(Event.System.Secure.Enter, _fctSecureEnter, "nkUI.System.Secure.Enter")
-	Command.Event.Attach(Event.System.Secure.Leave, _fctSecureLeave, "nkUI.System.Secure.Leave")
+	Command.Event.Attach(Event.System.Secure.Enter, secureEnter, "nkUI.System.Secure.Enter")
+	Command.Event.Attach(Event.System.Secure.Leave, secureLeave, "nkUI.System.Secure.Leave")
 
 	--- stats changes
 
@@ -344,124 +488,4 @@ function events.uiFramesInitEvents()
 
 	LibEKL.Unit.UpdateGroupUnit()
 
-end
-
-function events.playerAvailable (_, thisInfo, plusInfo)
-
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.playerAvailable", "", thisInfo) end
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.playerAvailable", "", plusInfo) end
-
-end
-
-function events.groupStatus (_, groupType)
-
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.groupStatus", thisInfo, {}) end
-	
-	if groupType == "group" then
-		for idx = 1, 20, 1 do
-			local frame = uiElements.frames[stringFormat("raid%02d", idx)]
-			frame:SetVisible(false)
-		end
-	elseif groupType == "raid" then
-		for idx = 1, 5, 1 do
-			local frame = uiElements.frames[stringFormat("group%02d", idx)]			
-			frame:SetVisible(false)
-			--internalFunc.manageBuffs(frame, stringFormat("group%02d", idx), nil, nil, nil, "clear")
-		end
-	else
-		for idx = 1, 20, 1 do
-			local frame = uiElements.frames[stringFormat("raid%02d", idx)]
-			frame:SetVisible(false)
-
-			if idx <= 5 then
-				local frame = uiElements.frames[stringFormat("group%02d", idx)]
-				frame:SetVisible(false)
-			end
-		end
-	end
-end
-
-function events.available (_, units)
-
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.available", "", units) end
-
-	if units == nil then return end
-
-	for unitID, identifier in pairs (units) do
-		local frame
-		
-		if stringMatch(identifier, "^group(%d+)$") then
-			local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
-
-			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.available", stringFormat("%s %d", groupStatus, groupSize), units) end
-
-			if groupStatus == 'group' then 
-				frame = uiElements.frames[identifier] 
-			else
-				local groupIndex = stringMatch(identifier, "^group(%d+)$")
-				frame = uiElements.frames[string.format("raid%s", groupIndex )] 
-			end
-		else
-			frame = uiElements.frames[identifier]
-		end		
-
-		if frame then
-			internalFunc.updateUnit (frame, unitID, identifier) 
-			frame:SetVisible(true)
-		end
-	end
-	
-end
-
-function events.unavailable (_, units)
-
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.unavailable", "units", units) end
-
-	for unitId, _ in pairs (units) do
-	
-		local unitTypes = LibEKLGetUnitTypes (unitId)
-		for _, thisType in pairs (unitTypes) do
-			local frame = internalFunc.getFrameByIdentifier(thisType)
-			if frame then frame:SetVisible(false) end
-		end
-	end
-
-end
-
-function events.change (_, unitID, identifier)
-
-	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("%s %s", unitID, identifier), nil) end
-	
-	local frame
-
-	if stringMatch(identifier, "^group(%d+)$") then
-		-- only process group if group status matches
-
-		local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
-
-		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("%s %d", groupStatus, groupSize), {}) end
-
-		if groupStatus == 'group' then 
-			frame = uiElements.frames[identifier] 
-		else
-			local groupIndex = stringMatch(identifier, "^group(%d+)$")
-			frame = uiElements.frames[string.format("raid%s", groupIndex)] 
-		end
-	else
-		frame = uiElements.frames[identifier]
-	end
-
-	if frame then
-		if unitID == false then
-			frame:SetVisible(false)
-			frame:SetUnitID(nil)
-			frame:ClearBuffs()
-		else		
-			internalFunc.updateUnit (frame, unitID, identifier) 
-			frame:SetVisible(true)
-		end
-	else
-		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.change", stringFormat("no frame %s", identifier), nil) end
-	end
-	
 end

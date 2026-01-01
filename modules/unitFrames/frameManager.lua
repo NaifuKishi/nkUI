@@ -91,11 +91,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     unitFrame:SetHeight(frameHeight)    
     unitFrame:SetVisible(false)
 
-    if unitFrameType == "raid" then
-        unitFrame:SetBackgroundColor(0.4, 0.4, 0.4, .5)
-    else
-        unitFrame:SetBackgroundColor(0, 0, 0, .5)
-    end
+    unitFrame:SetBackgroundColor(0, 0, 0, .5)
 
     local oSetAlpha = unitFrame.SetAlpha
     function unitFrame:SetAlpha(newAlpha)
@@ -114,7 +110,6 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     secureFrame:SetPoint("CENTER", UIParent, "CENTER", setup.x, setup.y)
     secureFrame:SetWidth(frameWidth)
     secureFrame:SetHeight(frameHeight)
-    --secureFrame:SetBackgroundColor(1, 0, 0, 1)
     secureFrame:SetSecureMode("restricted")
     secureFrame:SetVisible(false)
 
@@ -427,7 +422,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         end
     end
 
-    function unitFrame:SetUnitID (newId) thisUnitID = newId end
+    function unitFrame:SetUnitID (newID) thisUnitID = newId end
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
