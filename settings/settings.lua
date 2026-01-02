@@ -118,7 +118,7 @@ local _defaults = {
                         rightbar = true
                     },
         lowerBar    = { activate = true,                         
-                        fontSize = 15,
+                        fontSize = 13,
                         barHeight = 17,
                         barWidth = 300,
                         barText = 15,
