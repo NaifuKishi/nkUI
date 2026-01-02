@@ -17,6 +17,9 @@ local InspectUnitLookup     = Inspect.Unit.Lookup
 local mathFloor     = math.floor
 local stringFormat  = string.format
 
+local LibEKLToolsUUID = LibEKL.Tools.UUID
+
+
 local context = UI.CreateContext("nkUI.buffIcons")
 context:SetStrata('hud')
 context:SetLayer(2)
@@ -33,9 +36,11 @@ local iconManager = {
 
 function iconManager.get(unitType, iconType)
 
+    local activeIcons = iconManager.activeIcons[unitType]
+
     -- Check if icon already exists
-    if iconManager.activeIcons[unitType] and iconManager.activeIcons[unitType][iconType] then
-        return iconManager.activeIcons[unitType][iconType]
+    if activeIcons and activeIcons[iconType] then
+        return activeIcons[iconType]
     end
 
     -- Check pool for available icons
@@ -43,34 +48,19 @@ function iconManager.get(unitType, iconType)
         local icon = table.remove(iconManager.iconPool)
         icon:SetVisible(true)
         icon:ClearAll()
-        --icon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-        --icon:Setup(setup)
 
-        -- Reset other icon properties as needed
-        -- ...
-
-        if not iconManager.activeIcons[unitType] then
-            iconManager.activeIcons[unitType] = {}
-        end
-        iconManager.activeIcons[unitType][iconType] = icon
+        if not activeIcons then activeIcons = {} end
+        activeIcons[iconType] = icon
         return icon
     end
 
     -- Create new icon if none available
-    local thisName = LibEKL.Tools.UUID()
+    local thisName = LibEKLToolsUUID()
     local thisIcon = uiElements.icon(thisName .. ".icon", context)
-    --thisIcon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-    --thisIcon:Setup(setup)
     thisIcon:SetVisible(false)
 
-    -- Implement icon-specific functionality
-    -- ...
-
-    if not iconManager.activeIcons[unitType] then
-        iconManager.activeIcons[unitType] = {}
-    end
-
-    iconManager.activeIcons[unitType][iconType] = thisIcon
+    if not activeIcons then activeIcons = {} end
+    activeIcons[iconType] = thisIcon
     return thisIcon
 end
 
@@ -91,10 +81,12 @@ end
         - The active icons collection is updated after processing
 ]]
 function iconManager.release(unitType, iconType)
-    if iconManager.activeIcons[unitType] and iconManager.activeIcons[unitType][iconType] then
-        iconManager.activeIcons[unitType][iconType]:SetVisible(false)
-        table.insert(iconManager.iconPool, iconManager.activeIcons[unitType][iconType])
-        iconManager.activeIcons[unitType][iconType] = nil
+    local activeIcons = iconManager.activeIcons[unitType]
+
+    if activeIcons and activeIcons[iconType] then
+        activeIcons[iconType]:SetVisible(false)
+        table.insert(iconManager.iconPool, activeIcons[iconType])
+        activeIcons[iconType] = nil
     end
 end
 

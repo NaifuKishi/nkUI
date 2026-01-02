@@ -116,6 +116,7 @@ end
 -- @param unit The unit ID
 -- @param buffs The buffs to remove
 function internalFunc.buffBar.removeBuff(unit, buffs)
+   
     for id, v in pairs(buffs) do
         local buffType = buffId2BuffType[id]
 

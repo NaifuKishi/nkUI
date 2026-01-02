@@ -23,6 +23,9 @@ local stringSub		= string.sub
 
 local LibEKLGetUnitTypes			= LibEKL.Unit.getUnitTypes
 local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
+local LibEKLUnitGetUnitDetail		= LibEKL.Unit.GetUnitDetail
+local LibEKLUnitGetUnitIDByType		= LibEKL.Unit.GetUnitIDByType
+local LibEKLUnitGetGroupStatus		= LibEKL.Unit.getGroupStatus
 
 local lastGroupType
 
@@ -89,7 +92,7 @@ local function eventCastBar(_, units)
 				else
 					if data[castBarName] and not data[castBarName].uninterruptible then 
 						if unitID ~= LibEKLUnitGetPlayerDetails().id and inspectTimeReal() - data[castBarName].start < data[castBarName].duration then
-							local unitDetails = LibEKL.Unit.GetUnitDetail (unitID, true)
+							local unitDetails = LibEKLUnitGetUnitDetail (unitID, true)
 							if unitDetails.health > 0 then
 								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)
 							end
@@ -139,7 +142,7 @@ end
 
 local function eventBuffAdd(_, unit, buffs)
 	
-	local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+	local groupStatus, groupSize = LibEKLUnitGetGroupStatus()
 
 	if nkUISetup.modules.unitFrames.activate == false then return end
 
@@ -195,8 +198,10 @@ end
 
 local function zoneEvent(_, thisData)
 
+	local playerID = LibEKLUnitGetPlayerDetails().id
+
 	for k, v in pairs(thisData) do
-		if k == LibEKLUnitGetPlayerDetails().id then
+		if k == playerID then
 			internalFunc.updateUnit (playerFrame, playerID, "player")
 			internalFunc.processBuffs ()
 			break
@@ -209,7 +214,7 @@ local function unitDetailsEvent (_, thisData)
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
-			LibEKL.Unit.GetUnitDetail(unitID, true)
+			LibEKLUnitGetUnitDetail(unitID, true)
 			internalFunc.updateUnit (frame, unitID, thisType)
 		end
 	end	
@@ -217,7 +222,7 @@ end
 
 local function readyCheckEvent (_, thisData)
 
-	local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+	local groupStatus, groupSize = LibEKLUnitGetGroupStatus()
 
 	for unitID, response in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
@@ -247,14 +252,11 @@ local function showHideGroupRaidFrames(framePrefix, unitPrefix, count, flag)
 		local frame = uiElements.frames[frameType]
 
 		if flag then
-
-			--local unitID = LibEKL.Unit.GetUnitByIdentifier (stringFormat("%s%02d", unitPrefix, idx))			
 			local unitType = stringFormat("%s%02d", unitPrefix, idx)
-			local unitDetails = LibEKL.Unit.GetUnitIDByType (unitType)
+			local unitDetails = LibEKLUnitGetUnitIDByType (unitType)
 			if unitDetails then
 				frame:SetVisible(true)
 				internalFunc.updateUnit (frame, unitDetails[1], unitType)
-				--frame:SetUnitID(unitDetails[0])
 			else
 				frame:SetVisible(false)
 			end
@@ -297,7 +299,7 @@ function unitChange (_, unitID, identifier)
 	if stringMatch(identifier, "^group(%d+)$") then
 		-- only process group if group status matches
 
-		local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+		local groupStatus, groupSize = LibEKLUnitGetGroupStatus()
 
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitChange - group status", stringFormat("%s %d", groupStatus, groupSize), {}) end
 
@@ -339,11 +341,12 @@ function unitAvailable (_, units)
 
 	if units == nil then return end
 
+	local groupStatus, groupSize = LibEKLUnitGetGroupStatus()
+
 	for unitID, identifier in pairs (units) do
 		local frame
 		
-		if stringMatch(identifier, "^group(%d+)$") then
-			local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+		if stringMatch(identifier, "^group(%d+)$") then			
 
 			if nkDebug then nkDebug.logEntry (addonInfo.identifier, "unitAvailable", stringFormat("%s %d", groupStatus, groupSize), units) end
 
@@ -466,7 +469,7 @@ function events.uiFramesInitEvents()
 
 	----- initialize player, pet and target -----
 
-	local playerID = LibEKL.Unit.GetUnitDetail ("player").id
+	local playerID = LibEKLUnitGetUnitDetail ("player").id
 
 	local playerFrame = uiElements.frames["player"]
 	internalFunc.updateUnit (playerFrame, playerID, "player")
