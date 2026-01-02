@@ -29,6 +29,11 @@ local mathFloor					= math.floor
 local DEFAULT_SCALE = 1
 local DEFAULT_DESIGN = 'default'
 
+local contextSecure = UI.CreateContext("nkUI.actioniconSecure")
+contextSecure:SetStrata('hud')
+contextSecure:SetLayer(2)
+contextSecure:SetSecureMode("restricted")
+
 --[[
   Main action icon function
   @param {string} name - The name of the icon
@@ -64,8 +69,6 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	frame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 3 })
 
 	local function createTexture ()
-
-		--print (name, "createTexture")
 
 		-- Create the texture for the icon
 		texture = LibEKL.UICreateFrame("nkTexture", name .. '.texture', frame)  
@@ -382,10 +385,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		if interactive then
 		
 			if not macroFrame then
-				macroFrame = LibEKL.UICreateFrame("nkFrame", name .. ".macroFrame", uiElements.unitFramesContextSecure)
+				macroFrame = LibEKL.UICreateFrame("nkFrame", name .. ".macroFrame", contextSecure)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
+				--macroFrame:SetBackgroundColor(1, 0, 0, 1)
 				
 				local thisSize = frame:GetWidth() -2
 				macroFrame:SetWidth(thisSize)
