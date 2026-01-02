@@ -194,11 +194,11 @@ function oneBag.populateBag(forceCacheUpdate)
 
             if thisIcon == nil then
                 if nkDebug then nkDebug.logEntry (addonInfo.identifier, stringFormat("One Bag create slot icon %s", slot)) end
-                thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)
-                thisIcon:SetSlot(slot)
+                thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)                
                 itemIcons[slot] = thisIcon
             end            
-            
+
+            thisIcon:SetSlot(slot)            
             thisIcon:SetParent(thisCategory)
             thisIcon:SetIcon("Rift", itemDetails.icon)
             thisIcon:SetRarity(itemDetails.rarity)

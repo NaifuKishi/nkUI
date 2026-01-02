@@ -101,7 +101,6 @@ function oneBag.createItemIcon(name, parent)
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()        
         Command.Tooltip(thisItemID)
         oneBag.showItemTooltip (thisItemID)
-        --LibEKL.Events.AddInsecure(function() oneBag.showItemTooltip (thisItemID) end, inspectTimeFrame(), .5)        
     end, name .. "Event.UI.Input.Mouse.Cursor.In")
     
     itemIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
