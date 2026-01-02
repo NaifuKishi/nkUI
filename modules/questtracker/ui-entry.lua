@@ -216,7 +216,7 @@ function questTracker.questEntry (key, parent, counter)
 	------------- Info setting ------------
 
 	function frame:SetLevel(newLevel)
-		if newLevel == nil then return end
+		if newLevel == nil then return end		
 		level:ClearHeight()
 		level:SetText(newLevel, true)
 	end

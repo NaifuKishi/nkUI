@@ -58,7 +58,8 @@ end
 function questTracker.buildUI ()
 
 	local name = "nkUI.questTracker"
-	local scrollPane, content	
+	local scrollPane, content
+	local lastTitle
 
 	local ui = LibEKL.UICreateFrame("nkFrame", name, questTracker.context)
 	
@@ -335,7 +336,10 @@ function questTracker.buildUI ()
 	end
 
 	function ui:SetTitle(newTitle)
-		header:SetText(newTitle)
+		if newTitle ~= lastTitle then
+			header:SetText(newTitle)
+			lastTitle = newTitle
+		end
 	end
 		
 	---------------------------------------

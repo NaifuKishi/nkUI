@@ -14,12 +14,17 @@ local inspectItemDetail		= Inspect.Item.Detail
 local stringFind			= string.find
 local stringFormat			= string.format
 
+local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
+local LibEKLUnitSetPlayerDetails	= LibEKL.Unit.setPlayerDetails
+
+local LibEKLToolsMathRound			= LibEKL.Tools.Math.Round
+
 ---------- init local variables ---------
 
 local forceUpdate		= nil
 local lastQuestUpdate	= nil
 local _addonInit		= false
-local _update			= false
+local runQuestUpdate	= true
 local updateQuestList	= {}
 local _questCache		= {}
 
@@ -37,14 +42,17 @@ local function isUpdate(cached, details)
      	isUpdate = true
 	else
    	for idx = 1, #details.objective, 1 do
-   		if details.objective[idx] ~= nil and cached.objective[idx] ~= nil then
-	      	if details.objective[idx].complete ~= cached.objective[idx].complete then
+		local thisObjective = details.objective[idx]
+		local cachedObjective = cached.objective[idx]
+
+   		if thisObjective ~= nil and cachedObjective ~= nil then
+	      	if dthisObjective.complete ~= cachedObjective.complete then
 	      		isUpdate = true
-	      	elseif details.objective[idx].count ~= cached.objective[idx].count then
+	      	elseif thisObjective.count ~= cachedObjective.count then
 	      		isUpdate = true
-	      	elseif details.objective[idx].description ~= cached.objective[idx].description then
+	      	elseif thisObjective.description ~= cachedObjective.description then
 	      		isUpdate = true
-	      	elseif details.objective[idx].countDone ~= cached.objective[idx].countDone then
+	      	elseif thisObjective.countDone ~= cachedObjective.countDone then
 	            isUpdate = true
 				end
 			end
@@ -73,12 +81,6 @@ local function questAdd(list)
 							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
-							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) and details.tag ~= nil and stringFind(details.tag, "weekly") == nil then
-								uiElements.areaQuestUI:AddQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
-							end
-
-							--if stringFind(details.name, "Das goldene Ticket") ~= nil then dump(details) end
-							
 							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
 						end
 
@@ -90,7 +92,7 @@ local function questAdd(list)
 	)
 	
 	local callBack = function ()
-		_update = false
+		runQuestUpdate = true
 		if (_addonInit == false) then
 		   uiElements.questTracker:SetVisible(true)
 		   _addonInit = true
@@ -103,7 +105,7 @@ local function questAdd(list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
-	_update = true
+	runQuestUpdate = false
 
 end
 
@@ -122,19 +124,8 @@ local function questChange(list)
 						local err, isUpdate = pcall(isUpdate, _questCache[key], details)
 
 						if err == false then
-							if nkQuestTrackerSetup.debug == true then
-								print('---------------------------------')
-								dump(_questCache[key])
-								dump(details)
-							end	
-
 							list[key] = nil
 						elseif err == true and isUpdate == true then
-
-							if uiElements.areaQuestUI ~= nil and LibEKL.Tools.Table.IsMember (data.areaQuestDomain, details.domain) then
-								uiElements.areaQuestUI:UpdateQuest(key, details.domain, details.name, details.objective, details.complete, details.level, details.zone)
-							end
-
 							uiElements.questTracker:UpdateQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level)
 						end
 					end
@@ -148,7 +139,7 @@ local function questChange(list)
 	)
 	
 	local callBack = function ()
-		_update = false
+		runQuestUpdate = true
 		uiElements.progressBar:SetVisible(false)
 		if uiElements.panel ~= nil then uiElements.panel:UpdateTitle() end
 	end
@@ -157,7 +148,7 @@ local function questChange(list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
-	_update = true
+	runQuestUpdate = false
 	
 end
 
@@ -174,10 +165,6 @@ local function questRemove(list)
 				else
 					local key = list[idx]
 					
-					if uiElements.areaQuestUI ~= nil then
-						uiElements.areaQuestUI:RemoveQuest(key)
-					end
-					
 					uiElements.questTracker:RemoveQuest(key)
 					_questCache[key] = nil
 				end
@@ -188,7 +175,7 @@ local function questRemove(list)
 	)
 	
 	local callBack = function ()
-		_update = false
+		runQuestUpdate = true
 		uiElements.progressBar:SetVisible(false)
 		if uiElements.panel ~= nil then uiElements.panel:UpdateTitle() end
 		uiElements.useUI:Update()
@@ -198,7 +185,7 @@ local function questRemove(list)
 	uiElements.progressBar:SetValue(1)
 	if #list > 3 and uiElements.questTracker:GetVisible() == true then uiElements.progressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
-	_update = true
+	runQuestUpdate = false
 
 end
 
@@ -218,11 +205,11 @@ end
 
 function questTracker.eventUnitLevel(_, units)
 
-	local playerID = LibEKL.Unit.getPlayerDetails().id
+	local playerID = LibEKLUnitGetPlayerDetails().id
 
 	if units[playerID] == nil or units[playerID] == false then return end
 	
-	LibEKL.Unit.setPlayerDetails("level", units[playerID])
+	LibEKLUnitSetPlayerDetails("level", units[playerID])
 	
 	questTracker.clearLog(questTracker.fillLog)
 
@@ -264,29 +251,31 @@ function questTracker.eventSystemUpdate()
 
 	if LibQB.query.isInit() == false then return end
 
-	if uiElements.useUI == nil and inspectSystemSecure() == false then
+	local isSecure = inspectSystemSecure()
+
+	if uiElements.useUI == nil and isSecure == false then
 		if LibEKL.Inventory.getAvailableSlots() ~= false then
 			uiElements.useUI = questTracker.buildUseUI ()
 			uiElements.useUI:Update()
 		end
-	elseif inspectSystemSecure() == false and data.useUpdate == true then
+	elseif isSecure == false and data.useUpdate == true then
 		uiElements.useUI:Update()
 		data.useUpdate = false
 	end
 
-	if _update == true then return end
+	if not runQuestUpdate then return end
 
-	if forceUpdate ~= true then
+	if not forceUpdate then
 		if lastQuestUpdate == nil then
 			lastQuestUpdate = inspectTimeReal()
 			forceUpdate = true
 		else
 			local tmpTime = inspectTimeReal()
-			if LibEKL.Tools.Math.Round((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
+			if LibEKLToolsMathRound((tmpTime - lastQuestUpdate), 1) > 1 then forceUpdate = true end
 		end
 	end
 
-	if forceUpdate == true then
+	if forceUpdate then
 
 		if #data.addQuestList > 0 then
 		
