@@ -24,7 +24,7 @@ local _defaults = {
     modules = {
         questtracker = {activate = true,
                         x = 2800,
-                        y = 400,
+                        y = 500,
                         width = 300, 
                         height = 500, 
                         useXpos = 800, 

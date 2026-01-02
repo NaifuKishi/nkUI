@@ -4,9 +4,9 @@ local addonInfo, privateVars = ...
 
 privateVars.lowerBar    = {}
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
 local lowerBar      = privateVars.lowerBar
 
 local mathpi        = math.pi

@@ -286,11 +286,11 @@ local function initializeAddon(_, addon)
 				LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame(), 5)
 			end
 
-		end, "nkUI.Unit.Availability.Full")
-		
-		if nkUISetup.useManager then
-			LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
-		end
+			if nkUISetup.useManager then
+				LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+			end
+
+		end, "nkUI.Unit.Availability.Full")		
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

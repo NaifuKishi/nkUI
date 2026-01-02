@@ -1,3 +1,7 @@
+V0.9.7
+    - fixes: Lower bar: Fixed an error when clicking currency
+    - fixes: Fixed an error on very first start of nkUI
+
 V0.9.6
     - updates: Unit Frames - Upated icon display of raid frames
     - updates: Unit Frames - minor cast bar design tweak

@@ -5,6 +5,7 @@ local addonInfo, privateVars = ...
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local lowerBar      = privateVars.lowerBar
+local internalFunc  = privateVars.internalFunc
 
 ---------- init local variables ---------
 
