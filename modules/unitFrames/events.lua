@@ -21,7 +21,8 @@ local stringMatch	= string.match
 local stringFind	= string.find
 local stringSub		= string.sub
 
-local LibEKLGetUnitTypes	= LibEKL.Unit.getUnitTypes
+local LibEKLGetUnitTypes			= LibEKL.Unit.getUnitTypes
+local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
 
 local lastGroupType
 
@@ -87,7 +88,7 @@ local function eventCastBar(_, units)
 					}
 				else
 					if data[castBarName] and not data[castBarName].uninterruptible then 
-						if unitID ~= LibEKL.Unit.getPlayerDetails().id and inspectTimeReal() - data[castBarName].start < data[castBarName].duration then
+						if unitID ~= LibEKLUnitGetPlayerDetails().id and inspectTimeReal() - data[castBarName].start < data[castBarName].duration then
 							local unitDetails = LibEKL.Unit.GetUnitDetail (unitID, true)
 							if unitDetails.health > 0 then
 								internalFunc.displayMessageAtTopCenter(stringFormat("%s interrupted", data[castBarName].abilityName), 1.5)
@@ -143,13 +144,14 @@ local function eventBuffAdd(_, unit, buffs)
 	if nkUISetup.modules.unitFrames.activate == false then return end
 
 	-- Handle player buffs
-	if unit == LibEKL.Unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then
+	if unit == LibEKLUnitGetPlayerDetails().id and nkUISetup.modules.buffBar.activate then
 		internalFunc.buffBar.addBuff(unit, buffs)
 		internalFunc.buffBar.UpdateBuffDisplay()
 	end
 
 	-- Handle unit frame buffs
 	if nkUISetup.modules.unitFrames.showBuffs then
+
 		local identifiers = LibEKLGetUnitTypes (unit)
 
 		if #identifiers > 0 then
@@ -159,8 +161,7 @@ local function eventBuffAdd(_, unit, buffs)
 					if frame then frame:addBuff(unit, buffs) end
 				end
 			end
-		end	
-		
+		end			
 	end
 end
 
@@ -172,7 +173,7 @@ local function eventBuffRemove (_, unit, buffs)
 
 	--if nkUISetup.modules.unitFrames.activate == false then return end
 
-	if unit == LibEKL.Unit.getPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
+	if unit == LibEKLUnitGetPlayerDetails().id and nkUISetup.modules.buffBar.activate then 
 		internalFunc.buffBar.removeBuff(unit, buffs) 
 		internalFunc.buffBar.UpdateBuffDisplay()
 	end
@@ -195,7 +196,7 @@ end
 local function zoneEvent(_, thisData)
 
 	for k, v in pairs(thisData) do
-		if k == LibEKL.Unit.getPlayerDetails().id then
+		if k == LibEKLUnitGetPlayerDetails().id then
 			internalFunc.updateUnit (playerFrame, playerID, "player")
 			internalFunc.processBuffs ()
 			break

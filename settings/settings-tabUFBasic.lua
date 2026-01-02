@@ -12,7 +12,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabUFBasic (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider
+    local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider, maxBuffSlider, onlyOwnBuffsCheckbox
     local buffDurationLabel
 
     function frame:build()
@@ -23,6 +23,8 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
             if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
             if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
             if buffDurationSlider then buffDurationSlider:SetActive(newValue) end
+            if maxBuffSlider then maxBuffSlider:SetActive(newValue) end
+            if onlyOwnBuffsCheckbox then onlyOwnBuffsCheckbox:SetActive(newValue) end
 
             internalFunc.uiFramesToggle(newValue)
 
@@ -96,6 +98,12 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         maxBuffSlider:SetPrecision(1)
         maxBuffSlider:AdjustValue(nkUISetup.modules.unitFrames.maxBuffCount)
 
+        onlyOwnBuffsCheckbox = settingsUI.checkbox(name .. ".onlyOwnBuffsCheckbox", frame, "Show only own buffs", moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.showBuffs = newValue            
+        end)
+
+        onlyOwnBuffsCheckbox:SetPoint("TOPLEFT", maxBuffSlider, "BOTTOMLEFT", 0, 5)
+        onlyOwnBuffsCheckbox:SetChecked(nkUISetup.modules.unitFrames.showOnlyOwnBuffs, true)
         
     end
 

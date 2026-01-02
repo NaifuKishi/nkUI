@@ -42,6 +42,7 @@ local _defaults = {
                         combatAlpha = 1, 
                         nonCombatAlpha = .2, 
                         showBuffs = true,
+                        showOnlyOwnBuffs = false,
                         buffDuration = 60,
                         colorScheme = "wow",
                         maxBuffCount = 9,
