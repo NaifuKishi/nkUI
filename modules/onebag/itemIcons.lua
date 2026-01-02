@@ -18,8 +18,8 @@ function oneBag.createItemIcon(name, parent)
     local thisItemID, thisSlot
     
     local itemFrame = LibEKL.UICreateFrame("nKFrame", name, parent)
-    itemFrame:SetWidth(40 * data.uiScale)
-    itemFrame:SetHeight(40 * data.uiScale)
+    itemFrame:SetWidth(40 * data.bagScale)
+    itemFrame:SetHeight(40 * data.bagScale)
     
     local itemIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 1, 1)
@@ -28,7 +28,7 @@ function oneBag.createItemIcon(name, parent)
     
     local quantityText = LibEKL.UICreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
-    quantityText:SetFontSize(14 * data.uiScale)
+    quantityText:SetFontSize(14 * data.bagScale)
     quantityText:SetFontColor(1, 1, 1, 1)
     quantityText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     quantityText:SetEffectGlow({ strength = 3})
@@ -36,7 +36,7 @@ function oneBag.createItemIcon(name, parent)
     
     local bindText = LibEKL.UICreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
-    bindText:SetFontSize(10 * data.uiScale)
+    bindText:SetFontSize(10 * data.bagScale)
     bindText:SetFontColor(1, 1, 1, 1)
     bindText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})

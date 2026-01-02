@@ -28,10 +28,10 @@ function oneBag.createBagUI()
     bagWindow:SetTitleEffect({ strength = 3})
     bagWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
 
-    bagWindow:SetWidth(690 * data.uiScale)
-    bagWindow:SetHeight(600 * data.uiScale)
+    bagWindow:SetWidth(690 * data.bagScale)
+    bagWindow:SetHeight(600 * data.bagScale)
     bagWindow:SetLayer(1)    
-    bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 2000 * data.uiScale, 600 * data.uiScale)
+    bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.oneBag.x, nkUISetup.modules.oneBag.y)
 
     bagWindow:SetColor({
         type = "gradientLinear",
@@ -46,13 +46,8 @@ function oneBag.createBagUI()
         Command.Cursor(nil)
     end, "nkUI.bagWindow.Event.Left.Up")
 
-    --bagWindow:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function()
-    --    oneBag.hideItemTooltip()
-    --end, "nkUI.bagWindow.Event.Mouse.Cursor.Out")
-
-
     local currencyText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.currencyText", bagWindow)
-    currencyText:SetPoint("TOPRIGHT", bagWindow, "TOPRIGHT", -50 * data.uiScale, 12 * data.uiScale)
+    currencyText:SetPoint("TOPRIGHT", bagWindow, "TOPRIGHT", -50 * data.bagScale, 12 * data.bagScale)
     currencyText:SetFontSize(12)
     currencyText:SetEffectGlow({ strength = 3})
     currencyText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
@@ -61,13 +56,13 @@ function oneBag.createBagUI()
     LibEKL.UI.SetFont(currencyText, addonInfo.id, "MontserratSemiBold")    
 
     local currencyIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.bagWindow.Currency.icon", bagWindow)
-    currencyIcon:SetPoint("CENTERRIGHT", currencyText, "CENTERLEFT", -5 * data.uiScale, 0)
+    currencyIcon:SetPoint("CENTERRIGHT", currencyText, "CENTERLEFT", -5 * data.bagScale, 0)
     currencyIcon:SetHeight(12)
     currencyIcon:SetWidth(12)
     currencyIcon:SetTextureAsync("nkUI", "gfx/iconCoins.png")    
 
     local freeBagSlotsText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.BagSlotsText", bagWindow)
-    freeBagSlotsText:SetPoint("CENTERRIGHT", currencyIcon, "CENTERLEFT", -5* data.uiScale, 0)
+    freeBagSlotsText:SetPoint("CENTERRIGHT", currencyIcon, "CENTERLEFT", -5* data.bagScale, 0)
     freeBagSlotsText:SetFontSize(12)
     freeBagSlotsText:SetEffectGlow({ strength = 3})
     freeBagSlotsText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
@@ -76,7 +71,7 @@ function oneBag.createBagUI()
     LibEKL.UI.SetFont(freeBagSlotsText, addonInfo.id, "MontserratSemiBold")    
 
     local bagIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.bagWindow.BagSlotsIcon.icon", bagWindow)
-    bagIcon:SetPoint("CENTERRIGHT", freeBagSlotsText, "CENTERLEFT", -5* data.uiScale, 0)
+    bagIcon:SetPoint("CENTERRIGHT", freeBagSlotsText, "CENTERLEFT", -5* data.bagScale, 0)
     bagIcon:SetHeight(12)
     bagIcon:SetWidth(12)
     bagIcon:SetTextureAsync("nkUI", "gfx/iconBag.png")

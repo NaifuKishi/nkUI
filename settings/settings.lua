@@ -126,8 +126,9 @@ local _defaults = {
                         dateSize = 15
 		            },
         oneBag      = { activate = true,
-                        --windowColor = { r = 0, g = 0, b = 0, a = 0.3} 
-                        },
+                        x = 2000,
+                        y = 600
+                    },
         buffBar     = { activate = true,
                         x = -1690, y = -690,
                         buffs = { width = 40, height = 40, timer = 14, stack = 12, label = 10}            
@@ -148,6 +149,9 @@ local function scaleUI ()
     local parentWidth = UIParent:GetWidth()
 
     if parentWidth == 3440 then return end
+
+    nkUISetup.modules.oneBag.x = nkUISetup.modules.oneBag.x * data.uiScale
+    nkUISetup.modules.oneBag.y = nkUISetup.modules.oneBag.y * data.uiScale
 
     nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
     nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
@@ -223,6 +227,13 @@ function internalFunc.setupDefaults()
 
     if nkUISetup.modules.unitFrames.frames.group.iconSizes.combat == 0 then
         nkUISetup.modules.unitFrames.frames.group.iconSizes.combat = 30
+    end
+
+    -- fix for version 0.9.7
+
+    if nkUISetup.modules.oneBag.x == nil then
+        nkUISetup.modules.oneBag.x = 2000 * data.uiScale
+        nkUISetup.modules.oneBag.y = 600 * data.uiScale
     end
     
     -- check for new char

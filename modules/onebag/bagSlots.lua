@@ -20,8 +20,8 @@ local function bagSlot(name, parent, riftSlot)
     local thisItemID
 
     local thisSlot = LibEKL.UICreateFrame("nkCanvas", name, parent)
-    thisSlot:SetWidth(ICONSIZE * data.uiScale)
-    thisSlot:SetHeight(ICONSIZE * data.uiScale)    
+    thisSlot:SetWidth(ICONSIZE * data.bagScale)
+    thisSlot:SetHeight(ICONSIZE * data.bagScale)    
     
     local stroke = {r = 0.5, g = 0.5, b = 0.5, a = 1, thickness = 1}
     local path = {
@@ -35,8 +35,8 @@ local function bagSlot(name, parent, riftSlot)
     thisSlot:SetShape(path, nil, stroke)
     
     local icon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", parent)
-    icon:SetWidth((ICONSIZE-2) * data.uiScale)
-    icon:SetHeight((ICONSIZE-2) * data.uiScale)
+    icon:SetWidth((ICONSIZE-2) * data.bagScale)
+    icon:SetHeight((ICONSIZE-2) * data.bagScale)
     icon:SetPoint("CENTER", thisSlot, "CENTER")
     icon:SetTextureAsync(addonInfo.identifier, "gfx/iconLockedBagSlot.png")
     icon:SetLayer(1)
@@ -44,8 +44,8 @@ local function bagSlot(name, parent, riftSlot)
     thisSlot.icon = icon
     
     local tint = LibEKL.UICreateFrame("nkFrame", name .. ".tint", parent)
-    tint:SetWidth((ICONSIZE-2) * data.uiScale)
-    tint:SetHeight((ICONSIZE-2) * data.uiScale)
+    tint:SetWidth((ICONSIZE-2) * data.bagScale)
+    tint:SetHeight((ICONSIZE-2) * data.bagScale)
     tint:SetPoint("CENTER", thisSlot, "CENTER")
     tint:SetBackgroundColor(1, 0, 0, 0.5)
     tint:SetLayer(2)
@@ -133,20 +133,20 @@ function oneBag.createBagSlots()
     local bagSlots = {}
     local thisItemID
 
-    local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.uiScale
-    local height = (10 + ICONSIZE) * data.uiScale
+    local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.bagScale
+    local height = (10 + ICONSIZE) * data.bagScale
     
     local bagSlotsFrame = LibEKL.UICreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
     bagSlotsFrame:SetWidth(width)
     bagSlotsFrame:SetHeight(height)
-    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.uiScale)
+    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.bagScale)
     bagSlotsFrame:SetBackgroundColor(data.theme.windowStartColor.r, data.theme.windowStartColor.g, data.theme.windowStartColor.b, data.theme.windowStartColor.a)
     bagSlotsFrame:SetLayer(2)
     
     for idx = 1, 8, 1 do
         local riftSlot = stringFormat("sibg.%03d", idx)
         local thisSlot = bagSlot("nkUIBagSlot" .. idx, bagSlotsFrame, riftSlot)
-        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", (5 + ((idx - 1) * (ICONSIZE + ICONPADDING))) * data.uiScale, 5 * data.uiScale)
+        thisSlot:SetPoint("TOPLEFT", bagSlotsFrame, "TOPLEFT", (5 + ((idx - 1) * (ICONSIZE + ICONPADDING))) * data.bagScale, 5 * data.bagScale)
         bagSlots[riftSlot] = thisSlot
     end
     

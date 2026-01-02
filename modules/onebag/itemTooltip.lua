@@ -37,7 +37,7 @@ local function uiItemTooltip ()
         
     local valueText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
     valueText:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 5, 5)
-    valueText:SetFontSize(12 * data.uiScale)
+    valueText:SetFontSize(12 * data.bagScale)
     valueText:SetEffectGlow({strength = 3})
     valueText:SetFontColor(1, 1, 1, 1)
 
@@ -45,7 +45,7 @@ local function uiItemTooltip ()
 
     local countText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
     countText:SetPoint("TOPLEFT", valueText, "BOTTOMLEFT")
-    countText:SetFontSize(12 * data.uiScale)
+    countText:SetFontSize(12 * data.bagScale)
     countText:SetEffectGlow({strength = 3})
     countText:SetFontColor(1, 1, 1, 1)
 

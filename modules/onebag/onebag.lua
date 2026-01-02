@@ -60,6 +60,9 @@ function internalFunc.oneBagInit()
             uiElements.oneBag:SetVisible(true)
         end
     else
+        local parentHeight = UIParent:GetHeight()
+        data.bagScale = parentHeight / 1440
+
         LibEKL.Inventory.updateDB()
         uiElements.oneBag = oneBag.createBagUI()
         uiElements.oneBagBagSlots = oneBag.createBagSlots()
@@ -213,13 +216,13 @@ function oneBag.populateBag(forceCacheUpdate)
 
             if counter == 1 then -- first icon on row
                 if rows == 1 then
-                    thisIcon:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20 * data.uiScale) -- first row
+                    thisIcon:SetPoint("TOPLEFT", firstIcon, "TOPLEFT", 0, 20 * data.bagScale) -- first row
                 else
                     thisIcon:SetPoint("TOPLEFT", firstIcon, "BOTTOMLEFT", 0, 2) -- nth row
                 end
                 firstIcon = thisIcon
             else
-                thisIcon:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5 * data.uiScale, 0) -- not first icon
+                thisIcon:SetPoint("TOPLEFT", lastIcon, "TOPRIGHT", 5 * data.bagScale, 0) -- not first icon
             end
 
             -- increase col count if still one line otherwise max icons are reached
@@ -242,23 +245,23 @@ function oneBag.populateBag(forceCacheUpdate)
         local checkTitleWidth = mathFloor(thisCategory:GetTextWidth() / 45)
         if checkTitleWidth > cols then cols = checkTitleWidth end
 
-        thisCategory:SetHeight(((20* data.uiScale) + (rows * (40* data.uiScale)) + ((rows-1) * (5* data.uiScale))))
-        thisCategory:SetWidth(((cols * (40* data.uiScale)) + ((cols-1) * (5* data.uiScale))))
+        thisCategory:SetHeight(((20* data.bagScale) + (rows * (40* data.bagScale)) + ((rows-1) * (5* data.bagScale))))
+        thisCategory:SetWidth(((cols * (40* data.bagScale)) + ((cols-1) * (5* data.bagScale))))
 
         if firstCategory then
             firstCategory = false
-            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.uiScale, 5* data.uiScale)
+            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.bagScale, 5* data.bagScale)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
-            currentYOffset = (thisCategory:GetHeight() + (10 * data.uiScale))  -- Increased vertical spacing
+            currentYOffset = (thisCategory:GetHeight() + (10 * data.bagScale))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
             if iconsPerLine + cols >= 15 then
-                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.uiScale, currentYOffset)
-                currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.uiScale)))  -- Increased vertical spacing
+                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.bagScale, currentYOffset)
+                currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.bagScale)))  -- Increased vertical spacing
                 iconsPerLine = cols
             else
-                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50* data.uiScale, 0)
+                thisCategory:SetPoint("TOPLEFT", lastCategory, "TOPRIGHT", 50* data.bagScale, 0)
                 iconsPerLine = iconsPerLine + cols + 1
             end
         end
