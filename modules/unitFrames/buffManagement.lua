@@ -58,21 +58,25 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
     local buffSetup = frame:GetBuffSetup()
 
     local function updateBuffDisplay()
-        
+
         local buffSetup = frame:GetBuffSetup()
         local x = 0
         local y = - (buffSetup.height + (30 * data.uiScale))
 
-        -- Sort buffs by remaining time
+        -- Sort buffs by remaining time (ascending order)
         local sortedBuffs = {}
         for buffID, buffDetails in pairs(unitBuffDisplayList) do
             local remaining = unitBuffIcons[buffID].remaining or 999999
             table.insert(sortedBuffs, {key = buffID, remaining = remaining})
         end
 
-        table.sort(sortedBuffs, function(a, b) return a.remaining > b.remaining end)
+        table.sort(sortedBuffs, function(a, b) return a.remaining < b.remaining end)
 
-        for _, details in ipairs(sortedBuffs) do
+        -- Limit to 9 buffs if it's a unit frame (not buffbar)
+        local maxBuffs = (unitType == "buffbar") and #sortedBuffs or math.min(nkUISetup.modules.unitFrames.maxBuffCount, #sortedBuffs)
+
+        for i = 1, maxBuffs do
+            local details = sortedBuffs[i]
             local thisIcon = unitBuffIcons[details.key]
 
             if thisIcon.lastX ~= x then

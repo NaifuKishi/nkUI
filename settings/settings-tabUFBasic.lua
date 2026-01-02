@@ -86,6 +86,16 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         buffDurationSlider:SetPrecision(1)
         buffDurationSlider:AdjustValue(nkUISetup.modules.unitFrames.buffDuration)
 
+        maxBuffSlider = settingsUI.slider(name .. ".maxBuffSlider", frame, "Max buffs %d", moduleActive, function (newValue)
+            nkUISetup.modules.unitFrames.maxBuffCount = newValue
+        end)
+
+        maxBuffSlider:SetPoint("TOPLEFT", buffDurationSlider, "BOTTOMLEFT", 0, 5)
+        maxBuffSlider:SetRange(1, 15)
+        maxBuffSlider:SetMidValue(7)
+        maxBuffSlider:SetPrecision(1)
+        maxBuffSlider:AdjustValue(nkUISetup.modules.unitFrames.maxBuffCount)
+
         
     end
 

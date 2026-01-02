@@ -1,3 +1,8 @@
+V0.9.8
+    - update: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)
+    - update: SCT - Incoming heal will now show caster and outgoing the target
+    - update: SCT - overheals now use a smaller font size
+
 V0.9.7
     - updates: Quest Tracker: Slightly changed initial position of Quest Tracker
     - updates: Lower Bar - Lowered default font size

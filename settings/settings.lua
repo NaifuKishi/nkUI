@@ -44,6 +44,7 @@ local _defaults = {
                         showBuffs = true,
                         buffDuration = 60,
                         colorScheme = "wow",
+                        maxBuffCount = 9,
                         frames = {  player          = { x = -300, y = 300, width = 250, height = 35, 
                                                         reverse = false,
                                                         fontSizes = {name = 16, health = 28, energy = 14, planar = 12, level = 12}, 

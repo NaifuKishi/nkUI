@@ -4,6 +4,13 @@ know bug list
 
 ToDo
 
+    - outgoing heal in sct show target not caster
+    - background red when got aggro?
+    - indicator on group frames selected target?
+    - max buff display on unit frames
+    - filter to only show own buffs
+    - add option to hide player in group frames
+    - add option to hide quest tracker in dungeons and raids
     - mark unusable items in one bag
     - add key indicator to action bar (just for visual reference)
     - onebag add compare tooltip to items

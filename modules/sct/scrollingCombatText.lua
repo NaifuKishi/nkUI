@@ -364,7 +364,8 @@ end
 -- @param isPet Whether the damage is from a pet
 -- @param inComing Whether the damage is incoming
 -- @param crit Whether the damage is a critical hit
-local function displayText(sctText, icon, isPet, inComing, crit)
+local function displayText(sctText, icon, isPet, inComing, crit, overheal)
+    
     local xVariation = mathRandom(0, 50)
     if inComing then xVariation = mathRandom(0, -50) end
     
@@ -387,6 +388,9 @@ local function displayText(sctText, icon, isPet, inComing, crit)
         else
             frame:SetFontSize(DEFAULT_CRIT_FONTSIZE)
         end
+    elseif crit == "overheal" then
+        frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
+        frame:SetFontSize(PET_FONTSIZE)
     else
         frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
         
@@ -515,15 +519,18 @@ local function handleCombatHeal(self, info)
     local icon = getAbilityIcon(info)
     local healText
 
-    --dump (info)
+    local realCaster = info.targetName
+    if info.target == LibEKL.Unit.getPlayerID() then realCaster = info.casterName end
 
     if info.overheal then
-        healText = stringFormat(TEXT_OVERHEAL, internalFunc.shortenName(info.casterName, 10), info.overheal)
+        healText = stringFormat(TEXT_OVERHEAL, internalFunc.shortenName(realCaster, 10), info.overheal)
+        displayText(healText, icon, isPet, true, "overheal", false)
     else
-        healText = stringFormat(TEXT_HEAL, internalFunc.shortenName(info.casterName, 10), info.heal)
+        healText = stringFormat(TEXT_HEAL, internalFunc.shortenName(realCaster, 10), info.heal)
+        displayText(healText, icon, isPet, true, "heal", false)
     end
     
-    displayText(healText, icon, isPet, true, "heal")
+    
 end
 
 local function handleCooldownStart (_, info)
