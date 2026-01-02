@@ -89,7 +89,7 @@ local function getAbilityIcon(info)
         if iconCache[abilityNew] == nil then
             local details = inspectAbilityNewDetail(abilityNew)
             if details then
-                iconCache[ability] = { icon = details.icon, name = details.name }
+                iconCache[abilityNew] = { icon = details.icon, name = details.name }
                 icon = details.icon
                 name = details.name
             end
@@ -188,6 +188,65 @@ local function releaseFrame(frame)
     frame:SetVisible(false)
     frame.icon:SetVisible(false)
     table.insert(framePool, frame)
+end
+
+local function displayShakingMessage(message, type)
+
+    -- Display the achievement message with a larger font size and different color
+    local frame = getFrame()
+    frame:SetText(message, true)
+    frame:SetTextFont(addonInfo.id, "MontserratBold")
+    frame:SetFontSize(36) -- Larger font size        
+    
+    if type == "achievement" then
+        frame:SetFontColor(0, 0.5, 0, 1) -- Dark green color for achievements
+    else
+        frame:SetFontColor(1, 0.84, 0, 1) -- Gold color
+    end
+
+    -- Add a glow effect to the text
+    frame:SetEffectGlow({ strength = 3 })
+
+    local y = -((LibEKL.UI.getBoundBottom() / 2) - 250)
+    frame:SetPoint("CENTER", UIParent, "CENTER", 0, y)
+    frame:SetVisible(true)
+
+-- Animate the text to make it more noticeable with a shaking effect
+    local start = inspectTimeFrame()
+    local lastShakeTime = inspectTimeFrame()
+    local duration = 4
+    local shakeIntensity = 2 -- Intensity of the shake effect
+    local shakeInterval = 0.1 -- Time between each shake (in seconds)
+
+    local animationCoroutine = coroutine.create(function()
+        for idx = 1, duration * 100, 1 do
+            local elapsed = inspectTimeFrame() - start
+            if elapsed > duration then
+                return 9999
+            end            
+            
+            -- Check if it's time to apply the shake effect
+            if inspectTimeFrame() - lastShakeTime >= shakeInterval then
+                -- Add a shaking effect by randomly varying the X position
+                local shakeX = mathRandom(-shakeIntensity, shakeIntensity)
+                local shakeY = mathRandom(-shakeIntensity, shakeIntensity)
+                frame:SetPoint("CENTER", UIParent, "CENTER", shakeX, y + shakeY)
+                lastShakeTime = inspectTimeFrame()
+            end
+            coroutine.yield(idx)
+        end
+    end)
+
+    local callBack = function()
+        releaseFrame(frame)
+    end
+
+    LibEKL.Coroutines.Add({
+        func = animationCoroutine,
+        callBack = callBack,
+        counter = duration * 100,
+        active = true
+    })
 end
 
 -- Displays a message at the top center of the screen
@@ -599,7 +658,7 @@ local function handleInventoryUpdate(_, items)
                         300 + inventoryUpdateModY,
                         100 + inventoryUpdateModY,
                         20
-                    )
+                    )                    
 
                     -- Increment y-position for next item
                     inventoryUpdateModY = inventoryUpdateModY + 20
@@ -611,6 +670,14 @@ local function handleInventoryUpdate(_, items)
 
     -- Update the last inventory update time
     lastInventoryUpdate = currentTime
+end
+
+local function handleAchievement (_, achievement)
+
+    local details = Inspect.Achievement.Detail(achievement)
+
+    displayShakingMessage( stringFormat('%s compelete', details.name), "achievement")
+
 end
 
 function internalFunc.sctInit()
@@ -628,6 +695,8 @@ function internalFunc.sctInit()
 
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
     Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
+
+    Command.Event.Attach(Event.Achievement.Complete, handleAchievement, "nkUI.SCT.Achievement.Complete")
 
     if nkUISetup.modules.sct.showExpGains then
         Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
