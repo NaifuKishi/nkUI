@@ -3,6 +3,7 @@ V0.9.8
     - update: SCT - Now shows skill name for outgoing damage
     - update: SCT - Incoming heal will now show caster and outgoing the target
     - update: SCT - overheals now use a smaller font size
+    - update: Quest Tracker - the quest items are now hidden by default
 
 V0.9.7
     - updates: Quest Tracker: Slightly changed initial position of Quest Tracker

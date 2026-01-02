@@ -86,6 +86,7 @@ function questTracker.buildUseUI ()
 	ui:SetWidth(50)
 	ui:SetHeight(uiElements.questTracker:GetHeight()-20)
 	ui:SetSecureMode('restricted')
+	ui:SetVisible(false)
 
 	local useItems = {}
 	local useState = {}
