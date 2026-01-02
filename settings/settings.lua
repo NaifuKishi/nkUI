@@ -138,7 +138,8 @@ local _defaults = {
                         showExpGains = true,
                         showLoot = true
                     },
-        tooltip     = { activate = true }
+        tooltip     = { activate = true,
+                        fontSizes = {header = 14, body = 12 } }
     },
     showLogo = true,
     useManager = true
@@ -234,6 +235,10 @@ function internalFunc.setupDefaults()
     if nkUISetup.modules.oneBag.x == nil then
         nkUISetup.modules.oneBag.x = 2000 * data.uiScale
         nkUISetup.modules.oneBag.y = 600 * data.uiScale
+    end
+
+    if nkUISetup.modules.tooltip.fontSizes == nil then
+        nkUISetup.modules.tooltip.fontSizes = {header = 15, body = 13 }
     end
     
     -- check for new char

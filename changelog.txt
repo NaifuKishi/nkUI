@@ -1,6 +1,8 @@
 V0.9.7
     - updates: Quest Tracker: Slightly changed initial position of Quest Tracker
     - updates: Lower Bar - Lowered default font size
+    - updates: Unit tooltip - changed default fonts
+    - updates: Unit tooltip - some slight UI tweaks
     - fixes: One Bag - fixed an error where the slot information got not set right
     - fixes: One Bag - fixed header position on lower resolution    
     - fixes: One Bag - fixed scaling of One Bag on lower resolution
