@@ -42,7 +42,7 @@ local TEXT_IMMUNE = "<font color='#ffffff'>Immune</font>"
 local TEXT_DODGE = "<font color='#ffffff'>Dodge</font>"
 local TEXT_OVERHEAL = "[%s] <font color='#00FF00'>%d OVERHEAL</font>"
 local TEXT_HEAL = "[%s] <font color='#00FF00'>%d</font>"
-local TEXT_DAMAGE = "<font color='%s'>%d</font>"
+local TEXT_DAMAGE = "<font color='%s'>%d %s</font>"
 local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font> %s"
 
 local COLOR_CRIT = "#FFA500"
@@ -79,7 +79,7 @@ context:SetLayer(2)
 -- @param info Table containing ability information
 -- @return The ability icon path
 local function getAbilityIcon(info)
-    local icon
+    local icon, name
     local abilityNew = info.abilityNew
     local ability = info.ability
 
@@ -89,25 +89,29 @@ local function getAbilityIcon(info)
         if iconCache[abilityNew] == nil then
             local details = inspectAbilityNewDetail(abilityNew)
             if details then
-                iconCache[abilityNew] = details.icon
+                iconCache[ability] = { icon = details.icon, name = details.name }
                 icon = details.icon
+                name = details.name
             end
         else
-            icon = iconCache[abilityNew]
+            icon = iconCache[abilityNew].icon
+            name = iconCache[abilityNew].name
         end
     else
         if iconCache[ability] == nil then
             local details = inspectAbilityDetail(ability)
             if details then
-                iconCache[ability] = details.icon
+                iconCache[ability] = { icon = details.icon, name = details.name }
                 icon = details.icon
+                name = details.name
             end
         else
-            icon = iconCache[ability]
+            icon = iconCache[ability].icon
+            name = iconCache[ability].name
         end
     end
 
-    return icon
+    return icon, name
 end
 
 -- Creates a new text frame for displaying combat text
@@ -360,11 +364,11 @@ end
 
 -- Displays combat text on the screen
 -- @param sctText The text to display
--- @param icon The icon to displayinternalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
+-- @param icon The icon to display
 -- @param isPet Whether the damage is from a pet
 -- @param inComing Whether the damage is incoming
--- @param crit Whether the damage is a critical hit
-local function displayText(sctText, icon, isPet, inComing, crit, overheal)
+-- @param crit Whether the damage is a critical hit or heal or overheal
+local function displayText(sctText, icon, isPet, inComing, crit)
     
     local xVariation = mathRandom(0, 50)
     if inComing then xVariation = mathRandom(0, -50) end
@@ -441,26 +445,26 @@ local function handleCombatDamage(self, info)
     local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
 
-    local icon = getAbilityIcon(info)
+    local icon, abilityName = getAbilityIcon(info)
 
     local damageText = ""
 
     if info.crit then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage, abilityName)
     elseif info.type == "life" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage, abilityName)
     elseif info.type == "death" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage, abilityName)
     elseif info.type == "air" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage, abilityName)
     elseif info.type == "earth" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage, abilityName)
     elseif info.type == "fire" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage, abilityName)
     elseif info.type == "water" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage, abilityName)
     elseif info.damage ~= nil then
-        damageText = stringFormat("%d", info.damage)
+        damageText = stringFormat("%d %s", info.damage, abilityName)
     end
     
     --if info.crit then
