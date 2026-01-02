@@ -1,4 +1,6 @@
 V0.9.7
+    - updates: Quest Tracker: Slightly changed initial position of Quest Tracker
+    - fixes: Fixed the auto scaling of UI elements
     - fixes: Lower bar: Fixed an error when clicking currency
     - fixes: Fixed an error on very first start of nkUI
 

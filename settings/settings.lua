@@ -149,8 +149,6 @@ local function scaleUI ()
 
     if parentWidth == 3440 then return end
 
-    data.uiScale = parentWidth / 3440
-    
     nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
     nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
 
@@ -209,6 +207,9 @@ end
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
 function internalFunc.setupDefaults()
+
+    local parentWidth = UIParent:GetWidth()
+    data.uiScale = parentWidth / 3440
 
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults
