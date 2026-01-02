@@ -292,49 +292,60 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.processNewBuff - " .. unitType, "parameters", { unitType = unitType, iconName = iconName, buffID = buffID, buffIdentifier = buffIdentifier, displayList = displayList}) end
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "internalFunc.processNewBuff - " .. unitType, "buffDetails", buffDetails) end
 
+    local thisIcon
+
     if displayList[buffIdentifier] == nil then
 
-        if icons[buffIdentifier] == nil then 
+        thisIcon = icons[buffIdentifier]
+        local icon
+
+        if thisIcon == nil then 
             --local icon = internalFunc.iconManager.get(unitID, iconName, nkUISetup.modules.buffBar.buffs, 0, 0)
-            local icon = internalFunc.iconManager.get(unitType, iconName)
+            icon = internalFunc.iconManager.get(unitType, iconName)
             icons[buffIdentifier] = { icon = icon, visible = true, name = buffDetails.name }
+
+            thisIcon = icons[buffIdentifier]
+
             if unitType == "buffbar" then
-                icons[buffIdentifier].icon:ShowBorder(true)
+                icon:ShowBorder(true)
             else
-                icons[buffIdentifier].icon:ShowBorder(false)
+                icon:ShowBorder(false)
             end
-            icons[buffIdentifier].icon:Setup(nkUISetup.modules.buffBar.buffs)
-            icons[buffIdentifier].icon:SetTexture("Rift", buffDetails.icon)
-            icons[buffIdentifier].icon:SetParent(parent)
+            icon:Setup(nkUISetup.modules.buffBar.buffs)
+            icon:SetTexture("Rift", buffDetails.icon)
+            icon:SetParent(parent)
 
             if buffDetails.poison then
-                icons[buffIdentifier].icon:SetBorderColor(0, 0.5, 0, 1)
+                icon:SetBorderColor(0, 0.5, 0, 1)
             elseif buffDetails.curse then
-                icons[buffIdentifier].icon:SetBorderColor(0.5, 0.25, 0, 1)
+                icon:SetBorderColor(0.5, 0.25, 0, 1)
             elseif buffDetails.disease then
-                icons[buffIdentifier].icon:SetBorderColor(0.5, 0, 0.5, 1)
+                icon:SetBorderColor(0.5, 0, 0.5, 1)
             elseif buffDetails.debuff then
-                icons[buffIdentifier].icon:SetBorderColor(0.5, 0, 0, 1)
+                icon:SetBorderColor(0.5, 0, 0, 1)
             end
         else
-            icons[buffIdentifier].visible = true
+            thisIcon.visible = true
+            icon = thisIcon.icon
         end
         
-        icons[buffIdentifier].icon:SetStack(buffDetails.stack)        
-        icons[buffIdentifier].icon:SetVisible(true)
+        icon:SetStack(buffDetails.stack)        
+        icon:SetVisible(true)
         
         displayList[buffIdentifier] = true
+    else
+        thisIcon = icons[buffIdentifier]
     end
 
-    icons[buffIdentifier].remaining = buffDetails.remaining
-    icons[buffIdentifier].duration = buffDetails.duration
-    icons[buffIdentifier].icon:SetBuff(buffID)
-    icons[buffIdentifier].icon:SetTooltip(buffDetails.name, buffDetails.description)
+    thisIcon.remaining = buffDetails.remaining
+    thisIcon.duration = buffDetails.duration
+    thisIcon.icon:SetBuff(buffID)
+    thisIcon.icon:SetTooltip(buffDetails.name, buffDetails.description)
 
     if buffDetails.remaining == nil or buffDetails.duration == nil then
-        icons[buffIdentifier].start = InspectTimeReal()
+        thisIcon.start = InspectTimeReal()
     else
-        icons[buffIdentifier].start = InspectTimeReal() - (buffDetails.duration - buffDetails.remaining)
+        thisIcon.start = InspectTimeReal() - (buffDetails.duration - buffDetails.remaining)
     end
 
     if nkDebug then nkDebug.traceEnd (inspectAddonCurrent(), "nkUI internalFunc.processNewBuff", debugId) end
