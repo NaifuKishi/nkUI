@@ -65,7 +65,7 @@ local _defaults = {
                                                         iconSizes = {combat = 30, role = 20, tier = 20 },
                                                         buffs = { width = 35, height = 35, timer = 12, stack = 10, label = 10 }
                                                     },
-                                    targetOfTarget= { x = 525, y = 305, width = 150, height = 25,
+                                    targetOfTarget= { x = 700, y = 305, width = 150, height = 25,
                                                         reverse = true,
                                                         fontSizes = {name = 10, health = 16, energy = 8, planar = 7, level = 7}, 
                                                         margins = { name = 9, health = 9, energy = 7, planar = 2, combatIcon = 3, roleIcon = 3, tierIcon = 3, level = 2 },
