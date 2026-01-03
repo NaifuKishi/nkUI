@@ -70,13 +70,39 @@ end
 
 local function getCarnageNPC (objectiveText)
 
-    local pattern = "^Kill%s+(.-)%s+%d+/"
+	local lang = LibEKL.Tools.Lang.GetLanguageShort()
+
+    local pattern = "^%w+%s+(.-)%s+%d+/"	
     local fullName = stringMatch(objectiveText, pattern)
+	
+    if not fullName then 
+		pattern = "^%w+:%s+([%w%s%-]+)%s+%d+/"
+		fullName = stringMatch(objectiveText, pattern)
 
-    if not fullName then return nil end
+		if not fullName then
+			return nil 
+		end
+	end
 
-   if stringSub(fullName, -1) == "s" then
-        fullName = stringSub(fullName, 1, -2)
+	--print (fullName)
+
+   -- Handle German pluralization
+    if lang == "DE" then
+        -- Remove common German plural endings
+        if stringSub(fullName, -3) == "nen" then
+            fullName = stringSub(fullName, 1, -4)
+        elseif stringSub(fullName, -1) == "e" then
+            fullName = stringSub(fullName, 1, -2)
+        elseif stringSub(fullName, -1) == "s" then
+            fullName = stringSub(fullName, 1, -2)
+        end
+    elseif lang == "EN" then
+        -- Handle English pluralization
+        if stringSub(fullName, -1) == "s" then
+            fullName = stringSub(fullName, 1, -2)
+        end
+	else
+		return nil
     end
 
     return fullName
@@ -104,14 +130,46 @@ local function questAdd(list)
 							if details.domain == "carnage" then
 								for k, v in pairs(details.objective) do
 									--if not v.complete then
+										local carnageNPC = getCarnageNPC(v.description)
 
-										questTracker.carnageMobs[getCarnageNPC(v.description)] = {
-											level = details.level,
-											name = details.name, 
-											desc = v.description, 
-											count = v.count, 
-											countDone = v.countDone 
-										}
+										if carnageNPC then
+
+											--print ("carnageNPC: " .. carnageNPC)
+
+											questTracker.carnageMobs[carnageNPC] = {
+												level = details.level,
+												name = details.name, 
+												desc = v.description, 
+												count = v.count, 
+												countDone = v.countDone 
+											}
+
+											if stringFind(carnageNPC, "-") then
+												local temp = LibEKL.strings.split(carnageNPC, "-")
+												for idx = 1, #temp, 1 do
+													questTracker.carnageMobs[temp[idx]] = {
+														level = details.level,
+														name = details.name, 
+														desc = v.description, 
+														count = v.count, 
+														countDone = v.countDone 
+													}
+												end
+											end
+
+											if stringFind(carnageNPC, " ") then
+												local temp = LibEKL.strings.split(carnageNPC, " ")
+												for idx = 1, #temp, 1 do
+													questTracker.carnageMobs[temp[idx]] = {
+														level = details.level,
+														name = details.name, 
+														desc = v.description, 
+														count = v.count, 
+														countDone = v.countDone 
+													}
+												end
+											end
+										end
 										--dump (details)
 									--end
 								end

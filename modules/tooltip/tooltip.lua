@@ -21,6 +21,7 @@ local data          = privateVars.data
 local stringFormat  = string.format
 local stringSub     = string.sub
 local stringUpper   = string.upper
+local stringFind    = string.find
 local mathPi        = math.pi
 local mathFloor     = math.floor
 
@@ -382,6 +383,15 @@ local function formatUnitTooltip(unitInfo)
     if unitDetail.guild then
         table.insert(infoLines, unitDetail.guild)
     end
+
+    if unitDetail.calling then
+        local firstChar = stringSub(unitDetail.calling, 1, 1)
+        local restOfString = stringSub(unitDetail.calling, 2)
+        
+        local callingColors = callingColor[nkUISetup.modules.unitFrames.colorScheme]
+        
+        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColors[unitDetail.calling], stringUpper(firstChar), restOfString))
+    end
     
     if unitDetail.level then
         local levelLine
@@ -416,15 +426,6 @@ local function formatUnitTooltip(unitInfo)
         table.insert(infoLines, levelLine)             
     end
     
-    if unitDetail.calling then
-        local firstChar = stringSub(unitDetail.calling, 1, 1)
-        local restOfString = stringSub(unitDetail.calling, 2)
-        
-        local callingColors = callingColor[nkUISetup.modules.unitFrames.colorScheme]
-        
-        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColors[unitDetail.calling], stringUpper(firstChar), restOfString))
-    end
-    
     if unitDetail.locationName then
         table.insert(infoLines, unitDetail.locationName)
     end
@@ -434,17 +435,44 @@ local function formatUnitTooltip(unitInfo)
     end
 
     local carnageInfo = internalFunc.CheckCarnageNPC(unitDetail.name)
-    if carnageInfo then
-        local carnageLine
+    local carnageLine
 
-        --dump (carnageInfo)
-        
+    if carnageInfo then
         if carnageInfo.countDone == carnageInfo.count then
             carnageLine = stringFormat('<font color="#A9A9A9">%s</font>', carnageInfo.desc)
         else
             carnageLine = carnageInfo.desc
         end
+    elseif stringFind(unitDetail.name, "-") then
+        local temp = LibEKL.strings.split(unitDetail.name, "-")
+        for idx = 1, #temp, 1 do
+            carnageInfo = internalFunc.CheckCarnageNPC(temp[idx])
+            if carnageInfo then
+                if carnageInfo.countDone == carnageInfo.count then
+                    carnageLine = stringFormat('<font color="#A9A9A9">%s</font>', carnageInfo.desc)
+                else
+                    carnageLine = carnageInfo.desc
+                end
+                break
+            end
+        end
+    elseif stringFind(unitDetail.name, " ") then
+        local temp = LibEKL.strings.split(unitDetail.name, "-")
+        for idx = 1, #temp, 1 do
+            carnageInfo = internalFunc.CheckCarnageNPC(temp[idx])
+            if carnageInfo then
+                if carnageInfo.countDone == carnageInfo.count then
+                    carnageLine = stringFormat('<font color="#A9A9A9">%s</font>', carnageInfo.desc)
+                else
+                    carnageLine = carnageInfo.desc
+                end
+                break
+                
+            end
+        end
+    end
 
+    if carnageLine then
         table.insert(infoLines, " ")        
         table.insert(infoLines, carnageInfo.name)
         table.insert(infoLines, carnageLine)
