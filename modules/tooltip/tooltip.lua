@@ -19,6 +19,12 @@ local internalFunc  = privateVars.internalFunc
 local data          = privateVars.data
 
 local stringFormat  = string.format
+local stringSub     = string.sub
+local stringUpper   = string.upper
+local mathPi        = math.pi
+local mathFloor     = math.floor
+
+local InspectUnitDetail   = Inspect.Unit.Detail
 
 local relationColors = {
     friendly = "#40BC40",
@@ -74,6 +80,15 @@ local function createTitleText(tooltip)
     title:SetWordwrap(true)
 
     return title
+end
+
+local function createTierIcon(tooltip)
+    local tierIcon = LibEKL.UICreateFrame("nkTexture", TOOLTIP_NAME .. ".tooltip.tierIcon", tooltip)
+    tierIcon:SetPoint("TOPRIGHT", tooltip, "TOPRIGHT", -TOOLTIP_INNERBORDER,  TOOLTIP_INNERBORDER)
+    tierIcon:SetWidth(16)
+    tierIcon:SetHeight(16)    
+
+    return tierIcon
 end
 
 local function createBodyLines(tooltip, title, count)
@@ -141,7 +156,7 @@ local function createHealthBar(tooltip)
     }
     local fill = {
         type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, (math.pi / 2), 0, 0),
+        transform = Utility.Matrix.Create(2, 2, (mathPi / 2), 0, 0),
         color = {
             {r = 0, g = .7, b = .0, a = 1, position = 0},
             {r = .5, g = .5, b = .5, a = 1, position = .2},
@@ -240,6 +255,7 @@ local function createTooltipUI()
     
     local tooltip = createTooltipFrame(tooltipWidth, tooltipHeight)
     local title = createTitleText(tooltip)
+    local tierIcon = createTierIcon(tooltip)
     local lines = createBodyLines(tooltip, title, 10)
     local stats = createStatsLines(tooltip, lines[#lines], 10, 5)
     local versionText = createVersionText(tooltip)
@@ -301,6 +317,19 @@ local function createTooltipUI()
         redraw()
     end
 
+    function tooltip:SetTier(newTier)
+
+        if newTier == "group" then
+            tierIcon:SetVisible(true)
+            tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconElite.png")
+        elseif newTier == "raid" then
+            tierIcon:SetVisible(true)
+            tierIcon:SetTextureAsync(addonInfo.identifier, "gfx/iconBoss.png")
+        else
+            tierIcon:SetVisible(false)
+        end
+    end
+
     function tooltip:SetVersionText(version)
         versionText:SetText(version, true)
     end
@@ -316,7 +345,7 @@ local function createTooltipUI()
             else
                 local healthPercent = health / healthMax
                 healthBar:SetWidth(healthPercent * healthBarBG:GetWidth() - 2)
-                healthText:SetText(string.format("%d", math.floor(healthPercent * 100)))
+                healthText:SetText(stringFormat("%d", mathFloor(healthPercent * 100)))
             end
         end
         
@@ -327,10 +356,14 @@ local function createTooltipUI()
 end
 
 local function formatUnitTooltip(unitInfo)
-    local unitDetail = Inspect.Unit.Detail(unitInfo)
-    
+    local unitDetail = InspectUnitDetail(unitInfo)
+
     if unitDetail == nil then return end
-    
+
+    --dump(unitDetail)
+
+    uiElements.tooltip:SetTier(unitDetail.tier)
+
     local infoLines = {}
     
     local color = "#FFFFFF"
@@ -338,10 +371,10 @@ local function formatUnitTooltip(unitInfo)
         color = relationColors[unitDetail.relation] or "#FFFFFF"
     end
     
-    uiElements.tooltip:SetTitle(string.format('<font color="%s">%s</font>', color, unitDetail.name))
+    uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, unitDetail.name))
     
     if unitDetail.nameSecondary then
-        table.insert(infoLines, string.format('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
+        table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
     end
     
     local playerDetail = LibEKL.Unit.getPlayerDetails()
@@ -369,7 +402,7 @@ local function formatUnitTooltip(unitInfo)
                 color = levelColor.trivial
             end
             
-            levelLine = string.format('<font color="%s">Level %d</font>', color, level)
+            levelLine = stringFormat('<font color="%s">Level %d</font>', color, level)
         end
         
         if unitDetail.tagName then
@@ -384,12 +417,12 @@ local function formatUnitTooltip(unitInfo)
     end
     
     if unitDetail.calling then
-        local firstChar = string.sub(unitDetail.calling, 1, 1)
-        local restOfString = string.sub(unitDetail.calling, 2)
+        local firstChar = stringSub(unitDetail.calling, 1, 1)
+        local restOfString = stringSub(unitDetail.calling, 2)
         
         local callingColors = callingColor[nkUISetup.modules.unitFrames.colorScheme]
         
-        table.insert(infoLines, string.format('<font color="%s">%s%s</font>', callingColors[unitDetail.calling], string.upper(firstChar), restOfString))
+        table.insert(infoLines, stringFormat('<font color="%s">%s%s</font>', callingColors[unitDetail.calling], stringUpper(firstChar), restOfString))
     end
     
     if unitDetail.locationName then
@@ -397,10 +430,25 @@ local function formatUnitTooltip(unitInfo)
     end
     
     if unitDetail.publicSize then
-        table.insert(infoLines, string.format('Public group size: %d', unitDetail.publicSize))
+        table.insert(infoLines, stringFormat('Public group size: %d', unitDetail.publicSize))
     end
 
-    --dump (data.versionCache)
+    local carnageInfo = internalFunc.CheckCarnageNPC(unitDetail.name)
+    if carnageInfo then
+        local carnageLine
+
+        --dump (carnageInfo)
+        
+        if carnageInfo.countDone == carnageInfo.count then
+            carnageLine = stringFormat('<font color="#A9A9A9">%s</font>', carnageInfo.desc)
+        else
+            carnageLine = carnageInfo.desc
+        end
+
+        table.insert(infoLines, " ")        
+        table.insert(infoLines, carnageInfo.name)
+        table.insert(infoLines, carnageLine)
+    end
 
     if not data.versionCache then data.versionCache = {} end
 

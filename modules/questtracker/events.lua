@@ -5,6 +5,7 @@ local addonInfo, privateVars = ...
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 local questTracker	= privateVars.questTracker
+local internalFunc	= privateVars.internalFunc
 
 local inspectSystemSecure	= Inspect.System.Secure
 local inspectTimeReal		= Inspect.Time.Real
@@ -13,6 +14,8 @@ local inspectItemDetail		= Inspect.Item.Detail
 
 local stringFind			= string.find
 local stringFormat			= string.format
+local stringMatch			= string.match
+local stringSub				= string.sub
 
 local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
 local LibEKLUnitSetPlayerDetails	= LibEKL.Unit.setPlayerDetails
@@ -27,6 +30,8 @@ local _addonInit		= false
 local runQuestUpdate	= true
 local updateQuestList	= {}
 local _questCache		= {}
+
+questTracker.carnageMobs = {}
 
 ---------- local function block ---------
 
@@ -63,6 +68,22 @@ local function isUpdate(cached, details)
 
 end
 
+local function getCarnageNPC (objectiveText)
+
+    local pattern = "^Kill%s+(.-)%s+%d+/"
+    local fullName = stringMatch(objectiveText, pattern)
+
+    if not fullName then return nil end
+
+   if stringSub(fullName, -1) == "s" then
+        fullName = stringSub(fullName, 1, -2)
+    end
+
+    return fullName
+
+end
+
+
 local function questAdd(list)
 	
 	local addCoRoutine = coroutine.create(
@@ -78,9 +99,24 @@ local function questAdd(list)
 
 						--if details.categoryName ~= "Battle Pass" then
 
-							questTracker.processQuest(details, true)
-							_questCache[key] = details
-							
+							questTracker.processQuest(details, true)							
+
+							if details.domain == "carnage" then
+								for k, v in pairs(details.objective) do
+									--if not v.complete then
+
+										questTracker.carnageMobs[getCarnageNPC(v.description)] = {
+											level = details.level,
+											name = details.name, 
+											desc = v.description, 
+											count = v.count, 
+											countDone = v.countDone 
+										}
+										--dump (details)
+									--end
+								end
+							end
+
 							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
 						--end
 
@@ -299,4 +335,10 @@ function questTracker.eventSystemUpdate()
 
 		uiElements.questTracker:SetTitle(stringFormat("Quests (%d)", uiElements.questTracker:GetQuestCount()))
 	end
+end
+
+function internalFunc.CheckCarnageNPC(npcName)
+
+	return questTracker.carnageMobs[npcName]
+
 end

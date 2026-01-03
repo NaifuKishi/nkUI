@@ -264,7 +264,7 @@ function questTracker.questCategory(category, parent)
 
 		if complete ~= true then
 			for k, v in pairs(objectives) do
-				if not v.complete then
+				if not v.complete then					
 					thisEntry:AddObjective(v.description, v.count, v.countDone, v.complete)
 				end
 			end
