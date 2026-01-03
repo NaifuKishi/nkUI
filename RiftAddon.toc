@@ -37,7 +37,8 @@ RunOnStartup = {
 	"modules/questtracker/ui.lua",
 
 	--"modules/questlog/questlog.lua",
-	--"modules/questlog/ui-category.lua",
+	--"modules/questlog/ui.lua",
+	--"modules/questlog/events.lua",
 
 	"modules/onebag/onebag.lua",
 	"modules/onebag/bagUI.lua",

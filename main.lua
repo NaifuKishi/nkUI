@@ -200,6 +200,8 @@ local function commandHandler (commandline)
 		end
 	elseif stringFind(commandline, "logo") then
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
+	elseif stringFind(commandline, "qlog") then
+		internalFunc.questLog()
 	else
 		internalFunc.setupInit ()
 	end
