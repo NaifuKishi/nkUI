@@ -25,6 +25,7 @@ local events     	= privateVars.events
 local inspectTimeFrame	= Inspect.Time.Frame
 
 local stringFind	= string.find
+local stringFormat	= string.format
 local mathpi		= math.pi
 
 -- Initialize variables
@@ -208,6 +209,28 @@ local function commandHandler (commandline)
 
 end
 
+local function _fctProcessMessage(_, from, type, channel, identifier, msgData)
+
+	--print (from, type, channel, identifier, msgData)
+
+	if identifier ~= "nkUI.version" then return end
+
+	if msgData == "getVersion" then
+		--print ("send version")
+		local msgString = stringFormat("info=%s", addonInfo.toc.Version)
+		Command.Message.Send(from, "nkUI.version", msgString, function() end)
+	elseif stringFind(msgData, "info=") == 1 then
+		local version = LibEKL.strings.right (msgData, "info=")         
+		if version == nil then return end
+		if data.versionCache == nil then data.versionCache = {} end
+		--print (version)
+		data.versionCache[from] = version
+	end
+
+end
+
+-------------------- STARTUP EVENTS --------------------
+
 --[[
    @function _main
    @description Main initialization function for the nkUI addon
@@ -294,7 +317,10 @@ local function initializeAddon(_, addon)
 				LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
 			end
 
-		end, "nkUI.Unit.Availability.Full")		
+			Command.Message.Accept(nil, "nkUI.version")
+			Command.Event.Attach(Event.Message.Receive, _fctProcessMessage, "nkUI.Version.Message.Receive")
+
+		end, "nkUI.Unit.Availability.Full")				
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
 		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)

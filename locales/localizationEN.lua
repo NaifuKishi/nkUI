@@ -61,7 +61,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") then
 		identifierCarnage		= 'Carnage',
 		missingQuests			= 'Missing quests',
 		
-		showCategoryCheckbox	= {	crafting = "Crafting", 
+		showCategoryCheckbox	= {	battlepass = "Battle Pass",
+									crafting = "Crafting", 
 									weekly = "Weekly", 
 									monthly = "Monthly",
 									daily = "Daily", 

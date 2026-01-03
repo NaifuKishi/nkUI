@@ -638,6 +638,11 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
         if health > healthMax then health = healthMax end -- if this works we need to add some code for it
 
+        if health == 0 then
+            healthFrame:SetWidth(0)
+            return
+        end
+
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
         local targetWidth = (unitFrameWidth-4) * (health / healthMax)

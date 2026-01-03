@@ -46,7 +46,8 @@ data.zoneFilter			= false
 data.addQuestList		= {}
 data.removeQuestList	= {}
 data.areaQuestDomain	= {"ia", "world", "zone", "area", "raid"}
-data.categoryColor 		= { guild = { 0, 0.58, 1 }, 
+data.categoryColor 		= { battlepass = { 0, 0.58, 1 },
+							guild = { 0, 0.58, 1 }, 
 							ia = { 0.737, 1, 0.804 }, 
 							pvp = { 1, 0.417, 0 }, 
 							story = { 0.839, 0.498, 1},
@@ -203,6 +204,11 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	local setDomain = false
 
+	if details.categoryName == "Battle Pass" then
+		details.domain = "battlepass"
+		setDomain = true
+	end
+
 	if details.rewardChoose ~= nil then
 		for k, v in pairs(details.rewardChoose) do
 			if LibEKL.Tools.Table.IsMember (_craftingItems, k) == true then
@@ -223,7 +229,7 @@ function questTracker.processQuest(details, processTitleFlag)
 				break
 			end
 		end
-	end
+	end	
 
 	if setDomain == false then
 		if LibEKL.strings.find(details.tag, 'weekly') ~= nil then

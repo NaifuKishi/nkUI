@@ -14,8 +14,11 @@ local addonInfo, privateVars = ...
 local TOOLTIP_NAME = "nkUI.tooltip"
 
 --[[ Local Variables ]]--
-local uiElements = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local data          = privateVars.data
+
+local stringFormat  = string.format
 
 local relationColors = {
     friendly = "#40BC40",
@@ -108,6 +111,16 @@ local function createStatsLines(tooltip, lastObject, count, y)
     return stats
 end
 
+local function createVersionText(tooltip)
+    local versionText = LibEKL.UICreateFrame("nkText", TOOLTIP_NAME .. ".tooltip.versionText", tooltip)
+    versionText:SetPoint("BOTTOMRIGHT", tooltip, "BOTTOMRIGHT", -TOOLTIP_INNERBORDER / 2,  -TOOLTIP_INNERBORDER / 2)
+    versionText:SetFontSize(nkUISetup.modules.tooltip.fontSizes.body - 2)
+    versionText:SetAlpha(1)
+    versionText:SetFontColor(1, 0.8, 0, 1)
+    versionText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    return versionText
+end
+
 local function createHealthBar(tooltip)
     local healthBarBG = LibEKL.UICreateFrame("nkFrame", TOOLTIP_NAME .. ".tooltip.healthBarBG", tooltip)
     healthBarBG:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT", 0, 2)
@@ -147,7 +160,7 @@ local function createHealthBar(tooltip)
     return healthBarBG, healthBar, healthText
 end
 
-local function calculateTooltipDimensions(tooltip, title, lines, stats)
+local function calculateTooltipDimensions(tooltip, title, lines, stats, versionText)
     
     local tooltipWidth = title:GetWidth() + TOOLTIP_INNERBORDER
 
@@ -194,6 +207,8 @@ local function calculateTooltipDimensions(tooltip, title, lines, stats)
         end
     end
     
+    height = height + versionText:GetHeight()
+
     --print (4, tooltipWidth)
     
     return tooltipWidth, height
@@ -227,10 +242,11 @@ local function createTooltipUI()
     local title = createTitleText(tooltip)
     local lines = createBodyLines(tooltip, title, 10)
     local stats = createStatsLines(tooltip, lines[#lines], 10, 5)
+    local versionText = createVersionText(tooltip)
     local healthBarBG, healthBar, healthText = createHealthBar(tooltip)
     
     local function redraw()
-        local width, height = calculateTooltipDimensions(tooltip, title, lines, stats)
+        local width, height = calculateTooltipDimensions(tooltip, title, lines, stats, versionText)
         updateTooltipDimensions(tooltip, width, height)
     end
     
@@ -284,7 +300,15 @@ local function createTooltipUI()
         
         redraw()
     end
+
+    function tooltip:SetVersionText(version)
+        versionText:SetText(version, true)
+    end
     
+    function tooltip:GetVersionText()
+        return versionText
+    end
+
     function tooltip:SetHealth(health, healthMax, show)
         if show then
             if health == 0 then
@@ -355,8 +379,8 @@ local function formatUnitTooltip(unitInfo)
         if unitDetail.raceName then
             levelLine = levelLine .. " " .. unitDetail.raceName
         end
-        
-        table.insert(infoLines, levelLine)
+
+        table.insert(infoLines, levelLine)             
     end
     
     if unitDetail.calling then
@@ -375,9 +399,24 @@ local function formatUnitTooltip(unitInfo)
     if unitDetail.publicSize then
         table.insert(infoLines, string.format('Public group size: %d', unitDetail.publicSize))
     end
+
+    --dump (data.versionCache)
+
+    if not data.versionCache then data.versionCache = {} end
+
+    if data.versionCache[unitDetail.name] then
+        local versionLine = stringFormat("nkUI %s", data.versionCache[unitDetail.name])
+        uiElements.tooltip:SetVersionText(versionLine)
+        uiElements.tooltip:GetVersionText():SetVisible(true)
+    else
+        uiElements.tooltip:GetVersionText():SetVisible(false)
+    end
+
+    Command.Message.Send(unitDetail.name, "nkUI.version", "getVersion", function() end)  
     
     uiElements.tooltip:SetBody(infoLines)
     uiElements.tooltip:SetStats({}, false)
+    
     
     if unitDetail.health then
         local healthMax = unitDetail.healthMax or unitDetail.health

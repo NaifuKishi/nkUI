@@ -76,13 +76,13 @@ local function questAdd(list)
 					local flag, details = pcall(inspectQuestDetail, key)
 					if flag then
 
-						if details.categoryName ~= "Battle Pass" then
+						--if details.categoryName ~= "Battle Pass" then
 
 							questTracker.processQuest(details, true)
 							_questCache[key] = details
 							
 							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
-						end
+						--end
 
 						coroutine.yield(idx)
 					end

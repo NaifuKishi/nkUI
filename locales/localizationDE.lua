@@ -62,7 +62,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 		identifierCarnage		= 'Massaker',
 		missingQuests			= 'Fehlende Quests',
 		
-		showCategoryCheckbox	= {	area = "Gebiet", 
+		showCategoryCheckbox	= {	battlepass = "Battle Pass",
+									area = "Gebiet", 
 									guild = "Gilde", 
 									crafting = "Handwerk", 
 									instant = "Instanz",

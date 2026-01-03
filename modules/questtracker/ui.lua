@@ -12,7 +12,7 @@ local inspectSystemSecure	= Inspect.System.Secure
 ---------- init local variables ---------
 
 local colorR, colorG, colorB, colorA = 0.9, 0.74, 0, 1
-local categoryOrder = { "crafting", "daily", "weekly", "monthly", "guild", "ia", "pvp", "world", "zone", "area", "instant", "raid", "story", "personal", "carnage"}
+local categoryOrder = { "battlepass", "crafting", "daily", "weekly", "monthly", "guild", "ia", "pvp", "world", "zone", "area", "instant", "raid", "story", "personal", "carnage"}
 
 ---------- local function block ---------
 
@@ -38,6 +38,10 @@ local function showCategoryFilter (parent)
 		checkbox:SetFontSize(14)
 		checkbox:SetTextFont(addonInfo.id, "Montserrat")
 		checkbox:SetPoint(from, object, to, x, y)
+		checkbox:SetLabelColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+		checkbox:SetColor(data.theme.formElementColorMain)
+		checkbox:SetColorInner(data.theme.formElementColorSub)
+		checkbox:SetEffectGlow({strength = 3})
 
 		height = height + checkbox:GetHeight() + 5
 
@@ -170,14 +174,14 @@ function questTracker.buildUI ()
 
 	Command.Event.Attach(LibEKL.Events[name .. '.categoryFilterIcon'].Clicked, function (_, newValue)		
 		if uiElements.categoryFilter == nil then
-			uiElements.categoryFilter = showCategoryFilter (categoryFilterIcon)
-		end
-			
-		if uiElements.categoryFilter:GetVisible() then
-			questTracker.clearLog(questTracker.fillLog)
-		end
+			uiElements.categoryFilter = showCategoryFilter (categoryFilterIcon)			
+		else			
+			if uiElements.categoryFilter:GetVisible() then
+				questTracker.clearLog(questTracker.fillLog)
+			end
 
-		uiElements.categoryFilter:SetVisible(not uiElements.categoryFilter:GetVisible())
+			uiElements.categoryFilter:SetVisible(not uiElements.categoryFilter:GetVisible())
+		end		
 	end,name .. '.categoryFilterIcon.Clicked')		
 	
 	-- ********* ITEM BUTTON

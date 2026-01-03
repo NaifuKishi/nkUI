@@ -1,3 +1,8 @@
+V1.0.0
+    - updates: Quest Tracker - added support for Battle Pass category
+    - fixes: Quest Tracker - category filter will show on first click
+    - fixes: Quest Tracker - category filter now shows checkboxes again
+
 V0.9.8
     - new: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)
     - new: Unit Frames - new option to only show buffs and debuffs cast by player

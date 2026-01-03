@@ -31,7 +31,7 @@ local _defaults = {
                         useYpos = 100, 
                         useUI = true,
                         categoryHeaderSize = 16,																
-						categoryShow = {crafting = true, world = true, daily = true, guild = true, ia = true, monthly = true, weekly = true, zone = true, area = true, instant = true, raid = true, story = true, personal = true, carnage = true, pvp = true},
+						categoryShow = {battlepass = true, crafting = true, world = true, daily = true, guild = true, ia = true, monthly = true, weekly = true, zone = true, area = true, instant = true, raid = true, story = true, personal = true, carnage = true, pvp = true},
 						categoryFontSize = { header = 15, subHeader = 14, body = 13 },
 						collapseState = {},
 						categoryCollapseState = {},
@@ -242,6 +242,10 @@ function internalFunc.setupDefaults()
 
     if nkUISetup.modules.tooltip.fontSizes == nil then
         nkUISetup.modules.tooltip.fontSizes = {header = 15, body = 13 }
+    end
+
+    if nkUISetup.modules.questtracker.categoryShow.battlepass == nil then
+        nkUISetup.modules.questtracker.categoryShow.battlepass = true
     end
     
     -- check for new char
