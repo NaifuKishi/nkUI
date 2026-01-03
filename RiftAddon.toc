@@ -6,7 +6,7 @@ Description = "nkUI is a UI suite for Rift in the style of modern WoW addons. It
 Author = "NaifuKishi"
 Email = "naifukishi.lake186@passmail.net"
 
-Version = "0.9.7"
+Version = "0.9.8"
 Environment = "4.0"
 
 RunOnStartup = {

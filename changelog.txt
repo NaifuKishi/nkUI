@@ -9,6 +9,7 @@ V0.9.8
     - update: Quest Tracker - the quest items are now hidden by default
     - update: Unit Frames - tweaked name display
     - update: Unit Frames - some performance optimizations
+    - fixes: Unit Frames - fixed tooltip showing wrong descriptions
 
 V0.9.7
     - updates: Quest Tracker: Slightly changed initial position of Quest Tracker
