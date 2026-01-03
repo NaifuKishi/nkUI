@@ -293,7 +293,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         stateIcon:SetPoint("CENTER", unitFrame, "CENTER")
     end
     
-    function unitFrame:Redraw()        
+    function unitFrame:Redraw()
         unitFrame:SetWidth(setup.width)
         unitFrame:SetHeight(setup.height) 
         secureFrame:SetWidth(setup.width)
@@ -431,7 +431,10 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         end
     end
 
-    function unitFrame:SetUnitID (newID) thisUnitID = newID end
+    function unitFrame:SetUnitID (newID) 
+        thisUnitID = newID 
+        unitFrame:ResetHealth()
+    end
     function unitFrame:GetUnitID () return thisUnitID end
 
     function unitFrame:GetScale() return scale end
@@ -629,6 +632,8 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         end
     end
 
+    local runningAnimation = false
+
     function unitFrame:SetHealth (health) 
         if health == nil then return end
         if healthMax == nil then healthMax = health end
@@ -637,14 +642,53 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
+        local targetWidth = (unitFrameWidth-4) * (health / healthMax)
+        local currentWidth = healthFrame:GetWidth()
+        local pixel = targetWidth - currentWidth
+
+        if currentWidth == targetWidth then return end
+
         if health == 0 then
             healthText:SetText("0")
-            healthFrame:SetWidth(1)
         else
-            local playerHealthPercent = health / healthMax
+            local playerHealthPercent = currentWidth / (unitFrameWidth-4)
             healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
-            healthFrame:SetWidth((unitFrameWidth-4) * playerHealthPercent)
         end
+
+        if not nkUISetup.modules.unitFrames.smoothAnimation then
+            healthFrame:SetWidth(targetWidth)
+            return
+        end
+
+        local stopAnimation = false
+
+        local animateHealth = coroutine.create(
+		    function ()
+                local step = pixel > 0 and 1 or -1
+                local counter = 1
+                while not stopAnimation do                                
+                    healthFrame:SetWidth(currentWidth + (counter * step))
+                    counter = counter + 1
+                    coroutine.yield(counter)
+                end
+            end)                
+
+        if runningAnimation then stopAnimation = true end
+
+        LibEKL.Coroutines.Add({
+            func = animateHealth,
+            counter = math.abs(pixel),
+            active = true,
+            callBack = function () runningAnimation = false end
+        })
+
+        runningAnimation = true
+
+    end
+
+    function unitFrame:ResetHealth()
+        healthFrame:SetWidth((setup.width -4))
+        healthFrame:SetHeight((setup.height -4))
     end
 
     function unitFrame:ProcessUnitDetails (newUnitID)

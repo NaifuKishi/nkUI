@@ -44,6 +44,7 @@ local _defaults = {
                         showBuffs = true,
                         showOnlyOwnBuffs = false,
                         buffDuration = 60,
+                        smoothAnimation = true,
                         colorScheme = "wow",
                         maxBuffCount = 9,
                         frames = {  player          = { x = -300, y = 300, width = 250, height = 35, 

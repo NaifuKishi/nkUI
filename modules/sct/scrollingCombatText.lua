@@ -671,7 +671,7 @@ local function handleInventoryUpdate(_, items)
     -- Update the last inventory update time
     lastInventoryUpdate = currentTime
 end
-
+--[[
 local function handleAchievement (_, achievement)
 
     local details = Inspect.Achievement.Detail(achievement)
@@ -679,6 +679,7 @@ local function handleAchievement (_, achievement)
     displayShakingMessage( stringFormat('%s compelete', details.name), "achievement")
 
 end
+]]
 
 function internalFunc.sctInit()
     
@@ -696,7 +697,7 @@ function internalFunc.sctInit()
     Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
     Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
 
-    Command.Event.Attach(Event.Achievement.Complete, handleAchievement, "nkUI.SCT.Achievement.Complete")
+--    Command.Event.Attach(Event.Achievement.Complete, handleAchievement, "nkUI.SCT.Achievement.Complete")
 
     if nkUISetup.modules.sct.showExpGains then
         Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)

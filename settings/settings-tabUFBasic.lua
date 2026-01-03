@@ -12,7 +12,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabUFBasic (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider, maxBuffSlider, onlyOwnBuffsCheckbox
+    local activateCheckbox, buffsUnitBarCheckbox, combatAlphaSlider, nonCombatAlphaSlider, maxBuffSlider, onlyOwnBuffsCheckbox, smoothAnimationCheckbox
     local buffDurationLabel
 
     function frame:build()
@@ -104,6 +104,13 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
 
         onlyOwnBuffsCheckbox:SetPoint("TOPLEFT", maxBuffSlider, "BOTTOMLEFT", 0, 5)
         onlyOwnBuffsCheckbox:SetChecked(nkUISetup.modules.unitFrames.showOnlyOwnBuffs, true)
+
+        smoothAnimationCheckbox = settingsUI.checkbox(name .. ".smoothAnimationCheckbox", frame, "Smooth animations", moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.smoothAnimation = newValue            
+        end)
+
+        smoothAnimationCheckbox:SetPoint("TOPLEFT", onlyOwnBuffsCheckbox, "BOTTOMLEFT", 0, 5)
+        smoothAnimationCheckbox:SetChecked(nkUISetup.modules.unitFrames.smoothAnimation, true)
         
     end
 
