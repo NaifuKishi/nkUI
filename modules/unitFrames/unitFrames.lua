@@ -36,7 +36,6 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     --print (identifier, details.name)
 
     frame:SetMacro(stringFormat("/target %s", details.name))
-
     frame:SetName(details.name)
     frame:SetCalling(details.calling)
 

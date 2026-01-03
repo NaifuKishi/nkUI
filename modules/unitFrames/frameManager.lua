@@ -13,6 +13,7 @@ local inspectUnitDetail     = Inspect.Unit.Detail
 
 local mathFloor     = math.floor
 local stringFormat  = string.format
+local stringUpper   = string.upper
 
 ---------- init global variables ---------
 
@@ -65,9 +66,6 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         frame:SetWidth(frameWidth)
         frame:SetHeight(frameHeight)
         frame:SetBackgroundColor(0, 0, 0, .5)
-
-        -- Reset other frame properties as needed
-        -- ...
 
         frameManager.activeFrames[unitType] = frame
         return frame
@@ -158,12 +156,12 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     if unitFrameType == "raid" then
         nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)        
     elseif setup.reverse then
-        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
+        nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 3)
     else
-        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
+        nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 3)
     end
 
-    nameText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    nameText:SetTextFont(addonInfo.id, "MontserratExtraBold")
     nameText:SetFontSize(setup.fontSizes.name)
     nameText:SetFontColor(1, 1, 1, 1)
     nameText:SetEffectGlow({ strength = 5})    
@@ -338,7 +336,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
             if string.find(unitType, "raid") then
                 nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
             else            
-                nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 0)
+                nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 3)
             end
         else
             healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 3, 3)
@@ -350,7 +348,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
             if string.find(unitType, "raid") then
                 nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)
             else
-                nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 0)
+                nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 3)
             end
         end
         
@@ -573,7 +571,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
         thisName = internalFunc.shortenName (name, maxLen)
 
-        nameText:SetText(thisName)
+        nameText:SetText(stringUpper(thisName))
     end
 
     function unitFrame:SetLevel (newLevel)

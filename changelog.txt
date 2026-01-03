@@ -7,6 +7,7 @@ V0.9.8
     - update: SCT - Incoming heal will now show caster and outgoing the target
     - update: SCT - overheals now use a smaller font size
     - update: Quest Tracker - the quest items are now hidden by default
+    - update: Unit Frames - tweaked name display
     - update: Unit Frames - some performance optimizations
 
 V0.9.7
