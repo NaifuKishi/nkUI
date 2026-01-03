@@ -148,7 +148,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
                 else
                     if (buffDetails.remaining and buffDetails.remaining < nkUISetup.modules.unitFrames.buffDuration) then
 
-                        if not nkUISetup.modules.unitFrames.showOnlyOwnBuffs or (buffDetails.caster == playerID) then
+                        if not nkUISetup.modules.unitFrames.showOnlyOwnBuffs or buffDetails.caster == playerID or unitType == "target" then
 
                             internalFunc.processNewBuff (unitType, "unit." .. unitType .. ".buff.icon." .. buffIdentifier, buffID, buffIdentifier, buffDetails, unitBuffDisplayList, unitBuffIcons, frame)
                             

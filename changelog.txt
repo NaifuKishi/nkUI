@@ -1,6 +1,8 @@
 V0.9.8
     - new: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)
     - new: Unit Frames - new option to only show buffs and debuffs cast by player
+    - new: SCT - added a new message type for important stuff
+    - new: SCT - Completed achievement will now trigger a message
     - update: SCT - Now shows skill name for outgoing damage
     - update: SCT - Incoming heal will now show caster and outgoing the target
     - update: SCT - overheals now use a smaller font size
