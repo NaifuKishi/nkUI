@@ -290,11 +290,10 @@ end
 function questTracker.eventInventoryUpdate(_, items)
 
 	for k, v in pairs(items) do
-		if k ~= useItemKey then
-			if thisItem ~=  nil and thisItem.category == 'misc quest' then
-				uiElements.useUI:Update()
-				return
-			end
+		local thisItem = inspectItemDetail(k)
+		if thisItem ~=  nil and thisItem.category == 'misc quest' then
+			uiElements.useUI:Update()
+			return
 		end
 	end
 end
