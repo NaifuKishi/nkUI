@@ -42,7 +42,7 @@ function lowerBar.location()
     datasetLocationIcon:SetTextureAsync("nkUI", "gfx/lowerbarLocation.png")
     
     local buttons = {}
-    local abilities = {"A3C5AEC64D3793518", "A665FDAC7EDD37636"}
+    local abilities = {"A3C5AEC64D3793518", "A665FDAC7EDD37636", "A6B16924B96299E96"}
     local abilityDetails = inspectAbilityNewDetail(abilities)
 
     local parent = datasetLocation

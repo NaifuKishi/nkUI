@@ -385,7 +385,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		if color == nil then color = {1, 1, 1} end
 		tooltip:SetTitleColor(color[1], color[2], color[3])
 	end
-				
+
 	local text = ""
 	if message ~= nil then
 		text = message

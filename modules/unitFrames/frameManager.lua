@@ -636,26 +636,28 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         if health == nil then return end
         if healthMax == nil then healthMax = health end
 
-        if health > healthMax then health = healthMax end -- if this works we need to add some code for it
-
-        if health == 0 then
-            healthFrame:SetWidth(0)
-            return
-        end
+        if health > healthMax then health = healthMax end -- if this works we need to add some code for it        
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
         local targetWidth = (unitFrameWidth-4) * (health / healthMax)
         local currentWidth = healthFrame:GetWidth()
-        local pixel = targetWidth - currentWidth
+        local pixel = targetWidth - currentWidth        
 
         if currentWidth == targetWidth then return end
 
         if health == 0 then
             healthText:SetText("0")
+            healthFrame:SetWidth(0)
+            return
         else
-            local playerHealthPercent = currentWidth / (unitFrameWidth-4)
-            healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
+            local playerHealthPercent = health / healthMax
+            healthText:SetText(stringFormat("%d", LibEKL.Tools.Math.Round(playerHealthPercent*100)))
+        end
+
+        if targetWidth == (unitFrameWidth-4) then
+            healthFrame:SetWidth(targetWidth)
+            return
         end
 
         if not nkUISetup.modules.unitFrames.smoothAnimation or unitType == "raid" then
