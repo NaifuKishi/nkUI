@@ -109,6 +109,17 @@ local function getCarnageNPC (objectiveText)
 
 end
 
+local function storeCarnageNPC(npcName, quest, objective)
+
+	questTracker.carnageMobs[npcName] = {
+		level = quest.level,
+		name = quest.name, 
+		desc = objective.description, 
+		count = objective.count, 
+		countDone = objective.countDone 
+	}
+
+end
 
 local function questAdd(list)
 	
@@ -116,68 +127,33 @@ local function questAdd(list)
 		function ()
 			for idx = 1, #list, 1 do
 				uiElements.progressBar:SetValue(idx)
-				local key = list[idx]
-				
-				if key ~= nil then
-				
+				local key = list[idx]				
+				if key ~= nil then				
 					local flag, details = pcall(inspectQuestDetail, key)
 					if flag then
-
-						--if details.categoryName ~= "Battle Pass" then
-
-							questTracker.processQuest(details, true)							
-
-							if details.domain == "carnage" then
-								for k, v in pairs(details.objective) do
-									--if not v.complete then
-										local carnageNPC = getCarnageNPC(v.description)
-
-										if carnageNPC then
-
-											--print ("carnageNPC: " .. carnageNPC)
-
-											questTracker.carnageMobs[carnageNPC] = {
-												level = details.level,
-												name = details.name, 
-												desc = v.description, 
-												count = v.count, 
-												countDone = v.countDone 
-											}
-
-											if stringFind(carnageNPC, "-") then
-												local temp = LibEKL.strings.split(carnageNPC, "-")
-												for idx = 1, #temp, 1 do
-													questTracker.carnageMobs[temp[idx]] = {
-														level = details.level,
-														name = details.name, 
-														desc = v.description, 
-														count = v.count, 
-														countDone = v.countDone 
-													}
-												end
-											end
-
-											if stringFind(carnageNPC, " ") then
-												local temp = LibEKL.strings.split(carnageNPC, " ")
-												for idx = 1, #temp, 1 do
-													questTracker.carnageMobs[temp[idx]] = {
-														level = details.level,
-														name = details.name, 
-														desc = v.description, 
-														count = v.count, 
-														countDone = v.countDone 
-													}
-												end
-											end
+						questTracker.processQuest(details, true)							
+						if details.domain == "carnage" then
+							for k, v in pairs(details.objective) do
+								local carnageNPC = getCarnageNPC(v.description)
+								if carnageNPC then
+									storeCarnageNPC(carnageNPC, details, v)
+									if stringFind(carnageNPC, "-") then
+										local temp = LibEKL.strings.split(carnageNPC, "-")
+										for idx = 1, #temp, 1 do
+											storeCarnageNPC(temp[idx], details, v)
 										end
-										--dump (details)
-									--end
+									end
+									if stringFind(carnageNPC, " ") then
+										local temp = LibEKL.strings.split(carnageNPC, " ")
+										for idx = 1, #temp, 1 do
+											storeCarnageNPC(temp[idx], details, v)
+										end
+									end
 								end
 							end
+						end
 
-							uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
-						--end
-
+						uiElements.questTracker:AddQuest(key, details.domain, details.name, details.subName, details.objective, details.complete, details.level, details.zone)
 						coroutine.yield(idx)
 					end
 				end
@@ -300,11 +276,8 @@ end
 function questTracker.eventUnitLevel(_, units)
 
 	local playerID = LibEKLUnitGetPlayerDetails().id
-
-	if units[playerID] == nil or units[playerID] == false then return end
-	
+	if units[playerID] == nil or units[playerID] == false then return end	
 	LibEKLUnitSetPlayerDetails("level", units[playerID])
-	
 	questTracker.clearLog(questTracker.fillLog)
 
 end

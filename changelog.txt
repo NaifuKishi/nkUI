@@ -2,6 +2,8 @@ V1.0.0
     - new: Unit Tooltip - Managed a way to show carnage info in unit tooltip (only if questtracker is used)
     - new: Unit Tooltip - Tier icon will be displayed for elite and boss mobs
     - updates: Quest Tracker - added support for Battle Pass category
+    - updates: Quest Tracker - Some minor design tweaks
+    - updates: Unit Frames - disabled smooth bars on raid frames
     - fixes: Quest Tracker - category filter will show on first click
     - fixes: Quest Tracker - category filter now shows checkboxes again
 

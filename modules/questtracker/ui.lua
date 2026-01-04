@@ -30,7 +30,27 @@ local function showCategoryFilter (parent)
 	local from, object, to, x, y = "TOPLEFT", ui, "TOPLEFT", 5, 5
 	local height = 0
 
-	for _, v in pairs(categoryOrder) do
+	-- Get the category names from privateVars.langTexts.showCategoryCheckbox
+	local categoryNames = privateVars.langTexts.showCategoryCheckbox
+
+	-- Create a table to store the category order with names
+	local categoryOrderWithNames = {}
+	for _, category in ipairs(categoryOrder) do
+		table.insert(categoryOrderWithNames, {name = categoryNames[category], original = category})
+	end
+
+	-- Sort the categoryOrderWithNames table by name
+	table.sort(categoryOrderWithNames, function(a, b)
+		return a.name < b.name
+	end)
+
+	-- Extract the sorted category order
+	local sortedCategoryOrder = {}
+	for _, item in ipairs(categoryOrderWithNames) do
+		table.insert(sortedCategoryOrder, item.original)
+	end
+
+	for _, v in pairs(sortedCategoryOrder) do
 		local checkbox = LibEKL.UICreateFrame("nkCheckbox", name.. "." .. v, ui)
 		checkbox:SetText(privateVars.langTexts.showCategoryCheckbox[v])
 		checkbox:SetChecked(nkUISetup.modules.questtracker.categoryShow[v])

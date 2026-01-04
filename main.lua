@@ -248,7 +248,7 @@ local function initializeAddon(_, addon)
 		LibEKL.UI.registerFont(addonInfo.id, "MontserratExtraBold", "fonts/Montserrat-ExtraBold.ttf")
 		LibEKL.UI.registerFont(addonInfo.id, "MontserratBlack", "fonts/Montserrat-Black.ttf")
 
-        LibEKL.UI.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
+		LibEKL.UI.registerFont(addonInfo.id, "FiraMonoBold", "fonts/FiraMono-Bold.ttf")
         LibEKL.UI.registerFont(addonInfo.id, "FiraMonoMedium", "fonts/FiraMono-Medium.ttf")
         LibEKL.UI.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 

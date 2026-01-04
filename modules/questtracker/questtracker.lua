@@ -8,6 +8,7 @@ local internalFunc	= privateVars.internalFunc
 local uiElements	= privateVars.uiElements
 local data			= privateVars.data
 local questTracker	= privateVars.questTracker
+local langTexts		= privateVars.langTexts
 
 local inspectQuestDetail	= Inspect.Quest.Detail
 local inspectItemDetail		= Inspect.Item.Detail
@@ -24,7 +25,10 @@ local LibEKLGetLanguageShort	= LibEKL.Tools.Lang.GetLanguageShort
 
 ---------- init local variables ---------
 
-local colorR, colorG, colorB, colorA = 0.9, 0.74, 0, 1
+local PROGRESSBAR_COLOR = {0.9, 0.74, 0, 1}
+
+questTracker.bodyColor = { .827, .827, .827, 1 }
+questTracker.bodyCompleteColor = {.6, .6, .6, 1}
 
 local _craftingItems = {
 	"I4CD48A0656A66436,41331FF662BDB8ED,,,,,,",
@@ -107,8 +111,9 @@ function internalFunc.uiQuestTracker()
 		uiElements.progressBar:SetLayer(99)
 		uiElements.progressBar:SetVisible(false)
 		uiElements.progressBar:SetFontColor(0, 0, 0, 1)
-		uiElements.progressBar:SetBorderColor(colorR, colorG, colorB, colorA)
-		uiElements.progressBar:SetFillColor(colorR, colorG, colorB, colorA)
+		uiElements.progressBar:SetFont(addonInfo.id, "MontserratSemiBold")
+		uiElements.progressBar:SetBorderColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
+		uiElements.progressBar:SetFillColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
 				
 		Command.Event.Attach(Event.Quest.Accept, questTracker.eventQuestAccept, "nkUI.questtracker.Quest.Accept")
 		Command.Event.Attach(Event.Quest.Abandon, questTracker.eventQuestAbandon, "nkUI.questtracker.Quest.Abandon")
@@ -164,13 +169,15 @@ function questTracker.fillLog ()
 	local newCollapseState = {}
 	
 	local areaQuestKey
+
+	local playerZone = LibEKL.Unit.getPlayerDetails().zone
 	
 	for k, v in pairs(details) do
 		if v.name ~= nil and v.name ~= "" then
 		
 			local addQuest = true
 			if data.zoneFilter == true then
-				addQuest = LibQB.query.IsQuestInZone (LibEKL.Unit.getPlayerDetails().zone, v.id)
+				addQuest = LibQB.query.IsQuestInZone (playerZone, v.id)
 			end
 		
 			if addQuest == true then
@@ -188,8 +195,6 @@ end
 
 function questTracker.clearLog(callBack)
 
-	--uiElements.questTracker:Collapse(true)
-	
 	local list = inspectQuestList()
 
 	for key, v in pairs(list) do
@@ -204,7 +209,7 @@ function questTracker.processQuest(details, processTitleFlag)
 
 	local setDomain = false
 
-	if details.categoryName == "Battle Pass" then
+	if details.categoryName == privateVars.langTexts.battlePass then
 		details.domain = "battlepass"
 		setDomain = true
 	end
@@ -443,15 +448,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 	tooltip:SetLines(lines)
 	
 	LibEKL.UI.showWithinBound (tooltip, parent)
---[[
-	local mouse = inspectMouse()
-	
-	if mouse.x + tooltip:GetWidth() > UIParent:GetWidth() then
-		tooltip:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -(UIParent:GetWidth()-mouse.x), mouse.y)
-	else
-		tooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
-	end
-]]		
+
 	tooltip:SetVisible(true)
 
 end

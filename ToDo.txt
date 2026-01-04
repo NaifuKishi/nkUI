@@ -1,5 +1,6 @@
 know bug list
-    
+
+    - Quest Tracker -Quest Objective Update not working properly    
     - out of range indicator on weapon switch    
 
 ToDo

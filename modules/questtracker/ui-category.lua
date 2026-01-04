@@ -227,7 +227,7 @@ function questTracker.questCategory(category, parent)
 			thisEntry = questTracker.questEntry(key, subFrame, #questEntries+1)
 			thisEntry:SetTitleFontSize (nkUISetup.modules.questtracker.categoryFontSize.header)
 			thisEntry:SetBodyFontSize (nkUISetup.modules.questtracker.categoryFontSize.body)
-			thisEntry:SetBodyColor (nkUISetup.modules.questtracker.categoryFontSize.bodyColor)
+			thisEntry:SetBodyColor (questTracker.bodyColor)
 		end
 
 		local pos = -1
@@ -364,7 +364,7 @@ function questTracker.questCategory(category, parent)
 				questEntries[idx]:SetTitleColor(nkUISetup.modules.questtracker.categoryColor[category])
 				questEntries[idx]:SetTitleFontSize(nkUISetup.modules.questtracker.categoryFontSize.header, true)
 				questEntries[idx]:SetBodyFontSize (nkUISetup.modules.questtracker.categoryFontSize.body, true)
-				questEntries[idx]:SetBodyColor (nkUISetup.modules.questtracker.categoryFontSize.bodyColor)
+				questEntries[idx]:SetBodyColor (questTracker.bodyColor)
 				questEntries[idx]:RecalcHeight()
 			end
 		

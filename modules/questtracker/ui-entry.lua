@@ -96,7 +96,7 @@ function questTracker.questEntry (key, parent, counter)
 	levelFrame:SetPoint("TOPLEFT", frame, "TOPLEFT")
 
 	local level = LibEKL.UICreateFrame("nkText", name .. '.levelText', levelFrame)
-	level:SetPoint("TOPLEFT", frame, "TOPLEFT")		
+	level:SetPoint("TOPLEFT", frame, "TOPLEFT")
 	level:SetFontSize(15)
 	level:SetFontColor(1, 1, 1, 1)
 	level:SetWordwrap(true)
@@ -114,7 +114,7 @@ function questTracker.questEntry (key, parent, counter)
 	header:SetWidth(frame:GetWidth())
 
 	local subHeader = LibEKL.UICreateFrame("nkText", name .. '.subHeader', frame)
-	subHeader:SetPoint("TOPLEFT", header, "BOTTOMLEFT")		
+	subHeader:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -3)
 	subHeader:SetFontSize(fontSize)
 	subHeader:SetFontColor(1, 1, 1, 1)
 	subHeader:SetWordwrap(true)
@@ -231,11 +231,11 @@ function questTracker.questEntry (key, parent, counter)
 		if title ~= nil then
 			subHeader:ClearHeight()
 			subHeader:SetText(title, true)					
-			subFrame:SetPoint("TOPLEFT", subHeader, "BOTTOMLEFT", 0, 0)
+			subFrame:SetPoint("TOPLEFT", subHeader, "BOTTOMLEFT")
 			subHeader:SetVisible(true)
 		else
 			subHeader:SetVisible(false)
-			subFrame:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, 0)
+			subFrame:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 		end
 
 		frame:RecalcHeight()
@@ -264,7 +264,7 @@ function questTracker.questEntry (key, parent, counter)
 			
 			LibEKL.UI.SetFont(thisObjective, addonInfo.id, "MontserratSemiBold")
 			thisObjective:SetEffectGlow({strength = 3})
-			thisObjective:SetFontSize(fontSize)			
+			thisObjective:SetFontSize(fontSize)
 			table.insert(objectives, thisObjective)
 		else
 			thisObjective = objectives[objectiveCount+1]
@@ -278,9 +278,9 @@ function questTracker.questEntry (key, parent, counter)
 		thisObjective.complete = complete
 		
 		if complete == true then
-			thisObjective:SetFontColor(nkUISetup.modules.questtracker.bodyCompleteColor[1], nkUISetup.modules.questtracker.bodyCompleteColor[2], nkUISetup.modules.questtracker.bodyCompleteColor[3], 1)		
+			thisObjective:SetFontColor(questTracker.bodyCompleteColor[1], questTracker.bodyCompleteColor[2], questTracker.bodyCompleteColor[3], 1)		
 		else
-			thisObjective:SetFontColor(nkUISetup.modules.questtracker.bodyColor[1], nkUISetup.modules.questtracker.bodyColor[2], nkUISetup.modules.questtracker.bodyColor[3], 1)			
+			thisObjective:SetFontColor(questTracker.bodyColor[1], questTracker.bodyColor[2], questTracker.bodyColor[3], 1)			
 		end
 		
 	end

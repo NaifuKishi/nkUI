@@ -658,7 +658,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
             healthText:SetText(stringFormat("%d", mathFloor(playerHealthPercent*100)))
         end
 
-        if not nkUISetup.modules.unitFrames.smoothAnimation then
+        if not nkUISetup.modules.unitFrames.smoothAnimation or unitType == "raid" then
             healthFrame:SetWidth(targetWidth)
             return
         end
