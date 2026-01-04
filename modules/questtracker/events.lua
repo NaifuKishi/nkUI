@@ -38,30 +38,56 @@ questTracker.carnageMobs = {}
 local function isUpdate(cached, details)
         
 	local isUpdate = false
+	local log = false
+
+	--if details.name == "Unsanfte Verhöre" then log = true end
 	
-	--print ('is update ' .. details.name)
+	if log then print ('is update ' .. details.name) end
         
 	if details.name ~= cached.name or details.complete ~= cached.complete or #details.objective ~= #cached.objective then
+		if log then print ('#1') end
 		isUpdate = true
-   elseif details.objective == nil or cached.objective == nil then
+   	elseif details.objective == nil or cached.objective == nil then
+		if log then print ('#2') end
      	isUpdate = true
 	else
-   	for idx = 1, #details.objective, 1 do
-		local thisObjective = details.objective[idx]
-		local cachedObjective = cached.objective[idx]
+		if log then print ('#3') end
 
-   		if thisObjective ~= nil and cachedObjective ~= nil then
-	      	if dthisObjective.complete ~= cachedObjective.complete then
-	      		isUpdate = true
-	      	elseif thisObjective.count ~= cachedObjective.count then
-	      		isUpdate = true
-	      	elseif thisObjective.description ~= cachedObjective.description then
-	      		isUpdate = true
-	      	elseif thisObjective.countDone ~= cachedObjective.countDone then
-	            isUpdate = true
-				end
+		local counter = 1
+		while counter <= #details.objective and isUpdate == false do
+			local thisObjective = details.objective[counter]
+			local cachedObjective = cached.objective[counter]
+
+			if log then
+				dump (thisObjective)
+				dump (cachedObjective)
 			end
+
+			if thisObjective ~= nil and cachedObjective ~= nil then
+				if thisObjective.complete ~= cachedObjective.complete then
+					if log then print ('#3.1') end
+					isUpdate = true
+				elseif thisObjective.count ~= cachedObjective.count then
+					if log then print ('#3.2') end
+					isUpdate = true
+				elseif thisObjective.description ~= cachedObjective.description then
+					if log then print ('#3.3') end
+					isUpdate = true					
+				elseif thisObjective.countDone ~= cachedObjective.countDone then
+					if log then print ('#3.4') end
+					isUpdate = true
+				end
+			elseif cachedObjective ~= nil then
+				if log then print ('#3.5') end
+				isUpdate = true
+			end
+
+			counter = counter + 1
 		end
+	end
+
+	if log then
+		print ("======> isUpdate", isUpdate)
 	end
 	
 	return isUpdate
@@ -187,7 +213,7 @@ local function questChange(list)
 				uiElements.progressBar:SetValue(idx)
 				local key = list[idx]
 				local flag, details = pcall( inspectQuestDetail, key)
-				if flag then 
+				if flag then
 					questTracker.processQuest(details, true)
 
 					if _questCache[key] ~= nil and details.name ~= "" then

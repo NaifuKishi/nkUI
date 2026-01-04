@@ -7,6 +7,7 @@ V1.0.0
     - fixes: Quest Tracker - category filter will show on first click
     - fixes: Quest Tracker - category filter now shows checkboxes again
     - fixes: Quest Tracker - fixed dialogs
+    - fixes: Quest Tracker - fixed quest update handling
 
 V0.9.8
     - new: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)

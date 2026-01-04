@@ -551,7 +551,10 @@ local function handleCombatDamage(self, info)
     end
 
     if isIncoming == true then
-        damageText = stringFormat(TEXT_INCOMING, internalFunc.shortenName(LibEKLUnitGetUnitDetail(info.caster).name, 10), damageText)
+        local unitDetails = LibEKLUnitGetUnitDetail(info.caster)
+        local thisName = ""
+        if unitDetails then thisName = internalFunc.shortenName(unitDetails.name, 10) end
+        damageText = stringFormat(TEXT_INCOMING, thisName, damageText)
     end
     
     --if info.crit then
