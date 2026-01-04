@@ -239,7 +239,13 @@ end
    @return {nil}
 ]]
 local function initializeAddon(_, addon)
+
 	if addon == addonInfo.identifier then
+
+		if LibEKL.Tools.Lang.GetLanguageShort() == "RU" then
+			return
+		end
+
 		table.insert(Command.Slash.Register("nkui"), {commandHandler, "nkUI", "commandHandler"})		
 		
         LibEKL.UI.registerFont(addonInfo.id, "Montserrat", "fonts/Montserrat-Regular.ttf")

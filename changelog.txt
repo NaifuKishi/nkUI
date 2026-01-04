@@ -6,6 +6,7 @@ V1.0.0
     - updates: Unit Frames - disabled smooth bars on raid frames
     - fixes: Quest Tracker - category filter will show on first click
     - fixes: Quest Tracker - category filter now shows checkboxes again
+    - fixes: Quest Tracker - fixed dialogs
 
 V0.9.8
     - new: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)
