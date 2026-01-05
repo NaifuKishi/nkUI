@@ -1,4 +1,8 @@
 V1.0.0
+    - update: Tooltip - names are now shortened
+    - update: SCT - Moved the text a bit away from center
+
+V0.9.9
     - new: Unit Tooltip - Managed a way to show carnage info in unit tooltip (only if questtracker is used)
     - new: Unit Tooltip - Tier icon will be displayed for elite and boss mobs
     - updates: Quest Tracker - added support for Battle Pass category

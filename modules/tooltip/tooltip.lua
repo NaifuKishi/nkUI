@@ -372,7 +372,7 @@ local function formatUnitTooltip(unitInfo)
         color = relationColors[unitDetail.relation] or "#FFFFFF"
     end
     
-    uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, unitDetail.name))
+    uiElements.tooltip:SetTitle(stringFormat('<font color="%s">%s</font>', color, internalFunc.shortenName(unitDetail.name, 10)))
     
     if unitDetail.nameSecondary then
         table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))

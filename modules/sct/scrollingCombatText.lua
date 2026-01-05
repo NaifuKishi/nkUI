@@ -429,8 +429,8 @@ end
 -- @param crit Whether the damage is a critical hit or heal or overheal
 local function displayText(sctText, icon, isPet, inComing, crit)
     
-    local xVariation = mathRandom(0, 50)
-    if inComing then xVariation = mathRandom(0, -50) end
+    local xVariation = mathRandom(0, 50) + 100
+    if inComing then xVariation = mathRandom(0, -50) - 100 end
     
     local yVariation = mathRandom(-50, 50)
 

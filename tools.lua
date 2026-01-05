@@ -8,6 +8,7 @@ local data        	= privateVars.data
 -- Cache frequently used functions and values
 local stringLen     = string.len
 local stringSub     = string.sub
+local stringFind    = string.find
 local stringSplit   = LibEKL.strings.split
 
 function internalFunc.shortenName (name, maxLen)
@@ -16,7 +17,12 @@ function internalFunc.shortenName (name, maxLen)
         return name
     end
 
-    local splitName = stringSplit(name, " ") or stringSplit(name, "-")
+    local splitName    
+    if stringFind(name,"-") then
+        splitName = stringSplit(name, "-")
+    else
+        splitName = stringSplit(name, " ")
+    end
 
     if #splitName == 1 then
         return stringSub(name, 1, maxLen)
@@ -25,9 +31,7 @@ function internalFunc.shortenName (name, maxLen)
     local thisName = ""
     for idx = 1, #splitName - 1 do
         local tempName = stringSub(splitName[idx], 1, 1)
-        if unitFrameType ~= "raid" then
-            thisName = thisName .. tempName .. ". "
-        end
+        thisName = thisName .. tempName .. ". "
     end
 
     return thisName .. splitName[#splitName]
