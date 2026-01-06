@@ -55,7 +55,9 @@ local name = "uiActionBar"
 local function createActionBar(thisName, rows, cols, scale, barIndex)
 
     local actionButtons = {}
-    local buttonSize = data.actionBarDesigns.default[3]
+    --local buttonSize = data.actionBarDesigns.default[3]
+    local buttonSize = nkUISetup.modules.actionBars.iconSize
+
     local spacing = 5
     local width = (cols * buttonSize * scale ) + ((cols -1) * spacing)
     local height = (rows * buttonSize * scale ) + ((rows - 1) * spacing)
@@ -64,7 +66,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     
     actionBar:SetWidth(width)
     actionBar:SetHeight(height)
-    actionBar:SetBackgroundColor(0,0,0,0)
+    actionBar:SetBackgroundColor(1,0,0,0)
     actionBar:SetLayer(1)
     actionBar:SetVisible(true)
 

@@ -13,7 +13,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabActionBar (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local activateCheckbox, combatAlphaSlider, nonCombatAlphaSlider, offsetSlider, spacingSlider, noOfMainBarsSlider, rightBarCheckbox
+    local activateCheckbox, combatAlphaSlider, nonCombatAlphaSlider, offsetSlider, spacingSlider, noOfMainBarsSlider, rightBarCheckbox, iconSizeSlider
 
     function frame:build()
 
@@ -23,6 +23,9 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
             if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
             if offsetSlider then offsetSlider:SetActive(newValue) end
+            if noOfMainBarsSlider then noOfMainBarsSlider:SetActive(newValue) end
+            if rightBarCheckbox then rightBarCheckbox:SetActive(newValue) end
+            if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
 
             internalFunc.uiActionBarInit (newValue)
         end)
@@ -69,6 +72,17 @@ function settingsUI.uiConfigTabActionBar (name, parent)
 
         rightBarCheckbox:SetPoint("TOPLEFT", noOfMainBarsSlider, "BOTTOMLEFT", 0, 10)
         rightBarCheckbox:SetChecked(nkUISetup.modules.actionBars.rightbar, true)
+
+        iconSizeSlider = settingsUI.slider(name .. ".iconSizeSlider", frame, "Icon size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+            nkUISetup.modules.actionBars.iconSize = newValue
+            LibEKL.UI.reloadDialog ("nkUI")
+        end)
+        
+        iconSizeSlider:SetPoint("TOPLEFT", rightBarCheckbox, "BOTTOMLEFT", 0, 10)
+        iconSizeSlider:SetRange(20, 60)
+        iconSizeSlider:SetMidValue(40)
+        iconSizeSlider:SetPrecision(1)
+        iconSizeSlider:AdjustValue(nkUISetup.modules.actionBars.iconSize)
 
 
     end

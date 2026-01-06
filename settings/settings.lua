@@ -108,7 +108,7 @@ local _defaults = {
                     },
         actionBars  = { activate = true, 
                         combatAlpha = 1, 
-                        nonCombatAlpha = .2,                        
+                        nonCombatAlpha = .8,                        
                         x = 0,
                         y = 550,
                         rightBarX = 1695,
@@ -116,7 +116,8 @@ local _defaults = {
                         offset = 550,
                         spacing = 15,
                         mainbars = 2,
-                        rightbar = true
+                        rightbar = true,
+                        iconSize = 40,
                     },
         lowerBar    = { activate = true,                         
                         fontSize = 13,

@@ -476,7 +476,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisStroke.a = 0.6
 		thisStroke.thickness = 3
 
-		local newSize = (setup[3] * thisScale) 
+		--local newSize = (setup[3] * thisScale) 
+		local newSize = nkUISetup.modules.actionBars.iconSize * thisScale
 		
 		frame:SetWidth(newSize)
 		frame:SetHeight(newSize)
