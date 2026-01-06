@@ -21,7 +21,7 @@ context:SetLayer(2)
 -- Creates the main bag UI window
 function oneBag.createBagUI()
     
-    local bagWindow = LibEKL.UICreateFrame("nkwindow", "nkUI.bagWindow", context)
+    local bagWindow = LibEKL.UICreateFrame("nkWindow", "nkUI.bagWindow", context)
     bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.Unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
@@ -45,6 +45,11 @@ function oneBag.createBagUI()
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         Command.Cursor(nil)
     end, "nkUI.bagWindow.Event.Left.Up")
+
+    Command.Event.Attach(LibEKL.Events["nkUI.bagWindow"].Moved, function(_, x, y)    
+        nkUISetup.modules.oneBag.x = x
+        nkUISetup.modules.oneBag.y = y
+    end, "nkUI.OneBag.Moved")
 
     local currencyText = LibEKL.UICreateFrame ("nkText", "nkUI.bagWindow.currencyText", bagWindow)
     currencyText:SetPoint("TOPRIGHT", bagWindow, "TOPRIGHT", -50 * data.bagScale, 12 * data.bagScale)
