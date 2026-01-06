@@ -6,6 +6,7 @@ local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
+local langTexts     = privateVars.langTexts
 
 local stringFind    = string.find
 
@@ -15,7 +16,7 @@ local stringFind    = string.find
 function oneBag.createItemCategory(name, parent)
     local categoryFrame = LibEKL.UICreateFrame("nkFrame", name .. ".categoryFrame", parent)
     categoryFrame:SetHeight(60 * data.bagScale)
-    
+
     local categoryText = LibEKL.UICreateFrame("nkText", name .. ".categoryText", categoryFrame)
     categoryText:SetFontSize(14 * data.bagScale)
     categoryText:SetPoint("TOPLEFT", categoryFrame, "TOPLEFT", -3, 0)
@@ -23,62 +24,66 @@ function oneBag.createItemCategory(name, parent)
     categoryText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     categoryText:SetEffectGlow({ strength = 3})
     categoryText:SetLayer(1)
-    
+
     function categoryFrame:SetText(newText)
         categoryText:ClearWidth()
         categoryText:SetText(newText)
     end
-    
+
     function categoryFrame:GetTextWidth()
         return categoryText:GetWidth()
     end
-    
+
     return categoryFrame
 end
 
 -- Gets the real category name for an item
 function oneBag.getRealCategory(category, rarity)
     if category == nil then
-        return "Various"
+        return langTexts.itemCategories.various
     elseif stringFind(category, "consumable") then
-        return "Consumable"
+        return langTexts.itemCategories.consumable
     elseif stringFind(category, "armor") then
-        return "Armor"
+        return langTexts.itemCategories.armor
     elseif stringFind(category, "artifact") then
-        return "Artifact"
+        return langTexts.itemCategories.artifact
     elseif stringFind(category, "quest") then
-        return "Quest"
+        return langTexts.itemCategories.quest
     elseif stringFind(category, "fish") then
-        return "Fishing"
+        return langTexts.itemCategories.fishing
     elseif stringFind(category, "meat") then
-        return "Meat"
+        return langTexts.itemCategories.meat
     elseif stringFind(category, "butchering") then
-        return "Butchering"
+        return langTexts.itemCategories.butchering
     elseif stringFind(category, "cloth") then
-        return "Cloth"
+        return langTexts.itemCategories.cloth
     elseif stringFind(category, "weapon") then
-        return "Weapon"
+        return langTexts.itemCategories.weapon
     elseif stringFind(category, "misc") then
         if rarity == "sellable" then
-            return "Trash"
+            return langTexts.itemCategories.trash
         else
-            return "Various"
+            return langTexts.itemCategories.various
         end
     elseif stringFind(category, "crafting ingredient") then
-        return "Crafting material"
+        return langTexts.itemCategories.craftingMaterial
     elseif stringFind(category, "crafting recipe") then
-        return "Crafting recipe"
+        return langTexts.itemCategories.craftingRecipe
     elseif stringFind(category, "crafting material") or stringFind(category, "crafting augment") then
-        return "Crafting material"
+        return langTexts.itemCategories.craftingMaterial
     elseif stringFind(category, "container") then
-        return "Container"
+        return langTexts.itemCategories.container
     elseif stringFind(category, "armor costume") then
-        return "Costume"
+        return langTexts.itemCategories.costume
     elseif stringFind(category, "dimension") then
-        return "Dimension"
+        return langTexts.itemCategories.dimension
     elseif stringFind(category, "planar vessel") then
-        return "Planar Fokus"
+        return langTexts.itemCategories.planarFocus
+    elseif stringFind(category, "planar lesser") then
+        return langTexts.itemCategories.planarLesser
+    elseif stringFind(category, "planar greater") then
+        return langTexts.itemCategories.planarGreater
     end
-    
+
     return category
 end

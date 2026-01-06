@@ -173,6 +173,27 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
             previousButton = "Zurück",
             nextButton = "Weiter",
             finishButton = "Fertig"
-        }								
+        },
+		itemCategories = {
+            various = "Verschiedenes",
+            consumable = "Verbrauchbar",
+            armor = "Rüstung",
+            artifact = "Artefakt",
+            quest = "Quest",
+            fishing = "Angeln",
+            meat = "Fleisch",
+            butchering = "Schlachten",
+            cloth = "Stoff",
+            weapon = "Waffe",
+            trash = "Müll",
+            craftingMaterial = "Handwerksmaterial",
+            craftingRecipe = "Handwerksrezept",
+            container = "Behälter",
+            costume = "Kostüm",
+            dimension = "Dimension",
+            planarFocus = "Planar Fokus",
+			planarLesser = "Planar Gering",
+            planarGreater = "Planar Groß"
+        }
 	}
 end
