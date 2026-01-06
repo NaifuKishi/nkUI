@@ -129,7 +129,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     smoothAnimations = "Animations fluides",
                                     close = "Fermer",
                                     tutorial = "Tutoriel",
-                                    moveUI = "Déplacer l'interface",
+                                    moveUI = "Déplacer",
                                     theme = "Thème",
                                     questTracker = "Suivi de quête",
                                     actionBar = "Barre d'action",
@@ -142,6 +142,37 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     targetCastbar = "Lancement cible",
                                     unitframes = "Cadres d'unité",
                                     units = "Unités"
-                                }
+                                },
+            tutorial = {
+                        welcomeTitle = "Bienvenue dans nkUI Version %s",
+                        welcomeDescription = "Bienvenue dans nkUI et merci d'essayer mon addon.\n\nCe tutoriel vous guidera à travers les fonctionnalités de base de nkUI.",
+                        settingsTitle = "Paramètres nkUI",
+                        settingsDescription = "Il existe une configuration pour modifier les aspects de nkUI.\n\nVous pouvez accéder à la configuration en tapant /nkui ou en cliquant sur le bouton de la minicarte.",
+                        defaultUIElementsTitle = "Éléments d'interface par défaut",
+                        defaultUIElementsDescription = "Cet addon fournit de nombreuses remplacements pour les éléments d'interface standard. Malheureusement, en raison de nombreuses limitations dans l'API RIFT, les éléments par défaut ne peuvent pas être désactivés par les addons.\n\nVous devez donc le faire manuellement une fois. Vous pouvez le faire en appuyant sur Échap et en utilisant l'option [Modifier la disposition]. Avec cette option, vous pouvez masquer les éléments d'interface par défaut.",
+                        questTrackerTitle = "Module de suivi de quête",
+                        questTrackerDescription = "Ce module nkUI est un remplacement du suivi de quête intégré, offrant de nombreuses fonctionnalités supplémentaires. Il correspond au thème nkUI et affichera toutes les quêtes dans votre journal. Vous pouvez faire défiler le suivi de quête en utilisant la molette de la souris.\n\nEn cliquant sur le 'C' dans l'en-tête, vous pouvez choisir quelles catégories de quêtes afficher. En cliquant sur le 'Z', vous pouvez filtrer les quêtes pour celles de votre zone actuelle.\n\nVous pouvez utiliser un objet de quête en cliquant dessus avec le bouton droit de la souris.",
+                        oneBagTitle1 = "Module de sac unique (1/2)",
+                        oneBagDescription1 = "Ce module nkUI est un remplacement des sacs intégrés et affiche tout dans un seul cadre.",
+                        oneBagTitle2 = "Module de sac unique (2/2)",
+                        oneBagDescription2 = "Vous pouvez charger l'interface des sacs en tapant '/nkui bag' dans le chat.\n\nPour que l'interface des sacs s'ouvre lorsque vous appuyez sur la touche 'B', je vous suggère de faire ce qui suit :\n\nCréez un macro avec la commande '/nkui bag', placez-le sur une barre d'action par défaut (que vous masquerez ensuite) et assignez la touche 'B' à cet emplacement de barre d'action.\n\nDe plus, je vous suggère de réduire l'échelle de vos sacs par défaut à la valeur minimale possible, qui est 50%.",
+                        unitFrameTitle = "Module de cadres d'unité",
+                        unitFrameDescription = "Ce module nkUI affichera les cadres de joueur, de cible et de familier ainsi que la barre de lancement et la barre de ressources. Le design est beaucoup plus moderne que l'interface standard.\n\nSi vous activez le module de cadres d'unité, vous pouvez décider individuellement d'utiliser le cadre de buffs/débuffs qui fait partie du module de cadres d'unité.",
+                        lowerBarTitle = "Module de barre inférieure",
+                        lowerBarDescription = "Ce module nkUI affiche une barre en bas de l'écran. Cette barre fournit diverses informations importantes comme la date et l'heure, la devise, la localisation, les FPS et plus encore, dans un style qui correspond au design de nkUI.",
+                        actionBarTitle1 = "Module de barre d'action (1/2)",
+                        actionBarDescription1 = "Ce module nkUI fournit des barres d'action qui correspondent au thème de nkUI.\n\nVous pouvez faire glisser et déposer des compétences et des objets sur la barre d'action. Vous pouvez vider un emplacement en cliquant dessus avec le bouton droit de la souris. Les indicateurs de temps de recharge et de portée vous aideront visuellement avec les compétences.\n\nEn raison de restrictions de l'API RIFT, il n'est PAS possible de faire des raccourcis clavier. Vous devrez configurer les barres d'action Rift normales avec vos compétences et les masquer ensuite. Désolé, il n'y a pas d'autre moyen :(",
+                        actionBarTitle2 = "Module de barre d'action (2/2)",
+                        actionBarDescription2 = "Les boutons à gauche et à droite de la barre principale ainsi que la barre à droite de l'écran sont interactifs. Cela signifie que vous pouvez cliquer dessus pour activer des compétences et des objets.\n\nDe plus, vous pouvez ajouter des macros en cliquant avec le bouton du milieu de la souris sur un emplacement de barre d'action. Dans la boîte de dialogue qui apparaît, vous pouvez configurer votre macro. Vous pouvez faire glisser n'importe quelle compétence ou objet dans le cadre de l'icône.",
+                        sctTitle = "Module de texte de combat défilant",
+                        sctDescription = "Ce module nkUI remplace le texte de combat défilant intégré. Vous devrez désactiver manuellement celui-ci dans les paramètres (Paramètres / Interface / Messages d'écran).",
+                        tooltipTitle = "Module d'info-bulle",
+                        tooltipDescription = "Ce module nkUI affiche une info-bulle pour les unités qui a un design beaucoup plus beau que l'info-bulle standard. Malheureusement, en raison de restrictions de l'API, il n'est pas possible d'afficher des informations de quête pour les PNJ. Par conséquent, l'info-bulle est parfois plus grande que nécessaire. J'essaierai de trouver une solution dans les prochaines semaines.",
+                        doneTitle = "Vous avez terminé - pour l'instant :)",
+                        doneDescription = "C'est tout pour l'instant. Assurez-vous de vérifier régulièrement Cursegorge ou le Discord pour les mises à jour.\n\nVous pouvez rouvrir cette fenêtre à partir des paramètres.",
+                        previousButton = "Précédent",
+                        nextButton = "Suivant",
+                        finishButton = "Terminer"
+                    }                                
 	}
 end

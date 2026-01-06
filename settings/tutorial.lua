@@ -9,7 +9,7 @@
     Version History:
         - [Version 1.0] - Initial release
 ]]
-        
+
 local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
@@ -18,6 +18,7 @@ local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local _events       = privateVars.events
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -55,7 +56,7 @@ local function _createTutorialWindow()
     tutorialWindow:SetHeight(600)
     tutorialWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2) - (tutorialWindow:GetWidth()/2), 200)
     tutorialWindow:SetTitleFontSize(16)
-    tutorialWindow:SetTitleEffect ( {strength = 3})
+    tutorialWindow:SetTitleEffect({strength = 3})
 
     tutorialWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
 
@@ -101,121 +102,121 @@ local function _createTutorialWindow()
     -- Navigation buttons
     local prevButton = LibEKL.UICreateFrame("nkButton", "prevButton", content)
     prevButton:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 20, -20)
-    prevButton:SetText("Previous")
+    prevButton:SetText(langTexts.tutorial.previousButton)
     prevButton:SetFont(addonInfo.id, "MontserratSemiBold")
     prevButton:SetWidth(100)
     prevButton:SetLabelColor(data.theme.labelColor)
-    prevButton:SetEffectGlow ({ strength = 3 })
-    prevButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-    prevButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    prevButton:SetEffectGlow({strength = 3})
+    prevButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
+    prevButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
     local nextButton = LibEKL.UICreateFrame("nkButton", "nextButton", content)
     nextButton:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, -20)
-    nextButton:SetText("Next")
+    nextButton:SetText(langTexts.tutorial.nextButton)
     nextButton:SetFont(addonInfo.id, "MontserratSemiBold")
     nextButton:SetWidth(100)
     nextButton:SetLabelColor(data.theme.labelColor)
-    nextButton:SetEffectGlow ({ strength = 3 })
-    nextButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-    nextButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    nextButton:SetEffectGlow({strength = 3})
+    nextButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
+    nextButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
     -- Create tutorial steps
     local steps = {
         {
-            title = stringFormat("Welcome to nkUI BETA %s", addonInfo.toc.Version),
-            description = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI.",
+            title = stringFormat(langTexts.tutorial.welcomeTitle, addonInfo.toc.Version),
+            description = langTexts.tutorial.welcomeDescription,
             image = "gfx/nkUILogo.png",
             width = 200,
             height = 197,
             position = "bottom",
         },
         {
-            title = "nkUI Settings",
-            description = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.",
-        },        
+            title = langTexts.tutorial.settingsTitle,
+            description = langTexts.tutorial.settingsDescription,
+        },
         {
-            title = "Default UI elements",
-            description = "This addon provides a lot of replacements for the standard UI elements. Unfortunately due to a lot of limitations in the RIFT API the default elements cannot be deactivated by addons.\n\nInstead you have to do so manually once. You can do so by hitting Escape and use the option [Edit Layout]. Using that option you can hide default ui elements.",
+            title = langTexts.tutorial.defaultUIElementsTitle,
+            description = langTexts.tutorial.defaultUIElementsDescription,
             image = "gfx/tutorialDefaultUI.png",
             width = 170,
             height = 240,
             position = "right",
         },
         {
-            title = "Quest Tracker module",
-            description = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.\n\nYou can use a quest item by right clicking it.",
+            title = langTexts.tutorial.questTrackerTitle,
+            description = langTexts.tutorial.questTrackerDescription,
             image = "gfx/tutorialQuestTracker.png",
             width = 170,
             height = 350,
             position = "right",
         },
         {
-            title = "One bag module (1/2)",
-            description = "This nkUI module is a replacement for the ingame bags and shows everything in one tiday frame.",
+            title = langTexts.tutorial.oneBagTitle1,
+            description = langTexts.tutorial.oneBagDescription1,
             image = "gfx/tutorialOneBag.png",
             width = 405,
             height = 350,
             position = "bottom",
         },
         {
-            title = "One bag module (2/2)",
-            description = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.\n\nAlso I suggest that you scale your default bags to the lowest setting possible which is 50%.",
+            title = langTexts.tutorial.oneBagTitle2,
+            description = langTexts.tutorial.oneBagDescription2,
             image = "gfx/tutorialOneBagScale.png",
             width = 525,
             height = 115,
             position = "bottom",
         },
         {
-            title = "Unit Frame module",
-            description = "This nkUI module will display player, target and pet frames along with castbar and ressource bar. The design is much more modern than the standard ui.\n\nIf you activate the unit frame module you can individually decide to use the buff / debuff frame which is part of the unit frame module.",
+            title = langTexts.tutorial.unitFrameTitle,
+            description = langTexts.tutorial.unitFrameDescription,
             image = "gfx/tutorialUnitFrames.png",
             width = 400,
             height = 46,
             position = "bottom"
-        },        
+        },
         {
-            title = "Lower bar module",
-            description = "This nkUI module displays a bar at the bottom of your screen. That bar provides various important informations like date & time, currency, location, fps and more in a way fitting with the design of nkUI.",
+            title = langTexts.tutorial.lowerBarTitle,
+            description = langTexts.tutorial.lowerBarDescription,
             image = "gfx/tutorialLowerBar.png",
             width = 560,
             height = 22,
             position = "bottom",
-        },        
+        },
         {
-            title = "Action bar module (1/2)",
-            description = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",            
+            title = langTexts.tutorial.actionBarTitle1,
+            description = langTexts.tutorial.actionBarDescription1,
             image = "gfx/tutorialActionBar.png",
             width = 560,
             height = 93,
             position = "bottom",
         },
         {
-            title = "Action bar module (2/2)",
-            description = "The buttons left and right to the main bar as weel as the bar to the right of the screen are interactive. That means you can click on them to activate abilities and items.\n\nOn top of that you can add macros by middle clicking an action bar slot with your mouse. In the appearing dialog you can configure your macro. You can drop any ability or item in the icon frame.",            
+            title = langTexts.tutorial.actionBarTitle2,
+            description = langTexts.tutorial.actionBarDescription2,
             image = "gfx/tutorialMacro.png",
             width = 252,
             height = 180,
             position = "bottom",
-        },        
+        },
         {
-            title = "Scrolling combat text module",
-            description = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",
+            title = langTexts.tutorial.sctTitle,
+            description = langTexts.tutorial.sctDescription,
             image = "gfx/tutorialSCT.png",
             width = 429,
             height = 250,
             position = "bottom",
-        },            
+        },
         {
-            title = "Tooltip module",
-            description = "This nkUI module shows a tooltip for units which does look a lot better than the standard tooltip. Unfortunately due to API restrictions it's not possible to display quest information for NPC. There fore sometimes the tooltip will be bigger than neccessary. I'll try to figure out something here in the upcoming weeks.",
+            title = langTexts.tutorial.tooltipTitle,
+            description = langTexts.tutorial.tooltipDescription,
             image = "gfx/tutorialTooltip.png",
             width = 182,
             height = 103,
             position = "bottom",
         },
         {
-            title = "You are done - for now :)",
-            description = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window from the settings."
+            title = langTexts.tutorial.doneTitle,
+            description = langTexts.tutorial.doneDescription
         }
     }
 
@@ -225,10 +226,10 @@ local function _createTutorialWindow()
 
         titleText:SetText(step.title)
         descriptionText:SetText(step.description)
-        descriptionText:SetWidth (560)
-        
+        descriptionText:SetWidth(560)
+
         if step.settings then
-            subFrameContainer:SetVisible(true)            
+            subFrameContainer:SetVisible(true)
             step.settings:SetVisible(true)
         else
             subFrameContainer:SetVisible(false)
@@ -241,12 +242,11 @@ local function _createTutorialWindow()
             imageFrame:SetHeight(step.height or 200)
 
             if step.position == "bottom" then
-                imageFrame:SetPoint("BOTTOMCENTER", content, "BOTTOMCENTER", 0, -75)                
+                imageFrame:SetPoint("BOTTOMCENTER", content, "BOTTOMCENTER", 0, -75)
             elseif step.position == "right" then
                 imageFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", 0, -75)
-                descriptionText:SetWidth (550 - step.width)
+                descriptionText:SetWidth(550 - step.width)
             end
-
 
             imageFrame:SetVisible(true)
         else
@@ -256,11 +256,10 @@ local function _createTutorialWindow()
         prevButton:SetVisible(currentStep > 1)
 
         if currentStep == #steps then
-            nextButton:SetText("Finish")
+            nextButton:SetText(langTexts.tutorial.finishButton)
         else
-            nextButton:SetText("Next")
+            nextButton:SetText(langTexts.tutorial.nextButton)
         end
-
     end
 
     function tutorialWindow:reset()
@@ -324,7 +323,5 @@ function internalFunc.tutorial()
     else
         uiElements.tutorialWindow:reset()
     end
-    
+
 end
-
-

@@ -4,7 +4,7 @@ local addonInfo, privateVars = ...
 
 ---------- init language texts ---------
 
-if ( LibEKL.Tools.Lang.GetLanguage()  ~= "Englisch") and ( LibEKL.Tools.Lang.GetLanguage()  ~= "French") then
+if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLanguage()  ~= "French") then
 
 	privateVars.langTexts = {
 		startUp             	= '<font color="#0094FF">nkUI</font> V%s loaded',
@@ -142,8 +142,38 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "Englisch") and ( LibEKL.Tools.Lang.Get
 									playerCastbar = "Player castbar",
 									targetCastbar = "Target castbar",
 									unitframes = "Unitframes",
-									units = "Units"
-								
-								}
+									units = "Units"								
+								},
+		tutorial = {
+					welcomeTitle = "Welcome to nkUI Version %s",
+					welcomeDescription = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI.",
+					settingsTitle = "nkUI Settings",
+					settingsDescription = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.",
+					defaultUIElementsTitle = "Default UI elements",
+					defaultUIElementsDescription = "This addon provides a lot of replacements for the standard UI elements. Unfortunately due to a lot of limitations in the RIFT API the default elements cannot be deactivated by addons.\n\nInstead you have to do so manually once. You can do so by hitting Escape and use the option [Edit Layout]. Using that option you can hide default ui elements.",
+					questTrackerTitle = "Quest Tracker module",
+					questTrackerDescription = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.\n\nYou can use a quest item by right clicking it.",
+					oneBagTitle1 = "One bag module (1/2)",
+					oneBagDescription1 = "This nkUI module is a replacement for the ingame bags and shows everything in one tiday frame.",
+					oneBagTitle2 = "One bag module (2/2)",
+					oneBagDescription2 = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.\n\nAlso I suggest that you scale your default bags to the lowest setting possible which is 50%.",
+					unitFrameTitle = "Unit Frame module",
+					unitFrameDescription = "This nkUI module will display player, target and pet frames along with castbar and ressource bar. The design is much more modern than the standard ui.\n\nIf you activate the unit frame module you can individually decide to use the buff / debuff frame which is part of the unit frame module.",
+					lowerBarTitle = "Lower bar module",
+					lowerBarDescription = "This nkUI module displays a bar at the bottom of your screen. That bar provides various important informations like date & time, currency, location, fps and more in a way fitting with the design of nkUI.",
+					actionBarTitle1 = "Action bar module (1/2)",
+					actionBarDescription1 = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",
+					actionBarTitle2 = "Action bar module (2/2)",
+					actionBarDescription2 = "The buttons left and right to the main bar as weel as the bar to the right of the screen are interactive. That means you can click on them to activate abilities and items.\n\nOn top of that you can add macros by middle clicking an action bar slot with your mouse. In the appearing dialog you can configure your macro. You can drop any ability or item in the icon frame.",
+					sctTitle = "Scrolling combat text module",
+					sctDescription = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",
+					tooltipTitle = "Tooltip module",
+					tooltipDescription = "This nkUI module shows a tooltip for units which does look a lot better than the standard tooltip. Unfortunately due to API restrictions it's not possible to display quest information for NPC. There fore sometimes the tooltip will be bigger than neccessary. I'll try to figure out something here in the upcoming weeks.",
+					doneTitle = "You are done - for now :)",
+					doneDescription = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window from the settings.",
+					previousButton = "Previous",
+					nextButton = "Next",
+					finishButton = "Finish"
+				}								
 	}
 end

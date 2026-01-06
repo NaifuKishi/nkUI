@@ -4,8 +4,7 @@ local addonInfo, privateVars = ...
 
 ---------- init language texts ---------
 
-if ( LibEKL.Tools.Lang.GetLanguage()  == "English") then
-
+if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 	privateVars.langTexts = {
 		startUp             	= '<font color="#0094FF">nkUI</font> V%s geladen',
 		commandline             = '/nkui um die Einstellungen zu öffnen',
@@ -143,6 +142,37 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "English") then
 									targetCastbar = "Ziel-Castleiste",
 									unitframes = "Einheitenrahmen",
 									units = "Einheiten"
-								}
+								},
+		tutorial = {
+            welcomeTitle = "Willkommen bei nkUI Version %s",
+            welcomeDescription = "Willkommen bei nkUI und vielen Dank, dass Sie mein Addon ausprobieren.\n\nDieses Tutorial führt Sie durch die grundlegenden Funktionen von nkUI.",
+            settingsTitle = "nkUI Einstellungen",
+            settingsDescription = "Es gibt eine Konfiguration, um Aspekte von nkUI zu ändern.\n\nSie können auf die Konfiguration zugreifen, indem Sie /nkui eingeben oder auf die Minikarten-Schaltfläche klicken.",
+            defaultUIElementsTitle = "Standard-UI-Elemente",
+            defaultUIElementsDescription = "Dieses Addon bietet viele Ersetzungen für die Standard-UI-Elemente. Leider aufgrund vieler Einschränkungen in der RIFT-API können die Standard-Elemente nicht von Addons deaktiviert werden.\n\nStattdessen müssen Sie dies manuell einmal tun. Sie können dies tun, indem Sie Escape drücken und die Option [Layout bearbeiten] verwenden. Mit dieser Option können Sie Standard-UI-Elemente ausblenden.",
+            questTrackerTitle = "Questverfolgungsmodul",
+            questTrackerDescription = "Dieses nkUI-Modul ist eine Ersetzung des integrierten Questverfolgers und bietet viele zusätzliche Funktionen. Es passt zum nkUI-Design und zeigt alle Quests in Ihrem Log an. Sie können den Questverfolger mit dem Mausrad scrollen.\n\nDurch Klicken auf das 'C' in der Kopfzeile können Sie wählen, welche Questkategorien angezeigt werden sollen. Durch Klicken auf das 'Z' können Sie die Quests auf diejenigen Ihrer aktuellen Zone filtern.\n\nSie können ein Quest-Item verwenden, indem Sie darauf rechtsklicken.",
+            oneBagTitle1 = "Ein-Taschen-Modul (1/2)",
+            oneBagDescription1 = "Dieses nkUI-Modul ist eine Ersetzung für die integrierten Taschen und zeigt alles in einem einzigen Rahmen an.",
+            oneBagTitle2 = "Ein-Taschen-Modul (2/2)",
+            oneBagDescription2 = "Sie können die Taschen-UI laden, indem Sie '/nkui bag' im Chat eingeben.\n\nUm sicherzustellen, dass die Taschen-UI geöffnet wird, wenn Sie die 'B'-Taste drücken, schlage ich vor, Folgendes zu tun:\n\nErstellen Sie ein Makro mit dem Befehl '/nkui bag', platzieren Sie es auf einer beliebigen Standard-Aktionsleiste (die Sie danach ausblenden) und weisen Sie die Taste 'B' diesem Aktionsleisten-Slot zu.\n\nAußerdem schlage ich vor, dass Sie die Standard-Taschen auf die niedrigste mögliche Einstellung (50%) skalieren.",
+            unitFrameTitle = "Einheitenrahmen-Modul",
+            unitFrameDescription = "Dieses nkUI-Modul zeigt Spieler-, Ziel- und Begleiterrahmen sowie Castbar und Ressourcenleiste an. Das Design ist moderner als die Standard-UI.\n\nWenn Sie das Einheitenrahmen-Modul aktivieren, können Sie individuell entscheiden, ob Sie den Buff-/Debuff-Rahmen verwenden möchten, der Teil des Einheitenrahmen-Moduls ist.",
+            lowerBarTitle = "Untere Leiste-Modul",
+            lowerBarDescription = "Dieses nkUI-Modul zeigt eine Leiste am unteren Bildschirmrand an. Diese Leiste bietet verschiedene wichtige Informationen wie Datum & Uhrzeit, Währung, Standort, FPS und mehr in einem Stil, der zum Design von nkUI passt.",
+            actionBarTitle1 = "Aktionsleisten-Modul (1/2)",
+            actionBarDescription1 = "Dieses nkUI-Modul bietet Aktionsleisten, die zum Thema von nkUI passen.\n\nSie können Fähigkeiten und Gegenstände per Drag-and-Drop auf die Aktionsleiste ziehen. Sie können einen Slot leeren, indem Sie darauf rechtsklicken. Cooldowns und Out-of-Range-Indikatoren helfen Ihnen visuell bei den Fähigkeiten.\n\nAufgrund von Einschränkungen der RIFT-API ist es NICHT möglich, Tastenbelegungen vorzunehmen. Sie müssen die normalen Rift-Aktionsleisten mit Ihren Fähigkeiten einrichten und dann ausblenden. Sorry, es gibt keine andere Möglichkeit :(",
+            actionBarTitle2 = "Aktionsleisten-Modul (2/2)",
+            actionBarDescription2 = "Die Schaltflächen links und rechts der Hauptleiste sowie die Leiste rechts auf dem Bildschirm sind interaktiv. Das bedeutet, dass Sie darauf klicken können, um Fähigkeiten und Gegenstände zu aktivieren.\n\nDarüber hinaus können Sie Makros hinzufügen, indem Sie mit der Maus auf einen Aktionsleisten-Slot mittig klicken. Im erscheinenden Dialog können Sie Ihr Makro konfigurieren. Sie können jede Fähigkeit oder jeden Gegenstand in das Symbol-Feld ziehen.",
+            sctTitle = "Scrollender Kampftext-Modul",
+            sctDescription = "Dieses nkUI-Modul ersetzt den integrierten scrollenden Kampftext. Sie müssen den integrierten Kampftext manuell in den Einstellungen deaktivieren (Einstellungen / Schnittstelle / Bildschirmmeldungen).",
+            tooltipTitle = "Tooltip-Modul",
+            tooltipDescription = "Dieses nkUI-Modul zeigt einen Tooltip für Einheiten an, der besser aussieht als der Standard-Tooltip. Leider aufgrund von API-Einschränkungen ist es nicht möglich, Questinformationen für NPC anzuzeigen. Daher ist der Tooltip manchmal größer als nötig. Ich werde versuchen, dies in den nächsten Wochen zu beheben.",
+            doneTitle = "Sie sind fertig - fürs Erste :)",
+            doneDescription = "Das war alles bisher. Achten Sie regelmäßig auf Cursegorge oder Discord auf Updates.\n\nSie können dieses Fenster später wieder aus den Einstellungen öffnen.",
+            previousButton = "Zurück",
+            nextButton = "Weiter",
+            finishButton = "Fertig"
+        }								
 	}
 end
