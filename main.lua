@@ -119,7 +119,7 @@ local function animateLogo ()
 		uiElements.logoText:SetFontSize(20)
 		uiElements.logoText:SetFontColor(1, 1, 1, 1)
 		uiElements.logoText:SetEffectGlow({strength = 3})
-		uiElements.logoText:SetText("A modern style UI compilation for RIFT")
+		uiElements.logoText:SetText(privateVars.langTexts.nkUISubTitle)
 
 		LibEKL.UI.SetFont(uiElements.logoText, addonInfo.id, "MontserratBold")
 
@@ -270,6 +270,7 @@ local function initializeAddon(_, addon)
 			end
 
 			if nkUISetup and nkUISetup.modules then
+
 				if nkUISetup.modules.tooltip and nkUISetup.modules.tooltip.activate then
 					internalFunc.tooltip()
 				end

@@ -3,7 +3,8 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local settingsUI     = privateVars.settingsUI
+local settingsUI    = privateVars.settingsUI
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -16,7 +17,7 @@ function settingsUI.uiConfigTabTooltip (name, parent)
 
     function frame:build()
 
-        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, langTexts.settings.activateModule, true, function(newValue)        
             nkUISetup.modules.tooltip.activate = newValue
             internalFunc.sctToggle(newValue)
         end)

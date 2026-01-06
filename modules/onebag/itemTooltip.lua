@@ -6,15 +6,12 @@ local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
+local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
 
 local stringFormat  = string.format
 local mathFloor     = math.floor
-
-local currencyTextPlatinum = '%d<font color="#efebff"> platinum</font>'
-local currencyTextGold = '%d<font color="#eed234"> gold</font>'
-local currencyTextSilver = '%d<font color="#a7aba7"> silver</font>'
 
 ---------- local functions ---------
 
@@ -67,34 +64,34 @@ local function uiItemTooltip ()
 
             if platin > 0 then
                 if currencyText then
-                    currencyText = currency .. " " .. stringFormat(currencyTextPlatinum, platin)
+                    currencyText = currency .. " " .. stringFormat(langTexts.oneBag.currencyTextPlatinum, platin)
                 else
-                    currencyText = stringFormat(currencyTextPlatinum, platin)
+                    currencyText = stringFormat(langTexts.oneBag.currencyTextPlatinum, platin)
                 end
             end
 
             if gold > 0 then
                 if currencyText then
-                    currencyText = currencyText .. " " .. stringFormat(currencyTextGold, gold)
+                    currencyText = currencyText .. " " .. stringFormat(langTexts.oneBag.currencyTextGold, gold)
                 else
-                    currencyText = stringFormat(currencyTextGold, gold)
+                    currencyText = stringFormat(langTexts.oneBag.currencyTextGold, gold)
                 end
             end
 
             if silver > 0 then
                 if currencyText then
-                    currencyText = currencyText .. " " .. stringFormat(currencyTextSilver, silver)
+                    currencyText = currencyText .. " " .. stringFormat(langTexts.oneBag.currencyTextSilver, silver)
                 else
-                    currencyText = stringFormat(currencyTextSilver, silver)
+                    currencyText = stringFormat(langTexts.oneBag.currencyTextSilver, silver)
                 end
             end
 
-            valueText:SetText(stringFormat("Item value: %s", currencyText), true)
+            valueText:SetText(stringFormat(langTexts.oneBag.itemValue, currencyText), true)
         else
-            valueText:SetText("No price information")
+            valueText:SetText(langTexts.oneBag.noPrice)
         end
         
-        if qty > 0 then countText:SetText(stringFormat("You own: %d", qty)) end
+        if qty > 0 then countText:SetText(stringFormat(langTexts.oneBag.youOwn, qty)) end
     end
 
     return tooltip

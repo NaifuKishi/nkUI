@@ -5,6 +5,7 @@ local addonInfo, privateVars = ...
 local internalFunc  = privateVars.internalFunc
 local settingsUI    = privateVars.settingsUI
 local uiElements	= privateVars.uiElements
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -17,7 +18,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
 
     function frame:build()
 
-        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, langTexts.settings.activateModule, true, function(newValue)        
             nkUISetup.modules.actionBars.activate = newValue
 
             if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
@@ -35,7 +36,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate, true)
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
        
-        combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, "Combat alpha <font color='#3399FF'>%d</font>%%", moduleActive, function (newValue)
+        combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, langTexts.settings.combatAlpha, moduleActive, function (newValue)
              nkUISetup.modules.actionBars.combatAlpha = newValue / 100
         end)
 
@@ -45,7 +46,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         combatAlphaSlider:SetPrecision(5)
         combatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.combatAlpha * 100)
 
-        nonCombatAlphaSlider = settingsUI.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha <font color='#3399FF'>%d</font>%%", moduleActive, function (newValue)
+        nonCombatAlphaSlider = settingsUI.slider(name .. ".nonCombatAlphaSlider", frame, langTexts.settings.nonCombatAlpha, moduleActive, function (newValue)
             nkUISetup.modules.actionBars.nonCombatAlpha = newValue / 100
             internalFunc.actionBarToggleAlpha()
         end)
@@ -56,7 +57,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         nonCombatAlphaSlider:SetPrecision(5)    
         nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.actionBars.nonCombatAlpha * 100)
 
-        noOfMainBarsSlider = settingsUI.slider(name .. ".noOfMainBarsSlider", frame, "Number of main bars <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        noOfMainBarsSlider = settingsUI.slider(name .. ".noOfMainBarsSlider", frame, langTexts.settings.numberOfMainBars, moduleActive, function (newValue)
             nkUISetup.modules.actionBars.mainbars = newValue
             LibEKL.UI.reloadDialog ("nkUI")
         end)
@@ -65,7 +66,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         noOfMainBarsSlider:SetRange(1, 3)
         noOfMainBarsSlider:AdjustValue(nkUISetup.modules.actionBars.mainbars)
 
-        rightBarCheckbox = settingsUI.checkbox(name .. ".rightBarCheckbox", frame, "Activate right side bar", true, function(newValue)        
+        rightBarCheckbox = settingsUI.checkbox(name .. ".rightBarCheckbox", frame, langTexts.settings.activateRightBar, true, function(newValue)        
             nkUISetup.modules.actionBars.rightbar = newValue
             uiElements.actionbars.rightScreen:SetVisible(newValue)
         end)
@@ -73,7 +74,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         rightBarCheckbox:SetPoint("TOPLEFT", noOfMainBarsSlider, "BOTTOMLEFT", 0, 10)
         rightBarCheckbox:SetChecked(nkUISetup.modules.actionBars.rightbar, true)
 
-        iconSizeSlider = settingsUI.slider(name .. ".iconSizeSlider", frame, "Icon size <font color='#3399FF'>%d</font>", moduleActive, function (newValue)
+        iconSizeSlider = settingsUI.slider(name .. ".iconSizeSlider", frame, langTexts.settings.iconSize, moduleActive, function (newValue)
             nkUISetup.modules.actionBars.iconSize = newValue
             LibEKL.UI.reloadDialog ("nkUI")
         end)

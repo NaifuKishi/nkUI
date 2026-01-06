@@ -2,9 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local lowerBar    = privateVars.lowerBar
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local lowerBar      = privateVars.lowerBar
+local langTexts     = privateVars.langTexts
 
 ---------- init local variables ---------
 
@@ -69,7 +70,7 @@ function lowerBar.social()
             end
         end
         
-        datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
 
         lastGuildUpdate = inspectTimeFrame()
     end
@@ -95,7 +96,7 @@ function lowerBar.social()
             end
         end
 
-        datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
 
     end
     
@@ -107,7 +108,7 @@ function lowerBar.social()
             if v == "online" then processFriend(k) end
         end
         
-        datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
     end
     
     local function guildStatusChange(_, data)
@@ -128,7 +129,7 @@ function lowerBar.social()
                 end
             end
             
-            datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+            datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
         end
     end
     
@@ -145,7 +146,7 @@ function lowerBar.social()
                 processGuildMember(k)
             end
             
-            datasetSocial:SetText(stringFormat("Friends %d | Guild %d", #_friendlist, #_guildList))
+            datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
         end
     end
     

@@ -3,7 +3,8 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local settingsUI     = privateVars.settingsUI
+local settingsUI    = privateVars.settingsUI
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -16,7 +17,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
 
     function frame:build()
 
-        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, langTexts.settings.activateModule, true, function(newValue)
             nkUISetup.modules.sct.activate = newValue
             internalFunc.sctToggle(newValue)
 
@@ -26,17 +27,17 @@ function settingsUI.uiConfigTabSCT (name, parent)
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
         activateCheckbox:SetChecked(nkUISetup.modules.sct.activate, true)
 
-        showXPCheckbox = settingsUI.checkbox(name .. ".showXPCheckbox", frame, "Show XP gains", true, function(newValue)        
+        showXPCheckbox = settingsUI.checkbox(name .. ".showXPCheckbox", frame, langTexts.settings.showXPGains, true, function(newValue)
              nkUISetup.modules.sct.showExpGains = newValue
-             LibEKL.UI.reloadDialog ("nkUI")
+             LibEKL.UI.reloadDialog("nkUI")
         end)
 
         showXPCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 10)
         showXPCheckbox:SetChecked(nkUISetup.modules.sct.showExpGains, true)
 
-        showLootCheckbox = settingsUI.checkbox(name .. ".showLootCheckbox", frame, "Show Loot gains", true, function(newValue)        
+        showLootCheckbox = settingsUI.checkbox(name .. ".showLootCheckbox", frame, langTexts.settings.showLootGains, true, function(newValue)
              nkUISetup.modules.sct.showLoot = newValue
-             LibEKL.UI.reloadDialog ("nkUI")
+             LibEKL.UI.reloadDialog("nkUI")
         end)
 
         showLootCheckbox:SetPoint("TOPLEFT", showXPCheckbox, "BOTTOMLEFT", 0, 10)

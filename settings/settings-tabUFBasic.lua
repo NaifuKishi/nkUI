@@ -3,7 +3,8 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local settingsUI     = privateVars.settingsUI
+local settingsUI    = privateVars.settingsUI
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -17,7 +18,7 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
 
     function frame:build()
 
-        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, "Activate this module", true, function(newValue)        
+        activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, langTexts.settings.activateModule, true, function(newValue)
             nkUISetup.modules.unitFrames.activate = newValue
             if buffsUnitBarCheckbox then buffsUnitBarCheckbox:SetActive(newValue) end
             if combatAlphaSlider then combatAlphaSlider:SetActive(newValue) end
@@ -28,7 +29,7 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
 
             internalFunc.uiFramesToggle(newValue)
 
-            if newValue == false then 
+            if newValue == false then
                 internalFunc.uiFramesRemoveBuffs()
             else
                 internalFunc.uiFramesLoadAllBuffs()
@@ -40,7 +41,7 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
 
         local moduleActive = nkUISetup.modules.unitFrames.activate
 
-        combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, "Combat alpha %d%%", moduleActive, function (newValue)
+        combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, langTexts.settings.combatAlpha, moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.combatAlpha = newValue / 100
             internalFunc.toggleAlpha()
         end)
@@ -51,21 +52,21 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         combatAlphaSlider:SetPrecision(1)
         combatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.combatAlpha * 100)
 
-        nonCombatAlphaSlider = settingsUI.slider(name .. ".nonCombatAlphaSlider", frame, "Non combat alpha %d%%", moduleActive, function (newValue)
+        nonCombatAlphaSlider = settingsUI.slider(name .. ".nonCombatAlphaSlider", frame, langTexts.settings.nonCombatAlpha, moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.nonCombatAlpha = newValue / 100
             internalFunc.toggleAlpha()
         end)
-        
+
         nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 5)
         nonCombatAlphaSlider:SetRange(0, 100)
         nonCombatAlphaSlider:SetMidValue(50)
-        nonCombatAlphaSlider:SetPrecision(1)    
-        nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)        
+        nonCombatAlphaSlider:SetPrecision(1)
+        nonCombatAlphaSlider:AdjustValue(nkUISetup.modules.unitFrames.nonCombatAlpha * 100)
 
-        buffsUnitBarCheckbox = settingsUI.checkbox(name .. ".buffsUnitBarCheckbox", frame, "Show buffs and debuffs", moduleActive, function(newValue)        
-            nkUISetup.modules.unitFrames.showBuffs = newValue            
+        buffsUnitBarCheckbox = settingsUI.checkbox(name .. ".buffsUnitBarCheckbox", frame, langTexts.settings.showBuffs, moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.showBuffs = newValue
 
-            if newValue == false then 
+            if newValue == false then
                 internalFunc.uiFramesRemoveBuffs()
             else
                 internalFunc.uiFramesLoadAllBuffs()
@@ -75,10 +76,10 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         buffsUnitBarCheckbox:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 30)
         buffsUnitBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.showBuffs, true)
 
-        buffDurationLabel = settingsUI.label ( name .. ".buffDurationLabel", frame, "Only show buffs with duration")
-        buffDurationLabel:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT" , 0, 15)
+        buffDurationLabel = settingsUI.label(name .. ".buffDurationLabel", frame, langTexts.settings.buffDuration)
+        buffDurationLabel:SetPoint("TOPLEFT", buffsUnitBarCheckbox, "BOTTOMLEFT", 0, 15)
 
-        buffDurationSlider = settingsUI.slider(name .. ".buffDurationSlider", frame, "less than %d sec", moduleActive, function (newValue)
+        buffDurationSlider = settingsUI.slider(name .. ".buffDurationSlider", frame, langTexts.settings.lessThan, moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.buffDuration = newValue
         end)
 
@@ -88,7 +89,7 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         buffDurationSlider:SetPrecision(1)
         buffDurationSlider:AdjustValue(nkUISetup.modules.unitFrames.buffDuration)
 
-        maxBuffSlider = settingsUI.slider(name .. ".maxBuffSlider", frame, "Max buffs %d", moduleActive, function (newValue)
+        maxBuffSlider = settingsUI.slider(name .. ".maxBuffSlider", frame, langTexts.settings.maxBuffs, moduleActive, function (newValue)
             nkUISetup.modules.unitFrames.maxBuffCount = newValue
         end)
 
@@ -98,20 +99,20 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
         maxBuffSlider:SetPrecision(1)
         maxBuffSlider:AdjustValue(nkUISetup.modules.unitFrames.maxBuffCount)
 
-        onlyOwnBuffsCheckbox = settingsUI.checkbox(name .. ".onlyOwnBuffsCheckbox", frame, "Show only own buffs", moduleActive, function(newValue)
-            nkUISetup.modules.unitFrames.showBuffs = newValue            
+        onlyOwnBuffsCheckbox = settingsUI.checkbox(name .. ".onlyOwnBuffsCheckbox", frame, langTexts.settings.onlyOwnBuffs, moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.showBuffs = newValue
         end)
 
         onlyOwnBuffsCheckbox:SetPoint("TOPLEFT", maxBuffSlider, "BOTTOMLEFT", 0, 5)
         onlyOwnBuffsCheckbox:SetChecked(nkUISetup.modules.unitFrames.showOnlyOwnBuffs, true)
 
-        smoothAnimationCheckbox = settingsUI.checkbox(name .. ".smoothAnimationCheckbox", frame, "Smooth animations", moduleActive, function(newValue)
-            nkUISetup.modules.unitFrames.smoothAnimation = newValue            
+        smoothAnimationCheckbox = settingsUI.checkbox(name .. ".smoothAnimationCheckbox", frame, langTexts.settings.smoothAnimations, moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.smoothAnimation = newValue
         end)
 
         smoothAnimationCheckbox:SetPoint("TOPLEFT", onlyOwnBuffsCheckbox, "BOTTOMLEFT", 0, 5)
         smoothAnimationCheckbox:SetChecked(nkUISetup.modules.unitFrames.smoothAnimation, true)
-        
+
     end
 
     return frame

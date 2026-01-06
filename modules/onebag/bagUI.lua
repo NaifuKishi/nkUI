@@ -6,6 +6,7 @@ local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
+local langTexts     = privateVars.langTexts
 
 ---------- local functions ---------
 
@@ -22,7 +23,7 @@ context:SetLayer(2)
 function oneBag.createBagUI()
     
     local bagWindow = LibEKL.UICreateFrame("nkWindow", "nkUI.bagWindow", context)
-    bagWindow:SetTitle(stringFormat("%s's inventory", LibEKL.Unit.getPlayerDetails().name))
+    bagWindow:SetTitle(stringFormat(langTexts.oneBag.title, LibEKL.Unit.getPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
     bagWindow:SetTitleEffect({ strength = 3})

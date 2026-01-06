@@ -3,8 +3,9 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local settingsUI     = privateVars.settingsUI
+local settingsUI    = privateVars.settingsUI
 local data          = privateVars.data
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -38,13 +39,13 @@ function settingsUI.uiConfigTabUnitFrames (name, parent)
         tabPane:SetPoint("BOTTOMRIGHT", parent:GetBodyFrame(), "BOTTOMRIGHT", -10, -50)
         tabPane:SetLayer(1)
 
-        tabPane:AddPane( { label = "Player", effect = { strength = 3 }, frame = paneTabUFPlayer, initFunc = function() paneTabUFPlayer:build() end}, false)
-        tabPane:AddPane( { label = "Target", effect = { strength = 3 }, frame = paneTabUFTarget, initFunc = function() paneTabUFTarget:build() end}, false)
-        tabPane:AddPane( { label = "Target of Target", effect = { strength = 3 }, frame = paneTabUFTargetOfTarget, initFunc = function() paneTabUFTargetOfTarget:build() end}, false)
-        tabPane:AddPane( { label = "Player Pet", effect = { strength = 3 }, frame = paneTabUFPlayerPet, initFunc = function() paneTabUFPlayerPet:build() end}, false)
-        tabPane:AddPane( { label = "Focus", effect = { strength = 3 }, frame = paneTabUFFocus, initFunc = function() paneTabUFFocus:build() end}, false)
-        tabPane:AddPane( { label = "Group", effect = { strength = 3 }, frame = paneTabUFGroup, initFunc = function() paneTabUFGroup:build() end}, false)
-        tabPane:AddPane( { label = "Raid", effect = { strength = 3 }, frame = paneTabUFRaid, initFunc = function() paneTabUFRaid:build() end}, true)
+        tabPane:AddPane( { label = langTexts.settings.player, effect = { strength = 3 }, frame = paneTabUFPlayer, initFunc = function() paneTabUFPlayer:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.target, effect = { strength = 3 }, frame = paneTabUFTarget, initFunc = function() paneTabUFTarget:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.targetOfTarget, effect = { strength = 3 }, frame = paneTabUFTargetOfTarget, initFunc = function() paneTabUFTargetOfTarget:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.playerPet, effect = { strength = 3 }, frame = paneTabUFPlayerPet, initFunc = function() paneTabUFPlayerPet:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.focus, effect = { strength = 3 }, frame = paneTabUFFocus, initFunc = function() paneTabUFFocus:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.group, effect = { strength = 3 }, frame = paneTabUFGroup, initFunc = function() paneTabUFGroup:build() end}, false)
+        tabPane:AddPane( { label = langTexts.settings.raid, effect = { strength = 3 }, frame = paneTabUFRaid, initFunc = function() paneTabUFRaid:build() end}, true)
 
     end
 

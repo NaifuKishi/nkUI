@@ -4,6 +4,7 @@ local addonInfo, privateVars = ...
 
 local internalFunc  = privateVars.internalFunc
 local settingsUI     = privateVars.settingsUI
+local langTexts     = privateVars.langTexts
 
 local stringFormat = string.format
 
@@ -18,10 +19,10 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
 
     function frame:build()
 
-        sizeHeader = settingsUI.header ( name .. ".sizeHeader", frame, "Unit frame size")
-        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT" , 0, 5)
+        sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.unitFrameSize)
+        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
 
-        widthSlider = settingsUI.slider (name .. ".widthSlider", frame, "Width <font color='#3399FF'>%d</font>", true, function (newValue)
+        widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -31,8 +32,8 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         widthSlider:SetMidValue(250)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(thisSettings.width)
-        
-        heightSlider = settingsUI.slider (name .. ".heightSlider", frame, "Height <font color='#3399FF'>%d</font>", true, function (newValue)
+
+        heightSlider = settingsUI.slider(name .. ".heightSlider", frame, langTexts.settings.height, true, function(newValue)
             thisSettings.height = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -44,7 +45,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         heightSlider:AdjustValue(thisSettings.height)
 
         if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "group" then
-            reverseCheckbox = settingsUI.checkbox(name .. ".reverseCheckbox", frame, "Reverse display", true, function(newValue)        
+            reverseCheckbox = settingsUI.checkbox(name .. ".reverseCheckbox", frame, langTexts.settings.reverseDisplay, true, function(newValue)
                 thisSettings.reverse = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -54,16 +55,16 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         end
 
         -- font sizes
-        
-        fontSizesHeader = settingsUI.header ( name .. ".fontSizesHeader", frame, "Text sizes")
+
+        fontSizesHeader = settingsUI.header(name .. ".fontSizesHeader", frame, langTexts.settings.textSizeHeaders)
 
         if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "group" then
-            fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT" , 0, 15)
+            fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT", 0, 15)
         else
-            fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT" , 0, 15)
+            fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 15)
         end
 
-        nameFontSize = settingsUI.slider (name .. ".nameFontSize", frame, "Unit name <font color='#3399FF'>%d</font>", true, function (newValue)
+        nameFontSize = settingsUI.slider(name .. ".nameFontSize", frame, langTexts.settings.unitName, true, function(newValue)
             thisSettings.fontSizes.name = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -75,7 +76,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         nameFontSize:AdjustValue(thisSettings.fontSizes.name)
 
         if unitType ~= "raid" and unitType ~= "target.target" then
-            healthFontSize = settingsUI.slider (name .. ".healthFontSize", frame, "Health text <font color='#3399FF'>%d</font>", true, function (newValue)
+            healthFontSize = settingsUI.slider(name .. ".healthFontSize", frame, langTexts.settings.healthText, true, function(newValue)
                 thisSettings.fontSizes.health = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -86,7 +87,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             healthFontSize:SetPrecision(1)
             healthFontSize:AdjustValue(thisSettings.fontSizes.health)
 
-            energyFontSize = settingsUI.slider (name .. ".energyFontSize", frame, "Energy text <font color='#3399FF'>%d</font>", true, function (newValue)
+            energyFontSize = settingsUI.slider(name .. ".energyFontSize", frame, langTexts.settings.energyText, true, function(newValue)
                 thisSettings.fontSizes.energy = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -97,7 +98,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             energyFontSize:SetPrecision(1)
             energyFontSize:AdjustValue(thisSettings.fontSizes.energy)
 
-            planarFontSize = settingsUI.slider (name .. ".planarFontSize", frame, "Planar text <font color='#3399FF'>%d</font>", true, function (newValue)
+            planarFontSize = settingsUI.slider(name .. ".planarFontSize", frame, langTexts.settings.planarText, true, function(newValue)
                 thisSettings.fontSizes.planar = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -109,7 +110,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             planarFontSize:AdjustValue(thisSettings.fontSizes.planar)
         end
 
-        levelFontSize = settingsUI.slider (name .. ".levelFontSize", frame, "Level text <font color='#3399FF'>%d</font>", true, function (newValue)
+        levelFontSize = settingsUI.slider(name .. ".levelFontSize", frame, langTexts.settings.levelText, true, function(newValue)
             thisSettings.fontSizes.level = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
@@ -125,28 +126,27 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         levelFontSize:SetPrecision(1)
         levelFontSize:AdjustValue(thisSettings.fontSizes.level)
 
-        -- icon sizes       
+        -- icon sizes
 
         if unitType ~= "player.pet" then
 
-            iconSizeHeader = settingsUI.header ( name .. ".iconSizeHeader", frame, "Icon sizes")
-            iconSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT" , 0, 15)
+            iconSizeHeader = settingsUI.header(name .. ".iconSizeHeader", frame, langTexts.settings.iconSizes)
+            iconSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, 15)
 
-            roleIconSize = settingsUI.slider (name .. ".roleIconSize", frame, "Role icon <font color='#3399FF'>%d</font>", true, function (newValue)
+            roleIconSize = settingsUI.slider(name .. ".roleIconSize", frame, langTexts.settings.roleIcon, true, function(newValue)
                 thisSettings.iconSizes.role = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-        
             roleIconSize:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, 15)
             roleIconSize:SetRange(10, 40)
             roleIconSize:SetMidValue(25)
             roleIconSize:SetPrecision(1)
-            roleIconSize:AdjustValue(thisSettings.iconSizes.role)            
+            roleIconSize:AdjustValue(thisSettings.iconSizes.role)
         end
 
         if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "player.pet" then
-            combatIconSize = settingsUI.slider (name .. ".combatIconSize", frame, "Combat / Mark icon <font color='#3399FF'>%d</font>", true, function (newValue)
+            combatIconSize = settingsUI.slider(name .. ".combatIconSize", frame, langTexts.settings.combatMarkIcon, true, function(newValue)
                 thisSettings.iconSizes.combat = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -159,7 +159,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
 
             if unitType ~= "group" then
 
-                tierIconSize = settingsUI.slider (name .. ".tierIconSize", frame, "Tier icon <font color='#3399FF'>%d</font>", true, function (newValue)
+                tierIconSize = settingsUI.slider(name .. ".tierIconSize", frame, langTexts.settings.tierIcon, true, function(newValue)
                     thisSettings.iconSizes.tier = newValue
                     internalFunc.uiFrameRedraw(unitType)
                 end)
@@ -172,21 +172,21 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             end
         end
 
-        if  thisSettings.buffs ~= nil then
+        if thisSettings.buffs ~= nil then
 
             -- buff sizes
 
-            buffSizeHeader = settingsUI.header ( name .. ".buffSizeHeader", frame, "Buff display setup")
+            buffSizeHeader = settingsUI.header(name .. ".buffSizeHeader", frame, langTexts.settings.buffDisplaySetup)
 
             if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "player.pet" then
-                buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT" , 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT", 0, 15)
             elseif unitType ~= "player.pet" then
-                buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT" , 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, 15)
             else
-                buffSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT" , 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, 15)
             end
 
-            buffWidth = settingsUI.slider (name .. ".buffWidth", frame, "Buff icon size <font color='#3399FF'>%d</font>", true, function (newValue)
+            buffWidth = settingsUI.slider(name .. ".buffWidth", frame, langTexts.settings.buffIconSize, true, function(newValue)
                 thisSettings.buffs.width = newValue
                 thisSettings.buffs.height = newValue
                 internalFunc.uiFrameRedraw(unitType)
@@ -198,17 +198,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             buffWidth:SetPrecision(1)
             buffWidth:AdjustValue(thisSettings.buffs.width)
 
-            --[[buffHeight = settingsUI.slider (name .. ".buffHeight", frame, "Buff icon height <font color='#3399FF'>%d</font>", true, function (newValue)
-                thisSettings.buffs.height = newValue
-            end)
-
-            buffHeight:SetPoint("TOPLEFT", buffWidth, "TOPRIGHT", 30, 0)
-            buffHeight:SetRange(0, 60)
-            buffHeight:SetMidValue(30)
-            buffHeight:SetPrecision(1)
-            buffHeight:AdjustValue(thisSettings.buffs.height)
-            ]]
-            timerFontSize = settingsUI.slider (name .. ".timerFontSize", frame, "Timer size <font color='#3399FF'>%d</font>", true, function (newValue)
+            timerFontSize = settingsUI.slider(name .. ".timerFontSize", frame, langTexts.settings.timerSize, true, function(newValue)
                 thisSettings.buffs.timer = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -219,7 +209,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             timerFontSize:SetPrecision(1)
             timerFontSize:AdjustValue(thisSettings.buffs.timer)
 
-            stackFontSize = settingsUI.slider (name .. ".stackFontSize", frame, "Stack size <font color='#3399FF'>%d</font>", true, function (newValue)
+            stackFontSize = settingsUI.slider(name .. ".stackFontSize", frame, langTexts.settings.stackSize, true, function(newValue)
                 thisSettings.buffs.stack = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
@@ -229,16 +219,6 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             stackFontSize:SetMidValue(20)
             stackFontSize:SetPrecision(1)
             stackFontSize:AdjustValue(thisSettings.buffs.stack)
-
-            --[[labelFontSize = settingsUI.slider (name .. ".labelFontSize", frame, "Label size <font color='#3399FF'>%d</font>", true, function (newValue)
-                thisSettings.buffs.label = newValue
-            end)
-
-            labelFontSize:SetPoint("TOPLEFT", timerFontSize, "BOTTOMLEFT", 0, 5)
-            labelFontSize:SetRange(0, 30)
-            labelFontSize:SetMidValue(15)
-            labelFontSize:SetPrecision(1)
-            labelFontSize:AdjustValue(thisSettings.buffs.label)]]
         end
 
     end

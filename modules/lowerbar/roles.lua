@@ -2,9 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local lowerBar    = privateVars.lowerBar
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local lowerBar      = privateVars.lowerBar
+local langTexts     = privateVars.langTexts
 
 ---------- init local variables ---------
 
@@ -61,7 +62,7 @@ function lowerBar.lowerBarRoles()
             local thisRole
             
             if id == curRole then
-                datasetRole:SetText(stringFormat("Active role: %s", desc))
+                datasetRole:SetText(stringFormat(langTexts.lowerBar.role, desc))
             else
                 if roleDisplay[roleID] == nil then
                     thisRole = LibEKL.UICreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)

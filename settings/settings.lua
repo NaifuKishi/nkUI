@@ -5,7 +5,8 @@ local addonInfo, privateVars = ...
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
-local events       = privateVars.events
+local events        = privateVars.events
+local langTexts     = privateVars.langTexts
 
 privateVars.settingsUI = {}
 
@@ -382,7 +383,7 @@ function internalFunc.setupUI ()
     config:SetWidth(950)
     config:SetHeight(650)
     config:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2) - (config:GetWidth()/2), 200)
-    config:SetTitle(addonInfo.toc.Identifier .. " version ".. addonInfo.toc.Version)
+    config:SetTitle(addonInfo.toc.Identifier .. " Version ".. addonInfo.toc.Version)
     config:SetTitleFont(addonInfo.id, "MontserratBold")
     config:SetTitleFontSize(16)
     config:SetTitleEffect ( {strength = 3})
@@ -445,7 +446,7 @@ function internalFunc.setupUI ()
     local closeButton = LibEKL.UICreateFrame("nkButton", name .. ".closeButton", config:GetContent())
 
     closeButton:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -10)
-    closeButton:SetText("Close")
+    closeButton:SetText(langTexts.settings.close)
     closeButton:SetScale(.8)
     closeButton:SetLayer(9)
     closeButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -461,7 +462,7 @@ function internalFunc.setupUI ()
     local tutorialButton = LibEKL.UICreateFrame("nkButton", name .. ".tutorialButton", config:GetContent())
 
     tutorialButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
-    tutorialButton:SetText("Tutorial")
+    tutorialButton:SetText(langTexts.settings.tutorial)
     tutorialButton:SetScale(.8)
     tutorialButton:SetLayer(9)
     tutorialButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -477,7 +478,7 @@ function internalFunc.setupUI ()
     local moveButton = LibEKL.UICreateFrame("nkButton", name .. ".moveButton", config:GetContent())
 
     moveButton:SetPoint("CENTERRIGHT", tutorialButton, "CENTERLEFT", -10, 0)
-    moveButton:SetText("Move UI")
+    moveButton:SetText(langTexts.settings.moveUI)
     moveButton:SetScale(.8)
     moveButton:SetLayer(9)
     moveButton:SetFont(addonInfo.id, "MontserratSemiBold")
@@ -501,23 +502,23 @@ function internalFunc.setupUI ()
     tabPane:SetPoint("BOTTOMRIGHT", config:GetContent(), "BOTTOMRIGHT", -10, -50)
     tabPane:SetLayer(1)
 
-    tabPane:AddPane( { label = "Theme", effect = { strength = 3 }, frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
-    tabPane:AddPane( { label = "Quest Tracker", effect = { strength = 3 }, frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.theme, effect = { strength = 3 }, frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.questTracker, effect = { strength = 3 }, frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
 
-    tabPane:AddPane( { label = "Action bar", effect = { strength = 3 }, frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
-    tabPane:AddPane( { label = "Lower bar", effect = { strength = 3 }, frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
-    tabPane:AddPane( { label = "SCT", effect = { strength = 3 }, frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
-    tabPane:AddPane( { label = "Tooltip", effect = { strength = 3 }, frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
-    tabPane:AddPane( { label = "Buff bar", effect = { strength = 3 }, frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.actionBar, effect = { strength = 3 }, frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.lowerBar, effect = { strength = 3 }, frame = paneTabLowerBar, initFunc = function() paneTabLowerBar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.sct, effect = { strength = 3 }, frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.tooltip, effect = { strength = 3 }, frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.buffBar, effect = { strength = 3 }, frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
 
-    tabPane:AddPane( { label = "Ressource bar", effect = { strength = 3 }, frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.ressourceBar, effect = { strength = 3 }, frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
 
-    tabPane:AddPane( { label = "Player castbar", effect = { strength = 3 }, frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
-    tabPane:AddPane( { label = "Target castbar", effect = { strength = 3 }, frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.playerCastbar, effect = { strength = 3 }, frame = paneTabPlayerCastbar, initFunc = function() paneTabPlayerCastbar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.targetCastbar, effect = { strength = 3 }, frame = paneTabTargetCastbar, initFunc = function() paneTabTargetCastbar:build() end}, false)
 
-    tabPane:AddPane( { label = "Unitframes", effect = { strength = 3 }, frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.unitframes, effect = { strength = 3 }, frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
 
-    tabPane:AddPane( { label = "Units", effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
+    tabPane:AddPane( { label = langTexts.settings.units, effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
 
     --if LibEKL.Events.CheckEvents ("nkRadial", true) == false then return nil end
 
