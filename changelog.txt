@@ -1,5 +1,8 @@
-V1.0.1
+V1.1.0
+    - new: One Bag - added bank support
     - fixes: One Bag - Trash no displayed at the end for German and French
+    - fixes: One Bag - will try to reposition on screen if being off screen
+    - fixes: Quest Tracker - will try to reposition on screen if being off screen
 
 V1.0.0
     - new: Action bars - There's now a setting to set action bar icon size

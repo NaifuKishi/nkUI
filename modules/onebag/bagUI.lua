@@ -163,6 +163,17 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
             end
         end
 
+        if bagWindow:GetLeft() > UIParent:GetWidth() then
+            local x = UIParent:GetWidth() - bagWindow:GetWidth()            
+            if isBag then
+                nkUISetup.modules.oneBag.x = x
+                bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.oneBag.x, nkUISetup.modules.oneBag.y)
+            else
+                nkUISetup.modules.bankX.x = x
+                bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.oneBag.bankX, nkUISetup.modules.oneBag.bankY)
+            end
+        end
+
         oSetVisible(self, visible)
     end
     
