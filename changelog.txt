@@ -1,3 +1,6 @@
+V1.0.1
+    - fixes: One Bag - Trash no displayed at the end for German and French
+
 V1.0.0
     - new: Action bars - There's now a setting to set action bar icon size
     - new: General - added French translation

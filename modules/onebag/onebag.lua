@@ -9,6 +9,7 @@ local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local events        = privateVars.events
 local oneBag        = privateVars.oneBag
+local langTexts     = privateVars.langTexts
 
 local InspectTimeReal = Inspect.Time.Real
 
@@ -110,7 +111,7 @@ function oneBag.populateBag(forceCacheUpdate)
     for k, v in pairs(cachedItems) do
         local realCategory = oneBag.getRealCategory(v.category, v.rarity)
 
-        if realCategory == "Trash" then
+        if realCategory == langTexts.itemCategories.trash then
             hasTrash = true
             trashItems[k] = v
         else
@@ -133,8 +134,8 @@ function oneBag.populateBag(forceCacheUpdate)
     local sortedCategories = LibEKL.Tools.Table.GetSortedKeys (categories)
 
     if hasTrash then
-        table.insert(sortedCategories, "Trash")
-        categories["Trash"] = {
+        table.insert(sortedCategories, langTexts.itemCategories.trash)
+        categories[langTexts.itemCategories.trash] = {
             original = trashItems,
             sorted = sortItems (trashItems)
         }
