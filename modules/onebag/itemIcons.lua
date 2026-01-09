@@ -10,6 +10,7 @@ local oneBag        = privateVars.oneBag
 local inspectTimeFrame = Inspect.Time.Frame
 
 local stringFormat  = string.format
+local stringFind    = string.find
 
 ---------- local functions ---------
 
@@ -118,20 +119,25 @@ function oneBag.createItemIcon(name, parent)
     end, name .. "Event.Left.Down")
    
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
-        if UI.Native.Bank:GetLoaded() then
-            local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
-            if vaultSlot then
-                Command.Item.Move(thisSlot, vaultSlot)
-                movedItem = thisItemID
-            else
-                local bankSlot = LibEKL.Inventory.findFreeBankSlot()
-                if bankSlot then
-                    Command.Item.Move(thisSlot, bankSlot)
-                    movedItem = thisItemID
+        if stringFind(thisSlot, "si") then
+            if UI.Native.Bank:GetLoaded() then
+                local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
+                if vaultSlot then
+                    Command.Item.Move(thisSlot, vaultSlot)
+                else
+                    local bankSlot = LibEKL.Inventory.findFreeBankSlot()
+                    if bankSlot then
+                        Command.Item.Move(thisSlot, bankSlot)
+                    end
                 end
+            else
+                if thisItemID then Command.Item.Standard.Right(thisItemID) end
             end
         else
-            if thisItemID then Command.Item.Standard.Right(thisItemID) end
+            local bagSlot = LibEKL.Inventory.findFreeBagSlot()
+            if bagSlot then
+                Command.Item.Move(thisSlot, bagSlot)
+            end
         end
     end, name .. "Event.Right.Down")
     

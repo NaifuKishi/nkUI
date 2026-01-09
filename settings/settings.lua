@@ -130,7 +130,9 @@ local _defaults = {
 		            },
         oneBag      = { activate = true,
                         x = 2000,
-                        y = 600
+                        y = 600,
+                        bankX = 1200,
+                        bankY = 600
                     },
         buffBar     = { activate = true,
                         x = -1690, y = -690,

@@ -297,11 +297,11 @@ local function initializeAddon(_, addon)
 						if uiElements.oneBag == nil then internalFunc.oneBagInit() end
 
 						uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
+						uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
 					end, "nkUI.OneBag.Native.Bank.Loaded")
 
 					UI.Native.BagInventory1:EventAttach(Event.UI.Native.Loaded, function()
 					if uiElements.oneBag == nil then internalFunc.oneBagInit() end
-
 						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
 					end, "nkUI.OneBag.Native.Bag.Loaded")
 				end

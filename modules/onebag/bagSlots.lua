@@ -128,7 +128,7 @@ end
 
 
 -- Creates the bag slots UI
-function oneBag.createBagSlots()
+function oneBag.createBagSlots(parent)
     
     local bagSlots = {}
     local thisItemID
@@ -136,10 +136,10 @@ function oneBag.createBagSlots()
     local width = (10 + (8 * ICONSIZE) + (7 * ICONPADDING)) * data.bagScale
     local height = (10 + ICONSIZE) * data.bagScale
     
-    local bagSlotsFrame = LibEKL.UICreateFrame("nkFrame", "nkUIBagSlotFrame", uiElements.oneBag)
+    local bagSlotsFrame = LibEKL.UICreateFrame("nkFrame", "nkUIBagSlotFrame", parent)
     bagSlotsFrame:SetWidth(width)
     bagSlotsFrame:SetHeight(height)
-    bagSlotsFrame:SetPoint("TOPLEFT", uiElements.oneBag, "BOTTOMLEFT", 0, 5 * data.bagScale)
+    bagSlotsFrame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 5 * data.bagScale)
     bagSlotsFrame:SetBackgroundColor(data.theme.windowStartColor.r, data.theme.windowStartColor.g, data.theme.windowStartColor.b, data.theme.windowStartColor.a)
     bagSlotsFrame:SetLayer(2)
     

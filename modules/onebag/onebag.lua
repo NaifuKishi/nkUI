@@ -22,11 +22,15 @@ local mathFloor         = math.floor
 ---------- init variables ---------
 
 local name = "onebag"
-local itemIcons = {}
+local bagItemIcons = {}
+local bankItemIcons = {}
 local bagCategories = {}
+local bankCategories = {}
 local movedItem
-local cachedItems
-local lastCacheUpdate
+local cachedBagItems
+local cachedBankItems
+local lastBagCacheUpdate
+local lastBankCacheUpdate
 
 oneBag.dragItem = {
     draggedItem = nil,
@@ -65,45 +69,68 @@ function internalFunc.oneBagInit()
         data.bagScale = parentHeight / 1440
 
         LibEKL.Inventory.updateDB()
-        uiElements.oneBag = oneBag.createBagUI()
-        uiElements.oneBagBagSlots = oneBag.createBagSlots()
+        uiElements.oneBag = oneBag.createBagUI("nkUI.oneBag", langTexts.oneBag.bagTitle, true)
+        uiElements.oneBagBagSlots = oneBag.createBagSlots(uiElements.oneBag)
+
+        uiElements.oneBank = oneBag.createBagUI("nkUI.oneBank", langTexts.oneBag.bankTitle, false)
+        uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
 
         Command.Event.Attach(Event.Item.Slot, oneBag.itemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
         Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
-            if cachedItems then
+            if cachedBagItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
                         if v == false then
-                            cachedItems[k] = nil -- hier scheint es das problem zu geben bei item use
+                            cachedBagItems[k] = nil -- hier scheint es das problem zu geben bei item use
                         else
-                            cachedItems[k] = LibEKL.Inventory.GetItemByKey(v)
+                            cachedBagItems[k] = LibEKL.Inventory.GetItemByKey(v)
                         end
                     end
                 end
             end
+
             oneBag.populateBag()
+
+            if UI.Native.Bank:GetLoaded() then
+                oneBag.populateBank()
+            end
+            
         end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
     end
-
+    
     oneBag.populateBag()
     oneBag.getBagSlots()
 end
 
 function oneBag.populateBag(forceCacheUpdate)
 
+    if forceCacheUpdate == true or cachedBagItems == nil or InspectTimeReal() - lastBagCacheUpdate > 5 then
+        cachedBagItems = LibEKL.Inventory.getBagItems()
+        lastBagCacheUpdate = InspectTimeReal()
+    end
+
+    oneBag.bagContent(uiElements.oneBag, "nkUI.oneBag", cachedBagItems, bagCategories, bagItemIcons)
+
+end
+
+function oneBag.populateBank(forceCacheUpdate)
+
+    if forceCacheUpdate == true or cachedBankItems == nil or InspectTimeReal() - lastBagCacheUpdate > 5 then
+        cachedBankItems = LibEKL.Inventory.getBankItems()
+        lastBagCacheUpdate = InspectTimeReal()
+    end
+
+    oneBag.bagContent(uiElements.oneBank, "nkUI.oneBank", cachedBankItems, bankCategories, bankItemIcons)
+
+end
+
+function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
+
     local counter = 1
     local firstIcon = nil
     local lastIcon = nil
-
-    if forceCacheUpdate == true or cachedItems == nil or InspectTimeReal() - lastCacheUpdate > 5 then
-        cachedItems = LibEKL.Inventory.getBagItems()
-        lastCacheUpdate = InspectTimeReal()
-    end
-
-    --dump (cachedItems)
-
     local categories = {}
     local hasTrash = false
     local trashItems = {}
@@ -141,7 +168,7 @@ function oneBag.populateBag(forceCacheUpdate)
         }
     end
 
-    for k, v in pairs(bagCategories) do
+    for k, v in pairs(uiCategories) do
         if LibEKL.Tools.Table.IsMember(sortedCategories, k) == false then
             v:SetVisible(false)
 
@@ -170,12 +197,12 @@ function oneBag.populateBag(forceCacheUpdate)
         local categoryLabel = sortedCategories[idx]
 
         local content = categories[categoryLabel].sorted        
-        local thisCategory = bagCategories[categoryLabel]
+        local thisCategory = uiCategories[categoryLabel]
 
         if thisCategory == nil then
-            thisCategory = oneBag.createItemCategory("nkUI.onebagCategory." .. categoryLabel, uiElements.oneBag:GetContent())
+            thisCategory = oneBag.createItemCategory(name .. ".Category." .. categoryLabel, bagUI:GetContent())
             thisCategory:SetText(categoryLabel)
-            bagCategories[categoryLabel] = thisCategory
+            uiCategories[categoryLabel] = thisCategory
         else
             for slot, icon in pairs (thisCategory.items) do
                 icon:SetVisible(false)
@@ -198,7 +225,7 @@ function oneBag.populateBag(forceCacheUpdate)
 
             if thisIcon == nil then
                 if nkDebug then nkDebug.logEntry (addonInfo.identifier, stringFormat("One Bag create slot icon %s", slot)) end
-                thisIcon = oneBag.createItemIcon("nkUI.onebagItem." .. slot, thisCategory)                
+                thisIcon = oneBag.createItemIcon(name .. ".item." .. slot, thisCategory)                
                 itemIcons[slot] = thisIcon
             end            
 
@@ -251,14 +278,14 @@ function oneBag.populateBag(forceCacheUpdate)
 
         if firstCategory then
             firstCategory = false
-            thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.bagScale, 5* data.bagScale)
+            thisCategory:SetPoint("TOPLEFT", bagUI:GetContent(), "TOPLEFT", 10* data.bagScale, 5* data.bagScale)
             iconsPerLine = iconsPerLine + cols
             startCategory = thisCategory
             currentYOffset = (thisCategory:GetHeight() + (10 * data.bagScale))  -- Increased vertical spacing
         else
             -- Check if we need to start a new line
             if iconsPerLine + cols >= 15 then
-                thisCategory:SetPoint("TOPLEFT", uiElements.oneBag:GetContent(), "TOPLEFT", 10* data.bagScale, currentYOffset)
+                thisCategory:SetPoint("TOPLEFT", bagUI:GetContent(), "TOPLEFT", 10* data.bagScale, currentYOffset)
                 currentYOffset = currentYOffset + ((thisCategory:GetHeight() + (10* data.bagScale)))  -- Increased vertical spacing
                 iconsPerLine = cols
             else
@@ -272,8 +299,8 @@ function oneBag.populateBag(forceCacheUpdate)
 
     if lastCategory then
         local bottom = lastCategory:GetBottom()
-        local top = uiElements.oneBag:GetTop()
-        uiElements.oneBag:SetHeight(bottom - top + 10)        
+        local top = bagUI:GetTop()
+        bagUI:SetHeight(bottom - top + 10)        
     end
 
 end
@@ -284,28 +311,38 @@ function oneBag.itemSlot (_, slots)
 
     if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
 
-    local doInventoryUpdate = false
-    local doBatSlotsUpdate = false
+    local doBagInventoryUpdate = false
+    local doBankInventoryUpdate = false
+    local doBagSlotsUpdate = false
 
     for thisSlot, state in pairs (slots) do
         
         if stringFind(thisSlot, "sibg.") then
-            doBatSlotsUpdate = true
+            doBagSlotsUpdate = true
         elseif stringFind(thisSlot, "si") then
-            doInventoryUpdate = true
+            doBagInventoryUpdate = true
+        elseif stringFind(thisSlot, "sb") then
+            doBankInventoryUpdate = true
+        elseif stringFind(thisSlot, "sv") then
+            doBankInventoryUpdate = true
         end
 
-        if doBatSlotsUpdate and doInventoryUpdate then break end
+        if doBagSlotsUpdate and doBagInventoryUpdate and doBankInventoryUpdate then break end
     end
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doBagInventoryUpdate) end
 
-    if doInventoryUpdate then 
+    if doBagInventoryUpdate then 
         LibEKL.Inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
-    if doBatSlotsUpdate then  oneBag.getBagSlots() end
+    if doBankInventoryUpdate then 
+        if not doBagInventoryUpdate then LibEKL.Inventory.updateDB() end
+        oneBag.populateBank(true) 
+    end
+
+    if doBagSlotsUpdate then oneBag.getBagSlots() end
 
 end
 
@@ -315,27 +352,27 @@ function oneBag.itemUpdate (_, slots)
 
     if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
     
-    local doInventoryUpdate = false
-    local doBatSlotsUpdate = false
+    local doBagInventoryUpdate = false
+    local doBagSlotsUpdate = false
 
     for thisSlot, state in pairs (slots) do
         
         if stringFind(thisSlot, "sibg.") then
-            doBatSlotsUpdate = true
+            doBagSlotsUpdate = true
         elseif stringFind(thisSlot, "si") then
-            doInventoryUpdate = true
+            doBagInventoryUpdate = true
         end
 
-        if doBatSlotsUpdate and doInventoryUpdate then break end
+        if doBagSlotsUpdate and doBagInventoryUpdate then break end
     end
 
-    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doInventoryUpdate) end
+    if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doBagInventoryUpdate) end
 
-    if doInventoryUpdate then 
+    if doBagInventoryUpdate then 
         LibEKL.Inventory.updateDB()
         oneBag.populateBag(true) 
     end
 
-    if doBatSlotsUpdate then oneBag.getBagSlots() end
+    if doBagSlotsUpdate then oneBag.getBagSlots() end
 
 end
