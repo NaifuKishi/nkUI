@@ -33,7 +33,9 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
 
     bagWindow:SetWidth(690 * data.bagScale)
     bagWindow:SetHeight(600 * data.bagScale)
-    bagWindow:SetLayer(1)    
+    bagWindow:SetLayer(1)
+
+    --bagWindow:GetHeader():SetBackgroundColor(1, 0, 0, 1)
     
     if isBag then
         bagWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.oneBag.x, nkUISetup.modules.oneBag.y)
@@ -98,7 +100,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     end
 
     currencyText = LibEKL.UICreateFrame ("nkText", bagName .. ".currencyText", bagWindow)
-    currencyText:SetPoint("TOPRIGHT", bagWindow, "TOPRIGHT", -50 * data.bagScale, 12 * data.bagScale)
+    currencyText:SetPoint("CENTERRIGHT", bagWindow:GetHeader(), "CENTERRIGHT", -50 * data.bagScale, 0)
     currencyText:SetFontSize(12)
     currencyText:SetEffectGlow({ strength = 3})
     currencyText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)

@@ -42,7 +42,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									crafting = "Handwerk", 
 									instant = "Instanz",
 									carnage = "Massaker", 
-									personal = "Regular quests",
+									personal = "Normale Quests",
 									pvp="PvP", 
 									raid = "Schlachtzug",  
 									ia = "Sofort-Abenteuer", 

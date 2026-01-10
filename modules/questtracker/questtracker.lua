@@ -103,17 +103,19 @@ function internalFunc.uiQuestTracker()
 		
 		questTracker.fillLog ()
 		
-		uiElements.progressBar = LibEKL.UICreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
-		uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questTracker, "CENTERTOP", 0, 40)
-		
-		uiElements.progressBar:SetWidth(uiElements.questTracker:GetWidth()-20)
-		uiElements.progressBar:SetHeight(20)
-		uiElements.progressBar:SetLayer(99)
-		uiElements.progressBar:SetVisible(false)
-		uiElements.progressBar:SetFontColor(0, 0, 0, 1)
-		uiElements.progressBar:SetFont(addonInfo.id, "MontserratSemiBold")
-		uiElements.progressBar:SetBorderColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
-		uiElements.progressBar:SetFillColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
+		if not uiElements.progressBar then
+			uiElements.progressBar = LibEKL.UICreateFrame("nkProgressBar", "nkUI.questTracker.progressBar", uiElements.questTracker)
+			uiElements.progressBar:SetPoint("CENTERTOP", uiElements.questTracker, "CENTERTOP", 0, 40)
+			
+			uiElements.progressBar:SetWidth(uiElements.questTracker:GetWidth()-20)
+			uiElements.progressBar:SetHeight(20)
+			uiElements.progressBar:SetLayer(99)
+			uiElements.progressBar:SetVisible(false)
+			uiElements.progressBar:SetFontColor(0, 0, 0, 1)
+			uiElements.progressBar:SetFont(addonInfo.id, "MontserratSemiBold")
+			uiElements.progressBar:SetBorderColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
+			uiElements.progressBar:SetFillColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
+		end
 				
 		Command.Event.Attach(Event.Quest.Accept, questTracker.eventQuestAccept, "nkUI.questtracker.Quest.Accept")
 		Command.Event.Attach(Event.Quest.Abandon, questTracker.eventQuestAbandon, "nkUI.questtracker.Quest.Abandon")
@@ -134,30 +136,6 @@ function internalFunc.uiQuestTracker()
 end
 
 ---------- addon internal function block ---------
-
-local function _fctShortenName (name, maxLen)
-
-    if stringLen(name) <= maxLen then
-        return name
-    end
-
-    local splitName = stringSplit(name, " ") or stringSplit(name, "-")
-
-    if #splitName == 1 then
-        return stringSub(name, 1, maxLen)
-    end
-
-    local thisName = ""
-    for idx = 1, #splitName - 1 do
-        local tempName = stringSub(splitName[idx], 1, 1)
-        if unitFrameType ~= "raid" then
-            thisName = thisName .. tempName .. ". "
-        end
-    end
-
-    return thisName .. splitName[#splitName]
-
-end
 
 function questTracker.fillLog ()
 	

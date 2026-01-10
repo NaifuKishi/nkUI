@@ -37,6 +37,15 @@ RunOnStartup = {
 	"modules/questtracker/ui-useitems.lua",
 	"modules/questtracker/ui.lua",
 
+	"modules/questlog/questlog.lua",
+	"modules/questlog/events.lua",
+	"modules/questlog/ui-category.lua",
+	"modules/questlog/ui-entry.lua",
+	"modules/questlog/ui-useitems.lua",
+	"modules/questlog/ui.lua",	
+	"modules/questlog/questDetail.lua",	
+	"modules/questlog/questDetailItemReward.lua",
+
 	--"modules/questlog/questlog.lua",
 	--"modules/questlog/ui.lua",
 	--"modules/questlog/events.lua",
