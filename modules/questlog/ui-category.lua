@@ -113,7 +113,7 @@ function questLog.questCategory(category, parent)
 	local headerText = UI.CreateFrame("Text", name .. '.headerText', frame)	
 	--headerText:SetWordwrap(true)
 	headerText:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
-	headerText:SetFontSize(nkUISetup.modules.questLog.categoryHeaderSize)
+	headerText:SetFontSize(16)
 
 	local categoryText = privateVars.langTexts.showCategoryCheckbox[category]
 	if categoryText == nil then categoryText = category end
@@ -121,7 +121,7 @@ function questLog.questCategory(category, parent)
 	headerText:SetWidth(header:GetWidth() - 15)
 	headerText:SetEffectGlow ({ strength = 3 })	
 
-	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratSemiBold")
+	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratBold")
 
 	local color = data.categoryColor[category]
 	if color == nil then color = {1, 1, 1, 1} end
@@ -218,9 +218,9 @@ function questLog.questCategory(category, parent)
 		subFrame:SetHeight(height)
 
 		if subFrame:GetVisible() == true then
-			frame:SetHeight(height + header:GetHeight() + 5)
+			frame:SetHeight(height + header:GetHeight() + 15)
 		else
-			frame:SetHeight(header:GetHeight() + 5)
+			frame:SetHeight(header:GetHeight() + 15)
 		end
 	end
 
@@ -255,9 +255,6 @@ function questLog.questCategory(category, parent)
 			table.remove(recycleBin, 1)
 		else    
 			thisEntry = questLog.questEntry(key, subFrame, #questEntries+1)
-			thisEntry:SetTitleFontSize (nkUISetup.modules.questLog.categoryFontSize.header)
-			thisEntry:SetBodyFontSize (nkUISetup.modules.questLog.categoryFontSize.body)
-			thisEntry:SetBodyColor (questLog.bodyColor)
 		end
 
 		local pos = -1
@@ -352,7 +349,7 @@ function questLog.questCategory(category, parent)
 	function frame:UpdateDesign(updateContent)
 
 		headerText:ClearHeight()
-		headerText:SetFontSize(nkUISetup.modules.questLog.categoryHeaderSize)
+		headerText:SetFontSize(16)
 
 		local color = data.categoryColor[category]
 		headerText:SetFontColor(color[1], color[2], color[3], 0)

@@ -102,23 +102,18 @@ end
 function questLog.questEntry (key, parent, counter)
 
 	local name = parent:GetName() .. ".questEntry." .. counter
-	local fontSize, color = 13
-	local collapsed = false
-	
-	local objectives = {}
-	local objectiveCount = 0
-	local use = nil
+	local fontSize, color = 14
 	
 	local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
 	frame:SetWidth(parent:GetWidth() -  10)
-	--frame:SetBackgroundColor(1, 0, 0, .2)
 	
 	local level = LibEKL.UICreateFrame("nkText", name .. '.levelText', frame)
 	level:SetPoint("CENTERLEFT", frame, "CENTERLEFT")
 	level:SetFontSize(fontSize)
 	level:SetFontColor(1, 1, 1, 1)
-	--level:SetWordwrap(true)
 	level:SetEffectGlow({ strength = 3})
+
+	LibEKL.UI.SetFont(level, addonInfo.id, "MontserratSemiBold")
 
 	local header = LibEKL.UICreateFrame("nkText", name .. '.Header', frame)
 	header:SetPoint("CENTERLEFT", level, "CENTERLEFT", 20, 0)		
@@ -153,8 +148,6 @@ function questLog.questEntry (key, parent, counter)
 	
 	function frame:SetKey(newKey) key = newKey end
 	
-	function frame:GetCollapsed() return collapsed end
-	
 	function frame:GetTitle() return header:GetText() end 
 			
 	---------------------------------------
@@ -168,12 +161,7 @@ function questLog.questEntry (key, parent, counter)
 	
 	function frame:SetWidth(newWidth, silent)
 		oSetWidth(self, newWidth)
-		
 		header:SetWidth(newWidth)
-		for idx = 1, #objectives, 1 do
-			objectives[idx]:SetWidth(newWidth-15)
-		end
-		
 		frame:RecalcHeight()
 	end
 	
@@ -196,27 +184,13 @@ function questLog.questEntry (key, parent, counter)
 	------------ design update ------------
 	
 	function frame:SetTitleColor(rgb) 
-		header:SetFontColor(rgb[1],rgb[2],rgb[3]) 
-		subHeader:SetFontColor(rgb[1],rgb[2],rgb[3]) 
+		header:SetFontColor(rgb[1],rgb[2],rgb[3]) 	
 	end
-	
-	function frame:SetBodyColor(rgb)
-		for idx = 1, #objectives, 1 do
-			objectives[idx]:SetFontColor(rgb[1],rgb[2],rgb[3])
-		end
-		color = rgb
-	end
-	
+		
 	function frame:SetTitleFontSize(newFontSize)
+		level:SetFontSize(newFontSize)
 		header:SetFontSize(newFontSize)
 	end
-	
-	function frame:SetBodyFontSize(newFontSize)
-		for idx = 1, #objectives, 1 do
-			objectives[idx]:SetFontSize(newFontSize)
-		end
-		fontSize = newFontSize
-	end	
 	
 	return frame
 

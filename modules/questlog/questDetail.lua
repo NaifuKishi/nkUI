@@ -67,10 +67,10 @@ function questLog.questDetail (name, parent)
 	summary:SetPoint("TOPLEFT", typeText, "BOTTOMLEFT", 0, 15)
 	summary:SetFontSize(14)
 	summary:SetWordwrap(true)
-	summary:SetWidth(contentFrame:GetWidth() - 10)
+	summary:SetWidth(contentFrame:GetWidth() - 20)
 	summary:SetEffectGlow({ strength = 3 })
 	
-	LibEKL.UI.SetFont(summary, addonInfo.id, "Montserrat")
+	LibEKL.UI.SetFont(summary, addonInfo.id, "MontserratSemiBold")
 
 	local objectivesTitle = LibEKL.UICreateFrame("nkText", "ObjectivesTitle", contentFrame)
 	objectivesTitle:SetPoint("TOPLEFT", summary, "BOTTOMLEFT", 0, 20)
@@ -106,37 +106,37 @@ function questLog.questDetail (name, parent)
 	detailedDescription:SetWidth(contentFrame:GetWidth() - 10)
 	detailedDescription:SetEffectGlow({ strength = 3 })
 	
-	LibEKL.UI.SetFont(detailedDescription, addonInfo.id, "Montserrat")		
+	LibEKL.UI.SetFont(detailedDescription, addonInfo.id, "MontserratSemiBold")		
 
 	local coinReward = LibEKL.UICreateFrame("nkText", "CoinReward", contentFrame)
 	coinReward:SetFontSize(14)
 	coinReward:SetEffectGlow({ strength = 3 })
 
-	LibEKL.UI.SetFont(coinReward, addonInfo.id, "Montserrat")		
+	LibEKL.UI.SetFont(coinReward, addonInfo.id, "MontserratSemiBold")		
 
 	local expReward = LibEKL.UICreateFrame("nkText", "ExpReward", contentFrame)		
 	expReward:SetFontSize(14)
 	expReward:SetEffectGlow({ strength = 3 })
 
-	LibEKL.UI.SetFont(expReward, addonInfo.id, "Montserrat")		
+	LibEKL.UI.SetFont(expReward, addonInfo.id, "MontserratSemiBold")		
 	
 	local itemReward = LibEKL.UICreateFrame("nkText", "ItemReward", contentFrame)
 	itemReward:SetFontSize(14)
 	itemReward:SetEffectGlow({ strength = 3 })
 
-	LibEKL.UI.SetFont(itemReward, addonInfo.id, "Montserrat")
+	LibEKL.UI.SetFont(itemReward, addonInfo.id, "MontserratSemiBold")
 
 	local prestigeReward = LibEKL.UICreateFrame("nkText", "prestigeReward", contentFrame)
 	prestigeReward:SetFontSize(14)
 	prestigeReward:SetEffectGlow({ strength = 3 })
 
-	LibEKL.UI.SetFont(prestigeReward, addonInfo.id, "Montserrat")
+	LibEKL.UI.SetFont(prestigeReward, addonInfo.id, "MontserratSemiBold")
 
 	local favorReward = LibEKL.UICreateFrame("nkText", "favorReward", contentFrame)
 	favorReward:SetFontSize(14)
 	favorReward:SetEffectGlow({ strength = 3 })
 
-	LibEKL.UI.SetFont(favorReward, addonInfo.id, "Montserrat")
+	LibEKL.UI.SetFont(favorReward, addonInfo.id, "MontserratSemiBold")
 	
 	local guarantueedItemFrame = LibEKL.UICreateFrame("nkFrame", "guarantueedItemFrame", contentFrame)
 	guarantueedItemFrame:SetWidth(contentFrame:GetWidth() - 30)
@@ -214,7 +214,7 @@ function questLog.questDetail (name, parent)
 				objectiveText:SetFontSize(14)
 				objectiveText:SetEffectGlow({ strength = 3})
 
-				LibEKL.UI.SetFont(objectiveText, addonInfo.id, "Montserrat")
+				LibEKL.UI.SetFont(objectiveText, addonInfo.id, "MontserratSemiBold")
 
 				table.insert(objectives, objectiveText)
 			else
@@ -352,7 +352,7 @@ function questLog.questDetail (name, parent)
 					thisFactionReward:SetFontSize(14)
 					thisFactionReward:SetEffectGlow({ strength = 3 })
 
-					LibEKL.UI.SetFont(thisFactionReward, addonInfo.id, "Montserrat")
+					LibEKL.UI.SetFont(thisFactionReward, addonInfo.id, "MontserratSemiBold")
 					table.insert(factionRewards, thisFactionReward)
 				else
 					thisFactionReward = factionRewards[count] 
@@ -461,19 +461,18 @@ function questLog.questDetail (name, parent)
 				visibleItemRewards = visibleItemRewards + 1
 			end
 		end
-		local itemRewardRows = math.ceil(visibleItemRewards / 2)
-		totalHeight = totalHeight + (itemRewardRows * 60) + ((itemRewardRows - 1) * 10)
+		local itemRewardRows = math.ceil(visibleItemRewards / 3) -- Changed from 2 to 3
+		totalHeight = totalHeight + (itemRewardRows * 45) + ((itemRewardRows - 1) * 10) -- Changed from 60 to 45
 
-		-- Add height for chooseable rewards (each row is 60px high with 10px spacing)
+		-- Add height for chooseable rewards (each row is 45px high with 10px spacing)
 		local visibleChooseableRewards = 0
 		for _, reward in ipairs(chooseableRewards) do
 			if reward:GetVisible() then
 				visibleChooseableRewards = visibleChooseableRewards + 1
 			end
 		end
-
-		local chooseableRewardRows = math.ceil(visibleChooseableRewards / 2)
-		totalHeight = totalHeight + (chooseableRewardRows * 60) + ((chooseableRewardRows - 1) * 10)
+		local chooseableRewardRows = math.ceil(visibleChooseableRewards / 3) -- Changed from 2 to 3
+		totalHeight = totalHeight + (chooseableRewardRows * 45) + ((chooseableRewardRows - 1) * 10) -- Changed from 60 to 45
 
 		-- Add some padding at the bottom
 		totalHeight = totalHeight + 200
