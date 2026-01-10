@@ -436,7 +436,7 @@ function questTracker.buildUI ()
 
     function ui:SetVisible(visible)
         oSetVisible(self, visible)
-        if ui:GetLeft() > ui:GetWidth() then
+        if ui:GetLeft() > UIParent:GetWidth() then
             local x = UIParent:GetWidth() - ui:GetWidth()
             nkUISetup.modules.questtracker.x = x
 			ui:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.questtracker.x, nkUISetup.modules.questtracker.y)

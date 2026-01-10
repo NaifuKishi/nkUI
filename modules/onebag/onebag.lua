@@ -104,25 +104,55 @@ function internalFunc.oneBagInit()
     oneBag.getBagSlots()
 end
 
-function oneBag.populateBag(forceCacheUpdate)
+function oneBag.populateBag(forceCacheUpdate, searchPattern)
 
     if forceCacheUpdate == true or cachedBagItems == nil or InspectTimeReal() - lastBagCacheUpdate > 5 then
         cachedBagItems = LibEKL.Inventory.getBagItems()
         lastBagCacheUpdate = InspectTimeReal()
     end
 
-    oneBag.bagContent(uiElements.oneBag, "nkUI.oneBag", cachedBagItems, bagCategories, bagItemIcons)
+    local items
+
+    -- Filter items based on search pattern if provided
+    if searchPattern and searchPattern ~= "" then
+        local filteredItems = {}
+        for _, item in pairs(cachedBagItems) do
+            if string.find(string.lower(item.name), searchPattern, 1, true) then                
+                table.insert(filteredItems, item)
+            end
+        end
+        items = filteredItems
+    else
+        items = cachedBagItems
+    end
+
+    oneBag.bagContent(uiElements.oneBag, "nkUI.oneBag", items, bagCategories, bagItemIcons)
 
 end
 
-function oneBag.populateBank(forceCacheUpdate)
+function oneBag.populateBank(forceCacheUpdate, searchPattern)
 
     if forceCacheUpdate == true or cachedBankItems == nil or InspectTimeReal() - lastBagCacheUpdate > 5 then
         cachedBankItems = LibEKL.Inventory.getBankItems()
         lastBagCacheUpdate = InspectTimeReal()
     end
 
-    oneBag.bagContent(uiElements.oneBank, "nkUI.oneBank", cachedBankItems, bankCategories, bankItemIcons)
+    local items
+
+    -- Filter items based on search pattern if provided
+    if searchPattern and searchPattern ~= "" then
+        local filteredItems = {}
+        for _, item in pairs(cachedBankItems) do
+            if string.find(string.lower(item.name), searchPattern, 1, true) then
+                table.insert(filteredItems, item)
+            end
+        end
+        items = filteredItems
+    else
+        items = cachedBagItems
+    end
+
+    oneBag.bagContent(uiElements.oneBank, "nkUI.oneBank", items, bankCategories, bankItemIcons)
 
 end
 

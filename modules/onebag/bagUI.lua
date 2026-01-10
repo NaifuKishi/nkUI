@@ -22,7 +22,7 @@ context:SetLayer(2)
 -- Creates the main bag UI window
 function oneBag.createBagUI(bagName, bagTitle, isBag)
 
-    local currencyText, currencyText, freeBagSlotsText, bagIcon
+    local currencyText, currencyText, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame
     
     local bagWindow = LibEKL.UICreateFrame("nkWindow", bagName, context)
     bagWindow:SetTitle(stringFormat(bagTitle, LibEKL.Unit.getPlayerDetails().name))
@@ -139,6 +139,69 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
             updateCoin(_, data)
         end
     end, "nkUI.OneBag.Currency.Currency")
+
+    toolsFrame = LibEKL.UICreateFrame("nkFrame", bagName .. ".ToolsFrame", bagWindow)
+    toolsFrame:SetWidth(30)
+    toolsFrame:SetHeight(30)
+    toolsFrame:SetPoint("TOPRIGHT", bagWindow, "BOTTOMRIGHT", 0, 5 * data.bagScale)
+    toolsFrame:SetBackgroundColor(data.theme.windowStartColor.r, data.theme.windowStartColor.g, data.theme.windowStartColor.b, data.theme.windowStartColor.a)
+    toolsFrame:SetLayer(2)
+
+    -- Create search icon
+    searchIcon = LibEKL.UICreateFrame("nkTexture", bagName .. ".SearchIcon", toolsFrame)
+    searchIcon:SetPoint("CENTERRIGHT", toolsFrame, "CENTERRIGHT", -5, 0)
+    searchIcon:SetHeight(20)
+    searchIcon:SetWidth(20)
+    searchIcon:SetTextureAsync("nkUI", "gfx/iconSearch.png")
+
+    -- Create search input frame (initially hidden)
+    searchFrame = LibEKL.UICreateFrame("nkFrame", bagName .. ".SearchFrame", searchIcon)
+    searchFrame:SetPoint("TOPRIGHT", searchIcon, "TOPLEFT", 0, 0)
+    searchFrame:SetWidth(150 * data.bagScale)
+    searchFrame:SetHeight(30 * data.bagScale)
+    searchFrame:SetVisible(false)
+    searchFrame:SetBackgroundColor(0, 0, 0, 1)
+
+    -- Create search input field using the enhanced text field functionality
+    searchInput = LibEKL.UICreateFrame("nkTextField", bagName .. ".SearchInput", searchFrame)
+    searchInput:SetPoint("TOPLEFT", searchFrame, "TOPLEFT", 5, 5)
+    searchInput:SetWidth(140 * data.bagScale)
+    searchInput:SetHeight(20 * data.bagScale)
+
+    -- Set up enhanced text field properties
+    searchInput:SetInnerColor({r = 0, g = 0, b = 0, a = 1})
+	searchInput:SetFocusColor (data.theme.labelColor)
+	searchInput:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
+
+    -- Toggle search frame visibility when search icon is clicked
+    searchIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+        searchFrame:SetVisible(not searchFrame:GetVisible())
+        if searchFrame:GetVisible() then
+            searchInput:Enter()
+        else
+            searchInput:Leave()
+            searchInput:SetText("")
+        end
+    end, bagName .. ".SearchIcon.Left.Down.Click")
+
+    -- Add event handlers for the text field
+    Command.Event.Attach(LibEKL.Events[bagName .. ".SearchInput"]["TextfieldChanged"], function()
+        searchInput:Leave()
+        searchFrame:SetVisible(false)
+
+        local searchPattern = searchInput:GetText():lower()
+
+        if isBag then
+            oneBag.populateBag(true, searchPattern)
+        else
+            oneBag.populateBank(true, searchPattern)
+        end
+    end, bagName .. ".SearchInput.TextfieldChanged")
+
+    Command.Event.Attach(LibEKL.Events[bagName .. ".SearchInput"]["FokusLoss"], function()
+        searchInput:Leave()
+        searchFrame:SetVisible(false)
+    end, bagName .. ".SearchInput.FokusLoss")
 
     setFreeBagSlots()
     updateCoin(_, {coin = true})
