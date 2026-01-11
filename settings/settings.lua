@@ -241,6 +241,8 @@ function internalFunc.setupDefaults()
         nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
 
         scaleUI ()
+    else
+        nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
     end
 
     -- fix for version 0.9.3
@@ -270,7 +272,7 @@ function internalFunc.setupDefaults()
         nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
     end
 
-    nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
+ 
 
 end
 
