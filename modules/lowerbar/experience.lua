@@ -5,6 +5,7 @@ local addonInfo, privateVars = ...
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local lowerBar      = privateVars.lowerBar
+local internalFunc  = privateVars.internalFunc
 
 ---------- init local variables ---------
 
@@ -52,6 +53,10 @@ function lowerBar.experience()
     datasetExpBarBGIcon:SetWidth(16)
     datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
     
+    datasetExpBarBG:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+        internalFunc.uiQuestLog()
+    end, datasetExpBarBG:GetName() .. ".Left.Down")  
+
     function datasetExpBarBG:Redraw()
         datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
         datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)

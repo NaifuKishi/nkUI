@@ -138,6 +138,8 @@ function internalFunc.uiQuestLog()
 
 	end
 
+	uiElements.questLog:SetVisible(true)
+
 	uiElements.questLog:SetTitle(stringFormat("Quests (%d)", uiElements.questLog:GetQuestCount()))
 
 	isInit = true

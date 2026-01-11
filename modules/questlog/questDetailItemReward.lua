@@ -15,9 +15,19 @@ local DEFAULT_ITEM_SIZE = 90
 
 local function uiItemReward(name, parent)
 
+	local thisItem
+
 	local ui = LibEKL.UICreateFrame("nkCanvas", name, parent)
 	ui:SetWidth((parent:GetWidth() -10 - 30) /3 ) -- 3 items per row with spacing
 	ui:SetHeight(DEFAULT_ITEM_SIZE)
+
+	ui:EventAttach(Event.UI.Input.Mouse.Cursor.In, function ()
+		Command.Tooltip(thisItem)
+	end, name .. ".Cursor.In")	
+
+	ui:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function ()
+		Command.Tooltip(nil)
+	end, name .. ".Cursor.Out")
 
     -- Create a square path
     local path = {
@@ -73,6 +83,8 @@ local function uiItemReward(name, parent)
 		local details = Inspect.Item.Detail(key)
 
 		if not details then return end
+
+		thisItem = key
 
 		local color = LibEKL.Inventory.GetItemColor(details.rarity)
 		local stroke = {

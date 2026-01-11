@@ -51,8 +51,6 @@ function questLog.questDetailTag (name, parent)
         g = 0x56 / 255,
         b = 0x2e / 255,
         a = 1,
-        cap = "round",
-        miter = "miter",
         thickness = 2
     }
 
@@ -65,6 +63,44 @@ function questLog.questDetailTag (name, parent)
     text:SetFontSize(12)
     --text:SetEffectGlow({strength = 3})
     LibEKL.UI.SetFont(text, addonInfo.id, "Montserrat")
+
+    local function getPath(width, height)
+        local cornerRadius = 5  -- Fixed corner radius in pixels
+
+        -- Calculate the proportional positions for the control points
+        local left = cornerRadius / width
+        local right = 1 - left
+        local top = cornerRadius / height
+        local bottom = 1 - top
+
+        return {
+            -- Top-left corner
+            {x = left, y = 0},
+            {x = 0, y = top,
+            xControl = 0, yControl = 0},
+
+            -- Bottom-left corner
+            {x = left, y = 1},
+            {x = 0, y = bottom,
+            xControl = 0, yControl = 1},
+
+            -- Bottom edge
+            {x = right, y = 1},
+
+            -- Bottom-right corner
+            {x = 1, y = bottom,
+            xControl = 1, yControl = 1},
+
+            -- Top-right corner
+            {x = right, y = 0},
+            {x = 1, y = top,
+            xControl = 1, yControl = 0},
+
+            -- Top edge
+            {x = left, y = 0}
+        }
+    end
+
 
     function ui:SetText(newText)
         text:ClearWidth()
