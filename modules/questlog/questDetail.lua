@@ -197,11 +197,18 @@ function questLog.questDetail (name, parent)
 			
 			descriptionFrame:SetVisible(false)
 		end
-		
-	
-		totalHeight = 2500
+			
+		local totalHeight = 0
+		totalHeight = title:GetHeight() + tagFrame:GetHeight()
+		totalHeight = totalHeight + summary:GetHeight()
+					
+		if objectivesFrame:GetVisible() then totalHeight = totalHeight + objectivesFrame:GetHeight() + 10 end
+		if rewardsFrame:GetVisible() then totalHeight = totalHeight + rewardsFrame:GetHeight() + 10 end
+		if guaranteedItemsFrame:GetVisible() then totalHeight = totalHeight + guaranteedItemsFrame:GetHeight() + 10 end
+		if chooseItemFrame:GetVisible() then totalHeight = totalHeight + chooseItemFrame:GetHeight() + 10 end
+		if descriptionFrame:GetVisible() then totalHeight = totalHeight + descriptionFrame:GetHeight() + 10 end
 
-		contentFrame:SetHeight(totalHeight)
+		contentFrame:SetHeight(totalHeight + 50)
 
 		local value = scrollPane:GetLanePosition()
 		scrollPane:SetContent(contentFrame)

@@ -64,22 +64,25 @@ local function uiItemReward(name, parent)
 	texture:SetPoint("TOPCENTER", ui, "TOPCENTER", 0, 10)
 	texture:SetWidth(40)
 	texture:SetHeight(40)
+	texture:SetLayer(1)
 
 	local text = LibEKL.UICreateFrame("nkText", name .. ".text", ui)
 	text:SetPoint("BOTTOMCENTER", texture, "BOTTOMCENTER")
 	text:SetFontSize(14)
 	text:SetEffectGlow({strength = 3})
+	text:SetLayer(1)
 
 	LibEKL.UI.SetFont(text, addonInfo.id, "MontserratSemiBold")
 
-	local count = LibEKL.UICreateFrame("nkText", name .. ".count", texture)
+	local count = LibEKL.UICreateFrame("nkText", name .. ".count", ui)
 	count:SetPoint("CENTER", texture, "CENTER")
-	count:SetFontSize(12)
+	count:SetFontSize(18)
 	count:SetEffectGlow({strength = 3})
+	count:SetLayer(2)
 
 	LibEKL.UI.SetFont(count, addonInfo.id, "MontserratSemiBold")
 
-	function ui:SetItem(key, amount, rarity)
+	function ui:SetItem(key, amount)
 		local details = Inspect.Item.Detail(key)
 
 		if not details then return end
@@ -108,10 +111,9 @@ local function uiItemReward(name, parent)
 			text:SetWidth(ui:GetWidth() - 10)
 		end
 		
-		text:SetPoint("TOPCENTER", texture, "BOTTOMCENTER", 0, 10
-	)
+		text:SetPoint("TOPCENTER", texture, "BOTTOMCENTER", 0, 10)
 
-		if amount then
+		if amount and amount > 1 then
 			count:SetText(stringFormat("%d", amount))
 			count:SetVisible(true)
 		else
