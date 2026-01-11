@@ -79,19 +79,14 @@ local function shortenName(name, maxLen)
 
 end
 
-function internalFunc.questLogInit(flag)
+function internalFunc.questLogInit()
+	
+	if isInit then
+		uiElements.questLog:SetVisible(not uiElements.questLog:GetVisible())
+	else
+		internalFunc.uiQuestLog()
+	end
 
-	 if flag then
-        if isInit then
-            uiElements.questLog:SetVisible(true)
-        else
-            internalFunc.uiQuestLog()
-        end
-    else
-        if uiElements.questLog then
-            uiElements.questLog:SetVisible(false)
-        end
-    end    
 end
 
 function internalFunc.uiQuestLog()
