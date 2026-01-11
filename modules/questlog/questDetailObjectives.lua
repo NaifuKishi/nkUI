@@ -116,7 +116,8 @@ function questLog.uiObjectives (name, parent)
 			end)
 
             objectiveText:SetComplete(objective.complete)
-			objectiveText:SetText(cleanDescription)
+			            
+            objectiveText:SetText(string.format("%s %s", cleanDescription, countText))
             height = height + objectiveText:GetHeight() + 10
 
 			prevObjective = objectiveText

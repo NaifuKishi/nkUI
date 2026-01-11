@@ -1,3 +1,9 @@
+V1.1.3
+    - fixes: Quest Log - fixed missing count information in objectives
+
+V1.1.2
+    - fixes: Settings - fixed error when upgrading from old version
+
 V1.1.1
     - new: Quest Log - quest objectives now have a small icon to set waypoint
     - new: Quest Log - show sell price of quest rewards
