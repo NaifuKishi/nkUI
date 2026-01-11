@@ -1,6 +1,9 @@
 V1.1.0
+    - new: Quest Log - added new Quest Log feature
     - new: One Bag - added bank support
     - new: One Bag - bagg search functionality
+    - updates: Quest Tracker - Left click on quest will open Quest Log
+    - Updates: Lower Bar - Left click on Experience will open Quest Log
     - fixes: One Bag - Trash no displayed at the end for German and French
     - fixes: One Bag - will try to reposition on screen if being off screen
     - fixes: Quest Tracker - will try to reposition on screen if being off screen
