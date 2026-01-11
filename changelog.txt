@@ -1,6 +1,7 @@
 V1.1.1
     - new: Quest Log - quest objectives now have a small icon to set waypoint
     - new: Quest Log - show sell price of quest rewards
+    - fixes: One Bag - fixed bank showing bag items
 
 V1.1.0
     - new: Quest Log - added new Quest Log feature

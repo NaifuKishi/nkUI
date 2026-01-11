@@ -210,6 +210,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
         
     local oSetVisible = bagWindow.SetVisible
     function bagWindow:SetVisible(visible)
+
         if visible then            
             LibEKL.Inventory.updateDB()
             

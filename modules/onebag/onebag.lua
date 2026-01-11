@@ -149,7 +149,7 @@ function oneBag.populateBank(forceCacheUpdate, searchPattern)
         end
         items = filteredItems
     else
-        items = cachedBagItems
+        items = cachedBankItems
     end
 
     oneBag.bagContent(uiElements.oneBank, "nkUI.oneBank", items, bankCategories, bankItemIcons)
@@ -157,6 +157,8 @@ function oneBag.populateBank(forceCacheUpdate, searchPattern)
 end
 
 function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
+
+    if not cachedItems then return end
 
     local counter = 1
     local firstIcon = nil
