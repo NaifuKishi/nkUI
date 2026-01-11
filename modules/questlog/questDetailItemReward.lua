@@ -9,49 +9,95 @@ local langTexts		= privateVars.langTexts
 
 local stringFormat	= string.format
 
-local itemRewards = {}
-local chooseableRewards = {}
+local displayItems = {}
+
+local DEFAULT_ITEM_SIZE = 90
 
 local function uiItemReward(name, parent)
 
-	local ui = LibEKL.UICreateFrame("nkFrame", name, parent)
-	ui:SetWidth((parent:GetWidth() -10) /3 ) -- 3 items per row with spacing
-	ui:SetHeight(45) -- 25% smaller height
+	local ui = LibEKL.UICreateFrame("nkCanvas", name, parent)
+	ui:SetWidth((parent:GetWidth() -10 - 30) /3 ) -- 3 items per row with spacing
+	ui:SetHeight(DEFAULT_ITEM_SIZE)
+
+    -- Create a square path
+    local path = {
+        {xProportional = 0, yProportional = 0},
+        {xProportional = 1, yProportional = 0},
+        {xProportional = 1, yProportional = 1},
+        {xProportional = 0, yProportional = 1},
+        {xProportional = 0, yProportional = 0}
+    }
+
+	local fill = {
+        type = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, math.pi / 3, 0, 0), -- 180 degree angle
+        color = {
+            {r = 0.149, g = 0.165, b = 0.216, a = 1, position = 0}, -- Start color
+            {r = 0.086, g = 0.11, b = 0.153, a = 1, position = 1}  -- End color
+        }
+    }
+
+    -- Set stroke color
+    local stroke = {
+        r = 0x66 / 255,
+        g = 0x56 / 255,
+        b = 0x2e / 255,
+        a = 1,
+        cap = "round",
+        miter = "miter",
+        thickness = 1
+    }
+
+    ui:SetShape(path, fill, stroke)
 
 	local texture = LibEKL.UICreateFrame("nkTexture", name .. ".texture", ui)
-	texture:SetPoint("TOPCENTER", ui, "TOPCENTER")
-	texture:SetWidth(30) -- 25% smaller width
-	texture:SetHeight(30) -- 25% smaller height
+	texture:SetPoint("TOPCENTER", ui, "TOPCENTER", 0, 10)
+	texture:SetWidth(40)
+	texture:SetHeight(40)
 
 	local text = LibEKL.UICreateFrame("nkText", name .. ".text", ui)
-	text:SetPoint("BOTTOMCENTER", ui, "BOTTOMCENTER")
-	text:SetFontSize(12) -- 25% smaller font size
+	text:SetPoint("BOTTOMCENTER", texture, "BOTTOMCENTER")
+	text:SetFontSize(14)
 	text:SetEffectGlow({strength = 3})
 
 	LibEKL.UI.SetFont(text, addonInfo.id, "MontserratSemiBold")
 
 	local count = LibEKL.UICreateFrame("nkText", name .. ".count", texture)
 	count:SetPoint("CENTER", texture, "CENTER")
-	count:SetFontSize(12) -- 25% smaller font size
+	count:SetFontSize(12)
 	count:SetEffectGlow({strength = 3})
 
 	LibEKL.UI.SetFont(count, addonInfo.id, "MontserratSemiBold")
 
-	function ui:SetItem(key, amount)
+	function ui:SetItem(key, amount, rarity)
 		local details = Inspect.Item.Detail(key)
 
 		if not details then return end
+
+		local color = LibEKL.Inventory.GetItemColor(details.rarity)
+		local stroke = {
+			r = color.r,
+			g = color.g,
+			b = color.b,
+			a = 1,
+			cap = "round",
+			miter = "miter",
+			thickness = 1
+    	}
+		
+		ui:SetShape(path, fill, stroke)
 
 		texture:SetTextureAsync("Rift", details.icon)
 		text:ClearWidth()
 		text:ClearPoint("BOTTOMCENTER")
 		text:SetText(details.name)
 
-		if text:GetWidth() > ui:GetWidth() then
-			text:SetWidth(ui:GetWidth())
+		if text:GetWidth() > ui:GetWidth() - 10 then
+			text:SetWidth(ui:GetWidth() - 10)
 		end
 		
-		text:SetPoint("BOTTOMCENTER", ui, "BOTTOMCENTER")
+		text:SetPoint("TOPCENTER", texture, "BOTTOMCENTER", 0, 10
+	)
 
 		if amount then
 			count:SetText(stringFormat("%d", amount))
@@ -68,65 +114,88 @@ local function uiItemReward(name, parent)
 
 end
 
-function questLog.DisplayItems(name, parentFrame, titleItem, itemList, itemRewardsTable)
+function questLog.uiItemRewards (type, name, parent)
 
-    if not itemList or next(itemList) == nil then
-        parentFrame:SetVisible(false)
-        return false
-    end
-
-    local itemCount = 1
-    local rowCount = 1
-    local itemsInRow = 0
-    local prevRowReward = nil
-    local lastLeftItem = nil
+    local itemFrame = questLog.uiBox (name .. ".itemRewards." .. type, parent)
 	
-	parentFrame:SetVisible(true)
-	--parentFrame:SetBackgroundColor(1, 0, 0, .2)
+	if type == "guaranteed" then
+		itemFrame:SetTitle("GUARANTEED REWARDS")
+	else
+		itemFrame:SetTitle("CHOOSEABLE REWARDS")
+	end
+	
+	local oSetTitle = itemFrame.SetTitle
 
-	local height = titleItem:GetHeight() + 5
+	function itemFrame:SetTitle(newTitle)
+		oSetTitle(self, newTitle)
+	end
 
-    for itemId, count in pairs(itemList) do
-        local thisItemReward
-        if itemCount > #itemRewardsTable then
-            thisItemReward = uiItemReward(name .. ".ItemReward." .. itemCount, parentFrame)
-            table.insert(itemRewardsTable, thisItemReward)
-        else
-            thisItemReward = itemRewardsTable[itemCount]
-        end
+	function itemFrame:SetItems(items)
 
-        -- Calculate position
-        if itemsInRow == 0 then
-            -- First item in row
-            if rowCount == 1 then
-                thisItemReward:SetPoint("TOPLEFT", titleItem, "BOTTOMLEFT", 0, 10)
-				height = height + 45 -- 25% smaller height
-            else
-                thisItemReward:SetPoint("TOPLEFT", prevRowReward, "BOTTOMLEFT", 0, 10)
-				height = height + 55 -- 25% smaller height with spacing
-            end
-            prevRowReward = thisItemReward
-            lastLeftItem = thisItemReward
-        else
-            -- Second or third item in row
-            thisItemReward:SetPoint("TOPLEFT", itemRewardsTable[itemCount - 1], "TOPRIGHT", 10, 0)
-        end
+		if not items then 
+			itemFrame:SetVisible(false)
+			return 
+		end
 
-        -- Set item and make visible
-        thisItemReward:SetItem(itemId, count)
-        thisItemReward:SetVisible(true)
+		itemFrame:SetVisible(true)
 
-        -- Update counters
-        itemsInRow = itemsInRow + 1
-        if itemsInRow >= 3 then -- Changed from 2 to 3
-            itemsInRow = 0
-            rowCount = rowCount + 1
-        end
+		if not displayItems[type] then displayItems[type] = {} end
 
-		parentFrame:SetHeight(height)
-        itemCount = itemCount + 1
-    end
+		for _, v in pairs(displayItems[type]) do
+			v:SetVisible(false)
+		end
 
-	return true
+		local itemCount = 1
+		local rowCount = 1
+		local itemsInRow = 0
+		local prevRowReward = nil
+		local height = 0
+
+		local itemRewardsTable = displayItems[type]
+
+		for itemId, count in pairs(items) do
+
+			local thisItemReward
+			if itemCount > #itemRewardsTable then
+				local thisName = string.format("%s.ItemReward.%s.%d", name, type, itemCount)
+				thisItemReward = uiItemReward(thisName, itemFrame)
+				table.insert(itemRewardsTable, thisItemReward)
+			else
+				thisItemReward = itemRewardsTable[itemCount]
+			end
+
+			-- Calculate position
+			if itemsInRow == 0 then
+				-- First item in row
+				if rowCount == 1 then
+					thisItemReward:SetPoint("TOPLEFT", itemFrame:GetTitle(), "BOTTOMLEFT", 0, 10)
+				else
+					thisItemReward:SetPoint("TOPLEFT", prevRowReward, "BOTTOMLEFT", 0, 10)
+				end
+				prevRowReward = thisItemReward
+				height = height + DEFAULT_ITEM_SIZE + 10
+			else
+				-- Second or third item in row
+				thisItemReward:SetPoint("TOPLEFT", itemRewardsTable[itemCount - 1], "TOPRIGHT", 10, 0)
+			end
+
+			-- Set item and make visible
+			thisItemReward:SetItem(itemId, count)
+			thisItemReward:SetVisible(true)
+
+			-- Update counters
+			itemsInRow = itemsInRow + 1
+			if itemsInRow >= 3 then -- Changed from 2 to 3
+				itemsInRow = 0
+				rowCount = rowCount + 1
+			end
+
+			itemCount = itemCount + 1
+		end
+
+		itemFrame:SetHeight(height +45)
+	end
+
+	return itemFrame
 
 end

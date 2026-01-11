@@ -45,6 +45,10 @@ RunOnStartup = {
 	"modules/questlog/ui.lua",	
 	"modules/questlog/questDetail.lua",	
 	"modules/questlog/questDetailItemReward.lua",
+	"modules/questlog/questDetailTag.lua",
+	"modules/questlog/questDetailUIElements.lua",
+	"modules/questlog/questDetailObjectives.lua",
+	"modules/questlog/questDetailRewards.lua",
 
 	--"modules/questlog/questlog.lua",
 	--"modules/questlog/ui.lua",
