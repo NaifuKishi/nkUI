@@ -131,9 +131,9 @@ function questLog.uiItemRewards (type, name, parent)
     local itemFrame = questLog.uiBox (name .. ".itemRewards." .. type, parent)
 	
 	if type == "guaranteed" then
-		itemFrame:SetTitle("GUARANTEED REWARDS")
+		itemFrame:SetTitle(langTexts.questLog.guaranteedRewards)
 	else
-		itemFrame:SetTitle("CHOOSEABLE REWARDS")
+		itemFrame:SetTitle(langTexts.questLog.chooseableRewards)
 	end
 	
 	local oSetTitle = itemFrame.SetTitle

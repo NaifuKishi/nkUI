@@ -195,6 +195,21 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
             planarFocus = "Planar Fokus",
 			planarLesser = "Planar Gering",
             planarGreater = "Planar Groß"
-        }
+        },
+		questLog = {
+			rewards = "BELOHNUNGEN",
+			objectives = "ZIELSETZUNGEN",
+			detailedDescription = "DETAILIERTE BESCHREIBUNG",
+			guaranteedRewards = "GARANTIERTE BELOHNUNGEN",
+			chooseableRewards = "AUSWAHLBARER BELOHNUNGEN",
+			unknownFaction = "Unbekannte Fraktion",
+			reputationWith = "Ruf bei <font color=\"#3ca7dd\">%s</font>",
+			suffixList = {
+				exp = "Erfahrung",
+				prestige = "Prestige",
+				favor = "Gunst",
+				guildExp = "Gildenerfahrung"
+			}
+		}
 	}
 end

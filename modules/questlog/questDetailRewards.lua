@@ -68,7 +68,7 @@ function questLog.uiRewards (name, parent)
 	local hasPatron = ability ~= nil
 
     local rewardsFrame = questLog.uiBox (name , parent)	
-	rewardsFrame:SetTitle("REWARDS")
+	rewardsFrame:SetTitle(langTexts.questLog.rewards)
 
     function rewardsFrame:SetRewardCoin(rewardCoin)
         local thisReward
@@ -127,13 +127,6 @@ function questLog.uiRewards (name, parent)
     end
 
     function rewardsFrame:SetReward(rewardType, rewardValue)       
-        local suffixList = { 
-            exp = "Experience",
-            prestige = "Prestige", 
-            favor = "Favor",
-            guildExp = "Guild Experience"
-        }
-
         local thisReward
 
         if rewards[rewardType] == nil then
@@ -148,9 +141,9 @@ function questLog.uiRewards (name, parent)
 
         if hasPatron then
             local bonusValue = math.floor(rewardValue * 0.4)
-            thisReward:SetText(rewardValue, suffixList[rewardType], bonusValue)
+            thisReward:SetText(rewardValue, langTexts.questLog.suffixList[rewardType], bonusValue)
         else
-            thisReward:SetText(rewardValue, suffixList[rewardType])
+            thisReward:SetText(rewardValue, langTexts.questLog.suffixList[rewardType])
         end
     end
 
@@ -170,8 +163,8 @@ function questLog.uiRewards (name, parent)
 
             count = count + 1
             
-            local factionName = Inspect.Faction.Detail(factionId).name or "Unknown Faction"					
-            local suffix = string.format("Reputation with <font color=\"#3ca7dd\">%s</font>", factionName)
+            local factionName = Inspect.Faction.Detail(factionId).name or langTexts.questLog.unknownFaction
+            local suffix = string.format(langTexts.questLog.reputationWith, factionName)
 
             if hasPatron then
                 local bonusNotoriety = math.floor(amount * 0.4)
@@ -214,7 +207,12 @@ function questLog.uiRewards (name, parent)
             end
         end
 
-        rewardsFrame:SetHeight(height + 45)
+        if height == 0 then
+            rewardsFrame:SetVisible(false)
+        else
+            rewardsFrame:SetVisible(true)
+            rewardsFrame:SetHeight(height + 45)
+        end
     end
 
     function rewardsFrame:SetRewards(thisDetails)

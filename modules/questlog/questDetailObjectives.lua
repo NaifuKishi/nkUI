@@ -54,7 +54,7 @@ end
 function questLog.uiObjectives (name, parent)
 
     local objectivesFrame = questLog.uiBox (name .. ".objectives", parent)	
-	objectivesFrame:SetTitle("OBJECTIVES")
+	objectivesFrame:SetTitle(langTexts.questLog.objectives)
 
     function objectivesFrame:AddObjectives(objectiveList)
 

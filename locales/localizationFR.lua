@@ -195,6 +195,22 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
             planarFocus = "Focalisation planaire",
             planarLesser = "Planar Mineur",
             planarGreater = "Planar Majeur"
+        },
+        questLog = {
+            rewards = "RÉCOMPENSES",
+            objectives = "OBJECTIFS",
+            detailedDescription = "DESCRIPTION DÉTAILLÉE",
+            guaranteedRewards = "RÉCOMPENSES GARANTIES",
+            chooseableRewards = "RÉCOMPENSES CHOISISSABLES",
+            unknownFaction = "Faction Inconnue",
+            reputationWith = "Réputation avec <font color=\"#3ca7dd\">%s</font>",
+            suffixList = {
+                exp = "Expérience",
+                prestige = "Prestige",
+                favor = "Faveur",
+                guildExp = "Expérience de Guilde"
+            }
         }
+
 	}
 end

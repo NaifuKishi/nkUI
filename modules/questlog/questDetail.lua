@@ -52,6 +52,14 @@ function questLog.questDetail (name, parent)
 	
 	LibEKL.UI.SetFont(title, addonInfo.id, "MontserratBold")	
 
+	local level = LibEKL.UICreateFrame("nkText", "QuestLevel", contentFrame)
+	level:SetPoint("TOPRIGHT", contentFrame, "TOPRIGHT", -50, 0)
+	level:SetFontSize(18)
+	level:SetFontColor(1, 1, 1, 1)
+	level:SetEffectGlow({ strength = 3 })
+	
+	LibEKL.UI.SetFont(level, addonInfo.id, "MontserratBold")	
+
 	local tagFrame = LibEKL.UICreateFrame("nkFrame", "QuestType", contentFrame)
 	tagFrame:SetWidth(contentFrame:GetWidth() - 20)
 	tagFrame:SetHeight(25)
@@ -80,7 +88,7 @@ function questLog.questDetail (name, parent)
 	chooseItemFrame:SetPoint("TOPLEFT", guaranteedItemsFrame, "BOTTOMLEFT", 0, 15)
 
 	local descriptionFrame = questLog.uiBox (name .. ".description", contentFrame)	
-	descriptionFrame:SetTitle("DETAILED DESCRIPTION")
+	descriptionFrame:SetTitle(langTexts.questLog.detailedDescription)
 
 	local description = LibEKL.UICreateFrame("nkText", "QuestDescription", descriptionFrame)
 	description:SetPoint("TOPLEFT", descriptionFrame:GetTitle(), "BOTTOMLEFT", 0, 10)
@@ -93,9 +101,33 @@ function questLog.questDetail (name, parent)
 
 	-- Function to update quest details
 	function ui:UpdateQuestDetails(thisDetails)
-		
+
+		local lvl, libDetails = LibQB.query.byKey(thisDetails.id, true)
+
+		if libDetails ~= nil then		
+			thisDetails.level = lvl		
+
+			local color = "#009900"
+			local playerLevel = LibEKL.Unit.getPlayerDetails().level
+
+			if lvl == nil then
+				color = "#009900"
+			elseif lvl < playerLevel -7 then
+				color = "#8E8E8E"
+			elseif lvl > playerLevel +5 then
+				color = "#FF3333"
+			elseif lvl > playerLevel + 2 then
+				color = "#FF8000"
+			end
+
+			if color ~= nil and thisDetails.level ~= nil then
+				thisDetails.level = stringFormat("Level <font color='%s'>%s</font>", color, thisDetails.level)
+			end
+		end
+
 		-- Update static elements
 		title:SetText(thisDetails.name or "")
+		level:SetText(thisDetails.level or "", true)
 
 		for _, tag in pairs(typeTags) do
 			tag:SetVisible(false)
@@ -126,6 +158,7 @@ function questLog.questDetail (name, parent)
 		end
 		
 		summary:SetText(thisDetails.summary or "")
+		summary:SetWidth(contentFrame:GetWidth() - 20)
 
 		objectivesFrame:AddObjectives(thisDetails.objective)
 
@@ -137,8 +170,10 @@ function questLog.questDetail (name, parent)
 
 		if guaranteedItemsFrame:GetVisible() then
 			chooseItemFrame:SetPoint("TOPLEFT", guaranteedItemsFrame, "BOTTOMLEFT", 0, 10)
-		else
+		elseif rewardsFrame:GetVisible() then
 			chooseItemFrame:SetPoint("TOPLEFT", rewardsFrame, "BOTTOMLEFT", 0, 10)
+		else
+			chooseItemFrame:SetPoint("TOPLEFT", objectivesFrame, "BOTTOMLEFT", 0, 10)
 		end
 
 		-- Position detailed description below rewards
@@ -153,8 +188,10 @@ function questLog.questDetail (name, parent)
 				descriptionFrame:SetPoint("TOPLEFT", chooseItemFrame, "BOTTOMLEFT", 0, 10)
 			elseif guaranteedItemsFrame:GetVisible() then
 				descriptionFrame:SetPoint("TOPLEFT", guaranteedItemsFrame, "BOTTOMLEFT", 0, 10)
-			else
+			elseif rewardsFrame:GetVisible() then				
 				descriptionFrame:SetPoint("TOPLEFT", rewardsFrame, "BOTTOMLEFT", 0, 10)
+			else
+				descriptionFrame:SetPoint("TOPLEFT", objectivesFrame, "BOTTOMLEFT", 0, 10)
 			end
 		else
 			

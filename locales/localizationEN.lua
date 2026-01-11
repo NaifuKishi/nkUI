@@ -196,6 +196,21 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 					planarFocus = "Planar Fokus",
 					planarLesser = "Planar Lesser",
 					planarGreater = "Planar Greater"
-				}				
+				},
+		questLog = {
+			rewards = "REWARDS",
+			objectives = "OBJECTIVES",
+			detailedDescription = "DETAILED DESCRIPTION",
+			guaranteedRewards = "GUARANTEED REWARDS",
+			chooseableRewards = "CHOOSEABLE REWARDS",
+			unknownFaction = "Unknown Faction",
+			reputationWith = "Reputation with <font color=\"#3ca7dd\">%s</font>",
+			suffixList = { 
+				exp = "Experience",
+				prestige = "Prestige", 
+				favor = "Favor",
+				guildExp = "Guild Experience"
+			}
+		}
 	}
 end
