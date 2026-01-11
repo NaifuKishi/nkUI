@@ -61,7 +61,7 @@ function questLog.buildUI ()
 	scrollPane:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 5, 5)
 	scrollPane:SetWidth(300 * data.uiScale)
 	scrollPane:SetHeight(ui:GetContent():GetHeight() - ui:GetHeader():GetHeight())
-	scrollPane:SetAdjust(200)
+	scrollPane:SetAdjust(100)
 	
 	scrollPane:SetColor(0, 0, 0, .2)
     scrollPane:SetColorInner({ r = 0, g = 0, b = 0, a = .4})
@@ -140,7 +140,7 @@ function questLog.buildUI ()
 			end
 		end
 
-		content:SetHeight(height) 
+		content:SetHeight(height)			
 
 		local value = scrollPane:GetLanePosition()
 		scrollPane:SetContent(content)

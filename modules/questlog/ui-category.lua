@@ -245,8 +245,6 @@ function questLog.questCategory(category, parent)
 
 	function frame:AddQuest(key, title, subTitle, level)
 
-		--dump (subTitle)
-
 		local thisEntry
 
 		if #recycleBin > 0 then
@@ -334,11 +332,13 @@ function questLog.questCategory(category, parent)
 
 				thisEntry:RecalcHeight()
 
-				if isUpdate == true then 
-					return false
-				else
-					return thisEntry:GetCollapsed()
-				end
+				--if isUpdate == true then 
+				--	return false
+				--else
+				--	return thisEntry:GetCollapsed()
+				--end
+
+				return false
 			end
 		end 
 	end

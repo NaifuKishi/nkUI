@@ -13,6 +13,8 @@ local DEFAULT_OBJECTIVE_SIZE = 14
 
 local function objectiveElement (name, parent)
 
+    local wayPointX, wayPointY
+
     local objectiveIcon = LibEKL.UICreateFrame("nkTexture", name, parent)
     objectiveIcon:SetWidth(DEFAULT_OBJECTIVE_SIZE)
     objectiveIcon:SetHeight(DEFAULT_OBJECTIVE_SIZE)
@@ -25,6 +27,16 @@ local function objectiveElement (name, parent)
     objectiveText:SetEffectGlow({ strength = 3})
 
     LibEKL.UI.SetFont(objectiveText, addonInfo.id, "MontserratSemiBold")
+
+    local mapPin = LibEKL.UICreateFrame("nkTexture", name .. ".mapPain", parent)
+    mapPin:SetWidth(DEFAULT_OBJECTIVE_SIZE)
+    mapPin:SetHeight(DEFAULT_OBJECTIVE_SIZE)
+    mapPin:SetPoint("CENTERRIGHT", objectiveText, "CENTERRIGHT", 0, 0)
+    mapPin:SetTextureAsync("nkUI", "gfx/questIconMapPoint.png")
+
+    mapPin:EventAttach(Event.UI.Input.Mouse.Left.Down, function ()
+		Command.Map.Waypoint.Set(wayPointX, wayPointY)
+	end, mapPin:GetName() .. ".Left.Down")
 
     function objectiveIcon:SetComplete(isComplete)
         if isComplete then
@@ -44,7 +56,18 @@ local function objectiveElement (name, parent)
 
     function objectiveIcon:SetVisible(newFlag)
         oSetVisible(self, newFlag)
-        objectiveText:SetVisible(newFlag)
+        objectiveText:SetVisible(newFlag)        
+        if not newFlag then mapPin:SetVisible(false) end
+    end
+
+    function objectiveIcon:SetMapTarget(x, y)
+        if x == nil then
+            mapPin:SetVisible(false)
+            return
+        end
+
+        mapPin:SetVisible(true)
+        wayPointX, wayPointY = x, y        
     end
 
     return objectiveIcon
@@ -65,7 +88,7 @@ function questLog.uiObjectives (name, parent)
         -- Update objectives
 		local prevObjective, height = objectivesFrame:GetTitle(), 0
 		for i, objective in ipairs(objectiveList or {}) do
-			
+
             local objectiveText
 
 			if i > #objectives then
@@ -74,6 +97,12 @@ function questLog.uiObjectives (name, parent)
 			else
 				objectiveText = objectives[i]				
 			end            
+
+            if objective.indicator and not objective.complete then
+                objectiveText:SetMapTarget(objective.indicator[1].x, objective.indicator[1].z)
+            else
+                objectiveText:SetMapTarget()
+            end            
 
             objectiveText:SetVisible(true)
 			objectiveText:SetPoint("TOPLEFT", prevObjective, "BOTTOMLEFT", 0, 10)

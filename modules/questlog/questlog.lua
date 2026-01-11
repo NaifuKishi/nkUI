@@ -25,8 +25,6 @@ local LibEKLGetLanguageShort	= LibEKL.Tools.Lang.GetLanguageShort
 
 ---------- init local variables ---------
 
-local PROGRESSBAR_COLOR = {0.9, 0.74, 0, 1}
-
 questLog.bodyColor = { .827, .827, .827, 1 }
 questLog.bodyCompleteColor = {.6, .6, .6, 1}
 
@@ -104,20 +102,6 @@ function internalFunc.uiQuestLog()
 		uiElements.questLog = questLog.buildUI ()
 		
 		questLog.fillLog ()
-		
-		if not uiElements.qlProgressBar then
-			uiElements.qlProgressBar = LibEKL.UICreateFrame("nkProgressBar", "nkUI.questLog.progressBar", uiElements.questLog)
-			uiElements.qlProgressBar:SetPoint("CENTERTOP", uiElements.questLog, "CENTERTOP", 0, 40)
-			
-			uiElements.qlProgressBar:SetWidth(uiElements.questLog:GetWidth()-20)
-			uiElements.qlProgressBar:SetHeight(20)
-			uiElements.qlProgressBar:SetLayer(99)
-			uiElements.qlProgressBar:SetVisible(false)
-			uiElements.qlProgressBar:SetFontColor(0, 0, 0, 1)
-			uiElements.qlProgressBar:SetFont(addonInfo.id, "MontserratSemiBold")
-			uiElements.qlProgressBar:SetBorderColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
-			uiElements.qlProgressBar:SetFillColor(PROGRESSBAR_COLOR[1], PROGRESSBAR_COLOR[2], PROGRESSBAR_COLOR[3], PROGRESSBAR_COLOR[4])
-		end
 		
 		Command.Event.Attach(Event.Quest.Accept, questLog.eventQuestAccept, "nkUI.questLog.Quest.Accept")
 		Command.Event.Attach(Event.Quest.Abandon, questLog.eventQuestAbandon, "nkUI.questLog.Quest.Abandon")

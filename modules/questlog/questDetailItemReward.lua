@@ -82,6 +82,12 @@ local function uiItemReward(name, parent)
 
 	LibEKL.UI.SetFont(count, addonInfo.id, "MontserratSemiBold")
 
+	local coin = LibEKL.UICreateFrame("nkText", name .. ".coin", ui)
+	coin:SetPoint("TOPRIGHT", ui, "TOPRIGHT", -10, 10)
+	coin:SetFontSize(12)
+	coin:SetEffectGlow({strength = 3})
+	coin:SetLayer(2)
+
 	function ui:SetItem(key, amount)
 		local details = Inspect.Item.Detail(key)
 
@@ -121,7 +127,34 @@ local function uiItemReward(name, parent)
 		end
 		
 		local color = LibEKL.Inventory.GetItemColor(details.rarity)
-        text:SetFontColor(color.r, color.g, color.b, 1)		
+        text:SetFontColor(color.r, color.g, color.b, 1)
+
+		if details.sell then
+			local platin = math.floor(details.sell / 10000)
+			local gold = math.floor((details.sell - (platin * 10000)) / 100)
+			local silver = details.sell - (platin * 10000) - (gold * 100)
+
+			-- Build the coin string with only non-zero values
+			local coinParts = {}
+			if platin > 0 then
+				table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+			end
+			
+			if gold > 0 or platin > 0 then
+				table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
+			end
+			if silver > 0 or (platin > 0 or gold > 0) then
+				table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
+			end
+
+			-- Combine the parts with spaces
+			local coinText = table.concat(coinParts, " ")
+
+			coin:SetText(coinText, true)			
+			coin:SetVisible(true)
+		else
+			coin:SetVisible(false)
+		end
 	end
 
 	return ui

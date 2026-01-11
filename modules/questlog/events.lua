@@ -152,7 +152,6 @@ local function questAdd(list)
 	local addCoRoutine = coroutine.create(
 		function ()
 			for idx = 1, #list, 1 do
-				uiElements.qlProgressBar:SetValue(idx)
 				local key = list[idx]				
 				if key ~= nil then				
 					local flag, details = pcall(inspectQuestDetail, key)
@@ -193,14 +192,10 @@ local function questAdd(list)
 		   uiElements.questLog:SetVisible(true)
 		   _addonInit = true
 		end
-		uiElements.qlProgressBar:SetVisible(false)
 		if uiElements.panel ~= nil then uiElements.panel:UpdateTitle() end
 		uiElements.questLog:ReorderCategories()
 	end
 	
-	uiElements.qlProgressBar:SetRange(1, #list)
-	uiElements.qlProgressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetVisible() == true then uiElements.qlProgressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = addCoRoutine, counter = #list, active = true, callBack = callBack })
 	runQuestUpdate = false
 
@@ -211,7 +206,6 @@ local function questChange(list)
 	local changeCoRoutine = coroutine.create(
 		function ()
 			for idx = 1, #list, 1 do
-				uiElements.qlProgressBar:SetValue(idx)
 				local key = list[idx]
 				local flag, details = pcall( inspectQuestDetail, key)
 				if flag then
@@ -237,13 +231,9 @@ local function questChange(list)
 	
 	local callBack = function ()
 		runQuestUpdate = true
-		uiElements.qlProgressBar:SetVisible(false)
 		if uiElements.panel ~= nil then uiElements.panel:UpdateTitle() end
 	end
 	
-	uiElements.qlProgressBar:SetRange(1, #list)
-	uiElements.qlProgressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetVisible() == true then uiElements.qlProgressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = changeCoRoutine, counter = #list, active = true, callBack = callBack })
 	runQuestUpdate = false
 	
@@ -254,9 +244,7 @@ local function questRemove(list)
 	local removeCoRoutine = coroutine.create(
 		function ()
 
-			for idx = 1, #list, 1 do
-				uiElements.qlProgressBar:SetValue(idx)
-				
+			for idx = 1, #list, 1 do				
 				if type(list[idx]) == 'function' then
 					list[idx]()
 				else
@@ -273,14 +261,10 @@ local function questRemove(list)
 	
 	local callBack = function ()
 		runQuestUpdate = true
-		uiElements.qlProgressBar:SetVisible(false)
 		if uiElements.panel ~= nil then uiElements.panel:UpdateTitle() end
 		uiElements.useUI:Update()
 	end
 	
-	uiElements.qlProgressBar:SetRange(1, #list)
-	uiElements.qlProgressBar:SetValue(1)
-	if #list > 3 and uiElements.questLog:GetVisible() == true then uiElements.qlProgressBar:SetVisible(true) end
 	LibEKL.Coroutines.Add ({ func = removeCoRoutine, counter = #list, active = true, callBack = callBack })
 	runQuestUpdate = false
 

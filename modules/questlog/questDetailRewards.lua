@@ -92,10 +92,11 @@ function questLog.uiRewards (name, parent)
         if platin > 0 then
             table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
         end
-        if gold > 0 then
+        
+        if gold > 0 or platin > 0 then
             table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
         end
-        if silver > 0 then
+        if silver > 0 or (platin > 0 or gold > 0) then
             table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
         end
 
