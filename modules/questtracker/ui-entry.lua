@@ -148,19 +148,9 @@ function questTracker.questEntry (key, parent, counter)
 	subHeader:SetWidth(frame:GetWidth())
 	
 	if parent.GetCategory ~= nil then
-		header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-			if subFrame:GetVisible() == true then
-				subFrame:SetVisible(false)
-				collapsed = true		
-			else
-				subFrame:SetVisible(true)
-				collapsed = false
-			end
-			
-			nkUISetup.modules.questtracker.collapseState[key] = subFrame:GetVisible()
-			
-			frame:RecalcHeight()
-			parent:RecalcHeight()
+		header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)			
+			internalFunc.questLogInit(true)
+			uiElements.questLog:UpdateQuestDetails(key)
 		end, name .. "Header.Left.Down")
 	
 		header:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)

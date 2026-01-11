@@ -54,7 +54,7 @@ function lowerBar.experience()
     datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
     
     datasetExpBarBG:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
-        internalFunc.uiQuestLog()
+        internalFunc.questLogInit(true)
     end, datasetExpBarBG:GetName() .. ".Left.Down")  
 
     function datasetExpBarBG:Redraw()
@@ -86,7 +86,7 @@ function lowerBar.experience()
 
     end
     
-    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)
+    Command.Event.Attach(Event.TEMPORARY.Experience, function(_, accumulated, rested, needed)        
         updateExperience({accumulated = accumulated, needed = needed, rested = rested})
     end, "nkui.lowerBar.exp.TEMPORARY.Experience")
     
