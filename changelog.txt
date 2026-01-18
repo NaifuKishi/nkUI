@@ -1,4 +1,4 @@
-V1.1.4
+V1.2.0
     - new: Settings - added option to disable bank module
     - new: Lower Bar - clicking fps dataset will open nkDebug (if installed)
     - new: Lower Bar - new setting to switch make lower bar background transparent
