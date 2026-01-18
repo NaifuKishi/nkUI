@@ -72,8 +72,10 @@ function internalFunc.oneBagInit()
         uiElements.oneBag = oneBag.createBagUI("nkUI.oneBag", langTexts.oneBag.bagTitle, true)
         uiElements.oneBagBagSlots = oneBag.createBagSlots(uiElements.oneBag)
 
-        uiElements.oneBank = oneBag.createBagUI("nkUI.oneBank", langTexts.oneBag.bankTitle, false)
-        uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
+        if nkUISetup.modules.oneBag.bankActivate then
+            uiElements.oneBank = oneBag.createBagUI("nkUI.oneBank", langTexts.oneBag.bankTitle, false)
+            uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
+        end
 
         Command.Event.Attach(Event.Item.Slot, oneBag.itemSlot, "nkUI.OneBag.Item.Slot")
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
@@ -93,7 +95,7 @@ function internalFunc.oneBagInit()
 
             oneBag.populateBag()
 
-            if UI.Native.Bank:GetLoaded() then
+            if UI.Native.Bank:GetLoaded() and nkUISetup.modules.oneBag.bankActivate then
                 oneBag.populateBank()
             end
             
@@ -371,7 +373,7 @@ function oneBag.itemSlot (_, slots)
 
     if doBankInventoryUpdate then 
         if not doBagInventoryUpdate then LibEKL.Inventory.updateDB() end
-        oneBag.populateBank(true) 
+        if nkUISetup.modules.oneBag.bankActivate then oneBag.populateBank(true) end
     end
 
     if doBagSlotsUpdate then oneBag.getBagSlots() end

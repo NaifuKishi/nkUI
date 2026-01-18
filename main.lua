@@ -78,7 +78,7 @@ data.colors = {
 }
 				
 data.uiScale = 1
-local thisTutorialVersion = 90
+local thisTutorialVersion = 114
 
 
 -- Generate UI context
@@ -297,12 +297,14 @@ local function initializeAddon(_, addon)
 
 				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 					
-					UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
-						if uiElements.oneBag == nil then internalFunc.oneBagInit() end
+					if nkUISetup.modules.oneBag.bankActivate then
+						UI.Native.Bank:EventAttach(Event.UI.Native.Loaded, function()
+							if uiElements.oneBag == nil then internalFunc.oneBagInit() end
 
-						uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
-						uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
-					end, "nkUI.OneBag.Native.Bank.Loaded")
+							uiElements.oneBag:SetVisible(UI.Native.Bank:GetLoaded())
+							uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
+						end, "nkUI.OneBag.Native.Bank.Loaded")
+					end
 
 					UI.Native.BagInventory1:EventAttach(Event.UI.Native.Loaded, function()
 					if uiElements.oneBag == nil then internalFunc.oneBagInit() end

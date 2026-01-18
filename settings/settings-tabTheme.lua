@@ -14,7 +14,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabTheme (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local logoComboBox, themeComboBox, managerComboBox
+    local logoComboBox, themeComboBox, managerComboBox, bankCheckBox
 
     function frame:build()
 
@@ -25,12 +25,20 @@ function settingsUI.uiConfigTabTheme (name, parent)
         logoComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
         logoComboBox:SetChecked(nkUISetup.showLogo, true)
 
+        bankCheckBox = settingsUI.checkbox(name .. ".bankCheckBox", frame, langTexts.settings.useBank, true, function(newValue)
+            nkUISetup.modules.oneBag.bankActivate = newValue
+            LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        bankCheckBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
+        bankCheckBox:SetChecked(nkUISetup.modules.oneBag.bankActivate, true)
+
         managerComboBox = settingsUI.checkbox(name .. ".managerComboBox", frame, langTexts.settings.minimapIconFrame, true, function(newValue)
             nkUISetup.useManager = newValue
             LibEKL.UI.reloadDialog("nkUI")
         end)
 
-        managerComboBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
+        managerComboBox:SetPoint("TOPLEFT", bankCheckBox, "BOTTOMLEFT", 0, 10)
         managerComboBox:SetChecked(nkUISetup.useManager, true)
 
         local themeList = {{ label = "Rift", value = "rift"}, { label = "WoW", value = "wow"}}

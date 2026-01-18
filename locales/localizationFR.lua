@@ -131,7 +131,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     close = "Fermer",
                                     tutorial = "Tutoriel",
                                     moveUI = "Déplacer",
-                                    theme = "Thème",
+                                    theme = "Basique",
                                     questTracker = "Suivi de quête",
                                     actionBar = "Barre d'action",
                                     lowerBar = "Barre inférieure",
@@ -142,7 +142,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     playerCastbar = "Lancement joueur",
                                     targetCastbar = "Lancement cible",
                                     unitframes = "Cadres d'unité",
-                                    units = "Unités"
+                                    units = "Unités",
+                                    useBank = "Module banque"
                                 },
             tutorial = {
                         welcomeTitle = "Bienvenue dans nkUI Version %s",
@@ -151,6 +152,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                         settingsDescription = "Il existe une configuration pour modifier les aspects de nkUI.\n\nVous pouvez accéder à la configuration en tapant /nkui ou en cliquant sur le bouton de la minicarte.",
                         defaultUIElementsTitle = "Éléments d'interface par défaut",
                         defaultUIElementsDescription = "Cet addon fournit de nombreuses remplacements pour les éléments d'interface standard. Malheureusement, en raison de nombreuses limitations dans l'API RIFT, les éléments par défaut ne peuvent pas être désactivés par les addons.\n\nVous devez donc le faire manuellement une fois. Vous pouvez le faire en appuyant sur Échap et en utilisant l'option [Modifier la disposition]. Avec cette option, vous pouvez masquer les éléments d'interface par défaut.",
+                        questLogTitle = "Journal des Quêtes",
+                        questLogDescription = "Le journal des quêtes nkUI peut être accédé via la commande \\nkui qlog.\nPour de meilleurs résultats, créez un macro, placez-le sur une barre d'action et liez la touche L à celui-ci.",
                         questTrackerTitle = "Module de suivi de quête",
                         questTrackerDescription = "Ce module nkUI est un remplacement du suivi de quête intégré, offrant de nombreuses fonctionnalités supplémentaires. Il correspond au thème nkUI et affichera toutes les quêtes dans votre journal. Vous pouvez faire défiler le suivi de quête en utilisant la molette de la souris.\n\nEn cliquant sur le 'C' dans l'en-tête, vous pouvez choisir quelles catégories de quêtes afficher. En cliquant sur le 'Z', vous pouvez filtrer les quêtes pour celles de votre zone actuelle.\n\nVous pouvez utiliser un objet de quête en cliquant dessus avec le bouton droit de la souris.",
                         oneBagTitle1 = "Module de sac unique (1/2)",

@@ -131,7 +131,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									close = "Schließen",
 									tutorial = "Tutorial",
 									moveUI = "UI verschieben",
-						            theme = "Design",
+						            theme = "Basis",
 									questTracker = "Questverfolgung",
 									actionBar = "Aktionsleiste",
 									lowerBar = "Untere Leiste",
@@ -142,7 +142,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									playerCastbar = "Spieler-Castleiste",
 									targetCastbar = "Ziel-Castleiste",
 									unitframes = "Einheitenrahmen",
-									units = "Einheiten"
+									units = "Einheiten",
+									useBank = "Bank Modul"
 								},
 		tutorial = {
             welcomeTitle = "Willkommen bei nkUI Version %s",
@@ -151,7 +152,9 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
             settingsDescription = "Es gibt eine Konfiguration, um Aspekte von nkUI zu ändern.\n\nSie können auf die Konfiguration zugreifen, indem Sie /nkui eingeben oder auf die Minikarten-Schaltfläche klicken.",
             defaultUIElementsTitle = "Standard-UI-Elemente",
             defaultUIElementsDescription = "Dieses Addon bietet viele Ersetzungen für die Standard-UI-Elemente. Leider aufgrund vieler Einschränkungen in der RIFT-API können die Standard-Elemente nicht von Addons deaktiviert werden.\n\nStattdessen müssen Sie dies manuell einmal tun. Sie können dies tun, indem Sie Escape drücken und die Option [Layout bearbeiten] verwenden. Mit dieser Option können Sie Standard-UI-Elemente ausblenden.",
-            questTrackerTitle = "Questverfolgungsmodul",
+            questLogTitle = "Quest log",
+			questLogDescription = "Das nkUI Questlog kann über den Befehl \\nkui qlog aufgerufen werden.\nAm besten legst Du ein Makro an, legst es auf einer Aktionsleiste ab und bindest Sie die Taste L.",
+			questTrackerTitle = "Questverfolgungsmodul",
             questTrackerDescription = "Dieses nkUI-Modul ist eine Ersetzung des integrierten Questverfolgers und bietet viele zusätzliche Funktionen. Es passt zum nkUI-Design und zeigt alle Quests in Ihrem Log an. Sie können den Questverfolger mit dem Mausrad scrollen.\n\nDurch Klicken auf das 'C' in der Kopfzeile können Sie wählen, welche Questkategorien angezeigt werden sollen. Durch Klicken auf das 'Z' können Sie die Quests auf diejenigen Ihrer aktuellen Zone filtern.\n\nSie können ein Quest-Item verwenden, indem Sie darauf rechtsklicken.",
             oneBagTitle1 = "Ein-Taschen-Modul (1/2)",
             oneBagDescription1 = "Dieses nkUI-Modul ist eine Ersetzung für die integrierten Taschen und zeigt alles in einem einzigen Rahmen an.",

@@ -45,12 +45,20 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
 
     bagWindow:SetColor({
         type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
         color = {
-            data.theme.windowStartColor,
-            data.theme.windowEndColor
-            }
-    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
+            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+        }
+    },  {
+        r = 0x66 / 255,
+        g = 0x56 / 255,
+        b = 0x2e / 255,
+        a = 1,
+        cap = "round",
+        miter = "miter",
+        thickness = 2
+    })
     
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         Command.Cursor(nil)
@@ -72,13 +80,28 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
         local details = inspectCurrencyDetail('coin')
         
         if details ~= nil and details.stack ~= nil then
-            local platin = mathFloor(details.stack / 10000)
-            local gold = mathFloor((details.stack - (platin * 10000)) / 100)
+            local platin = math.floor(details.stack / 10000)
+            local gold = math.floor((details.stack - (platin * 10000)) / 100)
             local silver = details.stack - (platin * 10000) - (gold * 100)
-            
-            local textFormat = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font>'
 
-            currencyText:SetText(stringFormat(textFormat, platin, gold, silver), true)
+            -- Build the coin string with only non-zero values
+            local coinParts = {}
+            if platin > 0 then
+                table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+            end
+            
+            if gold > 0 or platin > 0 then
+                table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
+            end
+            if silver > 0 or (platin > 0 or gold > 0) then
+                table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
+            end
+
+            -- Combine the parts with spaces
+            local coinText = table.concat(coinParts, " ")
+
+            currencyText:SetText(coinText, true)
+
         end
     end
 
@@ -112,13 +135,13 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     currencyIcon:SetPoint("CENTERRIGHT", currencyText, "CENTERLEFT", -5 * data.bagScale, 0)
     currencyIcon:SetHeight(12)
     currencyIcon:SetWidth(12)
-    currencyIcon:SetTextureAsync("nkUI", "gfx/iconCoins.png")    
+    currencyIcon:SetTextureAsync("nkUI", "gfx/questIconCoin.png")
 
     freeBagSlotsText = LibEKL.UICreateFrame ("nkText", bagName .. ".BagSlotsText", bagWindow)
     freeBagSlotsText:SetPoint("CENTERRIGHT", currencyIcon, "CENTERLEFT", -5* data.bagScale, 0)
     freeBagSlotsText:SetFontSize(12)
     freeBagSlotsText:SetEffectGlow({ strength = 3})
-    freeBagSlotsText:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    freeBagSlotsText:SetFontColor(0x85 / 255, 0xCB / 255, 0xCB / 255, 1)
     freeBagSlotsText:SetText("0")
 
     LibEKL.UI.SetFont(freeBagSlotsText, addonInfo.id, "MontserratSemiBold")    
@@ -127,7 +150,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     bagIcon:SetPoint("CENTERRIGHT", freeBagSlotsText, "CENTERLEFT", -5* data.bagScale, 0)
     bagIcon:SetHeight(12)
     bagIcon:SetWidth(12)
-    bagIcon:SetTextureAsync("nkUI", "gfx/iconBag.png")    
+    bagIcon:SetTextureAsync("nkUI", "gfx/iconPackage.png")
 
     Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function(_, a, b)
         if bagWindow:GetVisible() then
@@ -195,7 +218,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
 
         if isBag then
             oneBag.populateBag(true, searchPattern)
-        else
+        elseif nkUISetup.modules.oneBag.bankActivate then
             oneBag.populateBank(true, searchPattern)
         end
     end, bagName .. ".SearchInput.TextfieldChanged")
@@ -217,7 +240,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
             if isBag then
                 oneBag.populateBag(true) 
                 oneBag.getBagSlots()
-            else
+            elseif nkUISetup.modules.oneBag.bankActivate then
                 oneBag.populateBank(true)
             end
 

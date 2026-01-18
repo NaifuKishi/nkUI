@@ -1,3 +1,10 @@
+V1.1.4
+    - new: Settings - added option to disable bank module
+    - updates: One Bag - Changed design of bag and bank to updated nkui theme
+    - updates: One Bag - Changed design of tooltip additional info to updated nkui theme
+    - updates: General - Added missing tutorial page for quest log information    
+    - updates: Settings - Changed settings and tutorial window to use updated nkUI theme
+
 V1.1.3
     - fixes: Quest Log - fixed missing count information in objectives
 

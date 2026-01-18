@@ -143,6 +143,7 @@ local _defaults = {
                         dateSize = 15
 		            },
         oneBag      = { activate = true,
+                        bankActivate = true,
                         x = 2000,
                         y = 600,
                         bankX = 1200,
@@ -410,12 +411,20 @@ function internalFunc.setupUI ()
 
     config:SetColor({
         type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
         color = {
-            data.theme.windowStartColor,
-            data.theme.windowEndColor
-            }
-    },  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
+            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+        }
+    },  {
+        r = 0x66 / 255,
+        g = 0x56 / 255,
+        b = 0x2e / 255,
+        a = 1,
+        cap = "round",
+        miter = "miter",
+        thickness = 2
+    })
 
     local nkUILogo = LibEKL.UICreateFrame("nkTexture", name .. ".logo", config)
     nkUILogo:SetPoint("BOTTOMLEFT", config, "BOTTOMLEFT", 10, -10)

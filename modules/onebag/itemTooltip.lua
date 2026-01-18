@@ -31,20 +31,32 @@ local function uiItemTooltip ()
     local fill = {type = "solid", r = 0, g = 0, b = 0, a = .8}
 
     tooltip:SetShape(path, fill, stroke)
-        
+
+    local currencyIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.Currency.icon", tooltip)
+    currencyIcon:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 10, 10)
+    currencyIcon:SetHeight(12)
+    currencyIcon:SetWidth(12)
+    currencyIcon:SetTextureAsync("nkUI", "gfx/questIconCoin.png")
+
     local valueText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.valueText", tooltip)
-    valueText:SetPoint("TOPLEFT", tooltip, "TOPLEFT", 5, 5)
+    valueText:SetPoint("CENTERLEFT", currencyIcon, "CENTERRIGHT", 5, 0)
     valueText:SetFontSize(12 * data.bagScale)
     valueText:SetEffectGlow({strength = 3})
     valueText:SetFontColor(1, 1, 1, 1)
 
     LibEKL.UI.SetFont(valueText, addonInfo.id, "MontserratSemiBold")
 
+    local bagIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.BagSlotsIcon.icon", tooltip)
+    bagIcon:SetPoint("TOPLEFT", currencyIcon, "BOTTOMLEFT", 0, 5)
+    bagIcon:SetHeight(12)
+    bagIcon:SetWidth(12)
+    bagIcon:SetTextureAsync("nkUI", "gfx/iconPackage.png")
+
     local countText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.countText", tooltip)
-    countText:SetPoint("TOPLEFT", valueText, "BOTTOMLEFT")
+    countText:SetPoint("CENTERLEFT", bagIcon, "CENTERRIGHT", 5, 0)
     countText:SetFontSize(12 * data.bagScale)
-    countText:SetEffectGlow({strength = 3})
-    countText:SetFontColor(1, 1, 1, 1)
+    countText:SetEffectGlow({strength = 3})    
+    countText:SetFontColor(0x85 / 255, 0xCB / 255, 0xCB / 255, 1)
 
     LibEKL.UI.SetFont(countText, addonInfo.id, "MontserratSemiBold")
 
@@ -56,37 +68,27 @@ local function uiItemTooltip ()
         if flag and details and details.sell then 
             qty = LibEKL.Inventory.queryQtyById (itemID)
 
-            local platin = mathFloor(details.sell / 10000)
-            local gold = mathFloor((details.sell - (platin * 10000)) / 100)
-            local silver = details.sell - (platin * 10000) - (gold * 100)  
-            
-            local currencyText
+            local platin = math.floor(details.sell / 10000)
+            local gold = math.floor((details.sell - (platin * 10000)) / 100)
+            local silver = details.sell - (platin * 10000) - (gold * 100)
 
+            -- Build the coin string with only non-zero values
+            local coinParts = {}
             if platin > 0 then
-                if currencyText then
-                    currencyText = currency .. " " .. stringFormat(langTexts.oneBag.currencyTextPlatinum, platin)
-                else
-                    currencyText = stringFormat(langTexts.oneBag.currencyTextPlatinum, platin)
-                end
+                table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+            end
+            
+            if gold > 0 or platin > 0 then
+                table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
+            end
+            if silver > 0 or (platin > 0 or gold > 0) then
+                table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
             end
 
-            if gold > 0 then
-                if currencyText then
-                    currencyText = currencyText .. " " .. stringFormat(langTexts.oneBag.currencyTextGold, gold)
-                else
-                    currencyText = stringFormat(langTexts.oneBag.currencyTextGold, gold)
-                end
-            end
+            -- Combine the parts with spaces
+            local coinText = table.concat(coinParts, " ")
 
-            if silver > 0 then
-                if currencyText then
-                    currencyText = currencyText .. " " .. stringFormat(langTexts.oneBag.currencyTextSilver, silver)
-                else
-                    currencyText = stringFormat(langTexts.oneBag.currencyTextSilver, silver)
-                end
-            end
-
-            valueText:SetText(stringFormat(langTexts.oneBag.itemValue, currencyText), true)
+            valueText:SetText(coinText, true)
         else
             valueText:SetText(langTexts.oneBag.noPrice)
         end
