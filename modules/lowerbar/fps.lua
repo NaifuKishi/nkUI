@@ -26,6 +26,9 @@ function lowerBar.fps()
     datasetFPS:SetEffectGlow({ strength = 1})
     datasetFPS:SetLayer(10)
 
+    datasetFPS:SetSecureMode('restricted')
+	datasetFPS:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "/nkd")
+
     local datasetFPSIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.fps.icon", datasetFPS)
     datasetFPSIcon:SetPoint("CENTERRIGHT", datasetFPS, "CENTERLEFT", -5, 0)
     datasetFPSIcon:SetHeight(16)
