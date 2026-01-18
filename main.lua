@@ -203,6 +203,35 @@ local function commandHandler (commandline)
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	elseif stringFind(commandline, "qlog") then
 		internalFunc.questLogInit()
+	elseif stringFind(commandline, "map") then
+		if uiElements.mapUI == nil then return end
+
+		if stringFind(commandline, "toggle") ~= nil then 
+			uiElements.mapUI:ToggleMinMax(true)
+		elseif stringFind(commandline, "debug") ~= nil and nkDebug then
+			if uiElements.debugPanel == nil then 
+				uiElements.debugPanel = internalFunc.debugPanel()
+			else
+				uiElements.debugPanel:SetVisible(not uiElements.debugPanel:GetVisible())
+			end
+			
+			local mapInfo = uiElements.mapUI:GetMapInfo()
+			uiElements.debugPanel:SetCoord(mapInfo.x1, mapInfo.x2, mapInfo.y1, mapInfo.y2)
+			
+		elseif stringFind(commandline, "show") ~= nil then
+			internalFunc.mapShowHide()
+		elseif stringFind(commandline, "add") ~= nil then
+			local thisCommand = EnKai.strings.split(commandline, " ")
+			
+			if #thisCommand < 4 then
+				EnKai.tools.error.display (addonInfo.identifier,  privateVars.langTexts.errorAddCommand, 2)
+			else
+				
+				internalFunc.mapAddCustomPoint(tonumber(thisCommand[2]), tonumber(thisCommand[3]), EnKai.strings.right(commandline, thisCommand[3]))
+			end
+		elseif stringFind(commandline, "clear") ~= nil then
+			internalFunc.mapClearCustomPoints()
+		end
 	else
 		internalFunc.setupInit ()
 	end
@@ -263,7 +292,7 @@ local function initializeAddon(_, addon)
         LibEKL.UI.registerFont(addonInfo.id, "FiraMono", "fonts/FiraMono-Regular.ttf")
 
 		Command.Event.Attach(Event.Unit.Availability.Full, function()
-			LibEKL.Unit.init()			
+			LibEKL.Unit.Init()			
 			LibEKL.Inventory.Init(false, false)
 
 			internalFunc.setupDefaults()
@@ -274,7 +303,6 @@ local function initializeAddon(_, addon)
 			end
 
 			if nkUISetup and nkUISetup.modules then
-
 				if nkUISetup.modules.tooltip and nkUISetup.modules.tooltip.activate then
 					internalFunc.tooltip()
 				end
@@ -311,7 +339,7 @@ local function initializeAddon(_, addon)
 						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
 					end, "nkUI.OneBag.Native.Bag.Loaded")
 				end
-				
+			
 				if nkUISetup.modules.questtracker and nkUISetup.modules.questtracker.activate then
 					internalFunc.questTrackerInit(true)
 				end
@@ -319,6 +347,10 @@ local function initializeAddon(_, addon)
 				--internalFunc.chat ()
 				--internalFunc.questLogInit()							
 			end
+
+			--if nkUISetup.modules.map and nkUISetup.modules.map.activate then
+			--	LibEKL.Events.AddInsecure(internalFunc.mapInit, inspectTimeFrame(), 5)
+			--end
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 

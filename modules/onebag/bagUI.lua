@@ -25,7 +25,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     local currencyText, currencyText, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame
     
     local bagWindow = LibEKL.UICreateFrame("nkWindow", bagName, context)
-    bagWindow:SetTitle(stringFormat(bagTitle, LibEKL.Unit.getPlayerDetails().name))
+    bagWindow:SetTitle(stringFormat(bagTitle, LibEKL.Unit.GetPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
     bagWindow:SetTitleFontSize(16)
     bagWindow:SetTitleEffect({ strength = 3})

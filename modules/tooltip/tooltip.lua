@@ -378,7 +378,7 @@ local function formatUnitTooltip(unitInfo)
         table.insert(infoLines, stringFormat('<font color="%s">%s</font>', color, unitDetail.nameSecondary))
     end
     
-    local playerDetail = LibEKL.Unit.getPlayerDetails()
+    local playerDetail = LibEKL.Unit.GetPlayerDetails()
     
     if unitDetail.guild then
         table.insert(infoLines, unitDetail.guild)

@@ -471,10 +471,10 @@ end
 -- @param info The combat event information
 -- @return Whether the event is valid, whether it's from a pet, and whether it's incoming
 local function validEvent(info)
-    if info.caster == LibEKL.Unit.getPlayerDetails().id then return true, false, false end
+    if info.caster == LibEKL.Unit.GetPlayerDetails().id then return true, false, false end
 
     if petID ~= nil and info.caster == petID then
-        if info.target == LibEKL.Unit.getPlayerDetails().id then
+        if info.target == LibEKL.Unit.GetPlayerDetails().id then
             return true, true, true
         else
             return true, true, false 
@@ -491,7 +491,7 @@ local function validEvent(info)
         return true, true, false
     end
 
-    if info.target == LibEKL.Unit.getPlayerDetails().id then return true, false, true end
+    if info.target == LibEKL.Unit.GetPlayerDetails().id then return true, false, true end
     
     return false, false, false
 end

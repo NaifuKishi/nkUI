@@ -269,7 +269,7 @@ function questLog.processQuest(details, processTitleFlag)
 	if processTitleFlag == true then
 
 		local color = "#009900"
-		local playerLevel = LibEKL.Unit.getPlayerDetails().level
+		local playerLevel = LibEKL.Unit.GetPlayerDetails().level
 
 		if lvl == nil then
 			color = "#009900"

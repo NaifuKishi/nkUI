@@ -387,7 +387,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         
         planarText:ClearAll()
         planarText:SetFontSize(setup.fontSizes.planar)
-        unitFrame:ProcessUnitDetails (LibEKL.Unit.getPlayerDetails().id)
+        unitFrame:ProcessUnitDetails (LibEKL.Unit.GetPlayerDetails().id)
         unitFrame:SetRole("dps")
         
     end
@@ -576,7 +576,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
     function unitFrame:SetLevel (newLevel)
         
-        local playerLevel = LibEKL.Unit.getPlayerDetails().level
+        local playerLevel = LibEKL.Unit.GetPlayerDetails().level
         
         if newLevel == "??" then
             color = "#FF3333"

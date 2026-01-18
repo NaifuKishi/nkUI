@@ -22,7 +22,7 @@ local stringFind	= string.find
 local stringSub		= string.sub
 
 local LibEKLGetUnitTypes			= LibEKL.Unit.getUnitTypes
-local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
+local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.GetPlayerDetails
 local LibEKLUnitGetUnitDetail		= LibEKL.Unit.GetUnitDetail
 local LibEKLUnitGetUnitIDByType		= LibEKL.Unit.GetUnitIDByType
 local LibEKLUnitGetGroupStatus		= LibEKL.Unit.getGroupStatus

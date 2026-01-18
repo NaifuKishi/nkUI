@@ -108,7 +108,7 @@ function questLog.questDetail (name, parent)
 			thisDetails.level = lvl		
 
 			local color = "#009900"
-			local playerLevel = LibEKL.Unit.getPlayerDetails().level
+			local playerLevel = LibEKL.Unit.GetPlayerDetails().level
 
 			if lvl == nil then
 				color = "#009900"

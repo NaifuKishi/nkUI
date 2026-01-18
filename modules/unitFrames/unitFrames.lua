@@ -170,7 +170,7 @@ function internalFunc.uiFrames()
     end
 
     function playerRessourceBar:update (unitID)
-        if (unitID == LibEKL.Unit.getPlayerDetails().id) then
+        if (unitID == LibEKL.Unit.GetPlayerDetails().id) then
             local details = LibEKLGetUnitDetail(unitID)
 
             if details.combo then playerRessourceBar:SetCombo(details.combo) end
@@ -214,8 +214,8 @@ function internalFunc.uiFramesToggle(value)
 
     if value == true and not uiElements.frames["player"] then
         internalFunc.uiFrames ()
-        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.Unit.getPlayerDetails().id, "player")
-        uiElements.frames["player.ressourcebar"]:update (LibEKL.Unit.getPlayerDetails().id)
+        internalFunc.updateUnit (uiElements.frames["player"], LibEKL.Unit.GetPlayerDetails().id, "player")
+        uiElements.frames["player.ressourcebar"]:update (LibEKL.Unit.GetPlayerDetails().id)
     end
 
     if uiElements.frames then        
@@ -231,8 +231,8 @@ end
 
 function internalFunc.uiFramesRemoveBuffs()
 
-    local buffs = inspectBuffList(LibEKL.Unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
+    local buffs = inspectBuffList(LibEKL.Unit.GetPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:removeBuff(LibEKL.Unit.GetPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
     local targetID = LibEKL.Unit.GetUnitByIdentifier("player.target")
@@ -254,8 +254,8 @@ end
 
 function internalFunc.uiFramesLoadAllBuffs()
 
-    local buffs = inspectBuffList(LibEKL.Unit.getPlayerDetails().id)
-    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.Unit.getPlayerDetails().id, buffs) end
+    local buffs = inspectBuffList(LibEKL.Unit.GetPlayerDetails().id)
+    if (buffs) then uiElements.frames["player"]:addBuff(LibEKL.Unit.GetPlayerDetails().id, buffs) end
 
     local targetFrame = uiElements.frames["player.target"]
 

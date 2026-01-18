@@ -40,7 +40,7 @@ end
 
 -- Helper function to check if the unit is the player
 function internalFunc.isPlayerUnit(unit)
-    return unit == LibEKL.Unit.getPlayerDetails().id
+    return unit == LibEKL.Unit.GetPlayerDetails().id
 end
 
 

@@ -148,7 +148,7 @@ function questTracker.fillLog ()
 	
 	local areaQuestKey
 
-	local playerZone = LibEKL.Unit.getPlayerDetails().zone
+	local playerZone = LibEKL.Unit.GetPlayerDetails().zone
 	
 	for k, v in pairs(details) do
 		if v.name ~= nil and v.name ~= "" then
@@ -287,7 +287,7 @@ function questTracker.processQuest(details, processTitleFlag)
 	if processTitleFlag == true then
 
 		local color = "#009900"
-		local playerLevel = LibEKL.Unit.getPlayerDetails().level
+		local playerLevel = LibEKL.Unit.GetPlayerDetails().level
 
 		if lvl == nil then
 			color = "#009900"

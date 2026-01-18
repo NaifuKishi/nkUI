@@ -159,8 +159,34 @@ local _defaults = {
                         showLoot = true
                     },
         tooltip     = { activate = true,
-                        fontSizes = {header = 14, body = 12 } }
-    },
+                        fontSizes = {header = 14, body = 12 } },
+        map         = { activate = true,
+                        x = 600, 
+                        y= 0, 
+                        maximizedX = 100, 
+                        maximizedY = 100, 
+                        scale = 2.5,
+                        width = 300, 
+                        height = 300, 
+                        locked = false, 
+                        syncTarget = false,
+                        maximizedWidth = 1000, 
+                        maximizedHeight = 800, 
+                        maximizedScale = 1,
+                        background = "default",
+                        showPOI = true, 
+                        showZoneTitle = true, 
+                        animations = true, 
+                        animationSpeed = 0.05, 
+                        rareMobs = true, 
+                        showQuest = true,
+                        trackArtifacts = true, 
+                        trackGathering = true, 
+                        smoothScroll = true, 
+                        showUnknown = true,
+                        zones = {},
+                        userPOI = {} }
+                },
     showLogo = true,
     useManager = true
 }
@@ -239,41 +265,25 @@ function internalFunc.setupDefaults()
     if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
         nkUISetup = _defaults
         nkUISetup.modules.actionBars.bars = {}
-        nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
+        nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] = { roles = {} }
 
         scaleUI ()
     else
         nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
     end
 
-    -- fix for version 0.9.3
-
-    if nkUISetup.modules.unitFrames.frames.group.iconSizes.combat == 0 then
-        nkUISetup.modules.unitFrames.frames.group.iconSizes.combat = 30
-    end
-
-    -- fix for version 0.9.7
-
-    if nkUISetup.modules.oneBag.x == nil then
-        nkUISetup.modules.oneBag.x = 2000 * data.uiScale
-        nkUISetup.modules.oneBag.y = 600 * data.uiScale
-    end
-
-    if nkUISetup.modules.tooltip.fontSizes == nil then
-        nkUISetup.modules.tooltip.fontSizes = {header = 15, body = 13 }
-    end
-
-    if nkUISetup.modules.questtracker.categoryShow.battlepass == nil then
-        nkUISetup.modules.questtracker.categoryShow.battlepass = true
-    end
-    
+   
     -- check for new char
 
-    if nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] == nil then
-        nkUISetup.modules.actionBars.bars[LibEKL.Unit.getPlayerDetails().name] = { roles = {} }
+    if nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] == nil then
+        nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] = { roles = {} }
     end
 
- 
+    -- mpa updates
+
+    if nkUIMapGathering == nil then
+        nkUIMapGathering = { gatheringData = {}, artifactsData = {}}
+    end
 
 end
 

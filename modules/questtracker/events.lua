@@ -17,7 +17,7 @@ local stringFormat			= string.format
 local stringMatch			= string.match
 local stringSub				= string.sub
 
-local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.getPlayerDetails
+local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.GetPlayerDetails
 local LibEKLUnitSetPlayerDetails	= LibEKL.Unit.setPlayerDetails
 
 local LibEKLToolsMathRound			= LibEKL.Tools.Math.Round

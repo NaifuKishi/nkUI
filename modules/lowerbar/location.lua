@@ -80,7 +80,7 @@ function lowerBar.location()
     end, "lowerBar.location.Left_Click")
     
     local function updateLocation(_, loc)
-        local playerID = LibEKL.Unit.getPlayerDetails().id
+        local playerID = LibEKL.Unit.GetPlayerDetails().id
         
         if loc[playerID] == nil or loc[playerID] == false then return end
         
@@ -97,7 +97,7 @@ function lowerBar.location()
         end
     end
     
-    local details = inspectUnitDetail(LibEKL.Unit.getPlayerDetails().id)
+    local details = inspectUnitDetail(LibEKL.Unit.GetPlayerDetails().id)
     datasetLocation:SetText(details.locationName)
 
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")

@@ -22,7 +22,7 @@ local mathFloor             = math.floor
 local stringFormat          = string.format
 local stringFind            = string.find
 
-local LibEKLUnitGetPlayerDetails    = LibEKL.Unit.getPlayerDetails
+local LibEKLUnitGetPlayerDetails    = LibEKL.Unit.GetPlayerDetails
 local LibEKLUnitGetUnitByIdentifier = LibEKL.Unit.GetUnitByIdentifier
 
 local frameCache = {}

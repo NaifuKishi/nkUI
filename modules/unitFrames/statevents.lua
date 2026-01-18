@@ -203,7 +203,7 @@ function _events.uiFramesInitStatEvents()
     Command.Event.Attach(Event.Unit.Detail.Planar, _eventPlanar, "nkUI.playerFrame.Unit.Detail.Planar")
 	Command.Event.Attach(Event.Unit.Detail.Combo, _eventCombo, "nkUI.playerFrame.Unit.Detail.Combo")
 
-	local details = LibEKL.Unit.getPlayerDetails()
+	local details = LibEKL.Unit.GetPlayerDetails()
 	if details.calling == "primalist" then
 		LibEKL.Stat.Init()
 		LibEKL.Stat.Subscribe("focus")

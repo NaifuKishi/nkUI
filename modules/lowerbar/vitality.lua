@@ -34,7 +34,7 @@ function lowerBar.vitality()
         datasetVitality:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
-    local details = LibEKL.Unit.getPlayerDetails()
+    local details = LibEKL.Unit.GetPlayerDetails()
     if details ~= nil then		
         datasetVitality:SetText(stringFormat(langTexts.lowerBar.vitality, details.vitality))
     end
