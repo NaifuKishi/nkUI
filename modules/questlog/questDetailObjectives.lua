@@ -87,6 +87,7 @@ function questLog.uiObjectives (name, parent)
 
         -- Update objectives
 		local prevObjective, height = objectivesFrame:GetTitle(), 0
+
 		for i, objective in ipairs(objectiveList or {}) do
 
             local objectiveText

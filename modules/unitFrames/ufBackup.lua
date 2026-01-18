@@ -770,7 +770,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
 
     frame:ClearBuffs()
 
-    local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+    local groupStatus, groupSize = LibEKL.Unit.GetGroupStatus()
 
     if stringFind (identifier, "group") and groupStatus ~= 'raid' then
         local buffs = InspectBuffList(unitID)

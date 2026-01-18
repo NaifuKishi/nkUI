@@ -93,7 +93,7 @@ function lowerBar.social()
         table.insert(_friendlist, {
             name = details.name,
             level = details.level,
-            calling = LibEKL.Unit.getCallingText(details.calling),
+            calling = LibEKL.Unit.GetCallingText(details.calling),
             zone = ""
         })
     end

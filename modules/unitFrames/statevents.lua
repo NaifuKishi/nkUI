@@ -23,13 +23,13 @@ local stringSub		= string.sub
 
 local function _eventHealth (_, info)
 	for unit, thisData in pairs(info) do		
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if nkDebug then nkDebug.logEntry (addonInfo.identifier, "_eventHealth", stringFormat("%s %d", unit, thisData), identifiers) end
 
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local realIdentifier = identifiers[idx]
-				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.getGroupStatus () == "raid" then
+				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.GetGroupStatus () == "raid" then
 					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
 					realIdentifier = stringFormat("raid%02d", tonumber(groupID))
 				end
@@ -50,11 +50,11 @@ end
 local function _eventHealthMax (_, info)
 
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local realIdentifier = identifiers[idx]
-				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.getGroupStatus () == "raid" then
+				if stringMatch(realIdentifier, "^group%d%d$") and LibEKL.Unit.GetGroupStatus () == "raid" then
 					local groupID = stringMatch(realIdentifier, "^group(%d%d)$")
 					realIdentifier = stringFormat("raid%02d", tonumber(groupID))
 				end
@@ -69,7 +69,7 @@ end
 
 local function _eventEnergy (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -86,7 +86,7 @@ end
 
 local function _eventEnergyMax (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -103,7 +103,7 @@ end
 
 local function _eventMana (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -120,7 +120,7 @@ end
 
 local function _eventCharge (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				--local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -137,7 +137,7 @@ end
 
 local function _eventPower (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -154,7 +154,7 @@ end
 
 local function _eventPlanar (_, info)
 	for unit, thisData in pairs(info) do
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				local frame = internalFunc.getFrameByIdentifier(identifiers[idx])		
@@ -168,7 +168,7 @@ end
 local function _eventCombo (_, info)
 	for unit, thisData in pairs(info) do        
 
-		local identifiers = LibEKL.Unit.getUnitTypes (unit)
+		local identifiers = LibEKL.Unit.GetUnitTypes (unit)
 		if #identifiers > 0 then
 			for idx = 1, #identifiers, 1 do
 				if identifiers[idx] == "player" then

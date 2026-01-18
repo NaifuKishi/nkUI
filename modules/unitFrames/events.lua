@@ -21,11 +21,11 @@ local stringMatch	= string.match
 local stringFind	= string.find
 local stringSub		= string.sub
 
-local LibEKLGetUnitTypes			= LibEKL.Unit.getUnitTypes
+local LibEKLGetUnitTypes			= LibEKL.Unit.GetUnitTypes
 local LibEKLUnitGetPlayerDetails	= LibEKL.Unit.GetPlayerDetails
 local LibEKLUnitGetUnitDetail		= LibEKL.Unit.GetUnitDetail
 local LibEKLUnitGetUnitIDByType		= LibEKL.Unit.GetUnitIDByType
-local LibEKLUnitGetGroupStatus		= LibEKL.Unit.getGroupStatus
+local LibEKLUnitGetGroupStatus		= LibEKL.Unit.GetGroupStatus
 
 local lastGroupType
 
@@ -422,14 +422,14 @@ function events.uiFramesInitEvents()
 
 	if nkDebug then nkDebug.logEntry (addonInfo.identifier, "events.uiFramesInitEvents", "Startup", nil) end
 
-	LibEKL.Unit.subscribe("player")
-	LibEKL.Unit.subscribe("player.target")
-	LibEKL.Unit.subscribe("player.target.target")
-	LibEKL.Unit.subscribe("player.pet")
-	LibEKL.Unit.subscribe("focus")
+	LibEKL.Unit.Subscribe("player")
+	LibEKL.Unit.Subscribe("player.target")
+	LibEKL.Unit.Subscribe("player.target.target")
+	LibEKL.Unit.Subscribe("player.pet")
+	LibEKL.Unit.Subscribe("focus")
 
 	for idx = 1, 20, 1 do
-		LibEKL.Unit.subscribe(stringFormat("group%02d", idx))
+		LibEKL.Unit.Subscribe(stringFormat("group%02d", idx))
 	end
 
 	--Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")

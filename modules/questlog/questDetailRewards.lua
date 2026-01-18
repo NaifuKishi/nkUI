@@ -58,6 +58,13 @@ local function rewardElement (name, parent)
         rewardText:SetText(thisText, true)
     end
 
+    local oSetVisible = rewardIcon.SetVisible
+
+    function rewardIcon:SetVisible(flag)
+        oSetVisible(self, flag)
+        rewardText:SetVisible(flag)
+    end
+
     return rewardIcon
 
 end
@@ -179,11 +186,13 @@ function questLog.uiRewards (name, parent)
 	end
 
     function rewardsFrame:Clear()
-        for _, v in pairs(rewards) do
+        for id, v in pairs(rewards) do
+            --print (id)
             v:SetVisible(false)
         end
 
-        for _, v in pairs(notorieties) do
+        for id, v in pairs(notorieties) do
+            --print (id)
             v:SetVisible(false)
         end
     end
@@ -192,7 +201,7 @@ function questLog.uiRewards (name, parent)
         local height = 0 
         local from, objective, to = "TOPLEFT", rewardsFrame:GetTitle(), "BOTTOMLEFT"
 
-        for _, reward in pairs (rewards) do
+        for key, reward in pairs (rewards) do
             if reward:GetVisible() then
                 height = height + DEFAULT_REWARD_SIZE + 10
                 reward:SetPoint(from, objective, to, 0, 10)
@@ -200,7 +209,7 @@ function questLog.uiRewards (name, parent)
             end            
         end
 
-        for _, notoriety in pairs (notorieties) do
+        for key, notoriety in pairs (notorieties) do
             if notoriety:GetVisible() then
                 height = height + DEFAULT_REWARD_SIZE + 10
                 notoriety:SetPoint(from, objective, to, 0, 10)

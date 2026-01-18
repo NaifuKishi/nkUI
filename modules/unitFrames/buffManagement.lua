@@ -255,7 +255,7 @@ function internalFunc.processBuffs()
 
     --- process groups
 
-    local groupStatus, groupSize = LibEKL.Unit.getGroupStatus()
+    local groupStatus, groupSize = LibEKL.Unit.GetGroupStatus()
 
     if groupStatus == "group" then
 

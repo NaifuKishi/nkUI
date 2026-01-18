@@ -481,7 +481,7 @@ local function validEvent(info)
         end
     end
     
-    local localUnitsTypes = LibEKL.Unit.getUnitTypes(info.caster)
+    local localUnitsTypes = LibEKL.Unit.GetUnitTypes(info.caster)
     
     if LibEKL.Tools.Table.IsMember(localUnitsTypes, "player.pet") then
         petID = info.caster
@@ -586,7 +586,7 @@ local function handleCombatHeal(self, info)
     local healText
 
     local realCaster = info.targetName
-    if info.target == LibEKL.Unit.getPlayerID() then realCaster = info.casterName end
+    if info.target == LibEKL.Unit.GetPlayerID() then realCaster = info.casterName end
 
     if info.overheal then
         healText = stringFormat(TEXT_OVERHEAL, internalFunc.shortenName(realCaster, 10), info.overheal)

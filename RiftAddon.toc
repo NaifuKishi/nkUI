@@ -30,12 +30,12 @@ RunOnStartup = {
 
 	"modules/chat/chat.lua",
 
-	"modules/map/api.lua",
-	"modules/map/data.lua",
-	"modules/map/event.lua",
-	"modules/map/main.lua",
-	"modules/map/map.lua",
-	"modules/map/quest.lua",
+	--"modules/map/api.lua",
+	--"modules/map/data.lua",
+	--"modules/map/event.lua",
+	--"modules/map/main.lua",
+	--"modules/map/map.lua",
+	--"modules/map/quest.lua",
 
 	"modules/questtracker/questtracker.lua",
 	"modules/questtracker/events.lua",
@@ -55,10 +55,6 @@ RunOnStartup = {
 	"modules/questlog/questDetailUIElements.lua",
 	"modules/questlog/questDetailObjectives.lua",
 	"modules/questlog/questDetailRewards.lua",
-
-	--"modules/questlog/questlog.lua",
-	--"modules/questlog/ui.lua",
-	--"modules/questlog/events.lua",
 
 	"modules/onebag/onebag.lua",
 	"modules/onebag/bagUI.lua",

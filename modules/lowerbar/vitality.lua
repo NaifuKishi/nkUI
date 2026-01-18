@@ -51,8 +51,8 @@ function lowerBar.vitality()
     end
     
     local function vitalityChange(_, units)
-        if units[LibEKL.Unit.getPlayerID()] == nil then return end        
-        datasetVitality:SetText(stringFormat(langTexts.lowerBar.vitality, units[LibEKL.Unit.getPlayerID()]), true)
+        if units[LibEKL.Unit.GetPlayerID()] == nil then return end        
+        datasetVitality:SetText(stringFormat(langTexts.lowerBar.vitality, units[LibEKL.Unit.GetPlayerID()]), true)
     end
     
     Command.Event.Attach(Event.Unit.Detail.Vitality, vitalityChange, "nkUI.lowerBar.Vitality.Unit.Detail.Vitality")

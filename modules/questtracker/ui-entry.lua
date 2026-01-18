@@ -124,6 +124,7 @@ function questTracker.questEntry (key, parent, counter)
 	level:SetFontColor(1, 1, 1, 1)
 	level:SetWordwrap(true)
 	level:SetEffectGlow({ strength = 3})
+	level:SetTextFont(addonInfo.id, "MontserratSemiBold")	
 
 	local header = LibEKL.UICreateFrame("nkText", name .. '.Header', frame)
 	header:SetPoint("TOPLEFT", levelFrame, "TOPRIGHT", 5, 0)		
