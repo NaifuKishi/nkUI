@@ -18,20 +18,20 @@ local osDate            = os.date
 function lowerBar.timeDate()
 
     local datasetTime = LibEKL.UICreateFrame("nkText", "lowerBar.datasettime", lowerBar.contextRestricted)
-    datasetTime:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", 0, 0)
+    datasetTime:SetPoint("CENTER", uiElements.lowerBarCanvas, "CENTER", 0, 0)
     datasetTime:SetText("00:00:00")
     datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
     datasetTime:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetTime:SetTextFont(addonInfo.id, "Montserrat")
-    datasetTime:SetEffectGlow({ strength = 1, offsetX = 1, offsetY = 1, blurX=1, blurY = 1})
+    datasetTime:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    datasetTime:SetEffectGlow({ strength = 3 })
     datasetTime:SetLayer(10)
     
     function datasetTime:Redraw()
         datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
     end
     
-    local datasetDate = LibEKL.UICreateFrame("nkText", "lowerBar.datasetdate", lowerBar.contextRestricted)
-    datasetDate:SetPoint("BOTTOMCENTER", datasetTime, "TOPCENTER",0, 7)
+   --[[ local datasetDate = LibEKL.UICreateFrame("nkText", "lowerBar.datasetdate", lowerBar.contextRestricted)
+    datasetDate:SetPoint("BOTTOMCENTER", uiElements.lowerBarCanvas, "TOPCENTER", 0, 2)
     datasetDate:SetText("00/00/0000")
     datasetDate:SetFontSize(nkUISetup.modules.lowerBar.dateSize)
     datasetDate:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
@@ -42,7 +42,7 @@ function lowerBar.timeDate()
     function datasetDate:Redraw()
         datasetDate:SetFontSize(nkUISetup.modules.lowerBar.dateSize)
     end    
-    
+    ]]
     local updateClockTime = inspectTimeServer()
     local updateDate
     
@@ -55,15 +55,17 @@ function lowerBar.timeDate()
             datasetTime:SetText(stringFormat("%02d:%02d", temp.hour, temp.min))
             updateClockTime = now
             
-            if updateDate == nil then
-                datasetDate:SetText(stringFormat("%02d/%02d/%02d", temp.day, temp.month, temp.year))
-            end
+            --if updateDate == nil then
+            --    datasetDate:SetText(stringFormat("%02d/%02d/%02d", temp.day, temp.month, temp.year))
+            --end
         end
     end
     
     Command.Event.Attach(Event.System.Update.Begin, updateClock, "nkUI.lowerbar.time.System.Update.Begin")
     
     table.insert(uiElements.lowerBarModules, datasetTime)
-    table.insert(uiElements.lowerBarModules, datasetDate)
+    --table.insert(uiElements.lowerBarModules, datasetDate)
+
+    return datasetTime
     
 end

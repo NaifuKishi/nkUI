@@ -26,8 +26,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 		battlePass			    = "Passe de combat",
 		nkUISubTitle            = "Une compilation de l'interface moderne pour RIFT",
         lowerBar                = { social = "Amis %d | Guilde %d",
-                                    role = "Rôle actif: %s",
-                                    vitality = "%d%% Vitalité"},
+                                    role = "Rôle actif: <font color='#3C99D7'>%s</font>",
+                                    vitality = "<font color='#22B357'>%d%%</font> Vitalité"},
         oneBag					= { itemValue = "Valeur: %s",
                                     currencyTextPlatinum = '%d<font color="#efebff"> Platine</font>',
                                     currencyTextGold = '%d<font color="#eed234"> Or</font>',
@@ -143,7 +143,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     targetCastbar = "Lancement cible",
                                     unitframes = "Cadres d'unité",
                                     units = "Unités",
-                                    useBank = "Module banque"
+                                    useBank = "Module banque",
+                                    transparent = "Transparent"
                                 },
             tutorial = {
                         welcomeTitle = "Bienvenue dans nkUI Version %s",

@@ -19,24 +19,34 @@ local stringFormat         = string.format
 
 -- Creates and manages the role selection display
 function lowerBar.lowerBarRoles()
-    local name = "lowerbar.roles"
+
+    local name = "lowerBar.datasetroles"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", width * 2, 0)    
+    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
+    datasetFrame:SetLayer(2)    
     
-    local datasetRole = LibEKL.UICreateFrame("nkText", name .. ".datasetrole", lowerBar.contextRestricted)
-    datasetRole:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", (-data.aFourth * 2) - 10, -5)
+    local datasetRole = LibEKL.UICreateFrame("nkText", name .. ".text", lowerBar.contextRestricted)
+    datasetRole:SetPoint("CENTER", datasetFrame, "CENTER", -21 , 0)
     datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetRole:SetTextFont(addonInfo.id, "Montserrat")
+    datasetRole:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetRole:SetEffectGlow({ strength = 1})
     datasetRole:SetSecureMode('restricted')
-    datasetRole:SetLayer(10)
+    datasetRole:SetLayer(5)
 
-    local datasetRoleIcon = LibEKL.UICreateFrame("nkTexture", name .. ".datasetrole.icon", datasetRole)
+    local datasetRoleIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
     datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)
     datasetRoleIcon:SetHeight(16)
     datasetRoleIcon:SetWidth(16)
     datasetRoleIcon:SetTextureAsync("nkUI", "gfx/lowerbarRole.png")
     
-    local roleSwitch = LibEKL.UICreateFrame("nkFrame", name .. ".datasetrole.switch", datasetRole)
+    local roleSwitch = LibEKL.UICreateFrame("nkFrame", name .. ".switch", datasetRole)
     roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
     roleSwitch:SetSecureMode('restricted')
     roleSwitch:SetHeight(1)
@@ -62,14 +72,14 @@ function lowerBar.lowerBarRoles()
             local thisRole
             
             if id == curRole then
-                datasetRole:SetText(stringFormat(langTexts.lowerBar.role, desc))
+                datasetRole:SetText(stringFormat(langTexts.lowerBar.role, desc), true)
             else
                 if roleDisplay[roleID] == nil then
                     thisRole = LibEKL.UICreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
                     thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
                     thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
                     thisRole:SetEffectGlow({ strength = 1})
-                    thisRole:SetTextFont(addonInfo.id, "Montserrat")
+                    thisRole:SetTextFont(addonInfo.id, "MontserratMedium")
                     thisRole:SetText(desc)
                     thisRole:SetSecureMode('restricted')
                     
@@ -79,7 +89,7 @@ function lowerBar.lowerBarRoles()
                     roleDisplay[roleID] = thisRole
                 else
                     thisRole = roleDisplay[roleID]
-                    thisRole:SetTextFont(addonInfo.id, "Montserrat")
+                    thisRole:SetTextFont(addonInfo.id, "MontserratMedium")
                 end
                 
                 thisRole:SetVisible(true)
@@ -90,7 +100,7 @@ function lowerBar.lowerBarRoles()
         end
     end
     
-    function datasetRole:Redraw()
+    function datasetFrame:Redraw()
         datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
         
         for k, v in pairs(roleDisplay) do
@@ -100,7 +110,7 @@ function lowerBar.lowerBarRoles()
     
     updateRoles()
     
-    datasetRole:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
         if inspectSystemSecure() then return end
         
         buttonShown = not buttonShown
@@ -113,5 +123,5 @@ function lowerBar.lowerBarRoles()
         roleSwitch:SetVisible(false)
     end, 'nkUI.lowerbar.role.TEMPORARY.role')
     
-    table.insert(uiElements.lowerBarModules, datasetRole)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
 end

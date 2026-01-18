@@ -20,25 +20,37 @@ local stringFormat              = string.format
 
 -- Creates and manages the social display (friends and guild)
 function lowerBar.social()
+
     local playerName
     local lastGuildUpdate
     local _friendlist, _guildList = {}, {}
-    
-    local datasetSocial = LibEKL.UICreateFrame("nkText", "lowerBar.datasetsocial", lowerBar.contextRestricted)
-    datasetSocial:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 31, -5)
-    datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetSocial:SetTextFont(addonInfo.id, "Montserrat")
-    datasetSocial:SetEffectGlow({ strength = 1})
-    datasetSocial:SetLayer(10)
 
-    local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.datasetsocial.icon", datasetSocial)
-    datasetSocialIcon:SetPoint("CENTERRIGHT", datasetSocial, "CENTERLEFT", -5, 0)
+    local name = "lowerBar.datasetsocial"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", 0, 0)    
+    --datasetFrame:SetBackgroundColor(1, 1, 0, 1)
+    datasetFrame:SetLayer(2)
+
+    local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
+    datasetSocialIcon:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 10, 0)
     datasetSocialIcon:SetHeight(16)
     datasetSocialIcon:SetWidth(16)
-    datasetSocialIcon:SetTextureAsync("nkUI", "gfx/lowerbarGuild.png")
-    
-    function datasetSocial:Redraw()
+    datasetSocialIcon:SetTextureAsync("nkUI", "gfx/lowerbarGuild.png")    
+
+    local datasetSocial = LibEKL.UICreateFrame("nkText", name .. ".text", datasetFrame)
+    datasetSocial:SetPoint("CENTERLEFT", datasetSocialIcon, "CENTERRIGHT", 5, 0)
+    datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
+    datasetSocial:SetTextFont(addonInfo.id, "MontserratMedium")
+    datasetSocial:SetEffectGlow({ strength = 1})
+    datasetSocial:SetLayer(10)
+   
+    function datasetFrame:Redraw()
         datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
@@ -172,5 +184,5 @@ function lowerBar.social()
     loadGuildRoster()
     loadFriendRoster()
     
-    table.insert(uiElements.lowerBarModules, datasetSocial)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
 end

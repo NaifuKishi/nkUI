@@ -30,16 +30,25 @@ function lowerBar.build()
     data.aThird = halfWidth / 3
     data.aFourth = halfWidth / 4
 
-    local height = 80
+    --local height = 35
+    local height = nkUISetup.modules.lowerBar.barHeight + 18
 
     -- Create a canvas behind the lower bar
 
+    
     if not uiElements.lowerBarCanvas then
         uiElements.lowerBarCanvas = LibEKL.UICreateFrame("nkCanvas", "nkUI.lowerBarCanvas", lowerBar.contextRestricted)
         uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -height)
-        uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)        
+        uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
+        uiElements.lowerBarCanvas:SetLayer(1)
 
-        local stroke = {r = 1, g = 0, b = 0, a = 1, thickness = 1 }
+        local stroke = {r = 0x66 / 255,
+                        g = 0x56 / 255,
+                        b = 0x2e / 255,
+                        a = 1,
+                        cap = "round",
+                        miter = "miter",
+                        thickness = 2}
 
         local path = {  {xProportional = 0, yProportional = 0},
                         {xProportional = 1, yProportional = 0},
@@ -49,20 +58,25 @@ function lowerBar.build()
 
         local ratio = height / parentWidth
 
-        local fill = {  type = "gradientLinear", 
-                        transform = Utility.Matrix.Create(1, ratio, math.pi/2, 0, 0),
-                        color = {   { r = 0.1, g = 0.2, b = 0.4, a = 0.0, position = 0 },
-                                    { r = 0.1, g = 0.2, b = 0.4, a = 0.35, position = .5 },
-                                    { r = 0.1, g = 0.2, b = 0.4, a = 0.7, position = 1 }
-                                }
-                    }
+        local fill = {  type = "gradientLinear",
+                        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
+                        color = {
+                            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
+                            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+                        }}
 
-        uiElements.lowerBarCanvas:SetShape (path, fill, nil)
+        if nkUISetup.modules.lowerBar.transparent then
+            stroke.a = 0
+            uiElements.lowerBarCanvas:SetShape (path, nil, stroke)
+        else
+            uiElements.lowerBarCanvas:SetShape (path, fill, stroke)
+        end
+
         uiElements.lowerBarCanvas:SetVisible(true)
     end
 
     -- Load all modules
-    lowerBar.timeDate()
+    uiElements.lowerBarTimeDate = lowerBar.timeDate()
     lowerBar.currency()
     lowerBar.fps()
     lowerBar.location()
@@ -96,6 +110,11 @@ end
 function internalFunc.lowerBarRedraw()
     for idx = 1, #uiElements.lowerBarModules, 1 do
         uiElements.lowerBarModules[idx]:Redraw()
+    end
+
+    if uiElements.lowerBarCanvas then
+        local height = nkUISetup.modules.lowerBar.barHeight + 18
+        uiElements.lowerBarCanvas:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -height)
     end
     
     LibEKL.UI.reloadDialog("nkUI")

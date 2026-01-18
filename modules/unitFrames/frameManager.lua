@@ -136,9 +136,9 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     healthFrame:SetLayer(1)
 
     if setup.reverse then
-        healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -3, 3)
+        healthFrame:SetPoint("TOPRIGHT", unitFrame, "TOPRIGHT", -2, 2)
     else
-        healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 3, 3)
+        healthFrame:SetPoint("TOPLEFT", unitFrame, "TOPLEFT", 2, 2)
     end
 
     healthFrame:SetWidth((frameWidth - 6))
@@ -640,7 +640,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
         if unitFrameWidth == nil then unitFrameWidth = (unitFrame:GetWidth() -2) end
         
-        local targetWidth = (unitFrameWidth-4) * (health / healthMax)
+        local targetWidth = (unitFrameWidth-2) * (health / healthMax)
         local currentWidth = healthFrame:GetWidth()
         local pixel = targetWidth - currentWidth        
 

@@ -39,33 +39,52 @@ function lowerBar.faction()
             break
         end
     end
+
+    local name = "lowerBar.datasetfaction"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -(width*3), 0)    
+    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
+    datasetFrame:SetLayer(2)        
     
-    local datasetFactionBarBG = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrameBG", lowerBar.contextRestricted)
-    datasetFactionBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", data.aFourth - 10, -9)
+    local datasetFactionBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".background", lowerBar.contextRestricted)
+    datasetFactionBarBG:SetPoint("CENTER", datasetFrame, "CENTER",  (21 / 2), 0)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
-    datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
+    --datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
     datasetFactionBarBG:SetLayer(10)
+
+    datasetFactionBarBG:SetShape({  {xProportional = 0, yProportional = 0}, 
+                            {xProportional = 1, yProportional = 0}, 
+                            {xProportional = 1, yProportional = 1}, 
+                            {xProportional = 0, yProportional = 1}, 
+                            {xProportional = 0, yProportional = 0}}, 
+                        { type = "solid", r = 0x36 / 255, g = 0x40 / 255, b = 0x52 / 255, a = 0.5}, 
+                        { r = 0xA3 / 255, g = 0x66 / 255, b = 0xCC / 255, a = 0.3, thickness = 2 })
     
     local datasetFactionBar = LibEKL.UICreateFrame('nkFrame', "lowerBar.factionFrame", datasetFactionBarBG)
-    datasetFactionBar:SetPoint("TOPLEFT", datasetFactionBarBG, "TOPLEFT")
-    datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+    datasetFactionBar:SetPoint("CENTERLEFT", datasetFactionBarBG, "CENTERLEFT", 1, 0)
+    datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight - 2)
     datasetFactionBar:SetWidth(0)
-    datasetFactionBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
+    datasetFactionBar:SetBackgroundColor(0x33 / 255, 0xCC / 255, 0xCC / 255, 1)
     
-    local datasetFaction = LibEKL.UICreateFrame('nkText', "lowerBar.faction", datasetFactionBarBG)
+    --[[local datasetFaction = LibEKL.UICreateFrame('nkText', "lowerBar.faction", datasetFactionBarBG)
     datasetFaction:SetPoint("BOTTOMCENTER", datasetFactionBarBG, "TOPCENTER", 0, 0)
     datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFaction:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
-    datasetFaction:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    datasetFaction:SetEffectGlow({ strength = 1 })
+    datasetFaction:SetTextFont(addonInfo.id, "MontserratMedium")
+    datasetFaction:SetEffectGlow({ strength = 1 })]]
     
     local datasetFactionName = LibEKL.UICreateFrame('nkText', "lowerBar.factionName", datasetFactionBar)
     datasetFactionName:SetPoint("CENTER", datasetFactionBarBG, "CENTER")
     datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
-    datasetFactionName:SetFontColor(0, 0, 0, 1)
-    datasetFactionName:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    datasetFactionName:SetEffectGlow({ strength = 1, colorR = 1, colorG = 1, colorB = 1})
+    datasetFactionName:SetFontColor(1, 1, 1, 1)
+    datasetFactionName:SetTextFont(addonInfo.id, "MontserratMedium")
+    datasetFactionName:SetEffectGlow({ strength = 3})
 
     local datasetFactionBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
     datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -5, 0)
@@ -73,11 +92,11 @@ function lowerBar.faction()
     datasetFactionBarBGIcon:SetWidth(16)
     datasetFactionBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarFaction.png")
     
-    function datasetFactionBarBG:Redraw()
+    function datasetFrame:Redraw()
         datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
         datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
-        datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        --datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
         datasetFactionName:SetFontSize(nkUISetup.modules.lowerBar.barText)
     end
     
@@ -101,10 +120,10 @@ function lowerBar.faction()
             local faction = inspectFactionDetail(currentFaction)
             
             if faction == nil then
-                datasetFaction:SetText(stringFormat("%d%%", 0))
+                --datasetFaction:SetText(stringFormat("%d%%", 0))
                 datasetFactionName:SetText("")
             elseif faction.notoriety == nil then
-                datasetFaction:SetText(stringFormat("%d%%", 0))
+                --datasetFaction:SetText(stringFormat("%d%%", 0))
                 datasetFactionName:SetText("")
             else
                 for k, v in ipairs(notorietyLevels) do
@@ -117,8 +136,8 @@ function lowerBar.faction()
 
                 if LibEKL.Tools.Math.IsNaN(percent) then percent = 0 end
                 
-                datasetFactionName:SetText(stringFormat("%s (%s)", faction.name, level))
-                datasetFaction:SetText(stringFormat("%d%%", percent))
+                datasetFactionName:SetText(stringFormat("%s (%d%%) %s", faction.name, percent, level))
+                --datasetFaction:SetText(stringFormat("%d%%", percent))
                 datasetFactionBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))
             end
         end
@@ -127,5 +146,5 @@ function lowerBar.faction()
     updateFaction()
     Command.Event.Attach(Event.Faction.Notoriety, updateFaction, "nkui.lowerBar.faction.Event.Faction.Notoriety")
     
-    table.insert(uiElements.lowerBarModules, datasetFactionBarBG)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
 end

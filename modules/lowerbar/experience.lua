@@ -17,72 +17,90 @@ local stringFormat      = string.format
 
 -- Creates and manages the experience bar display
 function lowerBar.experience()
-    local datasetExpBarBG = LibEKL.UICreateFrame('nkFrame', "lowerBar.experienceFrameBG", lowerBar.contextRestricted)
-    datasetExpBarBG:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMCENTER", -data.aFourth + 10, -9)
+
+    local name = "lowerBar.datasetexp"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", width * 3, 0)    
+    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
+    datasetFrame:SetLayer(2)
+    
+    local datasetExpBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".experienceFrameBG", lowerBar.contextRestricted)
+    datasetExpBarBG:SetPoint("CENTER", datasetFrame, "CENTER", (21 / 2), 0)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
     datasetExpBarBG:SetLayer(10)
-    
-    local datasetExpBar = LibEKL.UICreateFrame('nkFrame', "lowerBar.experienceFrame", datasetExpBarBG)
-    datasetExpBar:SetPoint("TOPLEFT", datasetExpBarBG, "TOPLEFT")
-    datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+
+    datasetExpBarBG:SetShape({  {xProportional = 0, yProportional = 0}, 
+                                {xProportional = 1, yProportional = 0}, 
+                                {xProportional = 1, yProportional = 1}, 
+                                {xProportional = 0, yProportional = 1}, 
+                                {xProportional = 0, yProportional = 0}}, 
+                            { type = "solid", r = 0x36 / 255, g = 0x40 / 255, b = 0x52 / 255, a = 0.5}, 
+                            { r = 0xA3 / 255, g = 0x66 / 255, b = 0xCC / 255, a = 0.3, thickness = 2 })
+   
+    local datasetExpBar = LibEKL.UICreateFrame('nkFrame', name .. ".expBar", datasetExpBarBG)
+    datasetExpBar:SetPoint("CENTERLEFT", datasetExpBarBG, "CENTERLEFT", 1, 0)
+    datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight - 2)
     datasetExpBar:SetWidth(0)
     datasetExpBar:SetLayer(1)
-    datasetExpBar:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
+    datasetExpBar:SetBackgroundColor(0xA3 / 255, 0x66 / 255, 0xCC / 255, 1)
     
-    local datasetExp = LibEKL.UICreateFrame('nkText', "lowerBar.experience", lowerBar.contextRestricted)
+    --[[local datasetExp = LibEKL.UICreateFrame('nkText', "lowerBar.experience", lowerBar.contextRestricted)
     datasetExp:SetPoint("BOTTOMCENTER", datasetExpBarBG, "TOPCENTER", 0, 0)
     datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetExp:SetFontColor(data.colors.accent.r, data.colors.accent.g, data.colors.accent.b, data.colors.accent.a)
-    datasetExp:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    datasetExp:SetFontColor(0xE8 / 255, 0xC2 / 255, 0x3B / 255, 1)
+    datasetExp:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetExp:SetEffectGlow({ strength = 1})
-    datasetExp:SetLayer(10)
+    datasetExp:SetLayer(10)]]
 
-    local datasetExpLabel = LibEKL.UICreateFrame('nkText', "lowerBar.experienceLabel", datasetExpBarBG)
+    local datasetExpLabel = LibEKL.UICreateFrame('nkText', name .. ".label", datasetExpBarBG)
     datasetExpLabel:SetPoint("CENTER", datasetExpBarBG, "CENTER")
     datasetExpLabel:SetFontSize(nkUISetup.modules.lowerBar.barText)
-    datasetExpLabel:SetFontColor(0, 0, 0, 1)
-    datasetExpLabel:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    datasetExpLabel:SetFontColor(1, 1, 1, 1)
+    datasetExpLabel:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetExpLabel:SetLayer(2)
-    datasetExpLabel:SetEffectGlow({ strength = 1, colorR = 1, colorG = 1, colorB = 1})
+    datasetExpLabel:SetEffectGlow({ strength = 3 })
 
-    local datasetExpBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.experienceFrameBG.icon", datasetExpBarBG)
+    local datasetExpBarBGIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetExpBarBG)
     datasetExpBarBGIcon:SetPoint("CENTERRIGHT", datasetExpBarBG, "CENTERLEFT", -5, 0)
     datasetExpBarBGIcon:SetHeight(16)
     datasetExpBarBGIcon:SetWidth(16)
     datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
     
-    datasetExpBarBG:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
         internalFunc.questLogInit(true)
-    end, datasetExpBarBG:GetName() .. ".Left.Down")  
+    end, datasetFrame:GetName() .. ".Left.Down")  
 
-    function datasetExpBarBG:Redraw()
+    function datasetFrame:Redraw()
         datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
         datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
+        datasetExpLabel:SetFontSize(nkUISetup.modules.lowerBar.barText)
     end
     
-    function datasetExp:Redraw()
-        datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    end
+    --function datasetExp:Redraw()
+    --    datasetExp:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    --end
     
     local function updateExperience(experience)
-        local percent = 0
+        local percentText, percent = "0%", 0
         
         if experience == nil then experience = inspectExperience() end
-        
-        if experience == nil then
-            datasetExp:SetText(stringFormat("%d%%", 0))
-        elseif experience.accumulated == nil then
-            datasetExp:SetText(stringFormat("%d%%", 0))
-        else
+                
+        if experience and experience.accumulated then
             percent = 100 / experience.needed * experience.accumulated
-            datasetExp:SetText(stringFormat("%d%%", percent))
+            percentText = stringFormat("%d%%", percent)
         end
         
-        datasetExpBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))
-        datasetExpLabel:SetText(stringFormat("Level %d", LibEKL.Unit.GetPlayerDetails().level))
+        datasetExpBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))        
+
+        datasetExpLabel:SetText(stringFormat("Level %d (%s)", LibEKL.Unit.GetPlayerDetails().level, percentText))
 
     end
     
@@ -92,6 +110,6 @@ function lowerBar.experience()
     
     updateExperience()
     
-    table.insert(uiElements.lowerBarModules, datasetExpBarBG)
-    table.insert(uiElements.lowerBarModules, datasetExp)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
+    --table.insert(uiElements.lowerBarModules, datasetExp)
 end

@@ -26,6 +26,7 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
             if buffDurationSlider then buffDurationSlider:SetActive(newValue) end
             if maxBuffSlider then maxBuffSlider:SetActive(newValue) end
             if onlyOwnBuffsCheckbox then onlyOwnBuffsCheckbox:SetActive(newValue) end
+            if smoothAnimationCheckbox then smoothAnimationCheckbox:SetActive(newValue) end
 
             internalFunc.uiFramesToggle(newValue)
 

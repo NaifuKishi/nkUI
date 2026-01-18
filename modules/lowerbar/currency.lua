@@ -17,7 +17,7 @@ local mathFloor             = math.floor
 
 -- Creates and manages the currency display
 function lowerBar.currency()
-    local currencyText = '%d<font color="#efebff">p</font> %d<font color="#eed234">g</font> %d<font color="#a7aba7">s</font> (%d)'
+    local currencyText = '%s (%d)'
     local freeBagCount = 0
     
     local freeBagSlots = LibEKL.Inventory.getAvailableSlots()
@@ -28,15 +28,28 @@ function lowerBar.currency()
     else
         freeBagCount = #freeBagSlots
     end
+
+    local name = "lowerBar.datasetcurrency"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -width, 0)    
+    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
+    datasetFrame:SetLayer(2)    
+
+    --print ("currency", -data.aFourth - (13/2))
     
     local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
-    datasetCurrency:SetPoint("BOTTOMCENTER", UIParent, "BOTTOMRIGHT", -data.aFourth - 10, -5)
+    datasetCurrency:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetCurrency:SetTextFont(addonInfo.id, "Montserrat")
+    datasetCurrency:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetCurrency:SetEffectGlow({ strength = 1})
     datasetCurrency:SetLayer(10)
-    
+        
     datasetCurrency:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
         internalFunc.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")
@@ -45,9 +58,9 @@ function lowerBar.currency()
     datasetCurrencyIcon:SetPoint("CENTERRIGHT", datasetCurrency, "CENTERLEFT", -5, 0)
     datasetCurrencyIcon:SetHeight(16)
     datasetCurrencyIcon:SetWidth(16)
-    datasetCurrencyIcon:SetTextureAsync("nkUI", "gfx/lowerbarGold.png")
+    datasetCurrencyIcon:SetTextureAsync("nkUI", "gfx/questIconCoin.png")
     
-    function datasetCurrency:Redraw()
+    function datasetFrame:Redraw()
         datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
@@ -57,11 +70,27 @@ function lowerBar.currency()
         local details = inspectCurrencyDetail('coin')
         
         if details ~= nil and details.stack ~= nil then
-            local platin = mathFloor(details.stack / 10000)
-            local gold = mathFloor((details.stack - (platin * 10000)) / 100)
+            local platin = math.floor(details.stack / 10000)
+            local gold = math.floor((details.stack - (platin * 10000)) / 100)
             local silver = details.stack - (platin * 10000) - (gold * 100)
+
+            -- Build the coin string with only non-zero values
+            local coinParts = {}
+            if platin > 0 then
+                table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+            end
             
-            datasetCurrency:SetText(stringFormat(currencyText, platin, gold, silver, freeBagCount), true)
+            if gold > 0 or platin > 0 then
+                table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
+            end
+            if silver > 0 or (platin > 0 or gold > 0) then
+                table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
+            end
+
+            -- Combine the parts with spaces
+            local coinText = table.concat(coinParts, " ")
+
+            datasetCurrency:SetText(stringFormat(currencyText, coinText, freeBagCount), true)
         end
     end
     
@@ -75,5 +104,5 @@ function lowerBar.currency()
     
     updateCoin(_, {coin = true})
     
-    table.insert(uiElements.lowerBarModules, datasetCurrency)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
 end

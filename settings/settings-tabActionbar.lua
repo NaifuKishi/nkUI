@@ -27,6 +27,8 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             if noOfMainBarsSlider then noOfMainBarsSlider:SetActive(newValue) end
             if rightBarCheckbox then rightBarCheckbox:SetActive(newValue) end
             if nonCombatAlphaSlider then nonCombatAlphaSlider:SetActive(newValue) end
+            if rightBarCheckbox then rightBarCheckbox:SetActive(newValue) end
+            if iconSizeSlider then iconSizeSlider:SetActive(newValue) end
 
             internalFunc.uiActionBarInit (newValue)
         end)

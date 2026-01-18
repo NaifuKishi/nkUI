@@ -21,21 +21,32 @@ local stringFormat              = string.format
 function lowerBar.location()
     
     local buttonShown = false
+
+    local name = "lowerBar.datasetloc"
+    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetWidth(width)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", 0, 0)    
+    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
+    datasetFrame:SetLayer(2)
     
-    local datasetLocation = LibEKL.UICreateFrame('nkText', "lowerBar.location", lowerBar.contextRestricted)
-    datasetLocation:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, -5)
+    local datasetLocation = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
+    datasetLocation:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -10, 0)
     datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetLocation:SetTextFont(addonInfo.id, "Montserrat")
+    datasetLocation:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetLocation:SetSecureMode('restricted')
     datasetLocation:SetEffectGlow({ strength = 1})
     datasetLocation:SetLayer(10)
     
-    function datasetLocation:Redraw()
+    function datasetFrame:Redraw()
         datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
 
-    local datasetLocationIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.location.icon", datasetLocation)
+    local datasetLocationIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
     datasetLocationIcon:SetPoint("CENTERRIGHT", datasetLocation, "CENTERLEFT", -5, 0)
     datasetLocationIcon:SetHeight(16)
     datasetLocationIcon:SetWidth(16)
@@ -72,12 +83,12 @@ function lowerBar.location()
         parent = datasetLocationButton
     end
     
-    datasetLocation:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
         if inspectSystemSecure() then return end
         
         buttonShown = not buttonShown
         for _, v in pairs(buttons) do v:SetVisible(buttonShown) end
-    end, "lowerBar.location.Left_Click")
+    end, datasetFrame:GetName() .. ".Left.Click")
     
     local function updateLocation(_, loc)
         local playerID = LibEKL.Unit.GetPlayerDetails().id
@@ -103,5 +114,5 @@ function lowerBar.location()
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")
     Command.Event.Attach(Event.Unit.Availability.Full, unitAvailable, "nkUI.lowerbar.location.Unit.Availability.Full")
     
-    table.insert(uiElements.lowerBarModules, datasetLocation)
+    table.insert(uiElements.lowerBarModules, datasetFrame)
 end
