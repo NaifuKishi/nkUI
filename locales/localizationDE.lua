@@ -35,6 +35,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									noPrice = "Keine Preis Information",
 									bagTitle = "%s's Inventar",
 									bankTitle = "%s's Bank",
+									noAuction = "Kein Auktionspreis bekannt",
+									auctionPrice = "%s (vor %d Tagen)",
 									youOwn	= "Du besitzt: %d"},
 		showCategoryCheckbox	= {	battlepass = "Battle Pass",
 									area = "Gebiet", 
@@ -144,7 +146,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									unitframes = "Einheitenrahmen",
 									units = "Einheiten",
 									useBank = "Bank Modul",
-									transparent = "Transparent"
+									transparent = "Transparent",									
 								},
 		tutorial = {
             welcomeTitle = "Willkommen bei nkUI Version %s",

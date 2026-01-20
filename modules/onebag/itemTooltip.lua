@@ -9,6 +9,7 @@ local oneBag        = privateVars.oneBag
 local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
+local InspectTimeReal   = Inspect.Time.Real
 
 local stringFormat  = string.format
 local mathFloor     = math.floor
@@ -19,7 +20,7 @@ local function uiItemTooltip ()
 
     local tooltip = LibEKL.UICreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
     tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "BOTTOMLEFT", 5, 5)
-    tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 55)
+    tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 70)
     
     local stroke = {r = .6, g = .6, b = .6, a = .8, thickness = 1 }
     local path =  {  {xProportional = 0, yProportional = 0},
@@ -46,8 +47,22 @@ local function uiItemTooltip ()
 
     LibEKL.UI.SetFont(valueText, addonInfo.id, "MontserratSemiBold")
 
+    local auctionIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.Auction.icon", tooltip)
+    auctionIcon:SetPoint("TOPLEFT", currencyIcon, "BOTTOMLEFT", 0, 5)
+    auctionIcon:SetHeight(12)
+    auctionIcon:SetWidth(12)
+    auctionIcon:SetTextureAsync("nkUI", "gfx/iconAuction.png")
+
+    local auctionText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.auctionText", tooltip)
+    auctionText:SetPoint("CENTERLEFT", auctionIcon, "CENTERRIGHT", 5, 0)
+    auctionText:SetFontSize(12 * data.bagScale)
+    auctionText:SetEffectGlow({strength = 3})
+    auctionText:SetFontColor(1, 1, 1, 1)
+
+    LibEKL.UI.SetFont(auctionText, addonInfo.id, "MontserratSemiBold")
+
     local bagIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.BagSlotsIcon.icon", tooltip)
-    bagIcon:SetPoint("TOPLEFT", currencyIcon, "BOTTOMLEFT", 0, 5)
+    bagIcon:SetPoint("TOPLEFT", auctionIcon, "BOTTOMLEFT", 0, 5)
     bagIcon:SetHeight(12)
     bagIcon:SetWidth(12)
     bagIcon:SetTextureAsync("nkUI", "gfx/iconPackage.png")
@@ -65,34 +80,32 @@ local function uiItemTooltip ()
         local flag, details = pcall(inspectItemDetail, itemID)        
         local qty = 0
 
-        if flag and details and details.sell then 
-            qty = LibEKL.Inventory.queryQtyById (itemID)
-
-            local platin = math.floor(details.sell / 10000)
-            local gold = math.floor((details.sell - (platin * 10000)) / 100)
-            local silver = details.sell - (platin * 10000) - (gold * 100)
-
-            -- Build the coin string with only non-zero values
-            local coinParts = {}
-            if platin > 0 then
-                table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
-            end
-            
-            if gold > 0 or platin > 0 then
-                table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
-            end
-            if silver > 0 or (platin > 0 or gold > 0) then
-                table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
-            end
-
-            -- Combine the parts with spaces
-            local coinText = table.concat(coinParts, " ")
-
-            valueText:SetText(coinText, true)
+        if flag and details and details.sell then                         
+            valueText:SetText(internalFunc.formatCoins(details.sell), true)
         else
             valueText:SetText(langTexts.oneBag.noPrice)
         end
+
+        if not nkUIAuction then nkUIAuction = {} end
+        local shard = Inspect.Shard().name
+        if not nkUIAuction[shard] then nkUIAuction[shard] = { lastScan = nil, items = {}} end
+
+         local thisAuctionItem = nkUIAuction[shard].items[details.type]
+
+        if flag and details and details.type and thisAuctionItem then
+           
+            local difference = math.abs(InspectTimeReal() - thisAuctionItem.lastSeen)
+            local days = difference / 3600 / 24
+
+            local coinText = internalFunc.formatCoins(thisAuctionItem.lastPrice)
+            
+            auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, coinText, days), true)
+        else
+            auctionText:SetText(langTexts.oneBag.noAuction)
+        end
         
+        qty = LibEKL.Inventory.queryQtyById (itemID)
+
         if qty > 0 then countText:SetText(stringFormat(langTexts.oneBag.youOwn, qty)) end
     end
 

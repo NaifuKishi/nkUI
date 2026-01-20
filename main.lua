@@ -323,6 +323,8 @@ local function initializeAddon(_, addon)
 					internalFunc.sctInit()
 				end
 
+				internalFunc.scanAH()
+
 				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 					
 					if nkUISetup.modules.oneBag.bankActivate then

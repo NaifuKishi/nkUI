@@ -17,6 +17,8 @@ RunOnStartup = {
 	"locales/localizationFR.lua",
 	"locales/localizationDE.lua",
 
+	"modules/auction/auction.lua",
+
 	"modules/lowerbar/lowerbar.lua",
 	"modules/lowerbar/currency.lua",
 	"modules/lowerbar/experience.lua",
@@ -117,6 +119,7 @@ Dependencies = {
 
 SavedVariables = {
    nkUISetup	 	= "account",
+   nkUIAuction		= "account",
    nkUIMapGathering	= "account"
 }
 

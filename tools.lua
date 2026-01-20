@@ -56,3 +56,30 @@ function internalFunc.traceEnd(eventName, debugId)
         nkDebug.traceEnd(addonInfo.identifier, "events." .. eventName, debugId)
     end
 end
+
+
+function internalFunc.formatCoins(amount)
+
+    local platin = math.floor(amount / 10000)
+    local gold = math.floor((amount - (platin * 10000)) / 100)
+    local silver = amount - (platin * 10000) - (gold * 100)
+
+    -- Build the coin string with only non-zero values
+    local coinParts = {}
+    
+    if platin > 0 then
+        table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+    end
+
+    if gold > 0 or platin > 0 then
+        table.insert(coinParts, string.format("<font color=\"#eed234\">%dg</font>", gold))
+    end
+
+    if silver > 0 or (platin > 0 or gold > 0) then
+        table.insert(coinParts, string.format("<font color=\"#a7aba7\">%ds</font>", silver))
+    end
+
+    -- Combine the parts with spaces
+    return table.concat(coinParts, " ")
+
+end
