@@ -88,18 +88,23 @@ local function uiItemTooltip ()
 
         if not nkUIAuction then nkUIAuction = {} end
         local shard = Inspect.Shard().name
-        if not nkUIAuction[shard] then nkUIAuction[shard] = { lastScan = nil, items = {}} end
+        if not nkUIAuction[shard] then nkUIAuction[shard] = { lastScan = nil, items = {}} end        
 
-         local thisAuctionItem = nkUIAuction[shard].items[details.type]
+        if flag and details and details.type then
 
-        if flag and details and details.type and thisAuctionItem then
+            local thisAuctionItem = nkUIAuction[shard].items[details.type]
+
+            if thisAuctionItem then
            
-            local difference = math.abs(InspectTimeReal() - thisAuctionItem.lastSeen)
-            local days = difference / 3600 / 24
+                local difference = math.abs(InspectTimeReal() - thisAuctionItem.lastSeen)
+                local days = difference / 3600 / 24
 
-            local coinText = internalFunc.formatCoins(thisAuctionItem.lastPrice)
-            
-            auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, coinText, days), true)
+                local coinText = internalFunc.formatCoins(thisAuctionItem.lastPrice)
+                
+                auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, coinText, days), true)
+            else
+                auctionText:SetText(langTexts.oneBag.noAuction)
+            end
         else
             auctionText:SetText(langTexts.oneBag.noAuction)
         end

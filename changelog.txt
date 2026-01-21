@@ -1,3 +1,9 @@
+V1.2.1
+    - updates: One Bag - Moving items will now try to stack
+    - updates: One Bag - It is now possible to drag items of the same type onto each other for stacking
+    - fixes: One Bag - Much improved item moving
+    - fixes: One Bag - Item are no longer suicidal on left clik
+
 V1.2.0
     - new: Settings - added option to disable bank module
     - new: Lower Bar - clicking fps dataset will open nkDebug (if installed)

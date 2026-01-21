@@ -17,7 +17,7 @@ local ICONPADDING = 5
 local function bagSlot(name, parent, riftSlot)
 
     local isLocked = false
-    local thisItemID
+    local thisItemID, thisItemType
 
     local thisSlot = LibEKL.UICreateFrame("nkCanvas", name, parent)
     thisSlot:SetWidth(ICONSIZE * data.bagScale)
@@ -59,6 +59,10 @@ local function bagSlot(name, parent, riftSlot)
 
     function thisSlot:SetItemID(itemID)
         thisItemID = itemID
+    end
+
+    function thisSlot:SetItemType(itemType)
+        thisItemType = itemType
     end
     
     icon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()
@@ -150,9 +154,10 @@ function oneBag.createBagSlots(parent)
         bagSlots[riftSlot] = thisSlot
     end
     
-    function bagSlotsFrame:SetItem(index, itemID)
+    function bagSlotsFrame:SetItem(index, itemID, itemType)
         local thisSlot = bagSlots[stringFormat("sibg.%03d", index)]
         thisSlot:SetItemID(itemID)
+        thisSlot:SetItemType(itemType)
     end
     
     function bagSlotsFrame:SetIcon(index, addonID, icon)

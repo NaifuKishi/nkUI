@@ -8,6 +8,7 @@ local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
 
 local inspectTimeFrame = Inspect.Time.Frame
+local InspectItemDetail = Inspect.Item.Detail
 
 local stringFormat  = string.format
 local stringFind    = string.find
@@ -16,7 +17,7 @@ local stringFind    = string.find
 
 -- Creates an item icon UI element
 function oneBag.createItemIcon(name, parent)
-    local thisItemID, thisSlot
+    local thisItemID, thisSlot, thisItemType
     
     local itemFrame = LibEKL.UICreateFrame("nKFrame", name, parent)
     itemFrame:SetWidth(40 * data.bagScale)
@@ -45,6 +46,10 @@ function oneBag.createItemIcon(name, parent)
 
     function itemFrame:SetItem(itemID)
         thisItemID = itemID
+    end
+
+    function itemFrame:SetItemType(itemType)
+        thisItemType = itemType
     end
     
     function itemFrame:SetIcon(addonName, path)
@@ -112,32 +117,33 @@ function oneBag.createItemIcon(name, parent)
     itemIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function()
         oneBag.dragItem = {
             draggedItem = thisItemID,
+            draggedItemType = thisItemType,
             draggedSlot = thisSlot
         }
         Command.Item.Standard.Left(thisItemID)
         Command.Cursor(thisItemID)
     end, name .. "Event.Left.Down")
+
+    itemIcon:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        if not oneBag.dragItem then return end
+
+        if thisItemType == oneBag.dragItem.draggedItemType then
+            Command.Item.Move(oneBag.dragItem.draggedSlot, thisSlot)
+        end
+
+        oneBag.dragItem = nil
+        Command.Cursor(nil)
+    end, name .. ".Event.Mouse.Left.Up")
    
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
         if stringFind(thisSlot, "si") then
             if UI.Native.Bank:GetLoaded() then
-                local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
-                if vaultSlot then
-                    Command.Item.Move(thisSlot, vaultSlot)
-                else
-                    local bankSlot = LibEKL.Inventory.findFreeBankSlot()
-                    if bankSlot then
-                        Command.Item.Move(thisSlot, bankSlot)
-                    end
-                end
+                oneBag.moveToBank (thisSlot, thisItemID)                
             else
                 if thisItemID then Command.Item.Standard.Right(thisItemID) end
             end
         else
-            local bagSlot = LibEKL.Inventory.findFreeBagSlot()
-            if bagSlot then
-                Command.Item.Move(thisSlot, bagSlot)
-            end
+            oneBag.moveToBag(thisSlot, thisItemID)
         end
     end, name .. "Event.Right.Down")
     

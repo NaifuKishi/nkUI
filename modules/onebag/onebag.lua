@@ -11,7 +11,8 @@ local events        = privateVars.events
 local oneBag        = privateVars.oneBag
 local langTexts     = privateVars.langTexts
 
-local InspectTimeReal = Inspect.Time.Real
+local InspectTimeReal   = Inspect.Time.Real
+local InspectItemDetail = Inspect.Item.Detail
 
 local stringFormat      = string.format
 local stringFind        = string.find
@@ -32,10 +33,7 @@ local cachedBankItems
 local lastBagCacheUpdate
 local lastBankCacheUpdate
 
-oneBag.dragItem = {
-    draggedItem = nil,
-    draggedSlot = nil
-}
+oneBag.dragItem = nil
 
 ---------- local functions ---------
 
@@ -81,6 +79,9 @@ function internalFunc.oneBagInit()
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
         Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
+            --print ("SlotUpdate")
+            --dump (slots)
+
             if cachedBagItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
@@ -270,6 +271,7 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
             thisIcon:SetQuantity(stringFormat("%d", itemDetails.stack))
             thisIcon:SetBound(itemDetails.bind, itemDetails.bound)
             thisIcon:SetItem(itemDetails.id)
+            thisIcon:SetItemType(itemDetails.type)
             thisIcon:SetVisible(true)
 
             thisCategory.items[slot] = thisIcon
@@ -341,6 +343,8 @@ end
 
 function oneBag.itemSlot (_, slots)
 
+    --print ("oneBag.itemSlot")
+
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", "", slots) end
 
     if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
@@ -382,11 +386,14 @@ end
 
 function oneBag.itemUpdate (_, slots)
 
+    --print ("OneBag.itemUpdate")
+
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemUpdate", "", slots) end
 
     if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
     
     local doBagInventoryUpdate = false
+    local doBankInventoryUpdate = false
     local doBagSlotsUpdate = false
 
     for thisSlot, state in pairs (slots) do
@@ -395,12 +402,21 @@ function oneBag.itemUpdate (_, slots)
             doBagSlotsUpdate = true
         elseif stringFind(thisSlot, "si") then
             doBagInventoryUpdate = true
+        elseif stringFind(thisSlot, "sb") then
+            doBankInventoryUpdate = true
+        elseif stringFind(thisSlot, "sv") then
+            doBankInventoryUpdate = true
         end
 
-        if doBagSlotsUpdate and doBagInventoryUpdate then break end
+        if doBagSlotsUpdate and doBagInventoryUpdate and doBankInventoryUpdate then break end
     end
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", doBagInventoryUpdate) end
+
+    if doBankInventoryUpdate then 
+        if not doBagInventoryUpdate then LibEKL.Inventory.updateDB() end
+        if nkUISetup.modules.oneBag.bankActivate then oneBag.populateBank(true) end
+    end
 
     if doBagInventoryUpdate then 
         LibEKL.Inventory.updateDB()
@@ -409,4 +425,56 @@ function oneBag.itemUpdate (_, slots)
 
     if doBagSlotsUpdate then oneBag.getBagSlots() end
 
+end
+
+function oneBag.moveToBank (thisSlot, thisItemID)
+
+    local itemDetails = InspectItemDetail(thisItemID)
+
+    if itemDetails.stackMax then -- only try to stack stackable items
+
+        local slots = LibEKL.Inventory.GetAllSlotsByType (itemDetails.type)
+
+        for targetSlot, v in pairs (slots) do
+            if stringFind(targetSlot, "sv") or stringFind(targetSlot, "sb") then
+                local status = pcall(Command.Item.Move, thisSlot, targetSlot)
+                if status then 
+                    return 
+                end
+            end
+        end
+    end
+
+    local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
+    if vaultSlot then
+        Command.Item.Move(thisSlot, vaultSlot)
+    else
+        local bankSlot = LibEKL.Inventory.findFreeBankSlot()
+        if bankSlot then
+            Command.Item.Move(thisSlot, bankSlot)
+        end
+    end
+
+end
+
+function oneBag.moveToBag (thisSlot, thisItemID)
+
+    local itemDetails = InspectItemDetail(thisItemID)
+
+    if itemDetails.stackMax then -- only try to stack stackable items
+
+        local slots = LibEKL.Inventory.GetAllSlotsByType (itemDetails.type)
+
+        for targetSlot, v in pairs (slots) do
+            if stringFind(targetSlot, "si") then
+                local status = pcall(Command.Item.Move, thisSlot, targetSlot)
+                if status then return end
+            end
+        end
+    end
+
+    local bagSlot = LibEKL.Inventory.findFreeBagSlot()
+    if bagSlot then
+        Command.Item.Move(thisSlot, bagSlot)
+    end
 end

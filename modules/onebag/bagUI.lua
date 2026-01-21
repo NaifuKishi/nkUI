@@ -60,8 +60,18 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
         thickness = 2
     })
     
-    bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+    bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()            
+        if not oneBag.dragItem then return end
+
+        if isBag then
+            oneBag.moveToBag(oneBag.dragItem.draggedSlot, oneBag.dragItem.draggedItem)
+        else
+            oneBag.moveToBank(oneBag.dragItem.draggedSlot, oneBag.dragItem.draggedItem)            
+        end
+
+        oneBag.dragItem = nil
         Command.Cursor(nil)
+
     end, bagName .. ".Event.Left.Up")
 
     Command.Event.Attach(LibEKL.Events[bagName].Moved, function(_, x, y)
