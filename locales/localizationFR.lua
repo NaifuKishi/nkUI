@@ -48,7 +48,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     world = "Monde", 
                                     zone = "Quêtes de zone", 
                                     area = "Quêtes de secteur", 
-                                    instant = "Instance", 
+                                    instant = "Donjon", 
                                     raid = "Raid", 
                                     personal = "Quêtes régulières", 
                                     carnage = "Carnage", 

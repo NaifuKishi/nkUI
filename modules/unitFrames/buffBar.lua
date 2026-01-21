@@ -97,9 +97,12 @@ function internalFunc.buffBar.addBuff(unit, buffs)
 
     for buffID, buffDetails in pairs(details) do
         local buffIdentifier = buffDetails.type
+        if buffIdentifier == nil and buffDetails.rune then
+            buffIdentifier = buffDetails.rune
+        end
 
         if buffIdentifier == nil then
-            LibEKL.Tools.Error.Display("nkUI", "BuffBar addBuff - no type for buff " .. details.name, 2)
+            LibEKL.Tools.Error.Display("nkUI", "BuffBar addBuff - no type for buff " .. buffDetails.name, 2)
         else
             buffId2BuffType[buffID] = buffIdentifier
             

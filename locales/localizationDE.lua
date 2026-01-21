@@ -42,7 +42,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									area = "Gebiet", 
 									guild = "Gilde", 
 									crafting = "Handwerk", 
-									instant = "Instanz",
+									instant = "Dungeon",
 									carnage = "Massaker", 
 									personal = "Normale Quests",
 									pvp="PvP", 

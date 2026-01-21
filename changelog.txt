@@ -3,6 +3,7 @@ V1.2.1
     - updates: One Bag - Tooltip shows avg auction price
     - updates: One Bag - Moving items will now try to stack
     - updates: One Bag - It is now possible to drag items of the same type onto each other for stacking
+    - fixes: Buff Bar - no longer bugs out on temporary runes on weapons
     - fixes: One Bag - Auto open / close on auction house display state
     - fixes: One Bag - Much improved item moving
     - fixes: One Bag - Item are no longer suicidal on left clik
