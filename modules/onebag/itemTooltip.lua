@@ -99,7 +99,7 @@ local function uiItemTooltip ()
                 local difference = math.abs(InspectTimeReal() - thisAuctionItem.lastSeen)
                 local days = difference / 3600 / 24
 
-                local coinText = internalFunc.formatCoins(thisAuctionItem.lastPrice)
+                local coinText = internalFunc.formatCoins(thisAuctionItem.avgPrice)
                 
                 auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, coinText, days), true)
             else

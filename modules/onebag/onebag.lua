@@ -446,7 +446,7 @@ function oneBag.moveToBank (thisSlot, thisItemID)
     end
 
     local vaultSlot = LibEKL.Inventory.findFreeVaultSlot()
-    if vaultSlot then
+    if vaultSlot then        
         Command.Item.Move(thisSlot, vaultSlot)
     else
         local bankSlot = LibEKL.Inventory.findFreeBankSlot()

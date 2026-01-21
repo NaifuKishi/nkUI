@@ -336,8 +336,22 @@ local function initializeAddon(_, addon)
 						end, "nkUI.OneBag.Native.Bank.Loaded")
 					end
 
+					--[[unction UI.Native.Auction.Event:Loaded()
+						if UI.Native.Auction:GetLoaded() then
+							if uiElements.oneBag == nil then internalFunc.oneBagInit() end
+							uiElements.oneBag:SetVisible(UI.Native.Auction:GetLoaded())
+						else
+							mainWindow:Close()
+						end
+					end]]
+
+					UI.Native.Auction:EventAttach(Event.UI.Native.Loaded, function()
+						if uiElements.oneBag == nil then internalFunc.oneBagInit() end
+						uiElements.oneBag:SetVisible(UI.Native.Auction:GetLoaded())
+					end, "nkUI.OneBag.Native.Auction.Loaded")
+
 					UI.Native.BagInventory1:EventAttach(Event.UI.Native.Loaded, function()
-					if uiElements.oneBag == nil then internalFunc.oneBagInit() end
+						if uiElements.oneBag == nil then internalFunc.oneBagInit() end
 						uiElements.oneBag:SetVisible(UI.Native.BagInventory1:GetLoaded())
 					end, "nkUI.OneBag.Native.Bag.Loaded")
 				end

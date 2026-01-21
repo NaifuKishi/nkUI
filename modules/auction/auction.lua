@@ -93,7 +93,7 @@ local function build()
 
 end
 
-local function ahScanResult(result, ahTools)
+local function ahScanResult(result, ahTools) 
 
     local processResults = coroutine.create(
 
@@ -105,30 +105,49 @@ local function ahScanResult(result, ahTools)
             
             while counter < result.count do
                 
-                local thisSet = result.data[index]
+                local thisSet = result.data[index] -- get current set of up to 50 auctions
 
                 for idx = 1, #thisSet, 1 do
 
-                    local thisAuction = InspectAuctionDetail(thisSet[idx])
+                    local thisAuction = InspectAuctionDetail(thisSet[idx]) -- get details of one auction
 
                     if thisAuction then
                         local thisValue
                         if thisAuction.buyout and thisAuction.itemStack then
-                            thisValue = thisAuction.buyout / thisAuction.itemStack
+                            thisValue = thisAuction.buyout / thisAuction.itemStack -- get price of single item if is a stack
                         elseif thisAuction.buyout then
-                            thisValue = thisAuction.buyout
+                            thisValue = thisAuction.buyout -- get price of single item if is not a stack
                         else
                             thisValue = nil
                         end
 
                         if thisValue then
-                            local id = thisAuction.itemType
-                            if nkUIAuction[shard].items[id] then
-                                if nkUIAuction[shard].items[id].lastPrice > thisValue then
-                                    nkUIAuction[shard].items[id] = { lastPrice = thisValue, lastSeen = scanTime }
+                            local id = thisAuction.itemType -- get type of item from auction information
+                            if nkUIAuction[shard].items[id] then -- do we know this item type yet?                                
+
+                                if nkUIAuction[shard].items[id].lowestPrice > thisValue then -- is this price highr than the lowest we ever saw? 
+                                    nkUIAuction[shard].items[id].lowestPrice = thisValue
                                 end
+
+                                if nkUIAuction[shard].items[id].highestPrice < thisValue then -- is this price highr than the highest we ever saw?         
+                                    nkUIAuction[shard].items[id].highestPrice = thisValue
+                                end
+
+                                -- Update average price calculation
+                                nkUIAuction[shard].items[id].totalPrice = nkUIAuction[shard].items[id].totalPrice + thisValue
+                                nkUIAuction[shard].items[id].count = nkUIAuction[shard].items[id].count + 1
+                                nkUIAuction[shard].items[id].avgPrice = nkUIAuction[shard].items[id].totalPrice / nkUIAuction[shard].items[id].count
+
+                                nkUIAuction[shard].items[id].lastSeen = scanTime
                             else
-                                nkUIAuction[shard].items[id] = { lastPrice = thisValue, lastSeen = scanTime }
+                                nkUIAuction[shard].items[id] = {
+                                    lowestPrice = thisValue,
+                                    highestPrice = thisValue,
+                                    totalPrice = thisValue,
+                                    avgPrice = thisValue,
+                                    count = 1,
+                                    lastSeen = scanTime
+                                }
                             end
                         end
                     end
@@ -150,7 +169,6 @@ local function ahScanResult(result, ahTools)
     )
 
     LibEKL.Coroutines.Add ({ func = processResults, active = true, para1 = result, para2 = ahTools })                
-
 end
 
 function internalFunc.scanAH()
@@ -166,33 +184,66 @@ function internalFunc.scanAH()
     local shard = Inspect.Shard().name
     
     if not nkUIAuction[shard] then
-        nkUIAuction[shard] = { lastScan = nil, items = {}}
+        nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
     end
 
     Command.Event.Attach(Event.Auction.Scan, 
-        function (_, info, auctions)            
-            if info.type == "search" then
+        function (_, info, auctions) -- auctions is the list of current running auctions            
+            if info.type == "search" and not info.text then           
+
+                if not nkUIAuction then nkUIAuction = {} end
+
+                local shard = Inspect.Shard().name
+                
+                if not nkUIAuction[shard] then
+                    nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
+                end
 
                 local counter, totalCounter = 0, 0
                 local auctionSet = {}
-                local resultSet = {}
+                local newAuctions = {}
+                
+                local previousAuctions = nkUIAuction[shard].auctions
+                local knownAuctions = {}
+
+                -- build tables of 50 auctions for the later processing
 
                 for thisAuction, v in pairs (auctions) do
-                    table.insert(auctionSet, thisAuction)
-                    counter = counter + 1
-                    totalCounter = totalCounter + 1
-                    if counter >= 50 then
-                        counter = 0
-                        table.insert(resultSet, auctionSet)
-                        auctionSet = {}
+
+                    if not previousAuctions[thisAuction] then -- only process new auctions
+                        table.insert(auctionSet, thisAuction)                        
+                        knownAuctions[thisAuction] = true -- mark the new auction as known
+
+                        counter = counter + 1
+                        totalCounter = totalCounter + 1
+                        if counter >= 50 then
+                            counter = 0
+                            table.insert(newAuctions, auctionSet)
+                            auctionSet = {}
+                        end
                     end
                 end
 
                 if counter > 0 then
-                    table.insert(resultSet, auctionSet)
+                    table.insert(newAuctions, auctionSet)
+                end
+                
+                local removedAuctions = 0
+
+                for k, v in pairs(previousAuctions) do
+                    if auctions[k] then -- if the auction is still running
+                        knownAuctions[k] =  true -- mark as known
+                    else
+                        removedAuctions = removedAuctions + 1
+                    end
                 end
 
-                local result = { count = totalCounter, data = resultSet}
+                --print ("new auctions: ", totalCounter)
+                --print ("Removed auctions: ", removedAuctions)
+
+                nkUIAuction[shard].auctions = knownAuctions -- set known to previous plus new auctions
+
+                local result = { count = totalCounter, data = newAuctions}
 
                 ahScanResult(result, ahTools)
             end            
