@@ -139,6 +139,14 @@ local function _createTutorialWindow()
             position = "bottom",
         },
         {
+            title = langTexts.tutorial.auctionTitle,
+            description = langTexts.tutorial.auctionDescription,
+            image = "gfx/tutorialAuction.png",
+            width = 61,
+            height = 36,
+            position = "bottom",
+        },
+        {
             title = langTexts.tutorial.settingsTitle,
             description = langTexts.tutorial.settingsDescription,
         },

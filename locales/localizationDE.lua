@@ -7,7 +7,9 @@ local addonInfo, privateVars = ...
 if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 	privateVars.langTexts = {
 		startUp             	= '<font color="#0094FF">nkUI</font> V%s geladen',
-		commandline             = '/nkui um die Einstellungen zu öffnen',
+		commandline1            = '/nkui um die Einstellungen zu öffnen',
+		commandline2            = '/nkui qlog um das Questlog zu öffnen',
+		commandline3            = '/nkui bag um das Inventar zu öffnen',
 		questGiver				= 'Questgeber: <font color="#0094FF">%s</font>',
 		scene					= 'Questort: <font color="#0094FF">%s</font>',
 		zoneFilter				= "Klicke hier um die Liste auf die aktuelle Zone zu filtern",
@@ -38,6 +40,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									noAuction = "Kein Auktionspreis bekannt",
 									auctionPrice = "%s (vor %d Tagen)",
 									youOwn	= "Du besitzt: %d"},
+		auction					= { scanStarted = "Analyze gestartet. Bitte warten!",
+									scanProgress = "Analyse %d%% fertig",
+									newAuctions = "<font color=\"#0094FF\">nkUI:</font> %d neue Auktion(en)",
+									removedAuctions = "<font color=\"#0094FF\">nkUI:</font> %d alte Auktion(en) entfernt"
+								},
 		showCategoryCheckbox	= {	battlepass = "Battle Pass",
 									area = "Gebiet", 
 									guild = "Gilde", 
@@ -152,7 +159,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
             welcomeTitle = "Willkommen bei nkUI Version %s",
             welcomeDescription = "Willkommen bei nkUI und vielen Dank, dass Sie mein Addon ausprobieren.\n\nDieses Tutorial führt Sie durch die grundlegenden Funktionen von nkUI.",
             settingsTitle = "nkUI Einstellungen",
-            settingsDescription = "Es gibt eine Konfiguration, um Aspekte von nkUI zu ändern.\n\nSie können auf die Konfiguration zugreifen, indem Sie /nkui eingeben oder auf die Minikarten-Schaltfläche klicken.",
+            settingsDescription = "Es gibt eine Konfiguration, um Aspekte von nkUI zu ändern.\n\nDu kannst auf die Konfiguration zugreifen, indem Du /nkui eingibst oder auf die Minikarten-Schaltfläche klickst.\n\nMit /nkui qlog öffnest Du das Qust Log.\nMit /nkui bag öffnest Du das Inventar.",
             defaultUIElementsTitle = "Standard-UI-Elemente",
             defaultUIElementsDescription = "Dieses Addon bietet viele Ersetzungen für die Standard-UI-Elemente. Leider aufgrund vieler Einschränkungen in der RIFT-API können die Standard-Elemente nicht von Addons deaktiviert werden.\n\nStattdessen müssen Sie dies manuell einmal tun. Sie können dies tun, indem Sie Escape drücken und die Option [Layout bearbeiten] verwenden. Mit dieser Option können Sie Standard-UI-Elemente ausblenden.",
             questLogTitle = "Quest log",
@@ -177,6 +184,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
             tooltipDescription = "Dieses nkUI-Modul zeigt einen Tooltip für Einheiten an, der besser aussieht als der Standard-Tooltip. Leider aufgrund von API-Einschränkungen ist es nicht möglich, Questinformationen für NPC anzuzeigen. Daher ist der Tooltip manchmal größer als nötig. Ich werde versuchen, dies in den nächsten Wochen zu beheben.",
             doneTitle = "Sie sind fertig - fürs Erste :)",
             doneDescription = "Das war alles bisher. Achten Sie regelmäßig auf Cursegorge oder Discord auf Updates.\n\nSie können dieses Fenster später wieder aus den Einstellungen öffnen.",
+			auctionTitle = "Neu: Auktionen",
+			auctionDescription = "Du kannst das Auktionshaus scannen und Preisinformationen speichern.\n\nDer durchschnittliche Preis wird bei den zusätzlichen Informationen im Tooltip angezeigt.\n\nKlicke auf das blaue Symbol um einen Scan zu starten.",
             previousButton = "Zurück",
             nextButton = "Weiter",
             finishButton = "Fertig"

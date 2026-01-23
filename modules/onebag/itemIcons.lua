@@ -136,7 +136,9 @@ function oneBag.createItemIcon(name, parent)
     end, name .. ".Event.Mouse.Left.Up")
    
     itemIcon:EventAttach(Event.UI.Input.Mouse.Right.Down, function()
-        if stringFind(thisSlot, "si") then
+        if thisItemID then Command.Item.Standard.Right(thisItemID) end
+
+        --[[if stringFind(thisSlot, "si") then
             if UI.Native.Bank:GetLoaded() then
                 oneBag.moveToBank (thisSlot, thisItemID)                
             else
@@ -144,7 +146,7 @@ function oneBag.createItemIcon(name, parent)
             end
         else
             oneBag.moveToBag(thisSlot, thisItemID)
-        end
+        end]]
     end, name .. "Event.Right.Down")
     
     return itemFrame

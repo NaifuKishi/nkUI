@@ -22,7 +22,7 @@ context:SetLayer(2)
 -- Creates the main bag UI window
 function oneBag.createBagUI(bagName, bagTitle, isBag)
 
-    local currencyText, currencyText, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame
+    local currencyText, currencyText, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame, auctionIcon
     
     local bagWindow = LibEKL.UICreateFrame("nkWindow", bagName, context)
     bagWindow:SetTitle(stringFormat(bagTitle, LibEKL.Unit.GetPlayerDetails().name))
@@ -189,6 +189,13 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     searchIcon:SetWidth(20)
     searchIcon:SetTextureAsync("nkUI", "gfx/iconSearch.png")
 
+    -- Create search icon
+    auctionIcon = LibEKL.UICreateFrame("nkTexture", bagName .. ".auctionIcon", toolsFrame)
+    auctionIcon:SetPoint("CENTERRIGHT", searchIcon, "CENTERLEFT", -5, 0)
+    auctionIcon:SetHeight(20)
+    auctionIcon:SetWidth(20)
+    auctionIcon:SetTextureAsync("nkUI", "gfx/iconAuction.png")    
+
     -- Create search input frame (initially hidden)
     searchFrame = LibEKL.UICreateFrame("nkFrame", bagName .. ".SearchFrame", searchIcon)
     searchFrame:SetPoint("TOPRIGHT", searchIcon, "TOPLEFT", 0, 0)
@@ -207,6 +214,10 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
     searchInput:SetInnerColor({r = 0, g = 0, b = 0, a = 1})
 	searchInput:SetFocusColor (data.theme.labelColor)
 	searchInput:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
+
+    auctionIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+        internalFunc.ahScanDialog()
+    end, bagName .. ".auctionIcon.Left.Down.Click")
 
     -- Toggle search frame visibility when search icon is clicked
     searchIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
@@ -274,6 +285,18 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
         end
 
         oSetVisible(self, visible)
+    end
+
+    function bagWindow:ShowAuction(flag)
+
+        if flag then
+            toolsFrame:SetWidth(55)
+            auctionIcon:SetVisible(true)
+        else
+            toolsFrame:SetWidth(30)
+            auctionIcon:SetVisible(false)
+        end
+
     end
     
     return bagWindow

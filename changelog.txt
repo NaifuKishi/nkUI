@@ -1,4 +1,4 @@
-V1.2.1
+V1.2.5
     - new: One Bag - Added functionality to scan auction house for price information
     - updates: One Bag - Tooltip shows avg auction price
     - updates: One Bag - Moving items will now try to stack

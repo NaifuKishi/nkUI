@@ -8,7 +8,9 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 
 	privateVars.langTexts = {
 		startUp             	= '<font color="#0094FF">nkUI</font> V%s loaded',
-		commandline             = '/nkui to open settings',
+		commandline1            = '/nkui to open settings',
+		commandline2            = '/nkui qlog to open the quest log',
+		commandline3            = '/nkui bag to open the inventory',
 		questGiver				= 'Quest giver: <font color="#0094FF">%s</font>',
 		scene					= 'Quest location: <font color="#0094FF">%s</font>',
 		zoneFilter				= "Click here to filter the list by the current zone",
@@ -40,6 +42,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									auctionPrice = "%s (%d days ago)",
 									youOwn	= "You own: %d"
 								},
+		auction					= { scanStarted = "Scan started. Please wait!",
+									scanProgress = "Scan %d%% done",
+									newAuctions = "<font color=\"#0094FF\">nkUI:</font> %d new auction(s)",
+									removedAuctions = "<font color=\"#0094FF\">nkUI:</font> %d old auction(s) removed"
+								},								
 		showCategoryCheckbox	= {	battlepass = "Battle Pass",
 									crafting = "Crafting", 
 									weekly = "Weekly", 
@@ -154,7 +161,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 					welcomeTitle = "Welcome to nkUI Version %s",
 					welcomeDescription = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI.",
 					settingsTitle = "nkUI Settings",
-					settingsDescription = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.",
+					settingsDescription = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.\n\nWith /nkui qlog you open the Quest Log.\nWith /nkui bag you open the inventory.",
 					defaultUIElementsTitle = "Default UI elements",
 					defaultUIElementsDescription = "This addon provides a lot of replacements for the standard UI elements. Unfortunately due to a lot of limitations in the RIFT API the default elements cannot be deactivated by addons.\n\nInstead you have to do so manually once. You can do so by hitting Escape and use the option [Edit Layout]. Using that option you can hide default ui elements.",
 					questLogTitle = "Questlog",
@@ -179,7 +186,9 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 					tooltipDescription = "This nkUI module shows a tooltip for units which does look a lot better than the standard tooltip. Unfortunately due to API restrictions it's not possible to display quest information for NPC. There fore sometimes the tooltip will be bigger than neccessary. I'll try to figure out something here in the upcoming weeks.",
 					doneTitle = "You are done - for now :)",
 					doneDescription = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window from the settings.",
-					previousButton = "Previous",
+					auctionTitle = "New: Auctions",
+					auctionDescription = "You can scan the auction house and store price information.\n\nThe average price is displayed in the additional information in the tooltip.\n\nClick the blue icon to start a scan.",
+					previousButton = "Previous",					
 					nextButton = "Next",
 					finishButton = "Finish"
 				},

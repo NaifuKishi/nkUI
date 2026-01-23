@@ -7,7 +7,9 @@ local addonInfo, privateVars = ...
 if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 	privateVars.langTexts = {
 		startUp              	= '<font color="#0094FF">nkUI</font> V%s chargé',
-		commandline             = '/nkui pour ouvrir les paramètres',
+		commandline1            = '/nkui pour ouvrir les paramètres',
+        commandline2            = "/nkui qlog pour ouvrir le journal des quêtes",
+        commandline3            = "/nkui bag pour ouvrir l'inventaire",
 		questGiver			    = 'Donneur de quête: <font color="#0094FF">%s</font>',
 		scene				    = 'Lieu de la quête: <font color="#0094FF">%s</font>',
 		zoneFilter			    = "Cliquez ici pour filtrer la liste par la zone actuelle",
@@ -38,6 +40,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     noAuction = "pas de prix d'enchère connu",
                                     auctionPrice = "%s (il y a %d jours)",
                                     youOwn  = "Vous possédez: %d"},
+        auction                 = { scanStarted = "Scan en cours. Veuillez patienter!",
+                                    scanProgress = "Scan %d%% terminé",
+                                    newAuctions = "<font color=\"#0094FF\">nkUI:</font> %d nouvelles enchères",
+                                    removedAuctions = "<font color=\"#0094FF\">nkUI:</font> %d anciennes enchères supprimées"
+                                },
 		showCategoryCheckbox	= { battlepass = "Passe de Combat",
                                     crafting = "Artisanat", 
                                     weekly = "Hebdomadaire", 
@@ -152,7 +159,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                         welcomeTitle = "Bienvenue dans nkUI Version %s",
                         welcomeDescription = "Bienvenue dans nkUI et merci d'essayer mon addon.\n\nCe tutoriel vous guidera à travers les fonctionnalités de base de nkUI.",
                         settingsTitle = "Paramètres nkUI",
-                        settingsDescription = "Il existe une configuration pour modifier les aspects de nkUI.\n\nVous pouvez accéder à la configuration en tapant /nkui ou en cliquant sur le bouton de la minicarte.",
+                        settingsDescription = "Il existe une configuration pour modifier les aspects de nkUI.\n\nVous pouvez accéder à la configuration en tapant /nkui ou en cliquant sur le bouton de la minicarte.\n\nAvec /nkui qlog, vous ouvrez le journal des quêtes.\nAvec /nkui bag, vous ouvrez l'inventaire.",
                         defaultUIElementsTitle = "Éléments d'interface par défaut",
                         defaultUIElementsDescription = "Cet addon fournit de nombreuses remplacements pour les éléments d'interface standard. Malheureusement, en raison de nombreuses limitations dans l'API RIFT, les éléments par défaut ne peuvent pas être désactivés par les addons.\n\nVous devez donc le faire manuellement une fois. Vous pouvez le faire en appuyant sur Échap et en utilisant l'option [Modifier la disposition]. Avec cette option, vous pouvez masquer les éléments d'interface par défaut.",
                         questLogTitle = "Journal des Quêtes",
@@ -177,6 +184,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                         tooltipDescription = "Ce module nkUI affiche une info-bulle pour les unités qui a un design beaucoup plus beau que l'info-bulle standard. Malheureusement, en raison de restrictions de l'API, il n'est pas possible d'afficher des informations de quête pour les PNJ. Par conséquent, l'info-bulle est parfois plus grande que nécessaire. J'essaierai de trouver une solution dans les prochaines semaines.",
                         doneTitle = "Vous avez terminé - pour l'instant :)",
                         doneDescription = "C'est tout pour l'instant. Assurez-vous de vérifier régulièrement Cursegorge ou le Discord pour les mises à jour.\n\nVous pouvez rouvrir cette fenêtre à partir des paramètres.",
+                        auctionTitle = "Nouvelle: Enchères",
+                        auctionDescription = "Vous pouvez scanner la maison des enchères et stocker les informations sur les prix.\n\nLe prix moyen est affiché dans les informations supplémentaires de l'infobulle.\n\nCliquez sur le symbole bleu pour lancer un scan.",
                         previousButton = "Précédent",
                         nextButton = "Suivant",
                         finishButton = "Terminer"

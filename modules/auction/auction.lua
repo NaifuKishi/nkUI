@@ -17,8 +17,12 @@ local InspectAuctionDetail  = Inspect.Auction.Detail
 local stringFormat      = string.format
 local stringFind        = string.find
 local stringMatch       = string.match
-
 local mathFloor         = math.floor
+
+local dialog
+local context = UI.CreateContext("nkUI.auction")
+context:SetStrata('dialog')
+context:SetLayer(2)
 
 ---------- init variables ---------
 
@@ -76,7 +80,7 @@ local function build()
     button:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
     button:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()
-		Command.Auction.Scan({type = "search"})        
+		Command.Auction.Scan({type = "search"})
 	end, name .. "_leftButton_LeftClick")
 
     ahToolsWindow:SetVisible(false)
@@ -157,11 +161,13 @@ local function ahScanResult(result, ahTools)
 
                 index = index + 1
 
-                ahTools:SetProgress(counter / result.count * 100)
+                dialog:SetMessage(string.format(langTexts.auction.scanProgress, counter / result.count * 100))
+--                ahTools:SetProgress(counter / result.count * 100)
                 coroutine.yield(auction)
 
             end           
 
+            dialog:SetVisible(false)
             nkUIAuction[shard].lastScan = scanTime
             
             coroutine.yield()
@@ -171,13 +177,120 @@ local function ahScanResult(result, ahTools)
     LibEKL.Coroutines.Add ({ func = processResults, active = true, para1 = result, para2 = ahTools })                
 end
 
-function internalFunc.scanAH()
+local function ahScan(_, info, auctions) 
 
-    local ahTools = build()
+    if info.type == "search" and not info.text then           
 
-    UI.Native.Auction:EventAttach(Event.UI.Native.Loaded, function()
-        ahTools:SetVisible(UI.Native.Auction:GetLoaded())
-    end, "nkUI.OneBag.Native.Bank.Loaded")
+        if not nkUIAuction then nkUIAuction = {} end
+
+        local shard = Inspect.Shard().name
+        
+        if not nkUIAuction[shard] then
+            nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
+        end
+
+        local counter, totalCounter = 0, 0
+        local auctionSet = {}
+        local newAuctions = {}
+        
+        local previousAuctions = nkUIAuction[shard].auctions
+        local knownAuctions = {}
+
+        -- build tables of 50 auctions for the later processing
+
+        for thisAuction, v in pairs (auctions) do
+
+            if not previousAuctions[thisAuction] then -- only process new auctions
+                table.insert(auctionSet, thisAuction)                        
+                knownAuctions[thisAuction] = true -- mark the new auction as known
+
+                counter = counter + 1
+                totalCounter = totalCounter + 1
+                if counter >= 50 then
+                    counter = 0
+                    table.insert(newAuctions, auctionSet)
+                    auctionSet = {}
+                end
+            end
+        end
+
+        if counter > 0 then
+            table.insert(newAuctions, auctionSet)
+        end
+        
+        local removedAuctions = 0
+
+        for k, v in pairs(previousAuctions) do
+            if auctions[k] then -- if the auction is still running
+                knownAuctions[k] =  true -- mark as known
+            else
+                removedAuctions = removedAuctions + 1
+            end
+        end
+
+        Command.Console.Display("general", true, stringFormat(langTexts.auction.newAuctions, totalCounter), true)		        
+        Command.Console.Display("general", true, stringFormat(langTexts.auction.removedAuctions, removedAuctions), true)		        
+
+        nkUIAuction[shard].auctions = knownAuctions -- set known to previous plus new auctions
+
+        local result = { count = totalCounter, data = newAuctions}
+
+        ahScanResult(result, ahTools)
+    end            
+
+end
+
+function internalFunc.ahScanDialog()
+
+    if not dialog then
+
+        dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.auction.scanDialog", context)
+        dialog:ClearAll()
+        dialog:SetTitle("nkUI")
+        dialog:SetTitleAlign('center')
+        dialog:SetWidth(400)
+        dialog:SetHeight(150)
+        dialog:SetCloseable(false)	
+        dialog:SetTitleFont(addonInfo.id, "MontserratBold")
+        dialog:SetTitleFontSize(16)
+        dialog:SetTitleEffect ( {strength = 3})
+        dialog:SetTitleFontColor(1, .8, 0, 1)
+
+        dialog:SetColor({
+            type = "gradientLinear",
+            transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
+            color = {
+                {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
+                {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+            }
+        },  {
+            r = 0x66 / 255,
+            g = 0x56 / 255,
+            b = 0x2e / 255,
+            a = 1,
+            cap = "round",
+            miter = "miter",
+            thickness = 2
+        })
+        
+        local msg = LibEKL.UICreateFrame("nkText", "nkUI.auction.scanDialog.msg", dialog:GetContent())
+        msg:SetText(privateVars.langTexts.msgReload)
+        msg:SetPoint("CENTERTOP", dialog:GetContent(), "CENTERTOP", 0, 10)
+        msg:SetFontSize(16)
+        msg:SetFontColor(1,1,1,1)
+
+        LibEKL.UI.SetFont(msg, addonInfo.id, "MontserratSemiBold")
+
+        dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2 ) - (dialog:GetWidth() / 2), 100)
+
+        function dialog:SetMessage(newMessage)
+            msg:SetText(newMessage)
+        end
+
+        Command.Event.Attach(Event.Auction.Scan, ahScan, "nkUI.Auction.Scan")
+    else
+        dialog:SetVisible(true)
+    end
 
     if not nkUIAuction then nkUIAuction = {} end
 
@@ -187,68 +300,8 @@ function internalFunc.scanAH()
         nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
     end
 
-    Command.Event.Attach(Event.Auction.Scan, 
-        function (_, info, auctions) -- auctions is the list of current running auctions            
-            if info.type == "search" and not info.text then           
+    dialog:SetMessage(langTexts.auction.scanStarted)
 
-                if not nkUIAuction then nkUIAuction = {} end
-
-                local shard = Inspect.Shard().name
-                
-                if not nkUIAuction[shard] then
-                    nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
-                end
-
-                local counter, totalCounter = 0, 0
-                local auctionSet = {}
-                local newAuctions = {}
-                
-                local previousAuctions = nkUIAuction[shard].auctions
-                local knownAuctions = {}
-
-                -- build tables of 50 auctions for the later processing
-
-                for thisAuction, v in pairs (auctions) do
-
-                    if not previousAuctions[thisAuction] then -- only process new auctions
-                        table.insert(auctionSet, thisAuction)                        
-                        knownAuctions[thisAuction] = true -- mark the new auction as known
-
-                        counter = counter + 1
-                        totalCounter = totalCounter + 1
-                        if counter >= 50 then
-                            counter = 0
-                            table.insert(newAuctions, auctionSet)
-                            auctionSet = {}
-                        end
-                    end
-                end
-
-                if counter > 0 then
-                    table.insert(newAuctions, auctionSet)
-                end
-                
-                local removedAuctions = 0
-
-                for k, v in pairs(previousAuctions) do
-                    if auctions[k] then -- if the auction is still running
-                        knownAuctions[k] =  true -- mark as known
-                    else
-                        removedAuctions = removedAuctions + 1
-                    end
-                end
-
-                --print ("new auctions: ", totalCounter)
-                --print ("Removed auctions: ", removedAuctions)
-
-                nkUIAuction[shard].auctions = knownAuctions -- set known to previous plus new auctions
-
-                local result = { count = totalCounter, data = newAuctions}
-
-                ahScanResult(result, ahTools)
-            end            
-        end,
-    "nkUI.Auction.Scan")
-
+    Command.Auction.Scan({type = "search"})
 
 end

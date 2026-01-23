@@ -78,7 +78,7 @@ data.colors = {
 }
 				
 data.uiScale = 1
-local thisTutorialVersion = 114
+local thisTutorialVersion = 125
 
 
 -- Generate UI context
@@ -323,8 +323,6 @@ local function initializeAddon(_, addon)
 					internalFunc.sctInit()
 				end
 
-				internalFunc.scanAH()
-
 				if nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 					
 					if nkUISetup.modules.oneBag.bankActivate then
@@ -348,6 +346,7 @@ local function initializeAddon(_, addon)
 					UI.Native.Auction:EventAttach(Event.UI.Native.Loaded, function()
 						if uiElements.oneBag == nil then internalFunc.oneBagInit() end
 						uiElements.oneBag:SetVisible(UI.Native.Auction:GetLoaded())
+						uiElements.oneBag:ShowAuction(UI.Native.Auction:GetLoaded())
 					end, "nkUI.OneBag.Native.Auction.Loaded")
 
 					UI.Native.BagInventory1:EventAttach(Event.UI.Native.Loaded, function()
@@ -384,7 +383,9 @@ local function initializeAddon(_, addon)
 		end, "nkUI.Unit.Availability.Full")				
 
 		Command.Console.Display("general", true, string.format(privateVars.langTexts.startUp, addonInfo.toc.Version), true)		
-		Command.Console.Display("general", true, privateVars.langTexts.commandline, true)
+		Command.Console.Display("general", true, privateVars.langTexts.commandline1, true)
+		Command.Console.Display("general", true, privateVars.langTexts.commandline2, true)
+		Command.Console.Display("general", true, privateVars.langTexts.commandline3, true)
 	end  
 end
 
