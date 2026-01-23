@@ -13,6 +13,8 @@ local stringSplit   = LibEKL.strings.split
 
 function internalFunc.shortenName (name, maxLen)
 
+    if name == nil then return "" end
+
     if stringLen(name) <= maxLen then
         return name
     end

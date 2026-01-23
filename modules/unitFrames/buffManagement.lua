@@ -131,6 +131,7 @@ function internalFunc.manageBuffs(frame, unitType, unitID, buffUnit, buffs, acti
             for buffID, buffDetails in pairs(details) do
 
                 local buffIdentifier = buffDetails.type
+                if buffIdentifier == nil then buffIdentifier = "" end
                 unitBuffId2BuffType[buffID] = buffIdentifier
 
                 if buffDetails.poison == true or buffDetails.curse == true or buffDetails.disease == true or buffDetails.debuff == true then

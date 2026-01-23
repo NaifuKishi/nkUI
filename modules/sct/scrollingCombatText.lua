@@ -505,6 +505,7 @@ local function handleCombatDamage(self, info)
     if valid == false then return end
 
     local icon, abilityName = getAbilityIcon(info)
+    if not abilityName then abilityName = "" end
 
     local damageText = ""
 

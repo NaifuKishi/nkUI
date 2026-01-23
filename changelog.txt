@@ -6,7 +6,7 @@ V1.2.5
     - fixes: Buff Bar - no longer bugs out on temporary runes on weapons
     - fixes: One Bag - Auto open / close on auction house display state
     - fixes: One Bag - Much improved item moving
-    - fixes: One Bag - Item are no longer suicidal on left clik
+    - fixes: One Bag - Item are no longer suicidal on left click
 
 V1.2.0
     - new: Settings - added option to disable bank module
