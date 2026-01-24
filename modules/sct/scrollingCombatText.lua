@@ -13,6 +13,7 @@ local inspectTimeFrame          = Inspect.Time.Frame
 local inspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local inspectAbilityDetail      = Inspect.Ability.Detail
 local inspectExperience         = Inspect.Experience
+local inspectAttunementProgress = Inspect.Attunement.Progress
 
 local LibEKLUnitGetUnitDetail    = LibEKL.Unit.GetUnitDetail
 
@@ -60,6 +61,7 @@ local sctInit = false
 local lastMessage, messageY = nil, 0
 local petID, petName   
 local lastAccumulated = 0
+local lastAttunementAccumulated = 0
 
 local lastInventoryUpdate
 local inventoryUpdateModY = 0
@@ -157,12 +159,18 @@ local function createTextFrame()
         end
     end
 
-    local oSetTextureAsync = frame.SetTextureAsync
+    local oSetTextureAsync = icon.SetTextureAsync
     function frame:SetTextureAsync(source, texture)
         if source ~= thisTextureSource or texture ~= thisTexture then
-            oSetTextureAsync(self, source, texture)
-            thisTextureSource = source
-            thisTexture = texture
+
+            if not source or not texture then
+                icon:SetVisible(false)
+            else                
+                icon:SetVisible(true)
+                oSetTextureAsync(icon, source, texture)
+                thisTextureSource = source
+                thisTexture = texture
+            end
         end
     end
 
@@ -305,7 +313,7 @@ end
 -- Displays a moving message on the screen
 -- @param message The message to display
 -- @param duration How long to display the message
-local function displayMovingMessage(message, duration, startY, endY, fontSize)
+local function displayMovingMessage(addonId, icon, message, duration, startY, endY, fontSize)
 
     local debugId = internalFunc.traceStart("sct.displayMovingMessage")
 
@@ -315,6 +323,8 @@ local function displayMovingMessage(message, duration, startY, endY, fontSize)
     frame:SetFontSize(fontSize)
     frame:SetFontColor(0.678, 0.847, 0.902, 1)
     frame:SetVisible(true)
+
+    frame:SetTextureAsync(addonId, icon)
 
     local start = inspectTimeFrame()
     local coRoutineDebugID
@@ -366,8 +376,9 @@ local function animateFrame(frame, text, icon, x, y, inComing)
     frame:SetVisible(true)
 
     if icon then
-        frame.icon:SetTextureAsync("Rift", icon)
-        frame.icon:SetVisible(true)
+        frame:SetTextureAsync("Rift", icon)
+    else
+        frame:SetTextureAsync(nil, nil)
     end
 
     local start = inspectTimeFrame()
@@ -638,6 +649,7 @@ local function handleCooldownEnd (_, info)
 end
 
 local function handleInventoryUpdate(_, items)
+
     local count = 0
     local currentTime = inspectTimeFrame()
 
@@ -648,16 +660,25 @@ local function handleInventoryUpdate(_, items)
 
     for item, qty in pairs(items) do
         if qty > 0 then
-            local itemDetails = LibEKL.Inventory.GetItemByKey(item)
+            local itemDetails = LibEKL.Inventory.GetItemByKey(item)            
+
             if itemDetails then
                 local slot = LibEKL.Inventory.GetSlotByItemId(item)
                 if not stringFind(slot, "seqp") then
                     local color = LibEKL.Inventory.GetItemColor(itemDetails.rarity)
                     local hexColor = LibEKL.Tools.Color.RGBToHexColor(color.r, color.g, color.b)
+                    local totalQty = LibEKL.Inventory.queryQtyById(item)
+
+                    local message = '+%d <font color="#%s">%s</font>'
+                    if totalQty > 0 then
+                        message = '+%d <font color="#%s">%s</font> (%d)'
+                    end
 
                     -- Display the item message with current y-position
                     displayMovingMessage(
-                        stringFormat('+%d <font color="#%s">%s</font>', qty, hexColor, itemDetails.name),
+                        nil,
+                        nil,
+                        stringFormat(message, qty, hexColor, itemDetails.name, totalQty),
                         2,
                         300 + inventoryUpdateModY,
                         100 + inventoryUpdateModY,
@@ -688,7 +709,9 @@ end
 function internalFunc.sctInit()
     
     local experience = inspectExperience()
+    local attunement = inspectAttunementProgress()
     lastAccumulated = experience.accumulated    
+    lastAttunementAccumulated = attunement.accumulated
 
     Command.Event.Attach(Event.Combat.Damage, handleCombatDamage, "nkUI.SCT.Combat.Damage")
     Command.Event.Attach(Event.Combat.Dodge, function( _, info ) handleCombatEvent(info, TEXT_DODGE) end, "nkUI.SCT.Combat.Dodge")
@@ -708,9 +731,20 @@ function internalFunc.sctInit()
             if lastAccumulated == nil then lastAccumulated = accumulated end
             local gain = accumulated - lastAccumulated
             if gain <= 0 then return end
-            displayMovingMessage(stringFormat("%d exp", gain), 2, -200, -400, 28)
+            displayMovingMessage("nkUI", "gfx/lowerbarExperience.png", stringFormat("<font color='#E8B630'>%d exp</font>", gain), 2, -200, -400, 24)
             lastAccumulated = accumulated
         end, "nkui.SCT.TEMPORARY.Experience")
+
+        Command.Event.Attach(Event.Attunement.Progress.Accumulated, function(_, accumulated)
+            if lastAttunementAccumulated == nil then lastAttunementAccumulated = accumulated end
+            local gain = accumulated - lastAttunementAccumulated
+            if gain <= 0 then 
+                lastAttunementAccumulated = accumulated
+                return 
+            end
+            displayMovingMessage("nkUI", "gfx/iconPlanar.png", stringFormat("<font color='#A366CC'>%d planar exp</font>", gain), 2, -225, -425, 24)
+            lastAttunementAccumulated = accumulated
+        end, "nkui.SCT.Attunement.Progress.Accumulated")
     end
 
     if nkUISetup.modules.sct.showLoot then

@@ -1,3 +1,11 @@
+V1.2.8
+    - updates: SCT - will now show planar attunement progress
+    - updates: SCT - loot message will now display total qty of item in inv
+    - updates: SCT - added icons to exp and planar exp messages
+    - updates: Lower Bar - adjusted CPU usage colors
+    - fixes: SCT - will no longer show whole inventory on zone change
+    - fixes: Quest Tracker - use items toggling while in combat
+
 V1.2.7
     - fixes: Fixed error in new auction module
 
@@ -7,7 +15,7 @@ V1.2.5
     - updates: One Bag - Moving items will now try to stack
     - updates: One Bag - It is now possible to drag items of the same type onto each other for stacking
     - fixes: Buff Bar - no longer bugs out on temporary runes on weapons
-    - fixes: One Bag - Auto open / close on auction house display state
+    - fixes: One Bag - Auto open / close on auction house display state<
     - fixes: One Bag - Much improved item moving
     - fixes: One Bag - Item are no longer suicidal on left click
 

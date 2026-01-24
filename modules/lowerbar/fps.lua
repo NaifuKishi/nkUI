@@ -86,9 +86,9 @@ function lowerBar.fps()
                 end
 
                 local cpuColor = "#E8C23B"
-                if total <= .20 then
+                if total <= .25 then
                     cpuColor = "#22B357"
-                elseif  total >= .30 then
+                elseif  total >= .50 then
                     cpuColor = "#E84545"
                 end
 

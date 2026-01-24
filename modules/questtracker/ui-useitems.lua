@@ -273,7 +273,7 @@ function questTracker.buildUseUI ()
 	end
 
 	function ui:Toggle()
-		ui:SetVisible(not ui:GetVisible())
+		LibEKL.Events.AddInsecure(function () ui:SetVisible(not ui:GetVisible()) end)
 	end	
 	
 	return ui
