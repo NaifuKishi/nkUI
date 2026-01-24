@@ -507,73 +507,133 @@ local function validEvent(info)
     return false, false, false
 end
 
+local damageQueue = {}  -- Queue to store damage events for throttling
+local shortNames = {}
+
+local function getDamageText (abilityName, info, isIncoming)
+
+    local damageText = ""
+    local realText = abilityName
+
+    if info.hitCount or info.critCount then
+        if info.hitCount > 0 and info.critCount > 0 then
+            realText = stringFormat("%s (%d hits, %d, crits)", abilityName, info.hitCount, info.critCount)
+        elseif info.hitCount > 1 then
+            realText = stringFormat("%s (%d hits)", abilityName, info.hitCount)
+        elseif info.critCount > 1 then
+            realText = stringFormat("%s (%d crit)", abilityName, info.critCount)
+        end
+    end
+
+    if info.crit then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage, realText)        
+    elseif info.type == "life" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage, realText)
+    elseif info.type == "death" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage, realText)
+    elseif info.type == "air" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage, realText)
+    elseif info.type == "earth" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage, realText)
+    elseif info.type == "fire" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage, realText)
+    elseif info.type == "water" then
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage, realText)
+    elseif info.damage ~= nil then
+        damageText = stringFormat("%d %s", info.damage, realText)
+    end
+
+    if info.damageAbsorbed then
+        damageText = stringFormat("%s [%d Absorbed]",damageText, info.damageAbsorbed)
+    elseif info.damageBlocked then
+        damageText = stringFormat("%s [%d Blocked]", damageText, info.damageBlocked)
+    elseif info.damageIntercepted then
+        damageText = stringFormat("%s [%d Intercepted]", damageText, info.damageIntercepted)
+    elseif info.overkill then
+        damageText = stringFormat("%s [%d Overkill]", damageText, info.overkill)
+    end
+
+    if isIncoming == true then
+        if not shortNames[info.caster] then
+            local unitDetails = LibEKLUnitGetUnitDetail(info.caster)
+            local thisName = ""
+            if unitDetails then thisName = internalFunc.shortenName(unitDetails.name, 10) end
+            shortNames[info.caster] = thisName
+        end
+
+        damageText = stringFormat(TEXT_INCOMING, shortNames[info.caster], damageText)
+    end
+
+    return damageText
+
+end
+
 -- Handles combat damage events
 -- @param info The combat damage information
 local function handleCombatDamage(self, info)
+    
     if info.damage == nil then return end
     
+    local queueEvent = false
+
     local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
 
     local icon, abilityName = getAbilityIcon(info)
     if not abilityName then abilityName = "" end
 
-    local damageText = ""
+    -- Create a unique key for this ability event
+    local abilityKey = info.abilityNew or info.ability or "unknown"
+    local eventTime = inspectTimeFrame()
 
-    if info.crit then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage, abilityName)
-    elseif info.type == "life" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage, abilityName)
-    elseif info.type == "death" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage, abilityName)
-    elseif info.type == "air" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage, abilityName)
-    elseif info.type == "earth" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage, abilityName)
-    elseif info.type == "fire" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage, abilityName)
-    elseif info.type == "water" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage, abilityName)
-    elseif info.damage ~= nil then
-        damageText = stringFormat("%d %s", info.damage, abilityName)
-    end
-    
-    --if info.crit then
-    --    damageText = stringFormat("%s (CRIT)", damageText)
-    --end
-    
-    if info.damageAbsorbed then
-        damageText = stringFormat("%s [%d Absorbed]",damageText, info.damageAbsorbed)
+    -- Initialize the queue for this ability if it doesn't exist
+    if not damageQueue[abilityKey] then
+        damageQueue[abilityKey] = {
+            hitCount = 0,
+            critCount = 0,
+            info = info,
+            coroutine = nil,
+            initTime = eventTime,
+            abilityName = abilityName,
+            icon = icon,
+            isIncoming = isIncoming,
+            totalDamage = 0,
+            isPet = isPet
+        }    
     end
 
-    if info.damageBlocked then
-        damageText = stringFormat("%s [%d Blocked]", damageText, info.damageBlocked)
-    end
+    if not info.damageAbsorbed and not info.damageBlocked and not info.damageIntercepted and not info.overkill then
+        damageQueue[abilityKey].totalDamage = damageQueue[abilityKey].totalDamage + info.damage
 
-    if info.damageIntercepted then
-        damageText = stringFormat("%s [%d Intercepted]", damageText, info.damageIntercepted)
-    end
-
-    --if info.damageModified then
-    --    damageText = stringFormat("%s [%d Modified]", damageText, info.damageModified)
-    --end
-
-    if info.overkill then
-        damageText = stringFormat("%s [%d Overkill]", damageText, info.overkill)
-    end
-
-    if isIncoming == true then
-        local unitDetails = LibEKLUnitGetUnitDetail(info.caster)
-        local thisName = ""
-        if unitDetails then thisName = internalFunc.shortenName(unitDetails.name, 10) end
-        damageText = stringFormat(TEXT_INCOMING, thisName, damageText)
-    end
-    
-    --if info.crit then
-    --    displayText(stringFormat("%s (CRIT)", damageText), icon, isPet, isIncoming, true)
-    --else
+        if info.crit then
+            damageQueue[abilityKey].critCount = damageQueue[abilityKey].critCount + 1
+        else
+            damageQueue[abilityKey].hitCount = damageQueue[abilityKey].hitCount + 1
+        end        
+    else
+        local damageText = getDamageText (abilityName, info, isIncoming)
         displayText(damageText, icon, isPet, isIncoming, info.crit)
-    --end
+    end
+
+    for abilityKey, queueInfo in pairs(damageQueue) do
+        if eventTime - queueInfo.initTime >= 5 then
+            damageQueue[abilityKey] = nil
+        elseif eventTime - queueInfo.initTime >= .5 then
+
+            local isCrit = false
+            if queueInfo.critCount > 0 and queueInfo.hitCount == 0 then isCrit = true end
+
+            local damageText = getDamageText (queueInfo.abilityName, {damage = queueInfo.totalDamage, critCount = queueInfo.critCount, hitCount = queueInfo.hitCount, type = info.type}, queueInfo.isIncoming)
+            displayText(damageText, queueInfo.icon, queueInfo.isPet, queueInfo.isIncoming, isCrit)
+            damageQueue[abilityKey] = nil
+        end        
+    end
+
+    -- the above is a try to queue events and combine. Works but didn't have any effect on performance.    
+
+--    local damageText = getDamageText (abilityName, info, isIncoming)
+--    displayText(damageText, icon, isPet, isIncoming, info.crit)
+
 end
 
 -- Handles combat events
