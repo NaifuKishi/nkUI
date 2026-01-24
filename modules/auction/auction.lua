@@ -193,7 +193,7 @@ local function ahScan(_, info, auctions)
         local auctionSet = {}
         local newAuctions = {}
         
-        local previousAuctions = nkUIAuction[shard].auctions
+        local previousAuctions = nkUIAuction[shard].auctions or {}
         local knownAuctions = {}
 
         -- build tables of 50 auctions for the later processing
