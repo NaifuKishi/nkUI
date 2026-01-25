@@ -378,6 +378,13 @@ local function initializeAddon(_, addon)
 			end
 
 			Command.Message.Accept(nil, "nkUI.version")
+			
+--[[			Command.Event.Attach(Event.Mail, function(a,b,c) 
+				dump(a)
+				dump(b)
+				dump(c)
+			end, "nkUI.Version.Message.Receive")
+]]
 			Command.Event.Attach(Event.Message.Receive, _fctProcessMessage, "nkUI.Version.Message.Receive")
 
 		end, "nkUI.Unit.Availability.Full")				
