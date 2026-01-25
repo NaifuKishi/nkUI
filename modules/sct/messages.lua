@@ -203,7 +203,8 @@ local lastYReset = inspectTimeFrame()
 -- @param crit Whether the damage is a critical hit or heal or overheal
 function sct.DisplayText(sctText, icon, isPet, inComing, crit)
     
-    local xVariation = 0
+    local xVariation = 200
+    if inComing then xVariation = - 200 end
 
     --local xVariation = mathRandom(0, 50) + 100
     --if inComing then xVariation = mathRandom(0, -50) - 100 end

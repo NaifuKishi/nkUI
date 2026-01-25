@@ -294,7 +294,8 @@ local function handleCombatDamage(self, info)
             icon = icon,
             isIncoming = isIncoming,
             totalDamage = 0,
-            isPet = isPet
+            isPet = isPet,
+            type = info.type
         }    
     end
 
@@ -319,7 +320,7 @@ local function handleCombatDamage(self, info)
             local isCrit = false
             if queueInfo.critCount > 0 and queueInfo.hitCount == 0 then isCrit = true end
 
-            local damageText = getDamageText (queueInfo.abilityName, {damage = queueInfo.totalDamage, critCount = queueInfo.critCount, hitCount = queueInfo.hitCount, type = info.type}, queueInfo.isIncoming)
+            local damageText = getDamageText (queueInfo.abilityName, {damage = queueInfo.totalDamage, critCount = queueInfo.critCount, hitCount = queueInfo.hitCount, type = queueInfo.type}, queueInfo.isIncoming)
             sct.DisplayText(damageText, queueInfo.icon, queueInfo.isPet, queueInfo.isIncoming, isCrit)
             damageQueue[abilityKey] = nil
         end        
