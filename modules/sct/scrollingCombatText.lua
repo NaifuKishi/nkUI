@@ -2,10 +2,13 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
+privateVars.sct = {}
+
 local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local events        = privateVars.events
+local sct           = privateVars.sct
 
 ---------- init local variables ---------
 
@@ -18,7 +21,6 @@ local inspectAttunementProgress = Inspect.Attunement.Progress
 local LibEKLUnitGetUnitDetail    = LibEKL.Unit.GetUnitDetail
 
 local stringFind        = string.find
-local stringMatch       = string.match
 local stringFormat      = string.format
 
 local mathRandom        = math.random
@@ -27,14 +29,6 @@ local mathSin           = math.sin
 local mathRad           = math.rad
 
 ---------- init variables ---------
-
-local name = "scrollingcombattext"
-
-local DEFAULT_FONTSIZE = 20
-local DEFAULT_CRIT_FONTSIZE = 30
-
-local PET_FONTSIZE = 14
-local PET_CRIT_FONTSIZE = 24
 
 local TEXT_RESIST = "<font color='#ffffff'>Resist</font>"
 local TEXT_PARRY = "<font color='#ffffff'>Parry</font>"
@@ -54,12 +48,8 @@ local COLOR_EARTH = "#795548"
 local COLOR_FIRE = "#FF5722"
 local COLOR_WATER = "#1976D2"    
 
-local framePool = {}
-local activeFrames = {}
 local sctInit = false
 
-local lastMessage, messageY = nil, 0
-local petID, petName   
 local lastAccumulated = 0
 local lastAttunementAccumulated = 0
 
@@ -70,10 +60,7 @@ local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
 
-local context = UI.CreateContext("nkUI.SCT")
-context:SetStrata('hud')
-context:SetLayer(2)
-
+local petID = nil
 
 ---------- local functions ---------
 
@@ -116,251 +103,6 @@ local function getAbilityIcon(info)
     return icon, name
 end
 
--- Creates a new text frame for displaying combat text
--- @return The created text frame
-local function createTextFrame()
-    local name = LibEKL.Tools.UUID()
-    local thisAddonID, thisFontName, thisFontSize, thisFontColor
-    local thisTextureSource, thisTexture
-
-    local frame = LibEKL.UICreateFrame("nkText", name, context)
-    frame:SetEffectGlow({ strength = 3 })
-    frame:SetVisible(false)
-
-    -- Create an icon frame for the text frame
-    local icon = LibEKL.UICreateFrame("nkTexture", name .. "." .. LibEKL.Tools.UUID(), frame)
-    icon:SetPoint("CENTERRIGHT", frame, "CENTERLEFT", -5, 0)
-    icon:SetVisible(false)
-    icon:SetWidth(24)
-    icon:SetHeight(24)
-
-    local oSetTextFont = frame.SetTextFont
-    function frame:SetTextFont(addonID, fontName)
-        if addonID ~= thisAddonID or fontName ~= thisFontName then
-            oSetTextFont(self, addonID, fontName)
-            thisAddonID = addonID
-            thisFontName = fontName
-        end
-    end
-
-    local oSetFontSize = frame.SetFontSize
-    function frame:SetFontSize(fontSize)
-        if fontSize ~= thisFontSize then
-            oSetFontSize(self, fontSize)
-            thisFontSize = fontSize
-        end
-    end
-
-    local oSetFontColor = frame.SetFontColor
-    function frame:SetFontColor(r, g, b, a)
-        if not thisFontColor or r ~= thisFontColor or g ~= thisFontColor.g or b ~= thisFontColor.b or a ~= thisFontColor.a then
-            oSetFontColor(self, r, g, b, a)
-            thisFontColor = { r = r, g = g, b = b, a = a }
-        end
-    end
-
-    local oSetTextureAsync = icon.SetTextureAsync
-    function frame:SetTextureAsync(source, texture)
-        if source ~= thisTextureSource or texture ~= thisTexture then
-
-            if not source or not texture then
-                icon:SetVisible(false)
-            else                
-                icon:SetVisible(true)
-                oSetTextureAsync(icon, source, texture)
-                thisTextureSource = source
-                thisTexture = texture
-            end
-        end
-    end
-
-    -- Store the icon frame in the text frame for later access
-    frame.icon = icon
-
-    return frame
-end
-
--- Gets a frame from the pool or creates a new one
--- @return A text frame for displaying combat text
-local function getFrame()
-    if #framePool > 0 then
-        return table.remove(framePool)        
-    else
-        return createTextFrame()        
-    end
-end
-
--- Releases a frame back to the pool
--- @param frame The frame to release
-local function releaseFrame(frame)
-    frame:SetVisible(false)
-    frame.icon:SetVisible(false)
-    table.insert(framePool, frame)
-end
-
-local function displayShakingMessage(message, type)
-
-    -- Display the achievement message with a larger font size and different color
-    local frame = getFrame()
-    frame:SetText(message, true)
-    frame:SetTextFont(addonInfo.id, "MontserratBold")
-    frame:SetFontSize(36) -- Larger font size        
-    
-    if type == "achievement" then
-        frame:SetFontColor(0, 0.5, 0, 1) -- Dark green color for achievements
-    else
-        frame:SetFontColor(1, 0.84, 0, 1) -- Gold color
-    end
-
-    -- Add a glow effect to the text
-    frame:SetEffectGlow({ strength = 3 })
-
-    local y = -((LibEKL.UI.getBoundBottom() / 2) - 250)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, y)
-    frame:SetVisible(true)
-
--- Animate the text to make it more noticeable with a shaking effect
-    local start = inspectTimeFrame()
-    local lastShakeTime = inspectTimeFrame()
-    local duration = 4
-    local shakeIntensity = 2 -- Intensity of the shake effect
-    local shakeInterval = 0.1 -- Time between each shake (in seconds)
-
-    local animationCoroutine = coroutine.create(function()
-        for idx = 1, duration * 100, 1 do
-            local elapsed = inspectTimeFrame() - start
-            if elapsed > duration then
-                return 9999
-            end            
-            
-            -- Check if it's time to apply the shake effect
-            if inspectTimeFrame() - lastShakeTime >= shakeInterval then
-                -- Add a shaking effect by randomly varying the X position
-                local shakeX = mathRandom(-shakeIntensity, shakeIntensity)
-                local shakeY = mathRandom(-shakeIntensity, shakeIntensity)
-                frame:SetPoint("CENTER", UIParent, "CENTER", shakeX, y + shakeY)
-                lastShakeTime = inspectTimeFrame()
-            end
-            coroutine.yield(idx)
-        end
-    end)
-
-    local callBack = function()
-        releaseFrame(frame)
-    end
-
-    LibEKL.Coroutines.Add({
-        func = animationCoroutine,
-        callBack = callBack,
-        counter = duration * 100,
-        active = true
-    })
-end
-
--- Displays a message at the top center of the screen
--- @param message The message to display
--- @param duration How long to display the message
-function internalFunc.displayMessageAtTopCenter(message, duration)
-
-    local debugId = internalFunc.traceStart("sct.displayMessageAtTopCenter")
-
-    local frame = getFrame()
-    frame:SetText(message, true)
-    frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    frame:SetFontSize(28)
-    frame:SetFontColor(1, 1, 1, 1)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 0, (nkUISetup.modules.sct.messageOffset) + messageY)
-    frame:SetVisible(true)
-
-    lastMessage = frame:GetName()
-    messageY = messageY - 20
-    local coRoutineDebugID
-
-    local start = inspectTimeFrame()
-
-    local animationCoroutine = coroutine.create(function()      
-        for idx = 1, duration * 100, 1 do
-            coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMessageAtTopCenter")
-            local elapsed = inspectTimeFrame() - start
-            if elapsed > duration then
-                internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
-                return 9999
-            end
-            internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
-            coroutine.yield(idx)
-        end
-    end)
-
-    local callBack = function()
-        if frame:GetName() == lastMessage then
-            lastMessage = nil
-            messageY = 0
-        end
-        releaseFrame(frame)
-        internalFunc.traceEnd("sct.cr.displayMessageAtTopCenter", coRoutineDebugID)
-    end
-
-    LibEKL.Coroutines.Add({
-        func = animationCoroutine,
-        callBack = callBack,
-        counter = duration * 100,
-        active = true
-    })
-
-    internalFunc.traceEnd("sct.displayMessageAtTopCenter", debugId)
-end
-
--- Displays a moving message on the screen
--- @param message The message to display
--- @param duration How long to display the message
-local function displayMovingMessage(addonId, icon, message, duration, startY, endY, fontSize)
-
-    local debugId = internalFunc.traceStart("sct.displayMovingMessage")
-
-    local frame = getFrame()
-    frame:SetText(message, true)
-    frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    frame:SetFontSize(fontSize)
-    frame:SetFontColor(0.678, 0.847, 0.902, 1)
-    frame:SetVisible(true)
-
-    frame:SetTextureAsync(addonId, icon)
-
-    local start = inspectTimeFrame()
-    local coRoutineDebugID
-    
-    local animationCoroutine = coroutine.create(function()        
-
-        for idx = 1, duration * 100, 1 do
-            coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMovingMessage")
-            local elapsed = inspectTimeFrame() - start
-            if elapsed > duration then
-                internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
-                return 9999
-            end
-            local t = elapsed / duration
-            local currentY = startY + (endY - startY) * t
-            frame:SetPoint("CENTER", UIParent, "CENTER", 0, currentY)
-            internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
-            coroutine.yield(idx)
-        end
-    end)
-
-    local callBack = function()
-        releaseFrame(frame)
-        internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
-    end
-
-    LibEKL.Coroutines.Add({
-        func = animationCoroutine,
-        callBack = callBack,
-        counter = duration * 100,
-        active = true
-    })
-
-    internalFunc.traceEnd("sct.displayMovingMessage", debugId)
-end
-
 -- Animates a frame with combat text
 -- @param frame The frame to animate
 -- @param text The text to display
@@ -368,9 +110,9 @@ end
 -- @param x The x position
 -- @param y The y position
 -- @param inComing Whether the damage is incoming
-local function animateFrame(frame, text, icon, x, y, inComing)
+function sct.AnimateFrame(frame, text, icon, x, y, inComing)
 
-    local debugId = internalFunc.traceStart("sct.animateFrame")
+    local debugId = internalFunc.traceStart("sct.sct.AnimateFrame")
 
     frame:SetText(text, true)
     frame:SetVisible(true)
@@ -398,11 +140,11 @@ local function animateFrame(frame, text, icon, x, y, inComing)
     local animationCoroutine = coroutine.create(function()        
 
         for idx = 1, 200, 1 do
-            coRoutineDebugID = internalFunc.traceStart("sct.cr.animateFrame")
+            coRoutineDebugID = internalFunc.traceStart("sct.cr.sct.AnimateFrame")
 
             local elapsed = inspectTimeFrame() - start
             if elapsed > duration then
-                internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
+                internalFunc.traceEnd("sct.cr.sct.AnimateFrame", coRoutineDebugID)
                 return 9999
             end
             local t = elapsed / duration
@@ -411,15 +153,15 @@ local function animateFrame(frame, text, icon, x, y, inComing)
             local currentYOffset = radius * mathSin(currentAngle)
 
             frame:SetPoint("CENTER", UIParent, "CENTER", startX + currentXOffset, startY + currentYOffset + 100)
-            internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
+            internalFunc.traceEnd("sct.cr.sct.AnimateFrame", coRoutineDebugID)
 
             coroutine.yield(idx)
         end
     end)
     
     local callBack = function()
-        releaseFrame(frame)
-        internalFunc.traceEnd("sct.cr.animateFrame", coRoutineDebugID)
+        sct.ReleaseFrame(frame)
+        internalFunc.traceEnd("sct.cr.sct.AnimateFrame", coRoutineDebugID)
     end
     
     LibEKL.Coroutines.Add({
@@ -429,53 +171,7 @@ local function animateFrame(frame, text, icon, x, y, inComing)
         active = true
     })
 
-    internalFunc.traceEnd("sct.animateFrame", debugId)
-end
-
--- Displays combat text on the screen
--- @param sctText The text to display
--- @param icon The icon to display
--- @param isPet Whether the damage is from a pet
--- @param inComing Whether the damage is incoming
--- @param crit Whether the damage is a critical hit or heal or overheal
-local function displayText(sctText, icon, isPet, inComing, crit)
-    
-    local xVariation = mathRandom(0, 50) + 100
-    if inComing then xVariation = mathRandom(0, -50) - 100 end
-    
-    local yVariation = mathRandom(-50, 50)
-
-    local text = sctText
-
-    if isPet and not inComing then
-        xVariation = xVariation + 100 
-        text = stringFormat("%s: %s", petName, sctText)
-    end
-
-    local frame = getFrame()
-
-    if crit == true then
-        frame:SetTextFont(addonInfo.id, "MontserratBold")
-        
-        if isPet then
-            frame:SetFontSize(PET_CRIT_FONTSIZE)
-        else
-            frame:SetFontSize(DEFAULT_CRIT_FONTSIZE)
-        end
-    elseif crit == "overheal" then
-        frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
-        frame:SetFontSize(PET_FONTSIZE)
-    else
-        frame:SetTextFont(addonInfo.id, "MontserratSemiBold")
-        
-        if isPet then
-            frame:SetFontSize(PET_FONTSIZE)
-        else
-            frame:SetFontSize(DEFAULT_FONTSIZE)
-        end
-    end
-
-    animateFrame(frame, text, icon, xVariation, yVariation, inComing)
+    internalFunc.traceEnd("sct.sct.AnimateFrame", debugId)
 end
 
 -- Validates combat events
@@ -497,7 +193,7 @@ local function validEvent(info)
     if LibEKL.Tools.Table.IsMember(localUnitsTypes, "player.pet") then
         petID = info.caster
         if info.casterName then
-            petName = internalFunc.shortenName(info.casterName, 10)
+            data.petName = internalFunc.shortenName(info.casterName, 10)
         end
         return true, true, false
     end
@@ -517,11 +213,11 @@ local function getDamageText (abilityName, info, isIncoming)
 
     if info.hitCount or info.critCount then
         if info.hitCount > 0 and info.critCount > 0 then
-            realText = stringFormat("%s (%d hits, %d, crits)", abilityName, info.hitCount, info.critCount)
+            realText = stringFormat("%s (%d hits, %d, crits)", realText, info.hitCount, info.critCount)
         elseif info.hitCount > 1 then
-            realText = stringFormat("%s (%d hits)", abilityName, info.hitCount)
+            realText = stringFormat("%s (%d hits)", realText, info.hitCount)
         elseif info.critCount > 1 then
-            realText = stringFormat("%s (%d crit)", abilityName, info.critCount)
+            realText = stringFormat("%s (%d crit)", realText, info.critCount)
         end
     end
 
@@ -553,7 +249,7 @@ local function getDamageText (abilityName, info, isIncoming)
         damageText = stringFormat("%s [%d Overkill]", damageText, info.overkill)
     end
 
-    if isIncoming == true then
+    if isIncoming == true and info.caster then
         if not shortNames[info.caster] then
             local unitDetails = LibEKLUnitGetUnitDetail(info.caster)
             local thisName = ""
@@ -612,19 +308,19 @@ local function handleCombatDamage(self, info)
         end        
     else
         local damageText = getDamageText (abilityName, info, isIncoming)
-        displayText(damageText, icon, isPet, isIncoming, info.crit)
+        sct.DisplayText(damageText, icon, isPet, isIncoming, info.crit)
     end
 
     for abilityKey, queueInfo in pairs(damageQueue) do
         if eventTime - queueInfo.initTime >= 5 then
             damageQueue[abilityKey] = nil
-        elseif eventTime - queueInfo.initTime >= .5 then
+        elseif eventTime - queueInfo.initTime >= .2 then
 
             local isCrit = false
             if queueInfo.critCount > 0 and queueInfo.hitCount == 0 then isCrit = true end
 
             local damageText = getDamageText (queueInfo.abilityName, {damage = queueInfo.totalDamage, critCount = queueInfo.critCount, hitCount = queueInfo.hitCount, type = info.type}, queueInfo.isIncoming)
-            displayText(damageText, queueInfo.icon, queueInfo.isPet, queueInfo.isIncoming, isCrit)
+            sct.DisplayText(damageText, queueInfo.icon, queueInfo.isPet, queueInfo.isIncoming, isCrit)
             damageQueue[abilityKey] = nil
         end        
     end
@@ -632,7 +328,7 @@ local function handleCombatDamage(self, info)
     -- the above is a try to queue events and combine. Works but didn't have any effect on performance.    
 
 --    local damageText = getDamageText (abilityName, info, isIncoming)
---    displayText(damageText, icon, isPet, isIncoming, info.crit)
+--    sct.DisplayText(damageText, icon, isPet, isIncoming, info.crit)
 
 end
 
@@ -642,7 +338,7 @@ end
 local function handleCombatEvent(info, text)
     local valid, isPet, isIncoming = validEvent(info)
     if valid == false then return end
-    displayText(text, nil, isPet, isIncoming)
+    sct.DisplayText(text, nil, isPet, isIncoming)
 end
 
 -- Handles combat heal events
@@ -662,12 +358,11 @@ local function handleCombatHeal(self, info)
 
     if info.overheal then
         healText = stringFormat(TEXT_OVERHEAL, internalFunc.shortenName(realCaster, 10), info.overheal)
-        displayText(healText, icon, isPet, true, "overheal", false)
+        sct.DisplayText(healText, icon, isPet, true, "overheal", false)
     else
         healText = stringFormat(TEXT_HEAL, internalFunc.shortenName(realCaster, 10), info.heal)
-        displayText(healText, icon, isPet, true, "heal", false)
-    end
-    
+        sct.DisplayText(healText, icon, isPet, true, "heal", false)
+    end    
     
 end
 
@@ -714,7 +409,7 @@ local function handleInventoryUpdate(_, items)
     local currentTime = inspectTimeFrame()
 
     -- Reset y-position if more than 1 second has passed since last update
-    if lastInventoryUpdate ~= nil and currentTime - lastInventoryUpdate > 1 then
+    if lastInventoryUpdate ~= nil and currentTime - lastInventoryUpdate > .5 then
         inventoryUpdateModY = 0
     end
 
@@ -735,7 +430,7 @@ local function handleInventoryUpdate(_, items)
                     end
 
                     -- Display the item message with current y-position
-                    displayMovingMessage(
+                    sct.DisplayMovingMessage(
                         nil,
                         nil,
                         stringFormat(message, qty, hexColor, itemDetails.name, totalQty),
@@ -756,15 +451,6 @@ local function handleInventoryUpdate(_, items)
     -- Update the last inventory update time
     lastInventoryUpdate = currentTime
 end
---[[
-local function handleAchievement (_, achievement)
-
-    local details = Inspect.Achievement.Detail(achievement)
-
-    displayShakingMessage( stringFormat('%s compelete', details.name), "achievement")
-
-end
-]]
 
 function internalFunc.sctInit()
     
@@ -791,7 +477,7 @@ function internalFunc.sctInit()
             if lastAccumulated == nil then lastAccumulated = accumulated end
             local gain = accumulated - lastAccumulated
             if gain <= 0 then return end
-            displayMovingMessage("nkUI", "gfx/lowerbarExperience.png", stringFormat("<font color='#E8B630'>%d exp</font>", gain), 2, -200, -400, 24)
+            sct.DisplayMovingMessage("nkUI", "gfx/lowerbarExperience.png", stringFormat("<font color='#E8B630'>%d exp</font>", gain), 2, -200, -400, 24)
             lastAccumulated = accumulated
         end, "nkui.SCT.TEMPORARY.Experience")
 
@@ -802,7 +488,7 @@ function internalFunc.sctInit()
                 lastAttunementAccumulated = accumulated
                 return 
             end
-            displayMovingMessage("nkUI", "gfx/iconPlanar.png", stringFormat("<font color='#A366CC'>%d planar exp</font>", gain), 2, -225, -425, 24)
+            sct.DisplayMovingMessage("nkUI", "gfx/iconPlanar.png", stringFormat("<font color='#A366CC'>%d planar exp</font>", gain), 2, -225, -425, 24)
             lastAttunementAccumulated = accumulated
         end, "nkui.SCT.Attunement.Progress.Accumulated")
     end

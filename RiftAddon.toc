@@ -32,13 +32,6 @@ RunOnStartup = {
 
 	"modules/chat/chat.lua",
 
-	--"modules/map/api.lua",
-	--"modules/map/data.lua",
-	--"modules/map/event.lua",
-	--"modules/map/main.lua",
-	--"modules/map/map.lua",
-	--"modules/map/quest.lua",
-
 	"modules/questtracker/questtracker.lua",
 	"modules/questtracker/events.lua",
 	"modules/questtracker/ui-category.lua",
@@ -79,6 +72,8 @@ RunOnStartup = {
 	"modules/cooldowns/cooldowns.lua",
 
 	"modules/sct/scrollingCombatText.lua",
+	"modules/sct/messages.lua",
+	"modules/sct/uiElements.lua",
 
 	"modules/tooltip/tooltip.lua",
 
