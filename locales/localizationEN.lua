@@ -155,7 +155,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									unitframes = "Unitframes",
 									units = "Units",
 									useBank = "Bank module",
-									transparent = "Transparent",									
+									transparent = "Transparent",
+									showChat = "Chat background"
 								},
 		tutorial = {
 					welcomeTitle = "Welcome to nkUI Version %s",

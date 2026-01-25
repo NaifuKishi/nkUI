@@ -2,24 +2,39 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
-local uiElements  = privateVars.uiElements
-local internalFunc = privateVars.internalFunc
-local events      = privateVars.events
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local events        = privateVars.events
 
 local mathpi        = math.pi
 
 local NAME = "nkUI.chat"
 
+local contextLowest = UI.CreateContext("nkUI.Layout.grid")
+contextLowest:SetStrata('hud')
+contextLowest:SetLayer(2)
+
 function internalFunc.chat ()    
 
     -- Create a canvas behind the chat
 
-    local canvas = LibEKL.UICreateFrame("nkCanvas", NAME, uiElements.contextLowest)
+    UI.Native.Console1:SetLayer(2)
+
+    local canvas = LibEKL.UICreateFrame("nkCanvas", NAME, contextLowest)
     canvas:SetPoint("TOPLEFT", UI.Native.Console1, "TOPLEFT", 0, 30)
     canvas:SetPoint("BOTTOMRIGHT", UI.Native.Console1, "BOTTOMRIGHT")
+    canvas:SetLayer(1)
 
-    local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
+    local stroke = {
+        r = 0x66 / 255,
+        g = 0x56 / 255,
+        b = 0x2e / 255,
+        a = 1,
+        cap = "round",
+        miter = "miter",
+        thickness = 2
+    }
 
     local path = {  {xProportional = 0, yProportional = 0},
                   {xProportional = 1, yProportional = 0},
@@ -30,14 +45,13 @@ function internalFunc.chat ()
 
     local fill = {
         type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, (mathpi / 6), 0, 0), -- Rotate by 30 degrees
+        transform = Utility.Matrix.Create(6, 0.5, math.pi / 4, 0, 0),  -- 45° rotation
         color = {
-            { r = 0, g = 0, b = 0, a = .6, position = 0 },
-            { r = 0, g = 0, b = 0, a = .4, position = 50 },
-            { r = 0, g = 0, b = 0, a = .2, position = 100 }
+            {r = 0.08, g = 0.10, b = 0.15, a = 1, position = 0}, -- Start color
+            {r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1}  -- End color
         }
     }
 
-    canvas:SetShape (path, fill, nil)
+    canvas:SetShape (path, fill, stroke)
 
 end

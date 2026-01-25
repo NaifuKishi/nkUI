@@ -40,10 +40,10 @@ function questLog.buildUI ()
 
 	ui:SetColor({
         type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
+        transform = Utility.Matrix.Create(12, 12, math.pi / 4, 0, 0),  -- 45° rotation
         color = {
-            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
-            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+            {r = 0.1294, g = 0.1533, b = 0.2157, a = 1, position = 0}, -- Start color
+            {r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1}  -- End color
         }
     },  {
         r = 0x66 / 255,
@@ -54,6 +54,7 @@ function questLog.buildUI ()
         miter = "miter",
         thickness = 2
     })
+
 
 	-- ********* SCROLL PANE
 			

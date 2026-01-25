@@ -153,7 +153,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     unitframes = "Cadres d'unité",
                                     units = "Unités",
                                     useBank = "Module banque",
-                                    transparent = "Transparent",                                    
+                                    transparent = "Transparent",
+                                    showChat = "Fond de discussion"
                                 },
             tutorial = {
                         welcomeTitle = "Bienvenue dans nkUI Version %s",

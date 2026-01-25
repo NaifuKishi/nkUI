@@ -35,8 +35,11 @@ function lowerBar.faction()
     local flag, detailList = pcall(inspectFactionDetail, list)
     if flag and detailList ~= nil then
         for key, details in pairs(detailList) do
-            currentFaction = details.id
-            break
+            if details.name == "The Lycini" then
+                currentFaction = details.id
+                --dump (details)
+                break
+            end
         end
     end
 
@@ -126,12 +129,22 @@ function lowerBar.faction()
                 --datasetFaction:SetText(stringFormat("%d%%", 0))
                 datasetFactionName:SetText("")
             else
+                local factionNeeded = 0
+                local previousNeeded = 0
+                local previousLabel = nil
+                local currentNotoriety = faction.notoriety - 23000
+
                 for k, v in ipairs(notorietyLevels) do
-                    if (faction.notoriety - 26000) <= v.required then
-                        percent = 100 / v.required * (faction.notoriety - 26000)
-                        level = v.label
+                    factionNeeded = factionNeeded + v.required
+                    if factionNeeded > currentNotoriety then
+                        local realValue = currentNotoriety - previousNeeded
+                        percent = (realValue / v.required) * 100
+                        level = previousLabel
                         break
                     end
+
+                    previousLabel = v.label
+                    previousNeeded = previousNeeded + v.required
                 end
 
                 if LibEKL.Tools.Math.IsNaN(percent) then percent = 0 end

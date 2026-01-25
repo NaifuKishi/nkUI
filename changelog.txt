@@ -1,253 +1,473 @@
+V1.2.9
+	- new: nkUI themed background for chat
+	- updates: General - Some UI tweaks
+	- updates: Unit Frames - new combat icon
+	- updates: SCT - messages will overlap less for visibility
+	- fixed: Lower Bar - notoriety levels were not being displayed correctly
 
-	lootTypeSel = LibEKL.UICreateFrame("nkCombobox", name .. ".lootTypeSel", ui:GetContent())
-	lootTypeSel:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT")
-    lootTypeSel:SetLayer(9)
-    lootTypeSel:SetWidth(255)
-    lootTypeSel:SetLabelWidth(50)
-    lootTypeSel:SetSelection(langTexts.lootTypeList)
-    lootTypeSel:SetText(langTexts.lootTypeSel)
-        
-    Command.Event.Attach(LibEKL.Events[name .. ".lootTypeSel"].ComboChanged, function (_, newValue)    
-	
-		--[[nkUIAtlas.lootType = newValue.value
-	
-		lootTableList = langTexts.lootTableList[newValue.value]
-		lootTableSel:SetSelection(lootTableList)
-		lootTableSel:SetSelectedValue(lootTableList[1].value)
-		nkUIAtlas.lootTable = lootTableList[1].value
-				
-		internalFunc.SetZone(lootTableList[1].value)
-		fctSetBossSelection()		]]
-				
-    end, name .. ".lootTypeSel.ComboChanged")
-	
-	lootTableSel = LibEKL.UICreateFrame("nkCombobox", name .. ".lootTableSel", ui:GetContent())
-	lootTableSel:SetPoint("CENTERLEFT", lootTypeSel, "CENTERRIGHT", 25, 0)
-    lootTableSel:SetLayer(9)
-    lootTableSel:SetWidth(350)
-    lootTableSel:SetLabelWidth(75)
-    lootTableSel:SetText(langTexts.lootTableSel)
-        
-    Command.Event.Attach(LibEKL.Events[name .. ".lootTableSel"].ComboChanged, function (_, newValue)    
-    
+V1.2.8
+    - updates: SCT - will now show planar attunement progress
+    - updates: SCT - loot message will now display total qty of item in inv
+    - updates: SCT - added icons to exp and planar exp messages
+    - updates: Lower Bar - adjusted CPU usage colors
+    - fixes: SCT - will no longer show whole inventory on zone change
+    - fixes: Quest Tracker - use items toggling while in combat
 
-		--[[nkUIAtlas.lootTable = newValue.value
-		internalFunc.SetZone(newValue.value)
-		fctSetBossSelection()]]
-		
-    end, name .. ".lootTableSel.ComboChanged")
-	
-	borderui = LibEKL.UICreateFrame("nkFrame", name .. ".borderFrame", ui:GetContent())
-	borderui:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 0, 30)
-	borderui:SetWidth(630)
-	borderui:SetHeight(400)
-	borderui:SetBackgroundColor(0,0,0,1)
-	
-	map = LibMap.uiCreateFrame("nkMap", name .. ".map", borderui)
-	map:ShowCoords(false)
-	map:SetDragable(false)
-	map:SetAllowWayPoints(false)
-	map:SetMaximizable(false)	
-	map:SetHeight(borderui:GetHeight()-1)
-	map:SetWidth(borderui:GetWidth()-2)
-	map:SetPoint("TOPLEFT", borderui, "TOPLEFT", 1, 0)
-	
-	zoneTitle = LibEKL.UICreateFrame("nkText", name .. ".map.zoneTitle", map:GetHeader())
-    zoneTitle:SetPoint("CENTER", map:GetHeader(), "CENTER")
-	zoneTitle:SetFontColor(1, 1, 1, 1)
-	zoneTitle:SetFontSize(16)
-	
-	scrollPaneLoot = LibEKL.UICreateFrame("nkScrollPane", name .. '.scrollPaneLoot', ui:GetContent())
-	scrollPaneLoot:SetPoint("TOPLEFT", borderui, "TOPRIGHT", 20, 0)
-	scrollPaneLoot:SetWidth(370)
-	scrollPaneLoot:SetHeight(400)
-	scrollPaneLoot:SetColor({r = 0.153, g = 0.314, b = 0.490, a = 1})	
-	scrollPaneLoot:SetColorInner({r = 0, g = 0, b = 0, a = 1})
-	scrollPaneLoot:SetColorHighlight({r = 0.153, g = 0.314, b = 0.490, a = 1})
-		
-	content = LibEKL.UICreateFrame("nKFrame", name .. '.content', scrollPaneLoot)
-	content:SetWidth(scrollPaneLoot:GetWidth())
-	
-	bossSel = LibEKL.UICreateFrame("nkCombobox", name .. ".bossSel", ui:GetContent())
-	bossSel:SetPoint("BOTTOMLEFT", scrollPaneLoot, "TOPLEFT", 0, -10)
-    bossSel:SetLayer(9)
-    bossSel:SetWidth(350)
-    bossSel:SetLabelWidth(75)
-    bossSel:SetText(langTexts.bossSel)
-        
-    Command.Event.Attach(LibEKL.Events[name .. ".bossSel"].ComboChanged, function (_, newValue)    
-		--[[nkUIAtlas.boss = newValue.value
-		internalFunc.showLootTable(newValue.value)]]
-    end, name .. ".bossSel.ComboChanged")
-	
-	classFilter = LibEKL.UICreateFrame("nkCheckbox", name .. ".classFilter", ui:GetContent()) 
-	classFilter:SetPoint("TOPLEFT", scrollPaneLoot, "BOTTOMLEFT", 0, 10)
-	classFilter:SetText(langTexts.classFilter)
-	classFilter:SetChecked(classFilterFlag)
-	classFilter:SetLabelInFront(true)
-	classFilter:SetLabelWidth(100)
+V1.2.7
+    - fixes: Fixed error in new auction module
 
-	Command.Event.Attach(LibEKL.Events[name .. ".classFilter"].CheckboxChanged, function (_, newValue)    
-		classFilterFlag = newValue
-		internalFunc.showLootTable(bossSel:GetSelectedValue())
-	end, name .. ".classFilter.CheckboxChanged")
-	
-	function ui:BuildLootTable ()
-		
-		local object, to, y = content, "TOPLEFT", 0
-	
-		table.sort (identifiedItems, function (v1, v2) return v1.name < v2.name end )
-	
-		for idx = 1, #identifiedItems, 1 do
-			local thisSlot
-			
-			if idx <= #lootSlots then
-				thisSlot = lootSlots[idx]
-			else
-				thisSlot = lootSlot (name .. ".lootSlot." ..  EnKai.tools.uuid(), content)				
-				table.insert(lootSlots, thisSlot)
-			end
-			
-			thisSlot:SetItem(identifiedItems[idx].type)
-			thisSlot:SetVisible(true)
-			thisSlot:SetPoint("TOPLEFT", object, to, 0, y)
-			object, to, y = thisSlot, "BOTTOMLEFT", 5
-			
-		end
-		
-		if #identifiedItems < #lootSlots then
-			for idx = #identifiedItems + 1, #lootSlots, 1 do
-				lootSlots[idx]:SetItem(nil)
-				lootSlots[idx]:SetVisible(false)
-			end
-		end
-		
-		ui:RecalcHeight()
-		scrollPane:SetVisible(true)
-	
-	end
-	
-	local function _classFilter(details)
+V1.2.5
+    - new: One Bag - Added functionality to scan auction house for price information
+    - updates: One Bag - Tooltip shows avg auction price
+    - updates: One Bag - Moving items will now try to stack
+    - updates: One Bag - It is now possible to drag items of the same type onto each other for stacking
+    - fixes: Buff Bar - no longer bugs out on temporary runes on weapons
+    - fixes: One Bag - Auto open / close on auction house display state<
+    - fixes: One Bag - Much improved item moving
+    - fixes: One Bag - Item are no longer suicidal on left click
 
-		local flag = false
-	
-		if EnKai.tools.table.isMember(allowedSlotsByClass, EnKai.items.translateRiftCategory (details.category)) then
-			if details.stats ~= nil then
-				for _, v in pairs(_statFilter[nkAAPI.getCalling()]) do
-					if details.stats[v] ~= nil then
-						flag = true
-						break
-					end
-				end
-			end
-		
-		end
-		
-		return flag
-	
-	end
-	
-	local function _fctCheckErrorItems ()
-		
-		local newErrorItems = {}
-		
-		for idx = 1, #errItems, 1 do
-			local err, details = pcall(oInspectItemDetail, errItems[idx])
-			if err == false then
-				table.insert(newErrorItems, errItems[idx])
-			else
-				if classFilterFlag == false or _classFilter(details) == true then
-					table.insert(identifiedItems, details)
-				end
-			end
-		end
-		
-		if #newErrorItems == 0 then
-			errItems = {}
-			ui:BuildLootTable ()
-			return true
-		end
-		
-		errItems = newErrorItems
-		return false
-		
-	end
-	
-	function ui:SetLoot(lootTable)
-	
-		scrollPane:SetVisible(false)
-	
-		errItems = {}
-		identifiedItems = {}
-	
-		for idx = 1, #lootTable, 1 do
-			local err, details = pcall(oInspectItemDetail, lootTable[idx])
-			if err == false then
-				table.insert(errItems, lootTable[idx])
-			else								
-				if classFilterFlag == false or _classFilter(details) == true then
-					table.insert(identifiedItems, details)
-				end
-			end
-		end		
-		
-		if #errItems > 0 then
-			LibEKL.Events.addPeriodic(_fctCheckErrorItems, 1, 5)
-		else
-			ui:BuildLootTable()
-		end
-	
-	end
-	
-	function ui:RecalcHeight()
-		local height = 0
-    
-		for idx = 1, #lootSlots, 1 do
-			if lootSlots[idx]:GetVisible() == true then
-		   	height = height + lootSlots[idx]:GetHeight() + 5
-			end
-		end
-    
-		content:SetHeight(height) 
-      
-		local value = scrollPane:GetLanePosition()
-		scrollPane:SetContent(content)
-		if value ~= nil then scrollPane:SetLanePosition(value) end
-	end
-	
-	function ui:GetMap() return map end
-	function ui:SetZoneTitle(newTitle) zoneTitle:SetText(newTitle) end
-	function ui:GetBossSel() return bossSel end
-	
-	local function _fctSetSelectionValues(lootType, selected, boss)
-	
-		lootTableSel:SetSelection(langTexts.lootTableList[lootType])
-		lootTableSel:SetSelectedValue(selected)
-		lootTypeSel:SetSelectedValue(lootType)
-		fctSetBossSelection(boss)
-		
-	end
-		
-	local function _fctSetZone()
-	
-		local zoneId = Inspect.Unit.Detail('player').zone
-		for loottype, data1 in pairs(privateVars.bossList) do
-			for key, _ in pairs(data1) do
-				if key == zoneId then
-					_fctSetSelectionValues(loottype, string.format("%s.%s", loottype, key))
-					internalFunc.SetZone(string.format("%s.%s", loottype, key))						
-					return
-				end
-			end
-		end
+V1.2.0
+    - new: Settings - added option to disable bank module
+    - new: Lower Bar - clicking fps dataset will open nkDebug (if installed)
+    - new: Lower Bar - new setting to switch make lower bar background transparent
+    - updates: Lower Bar - Changed design of lower bar to updated nkui theme
+    - updates: Lower Bar - Lot's of small tweaks
+    - updates: One Bag - Changed design of bag and bank to updated nkui theme
+    - updates: One Bag - Changed design of tooltip additional info to updated nkui theme
+    - updates: General - Added missing tutorial page for quest log information    
+    - updates: Settings - Changed settings and tutorial window to use updated nkUI theme
+    - updates: Unit Frames - fixed the bar not being displayed correctly
+    - fixes: Quest Log - Fixed incorrect rewards display
 
-		_fctSetSelectionValues(nkUIAtlas.lootType, nkUIAtlas.lootTable, nkUIAtlas.boss)		
-		internalFunc.SetZone(lootTableSel:GetSelectedValue())
-	
-	end
-	
-	--_fctSetZone()
-	
-	Command.Event.Attach(LibEKL.Events[ui:GetName()].Shown, function ()    
-		--_fctSetZone()
-    end, ui:GetName().. ".Shown")
+V1.1.3
+    - fixes: Quest Log - fixed missing count information in objectives
+
+V1.1.2
+    - fixes: Settings - fixed error when upgrading from old version
+
+V1.1.1
+    - new: Quest Log - quest objectives now have a small icon to set waypoint
+    - new: Quest Log - show sell price of quest rewards
+    - fixes: One Bag - fixed bank showing bag items
+
+V1.1.0
+    - new: Quest Log - added new Quest Log feature
+    - new: One Bag - added bank support
+    - new: One Bag - bagg search functionality
+    - updates: Quest Tracker - Left click on quest will open Quest Log
+    - Updates: Lower Bar - Left click on Experience will open Quest Log
+    - fixes: One Bag - Trash no displayed at the end for German and French
+    - fixes: One Bag - will try to reposition on screen if being off screen
+    - fixes: Quest Tracker - will try to reposition on screen if being off screen
+
+V1.0.0
+    - new: Action bars - There's now a setting to set action bar icon size
+    - new: General - added French translation
+    - new: General - updated German translation
+    - update: Tooltip - names are now shortened
+    - update: SCT - Moved the text a bit away from center
+    - fixes: One Bag - Stores X/Y pos again after moving
+
+V0.9.9
+    - new: Unit Tooltip - Managed a way to show carnage info in unit tooltip (only if questtracker is used)
+    - new: Unit Tooltip - Tier icon will be displayed for elite and boss mobs
+    - updates: Quest Tracker - added support for Battle Pass category
+    - updates: Quest Tracker - Some minor design tweaks
+    - updates: Unit Frames - disabled smooth bars on raid frames
+    - fixes: Quest Tracker - category filter will show on first click
+    - fixes: Quest Tracker - category filter now shows checkboxes again
+    - fixes: Quest Tracker - fixed quest item update
+    - fixes: Quest Tracker - fixed dialogs
+    - fixes: Quest Tracker - fixed quest update handling
+
+V0.9.8
+    - new: Unit Frames - Limit number of buffs on unit frames  (those with lowest remaining duration)
+    - new: Unit Frames - new option to only show buffs and debuffs cast by player
+    - new: Unit Frames - new option to animate health changes smoothly
+    - new: SCT - added a new message type for important stuff
+    - update: SCT - Now shows skill name for outgoing damage
+    - update: SCT - Incoming heal will now show caster and outgoing the target
+    - update: SCT - overheals now use a smaller font size
+    - update: Quest Tracker - the quest items are now hidden by default
+    - update: Unit Frames - tweaked name display
+    - update: Unit Frames - some performance optimizations
+    - fixes: Unit Frames - fixed tooltip showing wrong descriptions
+
+V0.9.7
+    - updates: Quest Tracker: Slightly changed initial position of Quest Tracker
+    - updates: Lower Bar - Lowered default font size
+    - updates: Unit tooltip - changed default fonts
+    - updates: Unit tooltip - some slight UI tweaks
+    - updates: One Bag - will now store it's position on moving
+    - fixes: One Bag - fixed an error where the slot information got not set right
+    - fixes: One Bag - fixed header position on lower resolution    
+    - fixes: One Bag - fixed scaling of One Bag on lower resolution
+    - fixes: Fixed the auto scaling of UI elements
+    - fixes: Lower bar: Fixed an error when clicking currency
+    - fixes: Fixed an error on very first start of nkUI
+
+V0.9.6
+    - updates: Unit Frames - Upated icon display of raid frames
+    - updates: Unit Frames - minor cast bar design tweak
+    - updates: Unit Frames - minor design tweak    
+    - updates: Some updates on actionbars to improve generall performance    
+    - fixes: Scrolling Combat Text - loot message now show more consistent
+    - fixes: Unit Frames - Fixed ready check on raid frames
+    - fixes: Unit Frames - Removed grey bars from empty raid slots
+    - fixes: Unit Frames - Fixed missing units in raidframes when switching between group1 and other groups
+    - fixes: Unit Frames - Fixed a ready check error
+
+V0.9.5
+    - new: Unit Frames - added target of target frame
+    - new: Lower Bar - added Vitality display
+    - new: SCT - will display loot messages now (can bet turned off in settings)
+    - new: SCT - added option to settings to suppress XP gains    
+    - updates: Generic - Added warning messages when performing actions not allowed while in combat
+    - fixes: SCT - fixed SCT showing negative gain when gaining level
+    - fixes: Settings - removed invalid settings from raid settings
+    - fixes: Settings - fixed frame moving throwing error
+
+V0.9.4
+    - updates: unit frames optimized buff icon design
+    - fixes: Fixed and error when leaving combat    
+
+V0.9.3
+    - new: Unit Frames - Supporting raid marks
+    - new: Unit Frames - Ready check is now supported
+    - new: Unit Frames - AFK status of a unit is now being shown
+    - new: Unit Frames - Offline status of a unit is now being shown
+    - new: Settings - added option to disable minimap icon frame
+    - fixes: Actionbar - improve message of actionbar interactive mode
+    - fixes: Actionbar - dropping skills on actionbar works again
+    - fixes: QuestTracker - fixed an error condition
+    - fixes: Unit frames - buffs will always be fully visible on group frames
+    - fixes: Unit frames - timers will now work on player in group frames
+    - fixes: Unit frames - buffs now initalized on target frame on target change
+    - fixes: Unit frames - fixed the targeting and context menus
+
+V0.9.2
+    - new: One Bag - Free bag slots and currency is shown in header of bag
+    - updates: Removed design form buff bar icon
+    - updates: Tweaked design of buff icons
+    - updates: Tweaked design of action bar icons
+    - updates: Removed version check from LibEKL
+    - fixes: One Bag - make sure to hide tooltip on bag close
+    - fixes: One Bag - Fixed tooltip qty display
+    - fixes: Unit Frames - Buffs on player pet got their timers back
+    - fixes: Lower Bar - Fixed layering issue with level display
+
+V0.9.1
+    - fixes: Buff Bar- Fixed sorting error on debuffs
+
+V0.9.0
+    - new: nkUI Logo at startup (can be disabled in the settings)
+    - updates: Buff Bar - buffs and debuffs are now sorted by remaining time
+    - updates: Unit Frames - buffs and debuffs are now sorted by remaining time
+    - updates: Quest Tracker - Can now be moved by dragging the header
+    - updates: One Bag - ui will no longer be updated on bag events if bag is not displayed
+    - updates: Lower Bar - added level text to Experience dataset
+    - updates: Lower Bar - added CPU Usage to FPS counter
+    - updates: Lower Bar - Some minor tweaks to improve visibility
+    - updates: Changed Libs to LibEKL and LibQB (Smaller footprint)<
+    - updates: Huge refactoring of code
+    - fixes: Buff Bar - Hopefully a fix for the issue with empty icons
+    - fixes: LowerBar - Fixed role change error
+    - fixes: One Bag - Tooltip addition should now hide more properly
+    - fixes: Action bar - Fixed global cooldown display on actions bars
+
+V0.8.3
+    - new: Bags can now be moved between bag slots
+    - new: Bags can now be moved onto the bag slots from inventory
+    - new: started adding hint dialogs
+    - new: Additional info in One Bag item tooltip showing qty owned and price of item
+    - updates: Trash items are now displayed at the bottom in One Bag
+    - updates: slight change to primalist ressource bar coloring
+    - fixes: tooltip should now be working propery on bag slots
+    - fixes: Slightly adjusted ressource text
+    - fixes: Finally found the issue of empty icons in OneBag
+
+V0.8.2
+    - new: proper Primalist ressource support
+    - updates: Completely changed UI theme
+    - updates: Changed design of one bag to fit new theme
+    - updates: Tweaked buff and debuff display
+    - fixes: Lowered layer of quest item in quest tracker
+    - fixes: Hopefully fixed that error on faction change for good
+
+V0.8.1
+    - fixes: Fixed a rare error in lowerbar faction
+    - fixes: Headers in quest tracker are now aligned properly
+    - fixes: Fixed menu error in quest tracker
+
+V0.8.0
+    - new: Quest tracker module
+    - updates: When hovering a action bar slot it will now be highlighted
+    - fixes: Charge text is now properly aligned on charge bar
+    - fixes: Player casts will no longer be recognized as interrupted if target dies
+
+V0.7.1
+    - update: Tweaked castbar design
+    - update: Resized One Bag header fontsize
+
+V0.7.0
+    - new: added a new setting to change the color scheme
+    - new: added a new setting to change color of bag window
+    - new: uninterruptible casts have now a golden bar
+    - new: cast interrupts are now announced
+    - update: added guild to tooltip
+    - update: A lot of code refactoring
+    - update: Adjusted ressource coloring
+    - fixes: Fixed putting a new bag in a bag slot
+
+V0.6.1
+    - updates: moved lowerbar social dataset a bit to the right
+    - updates: moving items to bank now support bank bags
+    - updates: lowerbar social dataset now updates immediately on ui load
+    - updates: Some small font updates on lowerbar
+    - updates: reset action bars on combat start
+    - updates: slightly changed cooldown display on action bars
+    - updates: slightly changed the size of the bag slots in One Bag    
+    - fixes: tooltip now works on interactive action bars
+    - fixes: fixed an issue when adding skills to action bars
+    - fixes: fixed tooltip on lowerbar location ports
+    - fixes: fixed duplicate combat events of action bar
+    - fixes: item qty updates are now processed properly in one bag
+
+V0.6.0
+    - new: mainbar can now bet set to have between 1 to 3 rows
+    - new: right screen bar can be deactivated
+    - update: adjusted most colors
+    - update: improved readability of a couple of texts
+    - update: changed title of OneBag to show player's name
+    - update: added icons to lowerbar modules
+
+V0.5.8
+    - update: A couple of SCT improvements        
+    - update: Some small SCT performance improvements
+    - update: added a slight gradiant to lowerbar for better readability
+    - update: OneBag will now open when regular bags open
+    - update: Items within a OneBag category are now sorted by name    
+    - update: A lot of code refactoring
+    - fixed: Clearing an action bar item on cooldown will now clear cooldown
+
+V0.5.7
+    - fixes: fix alpha of group buffs
+    - fixes: Unit frames should now be again properly moveable
+    - fixes: Prevented tooltip being shown when unitframe is hidden
+    - fixes: Avoid rare condition where buff does not have a type identifier
+    - fixes: Prevented a rare condition where an item category is reported as nil
+    - fixes: Avoiding Secure error on actionbar macro save
+    - fixes: Avoiding Secure error on location module
+    - fixes: Avoiding Secure error on role module
+
+V0.5.6
+    - udpates: Added tooltip to container slots in onebag
+    - updates: Added fastpass to location ports
+    - updates: Added tooltip to teleport options
+    - updates: Set Mouseover Unit on unitframes
+    - updates: Added level font size setting
+
+V0.5.5
+    - udpates: Made hard level red a bit better to read
+    - fixes: support ?? as level
+
+V0.5.4
+    - updates: Added level to unit frames
+    - updates: changed font of ability tooltips
+    - updates: added own tooltip to buffs
+    - updates: added a new tool to update settings
+    - fixes: fixed cooldowns on role chaange
+    - fixes: buff timers on group frames
+    - fixes: fix cloth armor category in onebag
+
+V0.5.3
+    - fixes: Fixed action bar cooldown issue after role change
+    - fixes: add a 1 second delay populating action bars on role change cause of a RIFT bug not providing Ability details properly
+    - fixes: Actionbar usable state now properly set on role change
+    - fixes: Tried to fix some layering issues
+    - fixes: Potential fix for buff gaps
+    - fixes: Changing lowerbar font no longer results in error
+    - fixes: Fixed incorect buff timer colors
+
+v0.5.2
+    - fixes: buff management optimization
+
+v0.5.1
+    - fixes: extra line in bag if exactly 15 items
+    - fixes: Buff bar realignment error
+
+v0.5.0
+    - update: improved performance of buff handling
+    - fixes: Charge is now properly displayed on mages
+    - fixes: Fixed a bug related to mages charges
+    - fixes: Fixed health not updating after reduction of max health
+    - fixes: Fixed a bug when loading on new char
+    - fixes: Fixed are bug in experience display of SCT
+    - fixes: Switched OneBag Tooltip to ingame tooltip    
+    - fixes: Buff timers are now rounded instead of flattened
+    - fixes: Buff timer should now update correctly when enabling / disabling buffs
+    - fixes: Planar charges no longer shown on units without any
+
+v0.4.3
+    - fixes: tooltip for buffs working once again
+    - fixes: auto shorten long spellnames on castbar
+    - fixes: fixed error in lowerbar role change
+
+v0.4.2
+    - new: Role switch element for lowerbar
+    - fixes: Fixed a buff timer issue
+    - fixes: Some alignment issues with lowerbar
+    - fixes: Fixed a bug where OneBag was not updating properly
+    - fixes: Hide tooltip when closing OneBag
+    - fixes: disabling lowerbar not properly hide notoriety percent value
+
+v0.4.1    
+    - update: Changed buff timer font for better readability
+    - fixes: Switching role now clears empty action bar slots
+    - fixes: Setting unit frame alpha now changes it on display
+    - fixes: Setting now properly recognizes enabling / disabling of modules
+    - fixes: Moving now ignores disabled modules
+    - fixes: Fixed stupid performance bug
+
+v0.4.0
+    - new: moveable ui
+    - update: reworked settings
+
+v0.3.5
+    - new: addon settings
+    - fixes: some minor tutorial fixes
+
+v0.3.1
+    - fixes: Debuff on buff bar where no longer showing
+    - fixes: A rare SCT issue if a damage event didn't include damage
+    - fixes: buffs and debuffs not longer showing on raid frames
+
+v0.3.0
+    - new: one bag module
+    - update: added exp gain to SCT
+    - update: clicking lowerbar currency will open bag
+    - fixes: tons of fixes in EnKai
+    - fixes: change event handling for lowerbar exp display
+    - fixes: EnKai version manager update
+    - fixes: Fixed lowerbar notoriety display
+    - fixes: buff update on target frame
+
+v0.2.3
+    - update: added icons to heals in sct
+    - update: lowered update of experience databar in lowerbar
+
+v0.2.2
+    - update: SCT now shows ability icon for outgoing damage
+    - fixes: Fixed a potential name conflict on tooltip
+    - fixes: Fixed an error in SCT if event is fired without damage
+    - fixes: buffs with duration > 60 Minutes are now displayed as hour
+    - fixes: Fixed a bug resulting in too many frames being generated by SCT
+
+v0.2.1
+    - update: shortened name of caster on sct
+    - update: some SCT color and display tweaks
+    - fixes: added missing support role icon to unitframe
+    - fixes: fixed a tooltip error when joining groups
+    - fixes: preventing keyboard not working when editing macros
+    - fixes: force unit frame update on role change
+    - fixes: properly clearing addonbar
+    - fixes: fixed buff alpha when out of combat
+    - fixes: fixed target unitframe not loading properly if player targets himself
+    - fixes: buff display on target frame if player targets himself
+    - fixes: fixed a display bug in sct
+
+v0.2.0
+    - new: scrolling combat text module
+    - new: action bar combat / out of combat alpha setting
+    - new: Elite and Boss Symbols to target frames
+    - new: Focus frame support
+    - update: stack now showing on buffs and debuffs
+    - update: tweaked timer and stack display on buff/debuffs
+    - update: Switch side of role icon on target frames    
+    - update: added /nkui hint at startup
+    - fixes: Hide Role Icon when not targeting group member
+    - fixes: some context menus were not working
+
+V0.1.2
+    - fixes: fixed wrong tutorial initialization
+    - fixes: fixed action bar not activated by default
+    - fixes: hotfix for missing bar initialization
+
+V0.1.1
+    - updated: increased cooldown font
+    - update: cooldowns < 10 secs are now red
+    - fixes: cooldowns not working
+
+V0.1.0
+    - new: action bar module
+    - new: middle click allows to edit macros on bar
+    - new: combat icon on player frame
+    - new: added role icons
+    - update: update tutorial with action bar module
+    - update: debuffs on target frame a limited to once cause by placer
+    - update: changed the lowerbar font slightly for readability
+    - fixes: properly identify group status change (raid / group)
+    - fixes: fix raid health update
+    - fixes: fixed display issue on new castbars
+
+v0.0.10
+    - new: added raid frame handling
+    - update: moved all debug code to nkDebug
+    - update: reworked unit handling with EnKai.unit
+    - update: completely reworked event handling
+    - update: removed nkUnit library
+    - update: castbar working when player is targeting itself
+    - update: fixed some buff sizes on group frames
+    - fixes: tons of fixes in EnKai.unit. Did that shit ever work properly?
+    - fixes: fixed an error in EnKai.unit not clearing raid groups on leave
+    - fixes: fixed error when targeting dead body
+    - fixes: fixed typo in EnKai library
+    - fixes: some smaller issues fixed
+
+V0.0.9
+    - update: reworked the unit handling to prepare for group and raid frames
+    - fix: fixed a typo in the EnKai map module
+    - fix: fixed some scaling on unit frames
+    - fix: first setup error
+
+V0.0.8
+    - new: separate setting to activate buffbar and buffs on unit frames
+    - new: enabling / disabling unitframe will affect buffs as well
+    - new: Added combat / non combat alpha setting
+    - new: created nkUI Theme for Tutorial windows
+    - new: tutorial window should now only show on first load after relevant changes
+    - update: changed tutorial and settings update handling
+    - udpate: changed tutorial to activate / deactive settings on module setup
+    - update: change buff timer handling to improve performance
+    - fix: errors on buff tooltip display after coming out of combat
+
+v0.0.7
+    - update: Improved castbar handling to improve performance
+    - update: Changed colors of debuff types
+    - fixes: debuff were no longer been displayed on main buff bar
+    - fixes: timer not working on debuffs on main buff bar
+    - fixes: player cast bar bug when teleporting
+
+v0.0.6
+    - new: buffs can now be canceled by right click
+    - new: added tooltip support to buffs and debuffs
+    - update: quite some code optimization in the unitframe modules
+    - update: improved buff handling on unit frames
+    - fixes: buff tooltip display
+    - fixes: fixed a nasty bug when changing zone    
+    - fixes: fixed LowerBar faction not changing on reputation change
+
+v0.0.5
+
+    - added tutorial style settings
+    - fixed tooltip showing when hovering items or abilities
+    - fixed the hiding and showing of player ressource bar (combat / non combat)
+
+v0.0.4
+
+    - added auto scaling for screen sizes
+    - added unit tooltip module
+    - fixed error when changing zone
+    - changed castbar duration to show more precise values
+    - added out of combat alpha
+    - fixed buffs and debuffs out of combat alpha

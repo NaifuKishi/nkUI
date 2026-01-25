@@ -359,7 +359,9 @@ local function initializeAddon(_, addon)
 					internalFunc.questTrackerInit(true)
 				end
 
-				--internalFunc.chat ()
+				if nkUISetup.modules.chat and nkUISetup.modules.chat.activate then
+					internalFunc.chat ()
+				end
 				--internalFunc.questLogInit()							
 			end
 
@@ -378,7 +380,7 @@ local function initializeAddon(_, addon)
 			end
 
 			Command.Message.Accept(nil, "nkUI.version")
-			
+
 --[[			Command.Event.Attach(Event.Mail, function(a,b,c) 
 				dump(a)
 				dump(b)

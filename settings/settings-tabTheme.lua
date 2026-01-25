@@ -14,7 +14,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabTheme (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local logoComboBox, themeComboBox, managerComboBox, bankCheckBox
+    local logoComboBox, themeComboBox, managerComboBox, bankCheckBox, chatCheckBox
 
     function frame:build()
 
@@ -25,12 +25,20 @@ function settingsUI.uiConfigTabTheme (name, parent)
         logoComboBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
         logoComboBox:SetChecked(nkUISetup.showLogo, true)
 
+        chatCheckBox = settingsUI.checkbox(name .. ".chatCheckBox", frame, langTexts.settings.showChat, true, function(newValue)
+            nkUISetup.modules.chat.activate = newValue
+            LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        chatCheckBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
+        chatCheckBox:SetChecked(nkUISetup.modules.chat.activate, true)
+
         bankCheckBox = settingsUI.checkbox(name .. ".bankCheckBox", frame, langTexts.settings.useBank, true, function(newValue)
             nkUISetup.modules.oneBag.bankActivate = newValue
             LibEKL.UI.reloadDialog("nkUI")
         end)
 
-        bankCheckBox:SetPoint("TOPLEFT", logoComboBox, "BOTTOMLEFT", 0, 10)
+        bankCheckBox:SetPoint("TOPLEFT", chatCheckBox, "BOTTOMLEFT", 0, 10)
         bankCheckBox:SetChecked(nkUISetup.modules.oneBag.bankActivate, true)
 
         managerComboBox = settingsUI.checkbox(name .. ".managerComboBox", frame, langTexts.settings.minimapIconFrame, true, function(newValue)
