@@ -154,7 +154,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     local nameText = LibEKL.UICreateFrame("nkText", thisName .. ".nameText", healthFrame)
 
     if unitFrameType == "raid" then
-        nameText:SetPoint("CENTER", unitFrame, "CENTER", 2, 0)        
+        nameText:SetPoint("CENTER", unitFrame, "CENTER", 0, -2)        
     elseif setup.reverse then
         nameText:SetPoint("BOTTOMRIGHT", unitFrame, "TOPRIGHT", -2, 3)
     else
@@ -214,10 +214,14 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
     local levelText = LibEKL.UICreateFrame("nkText", thisName .. ".levelText", healthFrame)
 
-    if setup.reverse then
-        levelText:SetPoint("BOTTOMRIGHT", unitFrame, "BOTTOMRIGHT", -setup.margins.level, 10)
+    if unitFrameType == "raid" then
+        levelText:SetPoint("CENTERBOTTOM", unitFrame, "CENTERBOTTOM", 1, 0)
     else
-        levelText:SetPoint("BOTTOMLEFT", unitFrame, "BOTTOMLEFT", setup.margins.level, 10)
+        if setup.reverse then
+            levelText:SetPoint("BOTTOMRIGHT", unitFrame, "BOTTOMRIGHT", -setup.margins.level, 10)
+        else
+            levelText:SetPoint("BOTTOMLEFT", unitFrame, "BOTTOMLEFT", setup.margins.level, 10)
+        end
     end
 
     levelText:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -251,7 +255,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     roleIcon:SetVisible(false)
 
     if string.find(unitType, "raid") then
-        roleIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4, 0)
+        roleIcon:SetPoint("CENTERRIGHT", unitFrame, "CENTERRIGHT", -4, -2)
     elseif setup.reverse then
         roleIcon:SetPoint("CENTERRIGHT", nameText, "CENTERLEFT", -setup.margins.roleIcon, 0)
     else

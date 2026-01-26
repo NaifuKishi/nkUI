@@ -313,7 +313,7 @@ function questTracker.questCategory(category, parent)
 
 				for idx = 1, #questEntries, 1 do
 					if idx == 1 then
-						questEntries[idx]:SetPoint("TOPLEFT", subFrame, "TOPLEFT", 20, 0)
+						questEntries[idx]:SetPoint("TOPLEFT", subFrame, "TOPLEFT", 5, 0)
 					else
 						questEntries[idx]:SetPoint("TOPLEFT", questEntries[idx-1], "BOTTOMLEFT", 0, 5)
 					end 
