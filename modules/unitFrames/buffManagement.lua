@@ -63,6 +63,7 @@ local function updateBuffDisplay(frame, unitBuffDisplayList, unitDebuffDisplayLi
     table.sort(sortedBuffs, function(a, b) return a.remaining < b.remaining end)
 
     -- Limit to 9 buffs if it's a unit frame (not buffbar)
+
     local maxBuffs = (unitType == "buffbar") and #sortedBuffs or math.min(nkUISetup.modules.unitFrames.maxBuffCount, #sortedBuffs)
 
     for i = 1, maxBuffs do
@@ -76,7 +77,7 @@ local function updateBuffDisplay(frame, unitBuffDisplayList, unitDebuffDisplayLi
         end
 
         thisIcon.lastX = x
-        x = x + buffSetup.width + 2
+        x = x + buffSetup.width + 4
     end
 
     x, y = 0, frame:GetHeight() + (10 * data.uiScale)
@@ -100,7 +101,7 @@ local function updateBuffDisplay(frame, unitBuffDisplayList, unitDebuffDisplayLi
         end
 
         thisIcon.lastX = x
-        x = x + buffSetup.width + 2
+        x = x + buffSetup.width + 4
     end
 
 end
@@ -308,9 +309,9 @@ function internalFunc.processNewBuff (unitType, iconName, buffID, buffIdentifier
             thisIcon = icons[buffIdentifier]
 
             if unitType == "buffbar" then
-                icon:ShowBorder(true)
+                icon:SetBorder(3)
             else
-                icon:ShowBorder(false)
+                icon:SetBorder(2)
             end
             icon:Setup(nkUISetup.modules.buffBar.buffs)
             icon:SetTexture("Rift", buffDetails.icon)

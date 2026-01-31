@@ -18,8 +18,9 @@ local stringFind    = string.find
 -- Creates an item icon UI element
 function oneBag.createItemIcon(name, parent)
     local thisItemID, thisSlot, thisItemType
+    local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
     
-    local itemFrame = LibEKL.UICreateFrame("nKFrame", name, parent)
+    local itemFrame = LibEKL.UICreateFrame("nkCanvas", name, parent)
     itemFrame:SetWidth(40 * data.bagScale)
     itemFrame:SetHeight(40 * data.bagScale)
     
@@ -52,8 +53,12 @@ function oneBag.createItemIcon(name, parent)
         thisItemType = itemType
     end
     
-    function itemFrame:SetIcon(addonName, path)
-        itemIcon:SetTextureAsync(addonName, path)
+    function itemFrame:SetIcon(addonName, icon)
+        --itemIcon:SetTextureAsync(addonName, path)
+
+        local width = itemFrame:GetWidth()
+		fill = { type = "texture", source = "Rift", texture = icon, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+        itemFrame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 3 })
     end
     
     function itemFrame:SetSlot(slotID)

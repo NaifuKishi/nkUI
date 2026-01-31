@@ -22,10 +22,15 @@ local _eventHandlers = {}
 
 function uiElements.icon (name, parent)
 	
-	local icon = LibEKL.UICreateFrame('nkFrame', name, parent)
+	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
+	local fill
+	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 3 }
+	local thisTexture
+
+	local icon = LibEKL.UICreateFrame('nkCanvas', name, parent)
 	
-	local border = LibEKL.UICreateFrame('nkFrame', name .. '.border', icon)
-	local texture = LibEKL.UICreateFrame('nkTexture', name .. '.texture', icon)
+	--local border = LibEKL.UICreateFrame('nkFrame', name .. '.border', icon)
+	--local texture = LibEKL.UICreateFrame('nkTexture', name .. '.texture', icon)
 	
 	local timer = LibEKL.UICreateFrame('nkText', name ..'.timer', icon)
 	local stack = LibEKL.UICreateFrame('nkText', name ..'.stack', icon)
@@ -53,7 +58,6 @@ function uiElements.icon (name, parent)
 	
 	local timerFontSize = 18
 	local stackFontSize = 16
-	local showBorder = true
 	local scale = 1
 	local thisBuffId
 	local thisName, thisDescription
@@ -61,23 +65,13 @@ function uiElements.icon (name, parent)
 	icon:SetWidth(50)
 	icon:SetHeight(50)
 	--icon:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 100)
-	
-	border:SetPoint("TOPLEFT", icon, "TOPLEFT")
-	border:SetWidth(50)
-	border:SetHeight(50)
-	border:SetBackgroundColor(0, 0, 0, 1)
-	border:SetLayer(1)
-	
-	texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-	texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
-	texture:SetLayer(2)
-	
+		
 	timer:SetLayer(4)
 	timer:SetFontColor(1, 1, 1, 0)
 	timer:SetFontSize(timerFontSize)
 	timer:SetTextFont(addonInfo.id, "MontserratSemiBold")
 	timer:SetEffectGlow({strength = 3})
-	timer:SetPoint("BOTTOMCENTER", border, "BOTTOMCENTER", 0, -2)
+	timer:SetPoint("BOTTOMCENTER", icon, "BOTTOMCENTER", 0, -2)
 	
 	stack:SetLayer(4)
 	stack:SetFontColor(1, 1, 1, 0)
@@ -87,11 +81,14 @@ function uiElements.icon (name, parent)
 	stack:SetPoint("TOPLEFT", icon, "TOPLEFT", 1, -1)
 		
 	function icon:SetTexture(textureType, texturePath)
-		texture:SetTextureAsync(textureType, texturePath)
+		thisTexture = texturePath
+		--texture:SetTextureAsync(textureType, texturePath)
+		local width = icon:GetWidth()
+		fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+        icon:SetShape(path, fill, stroke)
 	end
 	
 	function icon:SetStack(text)
-		--stack:ClearWidth()
 		if text == nil then
 			stack:SetText("")
 		elseif text ~= lastStack then			
@@ -108,31 +105,24 @@ function uiElements.icon (name, parent)
 		stack:SetVisible(flag)
 	end
 	
-	function icon:ShowBorder(flag)
-	
-		showBorder = flag
-		
-		texture:ClearAll()
-	
-		if flag == true then
-			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 3, 3)
-			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -3, -3)
-		else
-			texture:SetPoint("TOPLEFT", border, "TOPLEFT", 1, 1)
-			texture:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, -1)
-		end
-	end
-	
 	function icon:Setup(newSetup)
+		
+		local sizeUpdate = false
 
 		if lastSetup.width ~= newSetup.width then	
 			icon:SetWidth(newSetup.width)
-			border:SetWidth(newSetup.width)
+			sizeUpdate = true
 		end
 		
 		if lastSetup.height ~= newSetup.height then
 			icon:SetHeight(newSetup.height)
-			border:SetHeight(newSetup.height)
+			sizeUpdate = true
+		end
+
+		if sizeUpdate and thisTexture then
+			local width = icon:GetWidth()
+			fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+        	icon:SetShape(path, fill, stroke)
 		end
 		
 		if lastSetup.timer ~= newSetup.timer then		
@@ -213,15 +203,21 @@ function uiElements.icon (name, parent)
 	end
 	
 	function icon:SetBorderColor(r, g, b, a)
-		border:SetBackgroundColor(r, g, b, a)
+		if stroke then
+			local lastThickness = stroke.thickness
+			stroke = {r = r, g = g, b = b, a = a, thickness = lastThickness }
+		end
 	end
-		
+	
+	function icon:SetBorder(newBorder)
+		stroke.thickness = newBorder
+	end
 	
 	function icon:Recycle()
 		icon:SetVisible(false)
 	end
 
-	texture:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
+	icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         Command.Buff.Cancel(thisBuffId)
     end, name .. ".UI.Input.Mouse.Right.Click")
 
@@ -232,7 +228,7 @@ function uiElements.icon (name, parent)
 	function icon:SetTooltip(name, description)
 		thisName = name
 		thisDescription = description
-		LibEKL.UI.attachGenericTooltip (texture, thisName, thisDescription)
+		LibEKL.UI.attachGenericTooltip (icon, thisName, thisDescription)
 		LibEKL.UI.genericTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 	end	
 	

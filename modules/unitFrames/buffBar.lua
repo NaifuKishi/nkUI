@@ -62,7 +62,7 @@ function internalFunc.buffBar.UpdateBuffDisplay()
         end
 
         thisIcon.lastX = x
-        x = x + buffBarWidth
+        x = x + buffBarWidth + 2
     end
     
     -- Sort debuffs by remaining time
@@ -93,6 +93,7 @@ end
 -- @param unit The unit ID
 -- @param buffs The buffs to add
 function internalFunc.buffBar.addBuff(unit, buffs)
+
     local details = InspectBuffDetail(unit, buffs)
 
     for buffID, buffDetails in pairs(details) do
