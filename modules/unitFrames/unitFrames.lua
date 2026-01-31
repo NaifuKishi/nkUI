@@ -39,7 +39,7 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     frame:SetName(details.name)
     frame:SetCalling(details.calling)
 
-    if details.heatlthMax then 
+    if details.healthMax then 
         frame:SetHealthMax(details.healthMax) 
     else
         frame:SetHealthMax(details.health) 

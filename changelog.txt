@@ -1,5 +1,8 @@
 V1.2.10
-    - updates: Unit Frames - Name and level display tweaks
+    - updates: Some performance optimiziations
+    - updates: Unit Frames - raid frames name and level display tweaks
+    - updates: Unit Frames - Health bar will no be animated when switching targets
+    - fixes: Unit Frames - Health percent not updating correctly
     - fixed: Quest Tracker - Completing quests will no longer mess with alignment
 
 V1.2.9

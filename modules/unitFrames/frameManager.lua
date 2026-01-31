@@ -76,6 +76,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
     local energyMax
     local thisName = LibEKL.Tools.UUID()
     local thisUnitID = nil
+    local lastHealthUpdateUnitID = nil
 
     local unitBuffIcons = {}
     local unitDebuffIcons = {}
@@ -636,7 +637,7 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
 
     local runningAnimation = false
 
-    function unitFrame:SetHealth (health) 
+    function unitFrame:SetHealth (health)
         if health == nil then return end
         if healthMax == nil then healthMax = health end
 
@@ -646,16 +647,19 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         
         local targetWidth = (unitFrameWidth-2) * (health / healthMax)
         local currentWidth = healthFrame:GetWidth()
-        local pixel = targetWidth - currentWidth        
+        local pixel = targetWidth - currentWidth
 
-        if currentWidth == targetWidth then return end
+        if currentWidth == targetWidth then
+            healthText:SetText("100")
+            return 
+        end
 
         if health == 0 then
             healthText:SetText("0")
             healthFrame:SetWidth(0)
             return
         else
-            local playerHealthPercent = health / healthMax
+            local playerHealthPercent = health / healthMax            
             healthText:SetText(stringFormat("%d", LibEKL.Tools.Math.Round(playerHealthPercent*100)))
         end
 
@@ -664,10 +668,15 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
             return
         end
 
+    
         if not nkUISetup.modules.unitFrames.smoothAnimation or unitType == "raid" then
             healthFrame:SetWidth(targetWidth)
             return
-        end
+        elseif lastHealthUpdateUnitID ~= thisUnitID then
+            healthFrame:SetWidth(targetWidth)
+            lastHealthUpdateUnitID = thisUnitID
+            return
+        end        
 
         local stopAnimation = false
 
