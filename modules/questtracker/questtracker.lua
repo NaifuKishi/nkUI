@@ -395,7 +395,7 @@ function questTracker.showTooltip (parent, questkey, itemkey, category, message)
 		end
 	
 		if scene ~= nil then
-			local sceneInfo = LibEKL.location.getSceneInfo(scene)
+			local sceneInfo = LibMap.location.getSceneInfo(scene)
 			if sceneInfo ~= nil then
 				if sceneInfo[LibEKLGetLanguageShort()] ~= nil then
 					scene = sceneInfo[LibEKLGetLanguageShort()]

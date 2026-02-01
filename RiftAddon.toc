@@ -104,11 +104,13 @@ RunOnStartup = {
 
 Embed = {	
   ["Libs/LibEKL"] = true,
+  ["Libs/LibMap"] = true,
   ["Libs/LibQB"] = true
 }
 
 Dependencies = {
   LibEKL = {"required", "before"},
+  LibMap = {"required", "before"},
   LibQB = {"required", "before"},
 }
 
