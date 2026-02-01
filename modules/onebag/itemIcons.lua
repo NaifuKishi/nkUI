@@ -19,6 +19,7 @@ local stringFind    = string.find
 function oneBag.createItemIcon(name, parent)
     local thisItemID, thisSlot, thisItemType
     local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
+    local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     
     local itemFrame = LibEKL.UICreateFrame("nkCanvas", name, parent)
     itemFrame:SetWidth(40 * data.bagScale)
@@ -58,7 +59,7 @@ function oneBag.createItemIcon(name, parent)
 
         local width = itemFrame:GetWidth()
 		fill = { type = "texture", source = "Rift", texture = icon, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
-        itemFrame:SetShape(path, fill, {r = 0, g = 0, b = 0, a = 1, thickness = 3 })
+        itemFrame:SetShape(path, fill, stroke)
     end
     
     function itemFrame:SetSlot(slotID)
@@ -88,7 +89,10 @@ function oneBag.createItemIcon(name, parent)
     
     function itemFrame:SetRarity(rarity)
         local color = LibEKL.Inventory.GetItemColor(rarity)
-        itemFrame:SetBackgroundColor(color.r, color.g, color.b, 1)
+        --itemFrame:SetBackgroundColor(color.r, color.g, color.b, 1)
+        stroke = color
+        stroke.thickness = 1
+        itemFrame:SetShape(path, fill, stroke)
     end
     
     function itemFrame:SetBound(bind, bound)
