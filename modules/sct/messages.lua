@@ -144,7 +144,6 @@ end
 -- @param message The message to display
 -- @param duration How long to display the message
 function sct.DisplayMovingMessage(addonId, icon, message, duration, startY, endY, fontSize)
-
     local debugId = internalFunc.traceStart("sct.displayMovingMessage")
 
     local frame = sct.GetFrame()
@@ -153,14 +152,14 @@ function sct.DisplayMovingMessage(addonId, icon, message, duration, startY, endY
     frame:SetFontSize(fontSize)
     frame:SetFontColor(0.678, 0.847, 0.902, 1)
     frame:SetVisible(true)
+    frame:SetAlpha(1) -- Alpha-Wert auf 1 setzen
 
     frame:SetTextureAsync(addonId, icon)
 
     local start = inspectTimeFrame()
     local coRoutineDebugID
-    
-    local animationCoroutine = coroutine.create(function()        
 
+    local animationCoroutine = coroutine.create(function()
         for idx = 1, duration * 100, 1 do
             coRoutineDebugID = internalFunc.traceStart("sct.cr.displayMovingMessage")
             local elapsed = inspectTimeFrame() - start
@@ -171,6 +170,13 @@ function sct.DisplayMovingMessage(addonId, icon, message, duration, startY, endY
             local t = elapsed / duration
             local currentY = startY + (endY - startY) * t
             frame:SetPoint("CENTER", UIParent, "CENTER", 0, currentY)
+
+            -- Fade-Effekt im oberen 25%-Segment
+            if t > 0.5 then
+                local alpha = 1 - (t - 0.5) / 0.5
+                frame:SetAlpha(alpha)
+            end
+
             internalFunc.traceEnd("sct.cr.displayMovingMessage", coRoutineDebugID)
             coroutine.yield(idx)
         end
@@ -190,7 +196,6 @@ function sct.DisplayMovingMessage(addonId, icon, message, duration, startY, endY
 
     internalFunc.traceEnd("sct.displayMovingMessage", debugId)
 end
-
 
 local yVariation = 0
 local lastYReset = inspectTimeFrame()

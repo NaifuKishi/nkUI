@@ -97,5 +97,6 @@ end
 function sct.ReleaseFrame(frame)
     frame:SetVisible(false)
     frame.icon:SetVisible(false)
+    frame:SetAlpha(1) -- Setze Alpha zurück auf 1
     table.insert(framePool, frame)
 end
