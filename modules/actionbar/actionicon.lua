@@ -515,12 +515,20 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			dialog:SetHeight(200)
 			
 			dialog:SetColor({	type = "gradientLinear",
-								transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
+								transform = Utility.Matrix.Create(12, 12, math.pi / 4, 0, 0),  -- 45° rotation
 								color = {
-									data.theme.windowStartColor,
-									data.theme.windowEndColor
-									}
-							},  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+									{r = 0.1294, g = 0.1533, b = 0.2157, a = 1, position = 0}, -- Start color
+									{r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1}  -- End color
+								}
+							},  {
+								r = 0x66 / 255,
+								g = 0x56 / 255,
+								b = 0x2e / 255,
+								a = 1,
+								cap = "round",
+								miter = "miter",
+								thickness = 2
+							})
 		end
 	end
 
