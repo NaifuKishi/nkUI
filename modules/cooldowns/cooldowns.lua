@@ -154,7 +154,6 @@ end
 local function removeCooldown(_, cooldowns)
     for k, v in pairs(cooldowns) do
         if activeCooldowns[k] then
-            activeCooldowns[k].display.frame:Destroy()
             activeCooldowns[k] = nil
         end
     end
@@ -162,9 +161,6 @@ end
 
 -- Clears all active cooldowns
 local function clearAllCooldowns()
-    for _, cooldown in pairs(activeCooldowns) do
-        cooldown.display.frame:Destroy()
-    end
     activeCooldowns = {}
 end
 

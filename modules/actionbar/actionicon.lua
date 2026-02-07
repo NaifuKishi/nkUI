@@ -433,28 +433,6 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end
 	end
 	
-	--[[
-      Function to destroy the frame
-      Cleans up resources and removes the frame from the UI
-    ]]
-	function frame:destroy()
-	
-		local target = frame
-		if interactive then target = macroFrame end
-					
-		if thisItemType == 'item' then
-			LibEKL.UI.attachItemTooltip (target, nil)
-		elseif thisItemType == 'macro' then
-			LibEKL.UI.attachGenericTooltip (target, nil, nil)
-		else
-			LibEKL.UI.attachAbilityTooltip (target, nil)
-		end
-		
-		tint:destroy()
-		cooldown:destroy()
-		internalFunc.uiAddToGarbageCollector ('nkFrame', frame, name)
-	end
-
 	-- due to the out event triggering when hover the texture we only want the frame events to run if texture is not visible
 
 	frame:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)		

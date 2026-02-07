@@ -212,10 +212,6 @@ function uiElements.icon (name, parent)
 	function icon:SetBorder(newBorder)
 		stroke.thickness = newBorder
 	end
-	
-	function icon:Recycle()
-		icon:SetVisible(false)
-	end
 
 	icon:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         Command.Buff.Cancel(thisBuffId)
