@@ -20,6 +20,8 @@ local mathFloor					= math.floor
 
 local _useButtonQuestItemID = nil
 local _itemCounter = 0
+local DEFAULT_TEXTURE_SIZE = 46
+local DEFAULT_ICON_SIZE = 25
 
 local context = UI.CreateContext("nkUI.QuestTracker.UseItem")
 context:SetStrata('hud')
@@ -32,33 +34,31 @@ context:SetLayer(2)
 
 local function useItem(name, parent)
 
-	local useItem = LibEKL.UICreateFrame("nkFrame", name, parent)
-	useItem:SetWidth(25)
-	useItem:SetHeight(25)
-	useItem:SetSecureMode("restricted")
-	useItem:SetBackgroundColor(.843, .796, 0, 1)
+	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
+	local fill
+	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
+	local thisTexture
+
+	local useItem = LibEKL.UICreateFrame('nkCanvas', name, parent)
+	useItem:SetWidth(DEFAULT_ICON_SIZE)
+	useItem:SetHeight(DEFAULT_ICON_SIZE)
+	useItem:SetSecureMode("restricted")	
 	useItem:SetVisible(false)
 
-	local useItemTexture = LibEKL.UICreateFrame("nkTexture", name .. ".texture", useItem)
-	useItemTexture:SetPoint("CENTER", useItem, "CENTER")
-	useItemTexture:SetHeight(23)
-	useItemTexture:SetWidth(23)
-	useItemTexture:SetSecureMode("restricted")
-	
 	local questId = nil
 	local itemId = nil
 	local itemName = nil
 	local itemType = nil
 	
-	useItemTexture:EventAttach( Event.UI.Input.Mouse.Cursor.In, function ()
+	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.In, function ()
 		questTracker.showTooltip (useItem, questId, itemId, "personal", nil)
 	end, name .. ".texture.UI.Input.Mouse.Cursor.In")
 	
-	useItemTexture:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function ()
+	useItem:EventAttach( Event.UI.Input.Mouse.Cursor.Out, function ()
 		if uiElements.qtTooltip ~= nil then uiElements.qtTooltip:SetVisible(false) end
 	end, name .. ".texture.UI.Input.Mouse.Cursor.Out")
 
-	useItemTexture:EventAttach( Event.UI.Input.Mouse.Right.Click, function ()
+	useItem:EventAttach( Event.UI.Input.Mouse.Right.Click, function ()
 		Command.Item.Standard.Right(itemId)
 	end, name .. ".texture.UI.Input.Mouse.Right.Click")
 	
@@ -70,7 +70,13 @@ local function useItem(name, parent)
 	function useItem:GetItemName() return itemName end
 	function useItem:SetItemType(newItemType) itemType = newItemType end
 	function useItem:GetItemType() return itemType end
-	function useItem:SetTextureAsync(addon, texture) useItemTexture:SetTextureAsync(addon, texture) end
+
+	function useItem:SetTexture(texturePath) 
+		thisTexture = texturePath
+		local width = useItem:GetWidth()
+		fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(DEFAULT_ICON_SIZE / DEFAULT_TEXTURE_SIZE, DEFAULT_ICON_SIZE / DEFAULT_TEXTURE_SIZE, 0, 0, 0) }		
+        useItem:SetShape(path, fill, stroke)
+	end
 
 	return useItem
 
@@ -142,7 +148,7 @@ function questTracker.buildUseUI ()
 			if useState[idx] == false then
 				useState[idx] = key
 
-				useItems[idx]:SetTextureAsync("Rift", icon)
+				useItems[idx]:SetTexture(icon)
 				useItems[idx]:SetVisible(true)
 				useItems[idx]:SetQuestID(questId)
 				useItems[idx]:SetItemID(key)

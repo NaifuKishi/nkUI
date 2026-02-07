@@ -470,13 +470,14 @@ local function processQuestChanges(_, elements)
         local questDetails = inspectQuestDetail(questId)
 
         if questDetails and questDetails.objective then
-            for idx = 1, 1, #questDetails.objective do
+
+            for idx = 1, #questDetails.objective do
 
                 local objective = questDetails.objective[idx]
-                local countDone, count = objective.countDone, objective.count
+                local countDone, count = objective.countDone, objective.count               
 
                 if countDone and count and countDone > 0 then
-                    if not questCache[questId] or questCache[questId][idx].countDone ~= ocountDone then
+                    if not questCache[questId] or questCache[questId][idx].countDone ~= countDone then
                         local message = string.format("<font color='#FFA500'>Quest Update: %s (%d/%d)</font>",
                             questDetails.name, countDone, count)
                         sct.DisplayMovingMessage(nil, nil, message, 3, -400 - questMessageVariation, -500 - questMessageVariation, 24)
@@ -537,7 +538,7 @@ function internalFunc.sctInit()
     end
 
     -- Event-Handler für Event.Quest.Change (Quest-Objective-Updates)
-    Command.Event.Attach(Event.Quest.Change, processQuestChanges, "nkUI.SCT.Quest.Change")
+    --Command.Event.Attach(Event.Quest.Change, processQuestChanges, "nkUI.SCT.Quest.Change")
 
     -- Event-Handler für Event.System.Error (Fehlermeldungen)
     Command.Event.Attach(Event.System.Error, function(_, errorInfo)
