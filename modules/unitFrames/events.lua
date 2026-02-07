@@ -208,11 +208,12 @@ local function zoneEvent(_, thisData)
 end
 
 local function unitDetailsEvent (_, thisData)
+
 	for unitID, v in pairs(thisData) do
 		local unitTypes = LibEKLGetUnitTypes (unitID)
 		for _, thisType in pairs (unitTypes) do
 			local frame = internalFunc.getFrameByIdentifier(thisType)
-			LibEKLUnitGetUnitDetail(unitID, true)
+			--LibEKLUnitGetUnitDetail(unitID, true)
 			internalFunc.updateUnit (frame, unitID, thisType)
 		end
 	end	

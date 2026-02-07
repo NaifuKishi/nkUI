@@ -62,12 +62,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local path = {{xProportional = 0, yProportional = 0}, {xProportional = 1, yProportional = 0}, {xProportional = 1, yProportional = 1}, {xProportional = 0, yProportional = 1}, {xProportional = 0, yProportional = 0}}
 	
 	-- Fill color for the icon
+	local defaultFill = {type = 'solid', r = 0, g = 0, b = 0, a = .6}
 	local fill = {type = 'solid', r = 0, g = 0, b = 0, a = .6}
 	local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2 }
 	local thisScale = 1
 	
 	-- Set the shape and border of the frame
-	frame:SetShape(path, fill, stroke)
+	frame:SetShape(path, defaultFill, stroke)
 	
 	local function createTint()
 		tint = LibEKL.UICreateFrame("nkCanvas", name .. ".tint", frame)
@@ -243,8 +244,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
       Function to clear the current item
       Clears the current item, ability, or macro from the action icon
     ]]
-	function frame:ClearItem()
-		
+	function frame:ClearItem()		
 		
 		LibEKL.UI.attachItemTooltip (frame, nil)
 		LibEKL.UI.attachAbilityTooltip (frame, nil)
@@ -270,6 +270,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroIcon = nil
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
+
+		fill = LibEKL.Tools.Table.Copy(defaultFill)
+		frame:SetShape(path, defaultFill, stroke)
 
 		--tint:SetVisible(false)
 
@@ -348,7 +351,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			local width = frame:GetWidth()
 			fill = { type = "texture", source = "Rift", texture = thisDetails.icon, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 32, 0, 0, 0) }			
 		else
-			fill = {type = 'solid', r = 0.078, g = 0.188, b = 0.306, a = 1}
+			fill = defaultFill
 		end
 
 		frame:SetShape(path, fill, stroke)
@@ -527,10 +530,10 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end)		
 	end, frame:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
-	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
+	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)		
 		internalFunc.checkSecureAction(function()
 			frame:ClearItem()
-			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
+			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}			
 		end)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 	
