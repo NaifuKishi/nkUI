@@ -497,6 +497,30 @@ function internalFunc.sctInit()
     if nkUISetup.modules.sct.showLoot then
         Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, handleInventoryUpdate, "nkUI.SCT.LibEKL.InventoryManager.Update")
     end
+
+    -- Event-Handler für Event.Quest.Change (Quest-Objective-Updates)
+    Command.Event.Attach(Event.Quest.Change, function(_, elements)
+
+        for questId, _ in pairs(elements) do
+            local questDetails = Inspect.Quest.Detail(questId)
+
+            if questDetails and questDetails.objective then
+                for _, objective in ipairs(questDetails.objective) do
+                    if objective.countDone and objective.count then
+                        local message = string.format("<font color='#FFFF00'>Quest Update: %s (%d/%d)</font>",
+                            questDetails.name, objective.countDone, objective.count)
+                        sct.DisplayMovingMessage(nil, nil, message, 3, 200, -100, 24)
+                    end
+                end
+            end
+        end
+    end, "nkUI.SCT.Quest.Change")
+
+    -- Event-Handler für Event.System.Error (Fehlermeldungen)
+    Command.Event.Attach(Event.System.Error, function(_, errorInfo)
+        local errorMessage = string.format("<font color='#FF0000'>[ERROR] %s</font>", errorInfo.error)
+        sct.displayMessageAtTopCenter(errorMessage, 5) -- 5 Sekunden anzeigen
+    end, "nkUI.SCT.System.Error")
         
     sctInit = true
 end
@@ -528,6 +552,9 @@ function internalFunc.sctToggle(value)
         if nkUISetup.modules.sct.showExpGains then
             Command.Event.Detach(LibEKL.Events["LibEKL.InventoryManager"].Update, nil, "nkUI.SCT.LibEKL.InventoryManager.SlotUpdate")
         end
+
+        Command.Event.Detach(Event.Quest.Change, nil, "nkUI.SCT.Quest.Change")
+        Command.Event.Detach(Event.System.Error, nil, "nkUI.SCT.System.Error")
 
         sctInit = false
 
