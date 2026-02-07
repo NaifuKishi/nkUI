@@ -17,6 +17,7 @@ local inspectAbilityNewDetail   = Inspect.Ability.New.Detail
 local inspectAbilityDetail      = Inspect.Ability.Detail
 local inspectExperience         = Inspect.Experience
 local inspectAttunementProgress = Inspect.Attunement.Progress
+local inspectQuestDetail        = Inspect.Quest.Detail
 
 local LibEKLUnitGetUnitDetail    = LibEKL.Unit.GetUnitDetail
 
@@ -59,6 +60,9 @@ local inventoryUpdateModY = 0
 local abilityCache = {}
 local iconCache = {}
 local abilityTimer = {}
+local questCache = {}
+local questMessageVariation = 0
+local questMessageLastUpdate
 
 local petID = nil
 
@@ -453,6 +457,40 @@ local function handleInventoryUpdate(_, items)
     lastInventoryUpdate = currentTime
 end
 
+local function processQuestChanges(_, elements)
+
+    local now = inspectTimeFrame()
+
+    if not questMessageLastUpdate or now - questMessageLastUpdate > 0.5 then
+        questMessageVariation = 0
+        questMessageLastUpdate = now
+     end
+
+    for questId, _ in pairs(elements) do
+        local questDetails = inspectQuestDetail(questId)
+
+        if questDetails and questDetails.objective then
+            for idx = 1, 1, #questDetails.objective do
+
+                local objective = questDetails.objective[idx]
+                local countDone, count = objective.countDone, objective.count
+
+                if countDone and count and countDone > 0 then
+                    if not questCache[questId] or questCache[questId][idx].countDone ~= ocountDone then
+                        local message = string.format("<font color='#FFA500'>Quest Update: %s (%d/%d)</font>",
+                            questDetails.name, countDone, count)
+                        sct.DisplayMovingMessage(nil, nil, message, 3, -400 - questMessageVariation, -500 - questMessageVariation, 24)
+                        questMessageVariation = questMessageVariation + 30                        
+                    end
+                end
+            end
+
+            questCache[questId] = questDetails.objective
+        end
+    end
+
+end
+
 function internalFunc.sctInit()
     
     local experience = inspectExperience()
@@ -499,22 +537,7 @@ function internalFunc.sctInit()
     end
 
     -- Event-Handler für Event.Quest.Change (Quest-Objective-Updates)
-    Command.Event.Attach(Event.Quest.Change, function(_, elements)
-
-        for questId, _ in pairs(elements) do
-            local questDetails = Inspect.Quest.Detail(questId)
-
-            if questDetails and questDetails.objective then
-                for _, objective in ipairs(questDetails.objective) do
-                    if objective.countDone and objective.count then
-                        local message = string.format("<font color='#FFFF00'>Quest Update: %s (%d/%d)</font>",
-                            questDetails.name, objective.countDone, objective.count)
-                        sct.DisplayMovingMessage(nil, nil, message, 3, 200, -100, 24)
-                    end
-                end
-            end
-        end
-    end, "nkUI.SCT.Quest.Change")
+    Command.Event.Attach(Event.Quest.Change, processQuestChanges, "nkUI.SCT.Quest.Change")
 
     -- Event-Handler für Event.System.Error (Fehlermeldungen)
     Command.Event.Attach(Event.System.Error, function(_, errorInfo)
