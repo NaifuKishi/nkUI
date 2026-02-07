@@ -28,6 +28,7 @@ local mathRandom        = math.random
 local mathCos           = math.cos
 local mathSin           = math.sin
 local mathRad           = math.rad
+local mathFloor         = math.floor
 
 ---------- init variables ---------
 
@@ -38,7 +39,7 @@ local TEXT_IMMUNE = "<font color='#ffffff'>Immune</font>"
 local TEXT_DODGE = "<font color='#ffffff'>Dodge</font>"
 local TEXT_OVERHEAL = "[%s] <font color='#00FF00'>%d OVERHEAL</font>"
 local TEXT_HEAL = "[%s] <font color='#00FF00'>%d</font>"
-local TEXT_DAMAGE = "<font color='%s'>%d %s</font>"
+local TEXT_DAMAGE = "<font color='%s'>%s %s</font>"
 local TEXT_INCOMING = "<font color='#FF0000'>[%s]</font> %s"
 
 local COLOR_CRIT = "#FFA500"
@@ -214,6 +215,18 @@ local function getDamageText (abilityName, info, isIncoming)
 
     local damageText = ""
     local realText = abilityName
+    local SHORTEN_LIMIT = 10000
+
+    local thisDamage = info.damage
+    local formattedDamage
+
+    if info.damage < 1000 then 
+        formattedDamage = string.format("%d", thisDamage)
+    elseif info.damage < SHORTEN_LIMIT then
+        formattedDamage = string.format("%.3f", thisDamage / 1000)
+    else
+        formattedDamage = string.format("%.0f", thisDamage / SHORTEN_LIMIT) .. "K"
+    end
 
     if info.hitCount or info.critCount then
         if info.hitCount > 0 and info.critCount > 0 then
@@ -226,21 +239,21 @@ local function getDamageText (abilityName, info, isIncoming)
     end
 
     if info.crit then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, info.damage, realText)        
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_CRIT, formattedDamage, realText)
     elseif info.type == "life" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_LIFE, formattedDamage, realText)
     elseif info.type == "death" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_DEATH, formattedDamage, realText)
     elseif info.type == "air" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_AIR, formattedDamage, realText)
     elseif info.type == "earth" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_EARTH, formattedDamage, realText)
     elseif info.type == "fire" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_FIRE, formattedDamage, realText)
     elseif info.type == "water" then
-        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, info.damage, realText)
-    elseif info.damage ~= nil then
-        damageText = stringFormat("%d %s", info.damage, realText)
+        damageText = stringFormat(TEXT_DAMAGE, COLOR_WATER, formattedDamage, realText)
+    elseif thisDamage ~= nil then
+        damageText = stringFormat("%s %s", formattedDamage, realText)
     end
 
     if info.damageAbsorbed then
