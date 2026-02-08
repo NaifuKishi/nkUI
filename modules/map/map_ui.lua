@@ -2,12 +2,12 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local map					= privateVars.map
-local mapEvents				= privateVars.mapEvents
-local data                  = privateVars.data
-local uiElements            = privateVars.uiElements
-local events               	= privateVars.events
-local lang        			= privateVars.langTexts
+local map			= privateVars.map
+local mapEvents		= privateVars.mapEvents
+local mapData       = privateVars.mapData
+local uiElements    = privateVars.uiElements
+local events        = privateVars.events
+local lang        	= privateVars.langTexts
 
 ---------- make global functions local ---------
 
@@ -32,7 +32,7 @@ local stringUpper			= string.upper
 local mathDeg				= math.deg
 local mathAtan2				= math.atan2
 
-data.borderDesigns = {
+mapData.borderDesigns = {
   blackSmall  = {DE = "Schwarz dünn", EN = "Black simple", RU = "Black simple", addon = "nkUI", path = "gfx/bgBlack.png", offset = 2},  
 } -- list of border designs for the map
 
@@ -58,13 +58,13 @@ function map.createMapUI ()
 	function mapUI:SetBackground(newBG)
 		if nkUISetup.modules.map.background == nil then return end
 
-		if data.borderDesigns.blackSmall.addon == nil then
+		if mapData.borderDesigns.blackSmall.addon == nil then
 			texture:SetVisible(false)
 		else
 			texture:SetVisible(true)    
-			texture:SetPoint("TOPLEFT", mapUI, "TOPLEFT", -data.borderDesigns.blackSmall.offset, -data.borderDesigns.blackSmall.offset)
-			texture:SetPoint("BOTTOMRIGHT", mapUI, "BOTTOMRIGHT", data.borderDesigns.blackSmall.offset, data.borderDesigns.blackSmall.offset)
-			texture:SetTextureAsync(data.borderDesigns.blackSmall.addon, data.borderDesigns.blackSmall.path)
+			texture:SetPoint("TOPLEFT", mapUI, "TOPLEFT", -mapData.borderDesigns.blackSmall.offset, -mapData.borderDesigns.blackSmall.offset)
+			texture:SetPoint("BOTTOMRIGHT", mapUI, "BOTTOMRIGHT", mapData.borderDesigns.blackSmall.offset, mapData.borderDesigns.blackSmall.offset)
+			texture:SetTextureAsync(mapData.borderDesigns.blackSmall.addon, mapData.borderDesigns.blackSmall.path)
 		end
 	end
 
@@ -116,7 +116,7 @@ function map.createMapUI ()
 			local fontsize = 20 * scale
 			if fontsize > 30 then fontsize = 30 end
 			zoneTitle:SetFontSize(fontsize)
-			zoneTitle:SetText(data.locationName)
+			zoneTitle:SetText(mapData.locationName)
 		end
 	end
 

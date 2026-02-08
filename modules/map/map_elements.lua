@@ -2,11 +2,11 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local map					= privateVars.map
-local mapEvents				= privateVars.mapEvents
-local data                  = privateVars.data
-local uiElements            = privateVars.uiElements
-local lang                  = privateVars.langTexts
+local map			= privateVars.map
+local mapEvents		= privateVars.mapEvents
+local mapData       = privateVars.mapData
+local uiElements    = privateVars.uiElements
+local lang          = privateVars.langTexts
 
 ---------- make global functions local ---------
 
@@ -20,20 +20,20 @@ local LibEKLUUID            = LibEKL.Tools.UUID
 local function _processRareData(id, counter, name, x, z, comment)
     local thisId = "rare-" .. id .. "-" .. counter
     local thisData = { id = thisId, type = "UNIT.RARE", descList = {name}, coordX = x, coordZ = z }
-    table.insert(thisData.descList, "Rare Mob")
-    if comment ~= "" then table.insert(thisData.descList, comment) end
+    table.insert(thismapData.descList, "Rare Mob")
+    if comment ~= "" then table.insert(thismapData.descList, comment) end
     uiElements.mapUI:AddElement(thisData)
-    data._rareData[thisId] = thisData
+    mapData._rareData[thisId] = thisData
 end
 
 local function _getRareDarData()
-    if data._zoneDetails == nil then return end
-    data._rareData = {}
+    if mapData._zoneDetails == nil then return end
+    mapData._rareData = {}
     for idx = 1, #RareDar.data, 1 do
-        if RareDar.data[idx].zone[LibEKLGetLanguage()] == data._zoneDetails.name then
+        if RareDar.data[idx].zone[LibEKLGetLanguage()] == mapData._zoneDetails.name then
             local mobs = RareDar.data[idx].mobs
             for idx2 = 1, #mobs, 1 do
-                if data.rareMobKilled[mobs[idx2].achv[LibEKLGetLanguage()]] ~= true then
+                if mapData.rareMobKilled[mobs[idx2].achv[LibEKLGetLanguage()]] ~= true then
                     local posList = mobs[idx2].pos
                     for idx3 = 1, #posList, 1 do
                         _processRareData(mobs[idx2].id, idx3, mobs[idx2].targ[LibEKLGetLanguage()], posList[idx3][1], posList[idx3][2], mobs[idx2].comment[LibEKLGetLanguage()])
@@ -45,12 +45,12 @@ local function _getRareDarData()
 end
 
 local function _getRareTrackerData()
-    local zoneData = Inspect.Addon.Detail('RareTracker').data.moblocs[data.lastZone]
+    local zoneData = Inspect.Addon.Detail('RareTracker').mapData.moblocs[mapData.lastZone]
     if zoneData == nil then return end
-    local mobs = zoneData.mobs
-    data._rareData = {}
+    local mobs = zonemapData.mobs
+    mapData._rareData = {}
     for idx = 1, #mobs, 1 do
-        if data.rareMobKilled[mobs[idx].n[LibEKLGetLanguageShort()]] ~= true then
+        if mapData.rareMobKilled[mobs[idx].n[LibEKLGetLanguageShort()]] ~= true then
             local posList = mobs[idx].loc
             for idx2 = 1, #posList, 1 do
                 _processRareData(mobs[idx].n[LibEKLGetLanguageShort()], idx2, mobs[idx].n[LibEKLGetLanguageShort()], posList[idx2].x, posList[idx2].z, "")
@@ -62,18 +62,18 @@ end
 ---------- addon internal function block ---------
 
 function map.ShowPOI(flag)
-    local lastPoi = LibMap.map.GetZonePOI(data.lastZone)
+    local lastPoi = LibMap.map.GetZonePOI(mapData.lastZone)
     if flag == true and nkAM_Loot ~= nil and LibEKL.Unit.GetGroupStatus() ~= 'single' then
-        local bossInfo = nkAM_Loot.getPOI(data.lastZone)
+        local bossInfo = nkAM_Loot.getPOI(mapData.lastZone)
         if bossInfo ~= nil then
-            if data.customPOIs[data.lastZone] == nil then data.customPOIs[data.lastZone] = {} end
+            if mapData.customPOIs[mapData.lastZone] == nil then mapData.customPOIs[mapData.lastZone] = {} end
             for k, v in pairs(bossInfo) do
-                data.customPOIs[data.lastZone][k] = v
+                mapData.customPOIs[mapData.lastZone][k] = v
             end
         end
     end
     
-    local customPoi = data.customPOIs[data.lastZone]
+    local customPoi = mapData.customPOIs[mapData.lastZone]
     if customPoi ~= nil then
         if lastPoi == nil then lastPoi = {} end
         for k, v in pairs(customPoi) do
@@ -104,21 +104,21 @@ function map.ShowRareMobs(flag)
         elseif Inspect.Addon.Detail('RareTracker') ~= nil then
             _getRareTrackerData()
         end
-    elseif data._rareData then
-        map.UpdateMap(data._rareData, "remove")
+    elseif mapData._rareData then
+        map.UpdateMap(mapData._rareData, "remove")
     end
 end
 
 function map.ShowGathering(flag)
 
-    if nkUIMapGathering.gatheringData[data.lastZone] == nil then return end
+    if nkUIMapGathering.gatheringData[mapData.lastZone] == nil then return end
 
     local action = "add"
     if flag == false then action = "remove" end
     
     local temp = {}
 
-    for k, v in pairs(nkUIMapGathering.gatheringData[data.lastZone]) do
+    for k, v in pairs(nkUIMapGathering.gatheringData[mapData.lastZone]) do
         table.insert(temp, {[k] = v})
     end
     
@@ -134,25 +134,25 @@ function map.ShowGathering(flag)
 end
 
 function map.ShowArtifacts(flag)
-    if nkUIMapGathering.artifactsData[data.lastZone] == nil then return end
+    if nkUIMapGathering.artifactsData[mapData.lastZone] == nil then return end
     if flag == true then
-        map.UpdateMap(nkUIMapGathering.artifactsData[data.lastZone], "add")
+        map.UpdateMap(nkUIMapGathering.artifactsData[mapData.lastZone], "add")
     else
-        map.UpdateMap(nkUIMapGathering.artifactsData[data.lastZone], "remove")
+        map.UpdateMap(nkUIMapGathering.artifactsData[mapData.lastZone], "remove")
     end
 end
 
 function map.UpdateWaypointArrows()
 
-    if uiElements.mapUI == nil or data.centerElement == nil then return end
+    if uiElements.mapUI == nil or mapData.centerElement == nil then return end
 
     local map = uiElements.mapUI:GetMap()
     local mapInfo = uiElements.mapUI:GetMapInfo()
-    local coordX, coordZ = uiElements.mapUI:GetElement(data.centerElement):GetCoord()
+    local coordX, coordZ = uiElements.mapUI:GetElement(mapData.centerElement):GetCoord()
     local mask = uiElements.mapUI:GetMask()
     local mapWidth, mapHeight = map:GetWidth(), map:GetHeight()
 
-    for key, details in pairs(data.waypoints) do
+    for key, details in pairs(mapData.waypoints) do
         if details.coordX >= mapInfo.x1 and details.coordX <= mapInfo.x2 and details.coordZ >= mapInfo.y1 and details.coordZ <= mapInfo.y2 then
             if details.gfx == nil then
                 --details.gfx = LibEKL.UICreateFrame("nkCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
@@ -283,9 +283,9 @@ function map.WaypointDialog()
     end
     
     local mouseData = InspectMouse()
-    uiElements.waypointDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouseData.x - uiElements.waypointDialog:GetWidth(), mouseData.y - uiElements.waypointDialog:GetHeight())
+    uiElements.waypointDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mousemapData.x - uiElements.waypointDialog:GetWidth(), mousemapData.y - uiElements.waypointDialog:GetHeight())
 end
 
 function map.ShowCustomPoints()
-    if nkUISetup.modules.map.userPOI[data.currentWorld] ~= nil then map.UpdateMap(nkUISetup.modules.map.userPOI[data.currentWorld], "add") end
+    if nkUISetup.modules.map.userPOI[mapData.currentWorld] ~= nil then map.UpdateMap(nkUISetup.modules.map.userPOI[mapData.currentWorld], "add") end
 end

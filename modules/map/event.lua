@@ -6,7 +6,7 @@ if not privateVars.mapEvents then privateVars.mapEvents = {} end
 
 local map           = privateVars.map
 local mapEvents     = privateVars.mapEvents
-local data          = privateVars.data
+local mapData       = privateVars.mapData
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local events        = privateVars.events
@@ -44,7 +44,7 @@ function mapEvents.processPlayerTarget(unitID, unitDetails)
 	local debugId
 	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "mapEvents.processPlayerTarget") end
 
-	data.playerTargetUID = unitID  
+	mapData.playerTargetUID = unitID  
 
 	local rel = "FRIENDLY"
 
@@ -62,9 +62,9 @@ function mapEvents.processPlayerTarget(unitID, unitDetails)
 	if rel == "HOSTILE" then
 		local bData = {add = {["e" .. unitID] = {id = "e" .. unitID, type = "UNIT.ENEMY", coordX = unitDetails.coordX, coordY = unitDetails.coordY, coordZ = unitDetails.coordZ, title = unitDetails.name }}}
 		events.broadcastTarget(bData)
-		data.playerHostileTargetUID = unitID
+		mapData.playerHostileTargetUID = unitID
 	else
-		data.playerHostileTargetUID = nil
+		mapData.playerHostileTargetUID = nil
 	end
 	
 	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "mapEvents.processPlayerTarget", debugId) end
@@ -77,25 +77,25 @@ function mapEvents.SystemUpdate ()
 
   local now = InspectTimeReal()
 
-	if data.forceUpdate ~= true then
-		if data.lastUpdate == nil then
-			data.lastUpdate = now
+	if mapData.forceUpdate ~= true then
+		if mapData.lastUpdate == nil then
+			mapData.lastUpdate = now
 			privateVars.forceUpdate = true
 		else
 			local tmpTime = now
-			--if LibEKLMathRound((tmpTime - data.lastUpdate), 1) > .5 then data.forceUpdate = true end
-      if now - data.lastUpdate > .5 then data.forceUpdate = true end
+			--if LibEKLMathRound((tmpTime - mapData.lastUpdate), 1) > .5 then mapData.forceUpdate = true end
+      if now - mapData.lastUpdate > .5 then mapData.forceUpdate = true end
 		end
 	end
 
-	if data.forceUpdate == true then
+	if mapData.forceUpdate == true then
 		
-		if data.postponedAdds ~= nil then
+		if mapData.postponedAdds ~= nil then
 			if LibQB.query.isInit() == true and LibQB.query.isPackageLoaded('poa') == true and LibQB.query.isPackageLoaded('nt') == true and LibQB.query.isPackageLoaded('classic') == true then
-				local temp = LibEKLTableCopy(data.postponedAdds)
-				data.postponedAdds = nil
+				local temp = LibEKLTableCopy(mapData.postponedAdds)
+				mapData.postponedAdds = nil
 				map.UpdateMap(temp, "add", "events.SystemUpdate")
-				data.lastUpdate = now -- diese Abfrage direkt nach data.forceUpdate platzieren wenn andere Funktionen aufgerufen werden
+				mapData.lastUpdate = now -- diese Abfrage direkt nach mapData.forceUpdate platzieren wenn andere Funktionen aufgerufen werden
 			end
 		end
 		
@@ -209,17 +209,17 @@ end
 
 function mapEvents.ShardChange (_, info)
 
-  if data.lastShard == nil then data.lastShard = info end
+  if mapData.lastShard == nil then mapData.lastShard = info end
 
   if uiElements.mapUI == nil then return end
-  if data.lastShard == info then return end
+  if mapData.lastShard == info then return end
   
-  data.lastShard = info
+  mapData.lastShard = info
 
   local points, units = LibMapMapGetAll()
   map.UpdateMap(points, "remove")
   
-  map.SetZone (data.lastZone)  
+  map.SetZone (mapData.lastZone)  
   
   local details = InspectUnitDetail('player')
 
@@ -272,7 +272,7 @@ function mapEvents.UnitCastBar (_, info)
   if info[LibEKL.Unit.GetPlayerID()] then
     local details = InspectUnitCastbar(LibEKL.Unit.GetPlayerID())
     if details and details.abilityNew == "A0000002B72E024A4" then
-      data.collectStart = InspectTimeReal()
+      mapData.collectStart = InspectTimeReal()
     end
   end
 
@@ -287,16 +287,16 @@ function mapEvents.UnitChange (_, unitID, unitType)
   
   if unitType == "player.target" then
   
-    if data.playerTargetUID ~= nil then map.UpdateMap ({["t" .. data.playerTargetUID] = false, ["npc" .. data.playerTargetUID] = false}, "remove") end
+    if mapData.playerTargetUID ~= nil then map.UpdateMap ({["t" .. mapData.playerTargetUID] = false, ["npc" .. mapData.playerTargetUID] = false}, "remove") end
       
-    if data.playerHostileTargetUID ~= nil then
-      local bData = {remove = {["e" .. data.playerHostileTargetUID] = false }}
+    if mapData.playerHostileTargetUID ~= nil then
+      local bData = {remove = {["e" .. mapData.playerHostileTargetUID] = false }}
       events.broadcastTarget(bData)
     end
   
     if unitID == false then
-      data.playerHostileTargetUID = nil
-      data.playerTargetUID = nil
+      mapData.playerHostileTargetUID = nil
+      mapData.playerTargetUID = nil
     else
       local unitDetails = InspectUnitDetail(unitID)
       mapEvents.processPlayerTarget(unitID, unitDetails)
@@ -334,13 +334,13 @@ function mapEvents.GroupStatus (_, status)
 	local debugId
 	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.GroupStatus") end
 
-	if data.lastGroupStatus ~= status then
+	if mapData.lastGroupStatus ~= status then
 
 		local removes = {}
 		local hasRemoves = false
 
 		if status ~= "group" and status ~= "raid" then
-			for k, v in pairs(data.waypoints) do
+			for k, v in pairs(mapData.waypoints) do
 				if v.player ~= true then
 					removes[k] = v
 					hasRemoves = true
@@ -349,7 +349,7 @@ function mapEvents.GroupStatus (_, status)
 		end
 
 		if hasRemoves then map.UpdateMap(removes, "waypoint-remove") end
-		data.lastGroupStatus = status
+		mapData.lastGroupStatus = status
 	end
 
 	if nkUISetup.modules.map.syncTarget ~= true then 
@@ -357,7 +357,7 @@ function mapEvents.GroupStatus (_, status)
 		return 
 	end
 	
-	if data.playerHostileTargetUID == nil then
+	if mapData.playerHostileTargetUID == nil then
 		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
 		return
 	end
@@ -367,7 +367,7 @@ function mapEvents.GroupStatus (_, status)
 		return
 	end
 
-	local details = InspectUnitDetail(data.playerHostileTargetUID)
+	local details = InspectUnitDetail(mapData.playerHostileTargetUID)
 	if details == nil then 
 		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
 		return 
@@ -386,23 +386,23 @@ function mapEvents.achievementUpdate (_, info)
   local refreshNeeded = false
   
   for id, _ in pairs(info) do
-    if LibEKLTableIsMember(data.rareMobAchievements, id) == true then
+    if LibEKLTableIsMember(mapData.rareMobAchievements, id) == true then
       
-      for idx = 1, #data.rareMobAchievements, 1 do
-        achievement = InspectAchievementDetail(data.rareMobAchievements[idx])
+      for idx = 1, #mapData.rareMobAchievements, 1 do
+        achievement = InspectAchievementDetail(mapData.rareMobAchievements[idx])
         
         if achievement ~= nil then
         
           for requirement, details in pairs(achievement.requirement) do
             if details.complete == true then
-              if data.rareMobKilled[details.name] == false then
-                data.rareMobKilled[details.name] = true
+              if mapData.rareMobKilled[details.name] == false then
+                mapData.rareMobKilled[details.name] = true
                 refreshNeeded = true
               else
-                data.rareMobKilled[details.name] = true
+                mapData.rareMobKilled[details.name] = true
               end
             else
-              data.rareMobKilled[details.name] = false
+              mapData.rareMobKilled[details.name] = false
             end
           end
         end
@@ -427,7 +427,7 @@ function mapEvents.UpdateLocation (_, info)
     
   if info[playerID] == nil or info[playerID] == false then return end   
     
-  data.locationName = info[playerID]
+  mapData.locationName = info[playerID]
   uiElements.mapUI:SetZoneTitle(nkUISetup.modules.map.showZoneTitle)
     
 end

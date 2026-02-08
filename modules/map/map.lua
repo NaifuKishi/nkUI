@@ -4,11 +4,12 @@ local addonInfo, privateVars = ...
 
 if not privateVars.map then privateVars.map = {} end
 if not privateVars.mapEvents then privateVars.mapEvents = {} end
+if not privateVars.mapData then privateVars.mapData = {} end
 
 local map           = privateVars.map
 local mapEvents     = privateVars.mapEvents
 local internalFunc  = privateVars.internalFunc
-local data          = privateVars.data
+local mapData       = privateVars.mapData
 local uiElements    = privateVars.uiElements
 local events        = privateVars.events
 
@@ -20,15 +21,15 @@ local _oInspectTimeReal = Inspect.Time.Real
 
 ---------- init variables ---------
 
-data.playerTargetUID      = nil -- id of the player's target
-data.lastZone             = nil -- id of the current zone e.g. the last zone entered
-data.currentWorld         = nil -- id of the current map world
-data.centerElement        = nil -- id of the element which is the center of the map (normally the player icon)
-data.waypoints            = {}  -- list of the currently known and displayed waypoints
-data.collectStart         = nil -- time the last time the player started interacting with a world element (mostly collecting something)
-data.rareMobKilled        = {}  -- list of killed raremobs
+mapData.playerTargetUID      = nil -- id of the player's target
+mapData.lastZone             = nil -- id of the current zone e.g. the last zone entered
+mapData.currentWorld         = nil -- id of the current map world
+mapData.centerElement        = nil -- id of the element which is the center of the map (normally the player icon)
+mapData.waypoints            = {}  -- list of the currently known and displayed waypoints
+mapData.collectStart         = nil -- time the last time the player started interacting with a world element (mostly collecting something)
+mapData.rareMobKilled        = {}  -- list of killed raremobs
 
-data.rareMobAchievements  =  {"c5C766AF68015CB70", -- classic
+mapData.rareMobAchievements  =  {"c5C766AF68015CB70", -- classic
                               "c5057BAEBDEA774CE", -- ember isle
                               "c128FB25EE807902B", -- storm legion
                               "c7443CBB86FC99D5E"  -- nightmare tidde
@@ -59,26 +60,26 @@ function internalFunc.mapInit()
 
   --RESOURCE.ARTIFACT
   
-  for key, design in pairs(data.resourceData) do
+  for key, design in pairs(mapData.resourceData) do
     local ressourceEntries = LibMap.map.GetMapElementbyType (key)
     for key2, details in pairs (ressourceEntries) do
       LibMap.map.replaceMapElement ("TRACK" .. stringMatch (key2, "RESOURCE(.+)"), design)
     end		
   end
 	
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.NORMAL", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.TWISTED", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.UNSTABLE", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.FAEYULE", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.OTHER", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.BOAT", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.POISON", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.BURNING", data.resourceData['RESOURCE.ARTIFACT'])
-  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.NIGHTMARE", data.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.NORMAL", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.TWISTED", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.UNSTABLE", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.FAEYULE", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.OTHER", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.BOAT", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.POISON", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.BURNING", mapData.resourceData['RESOURCE.ARTIFACT'])
+  LibMap.map.replaceMapElement ("TRACK.ARTIFACT.NIGHTMARE", mapData.resourceData['RESOURCE.ARTIFACT'])
     
   -- add custom elements
     
-  for key, data in pairs (data.customElements) do
+  for key, data in pairs (mapData.customElements) do
     LibMap.map.addMapElement (key, data)
   end
     
@@ -90,8 +91,8 @@ function internalFunc.mapInit()
   LibMap.map.init(true)
   LibMap.map.zoneInit(true)
   
-  for idx = 1, #data.rareMobAchievements, 1 do
-    mapEvents.achievementUpdate (_, { [data.rareMobAchievements[idx]] = true })
+  for idx = 1, #mapData.rareMobAchievements, 1 do
+    mapEvents.achievementUpdate (_, { [mapData.rareMobAchievements[idx]] = true })
   end
   
 	Command.Event.Attach(Event.System.Update.Begin, mapEvents.SystemUpdate, "nkUI.System.Update.Begin")	
@@ -111,9 +112,9 @@ function internalFunc.mapInit()
   Command.Event.Attach(LibMap.events["LibMap.map"].shard, function (_, mapInfo) mapEvents.ShardChange (_, mapInfo) end, "nkUI.LibMap.map.shard")
     
   Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].Update, function (_, thisData)
-    if data.collectStart and Inspect.Time.Real() - data.collectStart < 2 then        
+    if mapData.collectStart and Inspect.Time.Real() - mapData.collectStart < 2 then        
       map.CollectArtifact(thisData)
-      data.collectStart = nil
+      mapData.collectStart = nil
     end      
   end, "nkUI.LibEKL.InventoryManager.Update")
        

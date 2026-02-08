@@ -2,11 +2,11 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local map					= privateVars.map
-local mapEvents				= privateVars.mapEvents
-local data                  = privateVars.data
-local uiElements            = privateVars.uiElements
-local lang                  = privateVars.langTexts
+local map			= privateVars.map
+local mapEvents		= privateVars.mapEvents
+local mapData       = privateVars.mapData
+local uiElements    = privateVars.uiElements
+local lang          = privateVars.langTexts
 
 ---------- make global functions local ---------
 
@@ -16,7 +16,7 @@ local InspectItemDetail 	= Inspect.Item.Detail
 ---------- local function block ---------
 
 function map.CollectArtifact(itemData)
-    if nkUIMapGathering.artifactsData[data.lastZone] == nil then nkUIMapGathering.artifactsData[data.lastZone] = {} end
+    if nkUIMapGathering.artifactsData[mapData.lastZone] == nil then nkUIMapGathering.artifactsData[mapData.lastZone] = {} end
     
     local unitDetails = InspectUnitDetail('player') 
     local coordRangeX = {unitDetails.coordX-2, unitDetails.coordX+2}
@@ -30,7 +30,7 @@ function map.CollectArtifact(itemData)
             local type = "TRACK.ARTIFACT." .. artifactType
             
             local knownPos = false
-            for _, info in pairs(nkUIMapGathering.artifactsData[data.lastZone]) do
+            for _, info in pairs(nkUIMapGathering.artifactsData[mapData.lastZone]) do
                 if info.coordX >= coordRangeX[1] and info.coordX <= coordRangeX[2] and
                    info.coordZ >= coordRangeZ[1] and info.coordZ <= coordRangeZ[2] then
                     knownPos = true
@@ -47,7 +47,7 @@ function map.CollectArtifact(itemData)
                     coordY = unitDetails.coordY, 
                     coordZ = unitDetails.coordZ 
                 }
-                nkUIMapGathering.artifactsData[data.lastZone][thisData.id] = thisData
+                nkUIMapGathering.artifactsData[mapData.lastZone][thismapData.id] = thisData
             end
         end
     end

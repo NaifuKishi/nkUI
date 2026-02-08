@@ -2,10 +2,10 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local map					= privateVars.map
-local mapEvents				= privateVars.mapEvents
-local data                  = privateVars.data
-local uiElements            = privateVars.uiElements
+local map			= privateVars.map
+local mapEvents		= privateVars.mapEvents
+local mapData       = privateVars.mapData
+local uiElements    = privateVars.uiElements
 
 ---------- addon internal function block ---------
 
@@ -14,23 +14,23 @@ function map.ShowQuest(flag)
     if flag == true and nkUISetup.modules.map.showQuest == true then
         map.GetQuests()
     else
-        if data.currentQuestList ~= nil then
-            for questId, mappoints in pairs(data.currentQuestList) do
+        if mapData.currentQuestList ~= nil then
+            for questId, mappoints in pairs(mapData.currentQuestList) do
                 map.UpdateMap(mappoints, "remove")
             end
         end
         
-        map.UpdateMap(data.minimapQuestList, "remove")
+        map.UpdateMap(mapData.minimapQuestList, "remove")
         
-        if data.missingQuestList ~= nil then
-            for questId, mappoints in pairs(data.missingQuestList) do
+        if mapData.missingQuestList ~= nil then
+            for questId, mappoints in pairs(mapData.missingQuestList) do
                 map.UpdateMap(mappoints, "remove")
             end
         end
         
-        data.currentQuestList = {}
-        data.minimapQuestList = {}
-        data.minimapIdToQuest = {}
-        data.missingQuestList = {}
+        mapData.currentQuestList = {}
+        mapData.minimapQuestList = {}
+        mapData.minimapIdToQuest = {}
+        mapData.missingQuestList = {}
     end
 end

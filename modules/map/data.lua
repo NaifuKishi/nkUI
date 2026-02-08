@@ -2,7 +2,7 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local data        = privateVars.data
+local mapData        = privateVars.mapData
 
 local _roundPath = {	{xProportional = 0.5, yProportional = 0}, 
                       {xProportional = 1, yProportional = 0.5, xControlProportional = (61/64), yControlProportional = (3/64)},
@@ -12,7 +12,7 @@ local _roundPath = {	{xProportional = 0.5, yProportional = 0},
 
 ---------- resource data information ---------
 
-data.resourceData = {
+mapData.resourceData = {
 	["RESOURCE.ORE"]		= { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.9, g = 0.78, b = 0.26, a = 0.3}, width = 16, height = 16, layer = 2},
 	["RESOURCE.WOOD"]		= { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.2, g = 0.11, b = 0.06, a = 0.5}, width = 16, height = 16, layer = 2},
 	["RESOURCE.PLANTS"]		= { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.49, g = 0.78, b = 0.51, a = 0.3}, width = 16, height = 16, layer = 2},	
@@ -21,7 +21,7 @@ data.resourceData = {
   ["RESOURCE.ARTIFACT"] = {addon = "LibMap", path = "gfx/mapIcons/iconArtifact.png", width = 24, height = 24, layer = 2},
 }
 
-data.customElements = {
+mapData.customElements = {
   ["POI.PUZZLE"]      = {addon = "LibMap", path = "gfx/mapIcons/iconPuzzle.png", width = 32, height = 32, minZoom = 1, layer = 81},
   ["POI.CAIRN"]       = {addon = "LibMap", path = "gfx/mapIcons/iconCairn.png", width = 48, height = 48, minZoom = 1, layer = 81},
 
@@ -29,7 +29,7 @@ data.customElements = {
   
 }
 
-data.customPOIs = {
+mapData.customPOIs = {
   z3DBE218325519634 = { ["z3DBE218325519634cpoi1"] = { coordX = 5870, coordZ = 6219, DE = "Nach Trost suchen", EN = "Seeking Solace", type = "POI.ACHIEVEMENT" },
                         ["z3DBE218325519634cpoi2"] = { coordX = 5560, coordZ = 6230, DE = "Nach Trost suchen", EN = "Seeking Solace", type = "POI.ACHIEVEMENT" },
                         ["z3DBE218325519634cpoi3"] = { coordX = 5461, coordZ = 6006, DE = "Nach Trost suchen", EN = "Seeking Solace", type = "POI.ACHIEVEMENT" },

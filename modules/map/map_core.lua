@@ -2,13 +2,13 @@ local addonInfo, privateVars = ...
 
 ---------- init namespace ---------
 
-local map					= privateVars.map
-local mapEvents				= privateVars.mapEvents
-local data                  = privateVars.data
-local uiElements            = privateVars.uiElements
-local events               	= privateVars.events
-local lang        			= privateVars.langTexts
-local internalFunc			= privateVars.internalFunc
+local map			= privateVars.map
+local mapEvents		= privateVars.mapEvents
+local mapData       = privateVars.mapData
+local uiElements    = privateVars.uiElements
+local events        = privateVars.events
+local lang        	= privateVars.langTexts
+local internalFunc	= privateVars.internalFunc
 
 ---------- init local variables ---------
 
@@ -78,14 +78,14 @@ function map.initMap ()
 
 	Command.Event.Attach(Event.System.Update.Begin, function ()
       
-      if data.delayStart ~= nil then
+      if mapData.delayStart ~= nil then
           local tmpTime = InspectTimeReal()
-          if LibEKL.Tools.Math.Round((tmpTime - data.delayStart), 1) > 1 then 
+          if LibEKL.Tools.Math.Round((tmpTime - mapData.delayStart), 1) > 1 then 
             uiElements.mapUI:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.map.x, nkUISetup.modules.map.y)
             Command.Event.Detach(Event.System.Update.Begin, nil, "nkUI.map.resetPosition")	
           end
       else
-        data.delayStart = InspectTimeReal()
+        mapData.delayStart = InspectTimeReal()
       end
       
     end, "nkUI.map.resetPosition")			
@@ -108,9 +108,9 @@ function map.SetZone (newZoneID)
 	local newWorld = LibMap.map.getZoneWorld(newZoneID)
 	local isNewWorld = false
 
-	if newWorld ~= data.currentWorld then isNewWorld = true end
+	if newWorld ~= mapData.currentWorld then isNewWorld = true end
 
-	if data.lastZone ~= nil then 
+	if mapData.lastZone ~= nil then 
 		map.ShowPOI(false)
 		map.ShowRareMobs(false)
 		if isNewWorld then map.ShowQuest(false) end
@@ -118,18 +118,18 @@ function map.SetZone (newZoneID)
 		if nkUISetup.modules.map.trackArtifacts == true then map.ShowArtifacts(false) end
 	end
 
-	data.currentWorld = newWorld
+	mapData.currentWorld = newWorld
 
-	if data.currentWorld == nil then
+	if mapData.currentWorld == nil then
 		LibEKL.Tools.Error.Display ("nkUI.map", "zone " .. newZoneID .. " not found", 2)
-		data.currentWorld = "unknown"
+		mapData.currentWorld = "unknown"
 		--return
 	end
 
-	uiElements.mapUI:SetMap("world", data.currentWorld)
+	uiElements.mapUI:SetMap("world", mapData.currentWorld)
 
 	local details = LibEKL.Unit.GetPlayerDetails()
-	data.locationName = details.locationName
+	mapData.locationName = details.locationName
 	uiElements.mapUI:SetCoord(details.coordX, details.coordZ)	
 	uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)	
 
@@ -138,7 +138,7 @@ function map.SetZone (newZoneID)
 
 	if InspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
 
-	data.lastZone = newZoneID
+	mapData.lastZone = newZoneID
 	map.ShowPOI(true)  
 	map.ShowCustomPoints()
 	map.ShowRareMobs(true)
@@ -170,22 +170,22 @@ end
 
 local function _trackGathering(details)
 
-    if nkUIMapGathering.gatheringData[data.lastZone] == nil then nkUIMapGathering.gatheringData[data.lastZone] = {} end
-    if nkUIMapGathering.artifactsData[data.lastZone] == nil then nkUIMapGathering.artifactsData[data.lastZone] = {} end
+    if nkUIMapGathering.gatheringData[mapData.lastZone] == nil then nkUIMapGathering.gatheringData[mapData.lastZone] = {} end
+    if nkUIMapGathering.artifactsData[mapData.lastZone] == nil then nkUIMapGathering.artifactsData[mapData.lastZone] = {} end
     
-    for key, data in pairs(nkUIMapGathering.gatheringData[data.lastZone]) do
-        if data.coordX == details.coordX and data.coordZ == details.coordZ then return end
+    for key, data in pairs(nkUIMapGathering.gatheringData[mapData.lastZone]) do
+        if mapData.coordX == details.coordX and mapData.coordZ == details.coordZ then return end
     end
 
     local thisData = LibEKLTableCopy(details)
-    thisData.type = "TRACK" .. string.match(thisData.type, "RESOURCE(.+)")
+    thismapData.type = "TRACK" .. string.match(thismapData.type, "RESOURCE(.+)")
     local thisType = string.match(details.type, "RESOURCE%.(.+)") or string.match(details.type, "RESOURCE%.(.+)%.")
-    thisData.id = thisType .. "-" .. LibEKLUUID()
+    thismapData.id = thisType .. "-" .. LibEKLUUID()
 
     if thisType == "ARTIFACT" then
-        nkUIMapGathering.artifactsData[data.lastZone][thisData.id] = thisData
+        nkUIMapGathering.artifactsData[mapData.lastZone][thismapData.id] = thisData
     else
-        nkUIMapGathering.gatheringData[data.lastZone][thisData.id] = thisData
+        nkUIMapGathering.gatheringData[mapData.lastZone][thismapData.id] = thisData
     end
 end
 
@@ -209,12 +209,12 @@ local function mapAdd (key, details)
 		local thisType = RESOURCE_TYPE_MAP[details.type] or stringMatch(details.type, "RESOURCE%.(.+)")
 		if thisType and nkUISetup.modules.map.trackGathering == true then _trackGathering(details, thisType) end
 	elseif details.type == "UNKNOWN" then
-		if data.postponedAdds == nil then data.postponedAdds = {} end
+		if mapData.postponedAdds == nil then mapData.postponedAdds = {} end
 		if LibQB.query.isInit() == false or LibQB.query.isPackageLoaded('poa') == false or LibQB.query.isPackageLoaded('nt') == false or LibQB.query.isPackageLoaded('classic') == false then
-			data.postponedAdds[key] = details
+			mapData.postponedAdds[key] = details
 		else
 			if InspectSystemWatchdog() < 0.1 then
-				data.postponedAdds[key] = details
+				mapData.postponedAdds[key] = details
 			else
 				if map.IsKnownMinimapQuest (details.id) == false then
 					if nkUISetup.modules.map.showUnknown == true then
@@ -222,7 +222,7 @@ local function mapAdd (key, details)
 						if not retValue then uiElements.mapUI:AddElement(details) end
 					end
 				else
-					uiElements.mapUI:AddElement(data.minimapIdToQuest[details.id])
+					uiElements.mapUI:AddElement(mapData.minimapIdToQuest[details.id])
 				end
 			end
 		end
@@ -256,8 +256,8 @@ local function mapWaypointAdd (key, details)
 
 	local unitDetails = InspectUnitDetail(key)
 	uiElements.mapUI:AddElement({ id = "wp-" .. key, type = "WAYPOINT", descList = { unitDetails.name }, coordX = details.coordX, coordZ = details.coordZ })
-	data.waypoints[key] = { coordX = details.coordX, coordZ = details.coordZ }
-	if key == LibEKL.Unit.GetPlayerID() then data.waypoints[key].player = true end
+	mapData.waypoints[key] = { coordX = details.coordX, coordZ = details.coordZ }
+	if key == LibEKL.Unit.GetPlayerID() then mapData.waypoints[key].player = true end
 	map.UpdateWaypointArrows ()  
 
 end
@@ -265,11 +265,11 @@ end
 local function mapWaypointRemove (key)
 
 	uiElements.mapUI:RemoveElement( "wp-" .. key)
-	if data.waypoints[key] ~= nil and data.waypoints[key].gfx ~= nil then 
-		--data.waypoints[key].gfx:destroy()
-		LibMap.ElementManager.ReturnElement("nkMapElementCanvas", data.waypoints[key].gfx)
+	if mapData.waypoints[key] ~= nil and mapData.waypoints[key].gfx ~= nil then 
+		--mapData.waypoints[key].gfx:destroy()
+		LibMap.ElementManager.ReturnElement("nkMapElementCanvas", mapData.waypoints[key].gfx)
 	end
-	data.waypoints[key] = nil
+	mapData.waypoints[key] = nil
 	map.UpdateWaypointArrows ()
 
 end
@@ -281,8 +281,8 @@ local function mapWaypointChange(key, details, debugSource)
 			nkDebug.logEntry (addonInfo.identifier, "map.UpdateMap waypoint-change", "failed " .. debugSource, { id =  "wp-" .. key, coordX = details.coordX, coordZ = details.coordZ })
 		end
 	end
-	data.waypoints[key].coordX = details.coordX
-	data.waypoints[key].coordZ = details.coordZ
+	mapData.waypoints[key].coordX = details.coordX
+	mapData.waypoints[key].coordZ = details.coordZ
 	map.UpdateWaypointArrows ()
 
 end
@@ -328,7 +328,7 @@ local function unitAdd (key, details)
 		details.type = "UNIT.PLAYER"
 		details.title = unitDetails.name
 		details.angle = 0         
-		data.centerElement = key
+		mapData.centerElement = key
 		uiElements.mapUI:AddElement(details)
 
 	elseif details.type == "player.pet" then
@@ -362,7 +362,7 @@ local function unitChange(key, details)
 		details.angle = -angle
 	end
 
-	if key == data.playerTargetUID then
+	if key == mapData.playerTargetUID then
 		details.id = "npc" .. key
 		if uiElements.mapUI:ChangeElement(details) == false then
 			if nkDebug then
@@ -396,7 +396,7 @@ local function unitChange(key, details)
 		map.UpdateWaypointArrows ()
 	end
 
-	if key == data.playerHostileTargetUID then
+	if key == mapData.playerHostileTargetUID then
 		details.id = "e" .. key
 		local bData = {change = {["e" .. key] = details}}
 		events.broadcastTarget(bData)
@@ -407,7 +407,7 @@ end
 local function unitRemove (key)
 
 	uiElements.mapUI:RemoveElement(key)
-	if key == data.centerElement then data.centerElement = nil end
+	if key == mapData.centerElement then mapData.centerElement = nil end
 
 end
 

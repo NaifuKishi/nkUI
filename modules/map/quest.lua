@@ -4,17 +4,17 @@ local addonInfo, privateVars = ...
 
 local map			= privateVars.map
 local mapEvents		= privateVars.mapEvents
-local data        	= privateVars.data
+local mapData       = privateVars.mapData
 local uiElements  	= privateVars.uiElements
 local events     	= privateVars.events
 local langTexts     = privateVars.langTexts
 
 ---------- init variables ---------
 
-data.minimapQuestList    = {}  -- map element list of quests identified through minimap unknown entries
-data.minimapIdToQuest    = {}  -- maps the amp element id to the quest id
-data.currentQuestList    = {}  -- map element list of current quests
-data.missingQuestList    = {}  -- map element list of missing quests
+mapData.minimapQuestList    = {}  -- map element list of quests identified through minimap unknown entries
+mapData.minimapIdToQuest    = {}  -- maps the amp element id to the quest id
+mapData.currentQuestList    = {}  -- map element list of current quests
+mapData.missingQuestList    = {}  -- map element list of missing quests
 
 ---------- init local variables ---------
 
@@ -63,7 +63,7 @@ local function isCurrentWorld (details)
 
 	-- maybe at some point find a solution for categoryName = "Profession"
 
-	if data.currentWorld == nil then return false end
+	if mapData.currentWorld == nil then return false end
 	
 	if details.categoryName ~= nil then				
 		local zoneId, zoneDetails = LibMapMapGetZoneByName(details.categoryName)
@@ -75,7 +75,7 @@ local function isCurrentWorld (details)
 			--print (zoneDetails.map)
 		end
 		
-		if zoneDetails ~= nil and zoneDetails.map == data.currentWorld then return true end
+		if zoneDetails ~= nil and zoneDetails.map == mapData.currentWorld then return true end
 	end  
 
 	if details.tag ~= nil then
@@ -83,10 +83,10 @@ local function isCurrentWorld (details)
 		if LibMapTableIsMember(tagList, "daily") or LibMapTableIsMember(tagList, "weekly") or LibMapTableIsMember(tagList, "monthly") then
 			local lvl, dbQuests = questQueryByKey(details.id)
 			if lvl == nil then return false end
-			if lvl <= 50 and data.currentWorld == "world1" then return true end
-			if lvl <= 60 and data.currentWorld == "world2" then return true end  
-			if lvl <= 65 and data.currentWorld == "world3" then return true end
-			if lvl <= 70 and data.currentWorld == "world4" then return true end
+			if lvl <= 50 and mapData.currentWorld == "world1" then return true end
+			if lvl <= 60 and mapData.currentWorld == "world2" then return true end  
+			if lvl <= 65 and mapData.currentWorld == "world3" then return true end
+			if lvl <= 70 and mapData.currentWorld == "world4" then return true end
 		end
 	end
 
@@ -147,7 +147,7 @@ local function processObjectives (key, questName, domain, objectiveList, isCompl
 
 						if nkDebug then nkDebug.logEntry (addonInfo.identifier, stringFormat("processObjectives 3-%d", idx2), questName, thisEntry) end
 
-						data.currentQuestList[key][id] = true
+						mapData.currentQuestList[key][id] = true
 						addInfo[id] = thisEntry
 						hasAdd = true
 
@@ -188,14 +188,14 @@ local function processQuests (questList, addFlag)
 			
 				-- check if quest was identified through the minimap unknown entries
 				
-				if data.minimapQuestList[key] ~= nil then
-					uiElements.mapUI:RemoveElement(data.minimapQuestList[key].id)
+				if mapData.minimapQuestList[key] ~= nil then
+					uiElements.mapUI:RemoveElement(mapData.minimapQuestList[key].id)
 				end
 
 				-- check if quest is part of the missing quest list (in case of accepting a new quest)
 
-				if data.missingQuestList[key] ~= nil then
-					for _, details in pairs (data.missingQuestList[key]) do removeInfo[details.id] = true end
+				if mapData.missingQuestList[key] ~= nil then
+					for _, details in pairs (mapData.missingQuestList[key]) do removeInfo[details.id] = true end
 					hasRemove = true
 				end
 					
@@ -204,12 +204,12 @@ local function processQuests (questList, addFlag)
 				local objectives = details.objective
 				local incompleteCount = 0
 				
-				if data.currentQuestList[key] ~= nil then 
-					for key, _ in pairs(data.currentQuestList[key]) do removeInfo[key] = true end
+				if mapData.currentQuestList[key] ~= nil then 
+					for key, _ in pairs(mapData.currentQuestList[key]) do removeInfo[key] = true end
 					hasRemove = true
 				end
 				
-				data.currentQuestList[key] = {}
+				mapData.currentQuestList[key] = {}
 
 				hasAdd, addInfo = processObjectives (key, details.name, details.domain, objectives, details.complete, hasAdd, addInfo)
 			end -- if
@@ -231,7 +231,7 @@ local function isQuestComplete(questId)
   local abbrev = stringFormat("%sxxxxxxxx", stringSub(questId, 1, 8))
   if completedList[abbrev] ~= nil then return true end
   
-  data.minimapQuestList[questId] = nil 
+  mapData.minimapQuestList[questId] = nil 
         
   return false
 
@@ -260,13 +260,13 @@ local function processMissingZoneQuests (questList)
 							if libDetails.type ~= nil and LibMapTableGetTablePos(libDetails.type, 3) ~= -1 then qType = "QUEST.DAILY" end
 
 							local thisEntry = { id = id, type = qType, descList = { details.summary }, title = details.name, coordX = npc.x, coordY = npc.y, coordZ = npc.z }
-							data.missingQuestList[key] = {}
-							table.insert(data.missingQuestList[key], thisEntry)
+							mapData.missingQuestList[key] = {}
+							table.insert(mapData.missingQuestList[key], thisEntry)
 
 							-- only add to map if not current quest
-							-- still need it in data.missingQuestList for abandon
+							-- still need it in mapData.missingQuestList for abandon
 
-							if data.currentQuestList[key] == nil then uiElements.mapUI:AddElement(thisEntry) end
+							if mapData.currentQuestList[key] == nil then uiElements.mapUI:AddElement(thisEntry) end
 
 						end -- for detailsList
 					end 
@@ -290,7 +290,7 @@ local function findMissingRun ()
     end
   end
   
-  local list = questGetQuestsByZone(data.lastZone)
+  local list = questGetQuestsByZone(mapData.lastZone)
   if list == nil or #list == 0 then return end -- not quests in this zone
   
   local questList = {}
@@ -354,26 +354,26 @@ local function checkUnknown(npcName, thisData)
 
 					_unknownIdentified[npcName] = questInfo.id
 					if questInfo.tag ~= nil and stringFind(questInfo.tag, "pvp daily") ~= nil then
-						thisData.type = "QUEST.PVPDAILY"
+						thismapData.type = "QUEST.PVPDAILY"
 					elseif questInfo.tag ~= nil and (stringFind(questInfo.tag, "daily") ~= nil or stringFind(questInfo.tag, "weekly") ~= nil) then
-						thisData.type = "QUEST.DAILY"
+						thismapData.type = "QUEST.DAILY"
 					else
-						thisData.type = "QUEST.START"
+						thismapData.type = "QUEST.START"
 					end
 
-					thisData.title = questInfo.name
+					thismapData.title = questInfo.name
 
 					local tempDesc = questInfo.summary or questInfo.description
-					if tempDesc ~= nil then thisData.descList = LibMapStringsSplit(tempDesc, "\n") end
+					if tempDesc ~= nil then thismapData.descList = LibMapStringsSplit(tempDesc, "\n") end
 
-					thisData.name = questInfo.name
+					thismapData.name = questInfo.name
 
 					uiElements.mapUI:AddElement(thisData)
-					data.minimapQuestList[questInfo.id] = thisData
-					data.minimapIdToQuest[thisData.id] = id
+					mapData.minimapQuestList[questInfo.id] = thisData
+					mapData.minimapIdToQuest[thismapData.id] = id
 
-					if data.missingQuestList[id] ~= nil then
-						for id, details in pairs(data.missingQuestList[id]) do
+					if mapData.missingQuestList[id] ~= nil then
+						for id, details in pairs(mapData.missingQuestList[id]) do
 							uiElements.mapUI:RemoveElement({[id] = true})
 						end
 					end
@@ -410,25 +410,25 @@ function mapEvents.QuestAbandon (_, updateData)
   
   for key, details in pairs(updateData) do
   
-    if data.currentQuestList[key] ~= nil then
+    if mapData.currentQuestList[key] ~= nil then
     
-      for id, _ in pairs(data.currentQuestList[key]) do
+      for id, _ in pairs(mapData.currentQuestList[key]) do
         removeInfo[id] = true
         hasRemove = true
       end
       
-      data.currentQuestList[key] = nil
+      mapData.currentQuestList[key] = nil
       
       -- minimap info wiederherstellen falls verfügbar
       
-      if data.minimapQuestList[key] ~= nil then
-        addInfo[key], hasAdd = data.minimapQuestList[key], true
+      if mapData.minimapQuestList[key] ~= nil then
+        addInfo[key], hasAdd = mapData.minimapQuestList[key], true
       end
 
       -- missing info wiederherstellen falls verfügbar 
       
-      if data.missingQuestList[key] ~= nil then
-        for id, details in pairs(data.missingQuestList[key]) do
+      if mapData.missingQuestList[key] ~= nil then
+        for id, details in pairs(mapData.missingQuestList[key]) do
           addInfo[id], hasAdd = details, true
         end
       end
@@ -447,18 +447,18 @@ function mapEvents.QuestComplete (_, updateData)
   local hasRemove = false
   
   for key, details in pairs(updateData) do
-    if data.currentQuestList[key] ~= nil then
-      for id, _ in pairs(data.currentQuestList[key]) do
+    if mapData.currentQuestList[key] ~= nil then
+      for id, _ in pairs(mapData.currentQuestList[key]) do
         removeInfo[id] = true
         hasRemove = true
       end
       
-      data.currentQuestList[key] = nil
+      mapData.currentQuestList[key] = nil
       
 	  if completedList == nil then completedList = {} end
 	  
       completedList[key] = true
-      data.missingQuestList[key] = nil
+      mapData.missingQuestList[key] = nil
     end
   end
     
@@ -470,8 +470,8 @@ function map.FindMissing ()
 
   -- check aktuelle quests berücksichtigen
 
-  if data.lastZone == nil then return end
-  if questZone == data.lastZone then return end
+  if mapData.lastZone == nil then return end
+  if questZone == mapData.lastZone then return end
   
   local flag = true
    
@@ -482,7 +482,7 @@ function map.FindMissing ()
   
   if flag == true then
     LibMapEventsAddInsecure(findMissingRun, inspectTimeFrame(), 5)
-    questZone = data.lastZone
+    questZone = mapData.lastZone
   else
     print ("problem getting initial list of completed quests")
   end
@@ -513,7 +513,7 @@ end
 
 function map.IsKnownMinimapQuest (id)
 
-  if data.minimapIdToQuest[id] == nil then return false end
+  if mapData.minimapIdToQuest[id] == nil then return false end
   
   return true
 
