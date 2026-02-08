@@ -397,7 +397,7 @@ local function initializeAddon(_, addon)
 							minimapFrame:SetWidth(uiElements.mapUI:GetWidth())
 							LibEKL.manager.UpdateFrame(uiElements.mapUI)
 						end
-					end, Inspect.Time.Frame(), 5)
+					end, Inspect.Time.Frame(), 10)
 				end
 			end
 

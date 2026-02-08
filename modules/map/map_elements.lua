@@ -161,8 +161,9 @@ function map.UpdateWaypointArrows()
                 if not next(uiElements.mapWaypoints) then
                     details.gfx = LibEKL.UICreateFrame("nkCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
                 else
-                    print "reuse"
+                    --print "reuse"
                     details.gfx = table.remove(uiElements.mapWaypoints)
+                    details.gfx:SetVisible(true)
                 end
 
                 --details.gfx = LibMap.ElementManager.GetElement("nkMapElementCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
