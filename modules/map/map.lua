@@ -140,6 +140,8 @@ function internalFunc.mapInit()
     if details ~= nil then mapEvents.processPlayerTarget(details.id, details) end    
 	
 	  map.UpdateWaypointArrows()
+
+    map.mapLegendInit()
   end, Inspect.Time.Frame(), 2)  
 
 end

@@ -387,6 +387,7 @@ local function initializeAddon(_, addon)
 
 					LibEKL.manager.RegisterButton('nkUI.map.close', addonInfo.id, "gfx/mapMinimapIconClose.png", internalFunc.mapShowHide)
 					LibEKL.manager.RegisterButton('nkUI.map.resize', addonInfo.id, "gfx/mapMinimapIconResize.png", internalFunc.mapToggleMinMax)
+					LibEKL.manager.RegisterButton('nkUI.map.legend', addonInfo.id, "gfx/minimapIconLegend.png", internalFunc.mapLegendToggle)				
 
 					LibEKL.Events.AddInsecure(function()
 						local minimapFrame = LibEKL.manager.GetFrame()
