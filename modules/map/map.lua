@@ -41,7 +41,7 @@ uiElements.mapContextSecure = UI.CreateContext("nkUI.map.secure")
 uiElements.mapContextSecure:SetStrata ('topmost')
 uiElements.mapContextSecure:SetSecureMode ('restricted')
 
-function map.mapShowHide()
+function internalFunc.mapShowHide()
 
 	if uiElements.mapUI:GetVisible() == true then
       uiElements.mapUI:SetVisible(false)
@@ -90,9 +90,6 @@ function internalFunc.mapInit()
   LibMap.map.init(true)
   LibMap.map.zoneInit(true)
   
-  LibEKL.Inventory.Init()
-  LibEKL.Unit.Init()
-        
   for idx = 1, #data.rareMobAchievements, 1 do
     mapEvents.achievementUpdate (_, { [data.rareMobAchievements[idx]] = true })
   end
@@ -122,7 +119,6 @@ function internalFunc.mapInit()
        
   Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].GroupStatus, mapEvents.GroupStatus, "nkUI.LibEKL.Unit.GroupStatuss")
   Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].Change, mapEvents.UnitChange, "nkUI.LibEKL.Unit.Change")
-  --Command.Event.Attach(LibEKL.Events["LibEKL.Unit"].PlayerAvailable, mapEvents.playerAvailable, "nkUI.LibEKL.Unit.PlayerAvailable")
 
   Command.Event.Attach(Event.Unit.Availability.None, mapEvents.UnitUnavailable, "nkUI.Unit.Availability.None")
 

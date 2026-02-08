@@ -381,7 +381,23 @@ local function initializeAddon(_, addon)
 			end
 
 			if nkUISetup.useManager then
-				LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)
+				LibEKL.manager.RegisterButton("nkUI", addonInfo.id, "gfx/minimapIcon.png", internalFunc.setupInit)				
+
+				if nkUISetup.modules.map and nkUISetup.modules.map.activate then
+
+					LibEKL.manager.RegisterButton('nkUI.map.close', addonInfo.id, "gfx/mapMinimapIconClose.png", internalFunc.mapShowHide)
+					LibEKL.manager.RegisterButton('nkUI.map.resize', addonInfo.id, "gfx/mapMinimapIconResize.png", internalFunc.mapToggleMinMax)
+
+					LibEKL.Events.AddInsecure(function()
+						local minimapFrame = LibEKL.manager.GetFrame()
+						if minimapFrame then
+							minimapFrame:ClearPoint("BOTTOMLEFT")
+							minimapFrame:SetPoint("TOPLEFT", uiElements.mapUI, "BOTTOMLEFT")
+							minimapFrame:SetWidth(uiElements.mapUI:GetWidth())
+							LibEKL.manager.UpdateFrame(uiElements.mapUI)
+						end
+					end, Inspect.Time.Frame(), 5)
+				end
 			end
 
 			Command.Message.Accept(nil, "nkUI.version")

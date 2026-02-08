@@ -117,7 +117,7 @@ function mapEvents.broadcastTarget (info)
   
   local thisData = "info=" .. LibEKLTableSerialize (info)
   
-  Command.Message.Broadcast(bType, nil, "nkCartographer.target", thisData)
+  Command.Message.Broadcast(bType, nil, "nkUI.target", thisData)
 
 end
 
@@ -130,7 +130,7 @@ function mapEvents.messageReceive (_, from, type, channel, identifier, data)
   if pDetails == nil then return end  
   if pDetails.name == from then return end
   
-  if stringFind(identifier, "nkCartographer") == nil then return end
+  if stringFind(identifier, "nkUI") == nil then return end
   
   local tempString = LibEKLStringsRight (data, "info=")
   local dataFunc = loadstring("return {".. tempString .. "}")
@@ -229,22 +229,6 @@ function mapEvents.ShardChange (_, info)
   if petDetails ~= nil then
     map.UpdateUnit ({[petDetails.id] = {id = petDetails.id, type = "player.pet", coordX = petDetails.coordX, coordY = petDetails.coordY, coordZ = petDetails.coordZ}}, "add")
   end
-
-end
-
-function mapEvents.playerAvailable (_, info) 
-
-	local debugId
-	--if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.playerAvailable") end
-
-	--data.playerUID = info.id
-	map.initMap()
-	local details = LibEKL.Unit.GetUnitDetail('player.target')
-  if details ~= nil then mapEvents.processPlayerTarget(details.id, details) end    
-	
-	map.UpdateWaypointArrows()
-	
-	--if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.playerAvailable", debugId) end
 
 end
 

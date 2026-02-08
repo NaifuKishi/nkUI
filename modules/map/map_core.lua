@@ -8,6 +8,7 @@ local data                  = privateVars.data
 local uiElements            = privateVars.uiElements
 local events               	= privateVars.events
 local lang        			= privateVars.langTexts
+local internalFunc			= privateVars.internalFunc
 
 ---------- init local variables ---------
 
@@ -87,28 +88,16 @@ function map.initMap ()
         data.delayStart = InspectTimeReal()
       end
       
-    end, "nkUI.map.resetPosition")		
-
-	local function _toggleMinMax()
-		uiElements.mapUI:ToggleMinMax()
-	end
-
-    --LibEKL.manager.RegisterButton('nkUI.map.config', addonInfo.id, "gfx/minimapIcon.png", map.ShowConfig)
-	--LibEKL.manager.RegisterButton('nkUI.map.toggle', addonInfo.id, "gfx/minimapIconCloseMap.png", map.showHide)
-	--LibEKL.manager.RegisterButton('nkUI.map.minmax', addonInfo.id, "gfx/minimapIconResize.png", _toggleMinMax)
-    
-    local minimapFrame = LibEKL.manager.GetFrame()
-    if minimapFrame then
-		minimapFrame:ClearPoint("BOTTOMLEFT")
-      	minimapFrame:SetPoint("TOPLEFT", uiElements.mapUI, "BOTTOMLEFT")
-		minimapFrame:SetWidth(uiElements.mapUI:GetWidth())
-		LibEKL.manager.UpdateFrame(uiElements.mapUI)
-    end
+    end, "nkUI.map.resetPosition")			
 
 	mapInit = true
 
 	if nkDebug then debugId = nkDebug.traceEnd (addonInfo.identifier, "map.initMap", debugId) end
   
+end
+
+function internalFunc.mapToggleMinMax()
+	uiElements.mapUI:ToggleMinMax()
 end
 
 function map.SetZone (newZoneID)
@@ -278,7 +267,7 @@ local function mapWaypointRemove (key)
 	uiElements.mapUI:RemoveElement( "wp-" .. key)
 	if data.waypoints[key] ~= nil and data.waypoints[key].gfx ~= nil then 
 		--data.waypoints[key].gfx:destroy()
-		elementManager.ReturnElement("nkMapElementCanvas", data.waypoints[key].gfx)
+		LibMap.ElementManager.ReturnElement("nkMapElementCanvas", data.waypoints[key].gfx)
 	end
 	data.waypoints[key] = nil
 	map.UpdateWaypointArrows ()

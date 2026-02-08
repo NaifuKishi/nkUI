@@ -156,7 +156,7 @@ function map.UpdateWaypointArrows()
         if details.coordX >= mapInfo.x1 and details.coordX <= mapInfo.x2 and details.coordZ >= mapInfo.y1 and details.coordZ <= mapInfo.y2 then
             if details.gfx == nil then
                 --details.gfx = LibEKL.UICreateFrame("nkCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
-                details.gfx = elementManager.GetElement("nkMapElementCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
+                details.gfx = LibMap.ElementManager.GetElement("nkMapElementCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
                 details.gfx:SetLayer(999)
             end
             
@@ -207,7 +207,7 @@ function map.WaypointDialog()
     if InspectSystemSecure() == true then return end
     
     if uiElements.waypointDialog == nil then
-        local name = "nkCartographer.waypointDialog"
+        local name = "nkUI.waypointDialog"
         local coordLabel, xposEdit, yposEdit, sepLabel, setButton
         uiElements.waypointDialog = LibEKL.UICreateFrame("nkWindow", name, uiElements.contextSecure)
         uiElements.waypointDialog:SetLayer(3)
