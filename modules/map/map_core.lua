@@ -178,14 +178,14 @@ local function _trackGathering(details)
     end
 
     local thisData = LibEKLTableCopy(details)
-    thismapData.type = "TRACK" .. string.match(thismapData.type, "RESOURCE(.+)")
+    thisData.type = "TRACK" .. string.match(thisData.type, "RESOURCE(.+)")
     local thisType = string.match(details.type, "RESOURCE%.(.+)") or string.match(details.type, "RESOURCE%.(.+)%.")
-    thismapData.id = thisType .. "-" .. LibEKLUUID()
+    thisData.id = thisType .. "-" .. LibEKLUUID()
 
     if thisType == "ARTIFACT" then
-        nkUIMapGathering.artifactsData[mapData.lastZone][thismapData.id] = thisData
+        nkUIMapGathering.artifactsData[mapData.lastZone][thisData.id] = thisData
     else
-        nkUIMapGathering.gatheringData[mapData.lastZone][thismapData.id] = thisData
+        nkUIMapGathering.gatheringData[mapData.lastZone][thisData.id] = thisData
     end
 end
 
@@ -267,7 +267,11 @@ local function mapWaypointRemove (key)
 	uiElements.mapUI:RemoveElement( "wp-" .. key)
 	if mapData.waypoints[key] ~= nil and mapData.waypoints[key].gfx ~= nil then 
 		--mapData.waypoints[key].gfx:destroy()
-		LibMap.ElementManager.ReturnElement("nkMapElementCanvas", mapData.waypoints[key].gfx)
+		--LibMap.ElementManager.ReturnElement("nkMapElementCanvas", mapData.waypoints[key].gfx)
+		
+		mapData.waypoints[key].gfx:SetVisible(false)
+		if not uiElements.mapWaypoints then uiElements.mapWaypoints = {} end		
+    	table.insert(uiElements.mapWaypoints, mapData.waypoints[key].gfx)
 	end
 	mapData.waypoints[key] = nil
 	map.UpdateWaypointArrows ()

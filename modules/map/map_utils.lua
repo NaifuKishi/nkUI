@@ -47,7 +47,7 @@ function map.CollectArtifact(itemData)
                     coordY = unitDetails.coordY, 
                     coordZ = unitDetails.coordZ 
                 }
-                nkUIMapGathering.artifactsData[mapData.lastZone][thismapData.id] = thisData
+                nkUIMapGathering.artifactsData[mapData.lastZone][thisData.id] = thisData
             end
         end
     end

@@ -354,23 +354,23 @@ local function checkUnknown(npcName, thisData)
 
 					_unknownIdentified[npcName] = questInfo.id
 					if questInfo.tag ~= nil and stringFind(questInfo.tag, "pvp daily") ~= nil then
-						thismapData.type = "QUEST.PVPDAILY"
+						thisData.type = "QUEST.PVPDAILY"
 					elseif questInfo.tag ~= nil and (stringFind(questInfo.tag, "daily") ~= nil or stringFind(questInfo.tag, "weekly") ~= nil) then
-						thismapData.type = "QUEST.DAILY"
+						thisData.type = "QUEST.DAILY"
 					else
-						thismapData.type = "QUEST.START"
+						thisData.type = "QUEST.START"
 					end
 
-					thismapData.title = questInfo.name
+					thisData.title = questInfo.name
 
 					local tempDesc = questInfo.summary or questInfo.description
-					if tempDesc ~= nil then thismapData.descList = LibMapStringsSplit(tempDesc, "\n") end
+					if tempDesc ~= nil then thisData.descList = LibMapStringsSplit(tempDesc, "\n") end
 
-					thismapData.name = questInfo.name
+					thisData.name = questInfo.name
 
 					uiElements.mapUI:AddElement(thisData)
 					mapData.minimapQuestList[questInfo.id] = thisData
-					mapData.minimapIdToQuest[thismapData.id] = id
+					mapData.minimapIdToQuest[thisData.id] = id
 
 					if mapData.missingQuestList[id] ~= nil then
 						for id, details in pairs(mapData.missingQuestList[id]) do

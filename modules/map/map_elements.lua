@@ -20,8 +20,8 @@ local LibEKLUUID            = LibEKL.Tools.UUID
 local function _processRareData(id, counter, name, x, z, comment)
     local thisId = "rare-" .. id .. "-" .. counter
     local thisData = { id = thisId, type = "UNIT.RARE", descList = {name}, coordX = x, coordZ = z }
-    table.insert(thismapData.descList, "Rare Mob")
-    if comment ~= "" then table.insert(thismapData.descList, comment) end
+    table.insert(thisData.descList, "Rare Mob")
+    if comment ~= "" then table.insert(thisData.descList, comment) end
     uiElements.mapUI:AddElement(thisData)
     mapData._rareData[thisId] = thisData
 end
@@ -154,9 +154,18 @@ function map.UpdateWaypointArrows()
 
     for key, details in pairs(mapData.waypoints) do
         if details.coordX >= mapInfo.x1 and details.coordX <= mapInfo.x2 and details.coordZ >= mapInfo.y1 and details.coordZ <= mapInfo.y2 then
+            
             if details.gfx == nil then
-                --details.gfx = LibEKL.UICreateFrame("nkCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
-                details.gfx = LibMap.ElementManager.GetElement("nkMapElementCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
+                if not uiElements.mapWaypoints then uiElements.mapWaypoints = {} end
+
+                if not next(uiElements.mapWaypoints) then
+                    details.gfx = LibEKL.UICreateFrame("nkCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
+                else
+                    print "reuse"
+                    details.gfx = table.remove(uiElements.mapWaypoints)
+                end
+
+                --details.gfx = LibMap.ElementManager.GetElement("nkMapElementCanvas", "nkUI.waypointarrow." .. LibEKLUUID(), mask)
                 details.gfx:SetLayer(999)
             end
             
