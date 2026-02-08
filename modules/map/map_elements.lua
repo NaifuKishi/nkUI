@@ -218,7 +218,7 @@ function map.WaypointDialog()
     if uiElements.waypointDialog == nil then
         local name = "nkUI.waypointDialog"
         local coordLabel, xposEdit, yposEdit, sepLabel, setButton
-        uiElements.waypointDialog = LibEKL.UICreateFrame("nkWindow", name, uiElements.contextSecure)
+        uiElements.waypointDialog = LibEKL.UICreateFrame("nkWindow", name, uiElements.mapContextSecure)
         uiElements.waypointDialog:SetLayer(3)
         uiElements.waypointDialog:SetWidth(200)
         uiElements.waypointDialog:SetHeight(140)

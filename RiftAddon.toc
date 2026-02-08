@@ -6,7 +6,7 @@ Description = "nkUI is a UI suite for Rift in the style of modern WoW addons. It
 Author = "NaifuKishi"
 Email = "rift@naifukishi.com"
 
-Version = "1.2.10"
+Version = "1.3.0"
 Environment = "4.0"
 
 RunOnStartup = {
@@ -89,6 +89,7 @@ RunOnStartup = {
 
 	"settings/settings.lua",
 	"settings/settings-tabTheme.lua",
+	"settings/settings-tabMap.lua",
 	"settings/settings-tabQuestTracker.lua",
 	"settings/settings-tabUF.lua",
 	"settings/settings-tabActionbar.lua",

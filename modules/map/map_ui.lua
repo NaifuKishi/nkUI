@@ -60,8 +60,8 @@ function map.createMapUI ()
 
 		if mapData.borderDesigns.blackSmall.addon == nil then
 			texture:SetVisible(false)
-		else
-			texture:SetVisible(true)    
+		else			
+			texture:SetVisible(true)
 			texture:SetPoint("TOPLEFT", mapUI, "TOPLEFT", -mapData.borderDesigns.blackSmall.offset, -mapData.borderDesigns.blackSmall.offset)
 			texture:SetPoint("BOTTOMRIGHT", mapUI, "BOTTOMRIGHT", mapData.borderDesigns.blackSmall.offset, mapData.borderDesigns.blackSmall.offset)
 			texture:SetTextureAsync(mapData.borderDesigns.blackSmall.addon, mapData.borderDesigns.blackSmall.path)

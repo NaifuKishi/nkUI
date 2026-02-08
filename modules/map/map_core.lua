@@ -357,7 +357,7 @@ end
 
 local function unitChange(key, details)
 
-	if key == LibEKL.Unit.GetPlayerID() then			
+	if key == LibEKL.Unit.GetPlayerID() then
 		local coordX, coordZ = uiElements.mapUI:GetCoords()         
 		local deltaZ = details.coordZ - coordZ
 		local deltaX = details.coordX - coordX
@@ -400,12 +400,6 @@ local function unitChange(key, details)
 		map.UpdateWaypointArrows ()
 	end
 
-	if key == mapData.playerHostileTargetUID then
-		details.id = "e" .. key
-		local bData = {change = {["e" .. key] = details}}
-		events.broadcastTarget(bData)
-	end
-
 end
 
 local function unitRemove (key)
@@ -427,9 +421,9 @@ function map.UpdateUnit (mapInfo, action)
 	for key, details in pairs (mapInfo) do
 	
 		if action == "add" then
-			unitAdd (key, details)			
+			unitAdd (key, details)
 		elseif action == "change" then
-			unitChange(key, details)			
+			unitChange(key, details)
 		elseif action == "remove" then
 			unitRemove (key)
 		end

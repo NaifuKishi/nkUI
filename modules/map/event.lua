@@ -61,7 +61,6 @@ function mapEvents.processPlayerTarget(unitID, unitDetails)
 
 	if rel == "HOSTILE" then
 		local bData = {add = {["e" .. unitID] = {id = "e" .. unitID, type = "UNIT.ENEMY", coordX = unitDetails.coordX, coordY = unitDetails.coordY, coordZ = unitDetails.coordZ, title = unitDetails.name }}}
-		events.broadcastTarget(bData)
 		mapData.playerHostileTargetUID = unitID
 	else
 		mapData.playerHostileTargetUID = nil
@@ -83,7 +82,6 @@ function mapEvents.SystemUpdate ()
 			privateVars.forceUpdate = true
 		else
 			local tmpTime = now
-			--if LibEKLMathRound((tmpTime - mapData.lastUpdate), 1) > .5 then mapData.forceUpdate = true end
       if now - mapData.lastUpdate > .5 then mapData.forceUpdate = true end
 		end
 	end
@@ -97,97 +95,8 @@ function mapEvents.SystemUpdate ()
 				map.UpdateMap(temp, "add", "events.SystemUpdate")
 				mapData.lastUpdate = now -- diese Abfrage direkt nach mapData.forceUpdate platzieren wenn andere Funktionen aufgerufen werden
 			end
-		end
-		
-		--_processUnits()
+		end		
 	end
-
-end
-
-function mapEvents.broadcastTarget (info)
-
-  if nkUISetup.modules.map.syncTarget ~= true then return end
-
-  local bType = "party"
-  if LibEKLGetGroupStatus() == 'raid' then
-    bType = "raid" 
-  elseif LibEKLGetGroupStatus() ~= "group" then
-    return
-  end 
-  
-  local thisData = "info=" .. LibEKLTableSerialize (info)
-  
-  Command.Message.Broadcast(bType, nil, "nkUI.target", thisData)
-
-end
-
-function mapEvents.messageReceive (_, from, type, channel, identifier, data)
-  
-  if nkUISetup.modules.map.syncTarget ~= true then return end
-  if uiElements.mapUI == nil then return end
-
-  local pDetails = LibEKLGetPlayerDetails()
-  if pDetails == nil then return end  
-  if pDetails.name == from then return end
-  
-  if stringFind(identifier, "nkUI") == nil then return end
-  
-  local tempString = LibEKLStringsRight (data, "info=")
-  local dataFunc = loadstring("return {".. tempString .. "}")
-  local thisData = dataFunc()
-
-  local adds, removes, updates = {}, {}, {}
-  local hasAdds, hasRemoves, hasUpdates = false, false, false
-
-  if _foreignUnitsFrom[from] == nil then _foreignUnitsFrom[from] = {} end
-
-  for action, v in pairs(thisData) do
-    
-    for id, details in pairs(v) do
-      
-      if action == "add" then 
-        if _foreignUnits[id] == nil then
-          _foreignUnits[id] = true
-          adds [id] = details
-          hasAdds = true
-          _foreignUnitsFrom[from][id] = true
-        end
-      elseif action == "remove" then
-        if _foreignUnits[id] then
-          _foreignUnits[id] = nil
-          removes[id] = true
-          hasRemoves = true
-          if _foreignUnitsFrom[from][id] then _foreignUnitsFrom[from][id] = nil end
-        end
-      else
-        if _foreignUnits[id] then
-          updates[id] = details
-          hasUpdates = true
-        else
-          _foreignUnits[id] = true
-          details.type = "UNIT.ENEMY"
-          adds [id] = details
-          hasAdds = true
-          _foreignUnitsFrom[from][id] = true        
-        end
-      end
-    end
-    
-  end
-  
-  if hasRemoves then map.UpdateMap (removes, "remove") end
-  if hasAdds then map.UpdateMap (adds, "add", "events.messageReceive") end
-  if hasUpdates then  map.UpdateMap (updates, "change", 'events.messageReceive')  end
-
-end
-
-function mapEvents.removeTargets ()
-
-  for key, _ in pairs(_foreignUnits) do
-    map.UpdateMap ({[key] = true}, "remove")
-  end
-  
-  _foreignUnits = {}
 
 end
 
@@ -287,12 +196,7 @@ function mapEvents.UnitChange (_, unitID, unitType)
   
   if unitType == "player.target" then
   
-    if mapData.playerTargetUID ~= nil then map.UpdateMap ({["t" .. mapData.playerTargetUID] = false, ["npc" .. mapData.playerTargetUID] = false}, "remove") end
-      
-    if mapData.playerHostileTargetUID ~= nil then
-      local bData = {remove = {["e" .. mapData.playerHostileTargetUID] = false }}
-      events.broadcastTarget(bData)
-    end
+    if mapData.playerTargetUID ~= nil then map.UpdateMap ({["t" .. mapData.playerTargetUID] = false, ["npc" .. mapData.playerTargetUID] = false}, "remove") end        
   
     if unitID == false then
       mapData.playerHostileTargetUID = nil
@@ -372,9 +276,6 @@ function mapEvents.GroupStatus (_, status)
 		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
 		return 
 	end
-
-	local bData = {add = {["e" .. details.id] = {id = "e" .. details.id, type = "UNIT.ENEMY", coordX = details.coordX, coordY = details.coordY, coordZ = details.coordZ, title = details.name }}}
-	events.broadcastTarget(bData)
 	
 	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
 

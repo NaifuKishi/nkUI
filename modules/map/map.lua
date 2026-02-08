@@ -29,11 +29,11 @@ mapData.waypoints            = {}  -- list of the currently known and displayed 
 mapData.collectStart         = nil -- time the last time the player started interacting with a world element (mostly collecting something)
 mapData.rareMobKilled        = {}  -- list of killed raremobs
 
-mapData.rareMobAchievements  =  {"c5C766AF68015CB70", -- classic
-                              "c5057BAEBDEA774CE", -- ember isle
-                              "c128FB25EE807902B", -- storm legion
-                              "c7443CBB86FC99D5E"  -- nightmare tidde
-                              }
+mapData.rareMobAchievements  =  { "c5C766AF68015CB70", -- classic
+                                  "c5057BAEBDEA774CE", -- ember isle
+                                  "c128FB25EE807902B", -- storm legion
+                                  "c7443CBB86FC99D5E"  -- nightmare tidde
+                                }
 
 uiElements.mapContext = UI.CreateContext("nkUI.map")
 uiElements.mapContext:SetStrata ('dialog')
@@ -132,13 +132,6 @@ function internalFunc.mapInit()
   Command.Event.Attach(Event.Unit.Detail.LocationName, mapEvents.UpdateLocation, "nkUI.Unit.Detail.LocationName")
   
   Command.Event.Attach(Event.Achievement.Update, mapEvents.achievementUpdate, "nkUI.Achievement.Update")
-
-  if nkUISetup.modules.map.syncTarget == true then
-    Command.Message.Accept("raid", "nkUI.target")
-    Command.Message.Accept("party", "nkUI.target")
-    
-    Command.Event.Attach(Event.Message.Receive, mapEvents.messageReceive, "nkUI.Message.Receive")
-  end
 
   LibEKL.Events.AddInsecure(function()    
     map.initMap()

@@ -163,8 +163,8 @@ local _defaults = {
         tooltip     = { activate = true,
                         fontSizes = {header = 14, body = 12 } },
         map         = { activate = true,
-                        x = 600, 
-                        y= 0, 
+                        x = 3133, 
+                        y = 7, 
                         maximizedX = 100, 
                         maximizedY = 100, 
                         scale = 2.5,
@@ -201,6 +201,9 @@ local function scaleUI ()
 
     nkUISetup.modules.oneBag.x = nkUISetup.modules.oneBag.x * data.uiScale
     nkUISetup.modules.oneBag.y = nkUISetup.modules.oneBag.y * data.uiScale
+
+    nkUISetup.modules.map.x = nkUISetup.modules.map.x * data.uiScale
+    nkUISetup.modules.map.y = nkUISetup.modules.map.y * data.uiScale
 
     nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
     nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
@@ -457,6 +460,7 @@ function internalFunc.setupUI ()
         data.theme.labelColor, data.theme.labelColor)
 
     local paneTabTheme = settingsUI.uiConfigTabTheme(name .. ".tab.Theme", tabPane)
+    local paneTabMap = settingsUI.uiConfigTabMap(name .. ".tab.Map", tabPane)
     local paneTabQuestTracker = settingsUI.uiConfigTabQuestTracker (name .. ".tab.QuestTracker", tabPane)
     local paneTabActionBar = settingsUI.uiConfigTabActionBar(name .. ".tab.ActionBar", tabPane)
     local paneTabLowerBar = settingsUI.uiConfigTabLowerBar(name .. ".tab.LowerBar", tabPane)
@@ -542,6 +546,7 @@ function internalFunc.setupUI ()
     tabPane:SetLayer(1)
 
     tabPane:AddPane( { label = langTexts.settings.theme, effect = { strength = 3 }, frame = paneTabTheme, initFunc = function() paneTabTheme:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.map, effect = { strength = 3 }, frame = paneTabMap, initFunc = function() paneTabMap:build() end}, false)
     tabPane:AddPane( { label = langTexts.settings.questTracker, effect = { strength = 3 }, frame = paneTabQuestTracker, initFunc = function() paneTabQuestTracker:build() end}, false)
 
     tabPane:AddPane( { label = langTexts.settings.actionBar, effect = { strength = 3 }, frame = paneTabActionBar, initFunc = function() paneTabActionBar:build() end}, false)

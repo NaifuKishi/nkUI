@@ -139,11 +139,11 @@ local function _createTutorialWindow()
             position = "bottom",
         },
         {
-            title = langTexts.tutorial.auctionTitle,
-            description = langTexts.tutorial.auctionDescription,
-            image = "gfx/tutorialAuction.png",
-            width = 61,
-            height = 36,
+            title = langTexts.tutorial.mapTitle,
+            description = langTexts.tutorial.mapDescription,
+            image = "gfx/tutorialMiniMap.png",
+            width = 313,
+            height = 319,
             position = "bottom",
         },
         {
@@ -188,6 +188,14 @@ local function _createTutorialWindow()
             image = "gfx/tutorialOneBagScale.png",
             width = 525,
             height = 115,
+            position = "bottom",
+        },
+        {
+            title = langTexts.tutorial.auctionTitle,
+            description = langTexts.tutorial.auctionDescription,
+            image = "gfx/tutorialAuction.png",
+            width = 61,
+            height = 36,
             position = "bottom",
         },
         {
