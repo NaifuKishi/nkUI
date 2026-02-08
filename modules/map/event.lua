@@ -1,0 +1,449 @@
+local addonInfo, privateVars = ...
+
+if not privateVars.mapEvents then privateVars.mapEvents = {} end
+
+---------- init namespace ---------
+
+local map           = privateVars.map
+local mapEvents     = privateVars.mapEvents
+local data          = privateVars.data
+local uiElements    = privateVars.uiElements
+local internalFunc  = privateVars.internalFunc
+local events        = privateVars.events
+
+---------- init local variables ---------
+
+local _units = {}
+local _enemyUnits = {}
+local _foreignUnits = {}
+local _foreignUnitsFrom = {}
+local _unitsMapping = {}
+
+---------- make global functions local ---------
+
+local InspectUnitDetail         = Inspect.Unit.Detail
+local InspectTimeReal           = Inspect.Time.Real
+local InspectUnitCastbar        = Inspect.Unit.Castbar
+local InspectAchievementDetail  = Inspect.Achievement.Detail
+
+local LibEKLGetPlayerDetails    = LibEKL.Unit.GetPlayerDetails
+local LibEKLGetGroupStatus      = LibEKL.Unit.GetGroupStatus
+local LibEKLMathRound           = LibEKL.Tools.Math.Round
+local LibEKLTableCopy           = LibEKL.Tools.Table.Copy
+local LibEKLTableIsMember       = LibEKL.Tools.Table.IsMember
+local LibEKLTableSerialize      = LibEKL.Tools.Table.Serialize
+local LibEKLStringsRight        = LibEKL.strings.right
+local LibMapMapGetAll           = LibMap.map.getAll
+
+local stringFind               = string.find
+
+---------- local function block ---------
+
+function mapEvents.processPlayerTarget(unitID, unitDetails)
+
+	local debugId
+	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "mapEvents.processPlayerTarget") end
+
+	data.playerTargetUID = unitID  
+
+	local rel = "FRIENDLY"
+
+	if unitDetails.relation == "hostile" then
+		rel = "HOSTILE"  
+	elseif unitDetails.relation == "neutral" then
+		rel = "NEUTRAL"
+	end
+
+	local thisData = {	["t" .. unitID] = {id = "t" .. unitID, type = "UNIT.TARGET." .. rel, coordX = unitDetails.coordX, coordY = unitDetails.coordY, coordZ = unitDetails.coordZ, title = unitDetails.name},
+						["npc" .. unitID] = {id = "npc" .. unitID, type = "VARIA.NPC." .. rel, coordX = unitDetails.coordX, coordY = unitDetails.coordY, coordZ = unitDetails.coordZ, title = unitDetails.name}}
+
+	map.UpdateMap (thisData, "add", "mapEvents.processPlayerTarget")
+
+	if rel == "HOSTILE" then
+		local bData = {add = {["e" .. unitID] = {id = "e" .. unitID, type = "UNIT.ENEMY", coordX = unitDetails.coordX, coordY = unitDetails.coordY, coordZ = unitDetails.coordZ, title = unitDetails.name }}}
+		events.broadcastTarget(bData)
+		data.playerHostileTargetUID = unitID
+	else
+		data.playerHostileTargetUID = nil
+	end
+	
+	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "mapEvents.processPlayerTarget", debugId) end
+
+end
+
+---------- addon internal function block ---------
+
+function mapEvents.SystemUpdate ()
+
+  local now = InspectTimeReal()
+
+	if data.forceUpdate ~= true then
+		if data.lastUpdate == nil then
+			data.lastUpdate = now
+			privateVars.forceUpdate = true
+		else
+			local tmpTime = now
+			--if LibEKLMathRound((tmpTime - data.lastUpdate), 1) > .5 then data.forceUpdate = true end
+      if now - data.lastUpdate > .5 then data.forceUpdate = true end
+		end
+	end
+
+	if data.forceUpdate == true then
+		
+		if data.postponedAdds ~= nil then
+			if LibQB.query.isInit() == true and LibQB.query.isPackageLoaded('poa') == true and LibQB.query.isPackageLoaded('nt') == true and LibQB.query.isPackageLoaded('classic') == true then
+				local temp = LibEKLTableCopy(data.postponedAdds)
+				data.postponedAdds = nil
+				map.UpdateMap(temp, "add", "events.SystemUpdate")
+				data.lastUpdate = now -- diese Abfrage direkt nach data.forceUpdate platzieren wenn andere Funktionen aufgerufen werden
+			end
+		end
+		
+		--_processUnits()
+	end
+
+end
+
+function mapEvents.broadcastTarget (info)
+
+  if nkUISetup.modules.map.syncTarget ~= true then return end
+
+  local bType = "party"
+  if LibEKLGetGroupStatus() == 'raid' then
+    bType = "raid" 
+  elseif LibEKLGetGroupStatus() ~= "group" then
+    return
+  end 
+  
+  local thisData = "info=" .. LibEKLTableSerialize (info)
+  
+  Command.Message.Broadcast(bType, nil, "nkCartographer.target", thisData)
+
+end
+
+function mapEvents.messageReceive (_, from, type, channel, identifier, data)
+  
+  if nkUISetup.modules.map.syncTarget ~= true then return end
+  if uiElements.mapUI == nil then return end
+
+  local pDetails = LibEKLGetPlayerDetails()
+  if pDetails == nil then return end  
+  if pDetails.name == from then return end
+  
+  if stringFind(identifier, "nkCartographer") == nil then return end
+  
+  local tempString = LibEKLStringsRight (data, "info=")
+  local dataFunc = loadstring("return {".. tempString .. "}")
+  local thisData = dataFunc()
+
+  local adds, removes, updates = {}, {}, {}
+  local hasAdds, hasRemoves, hasUpdates = false, false, false
+
+  if _foreignUnitsFrom[from] == nil then _foreignUnitsFrom[from] = {} end
+
+  for action, v in pairs(thisData) do
+    
+    for id, details in pairs(v) do
+      
+      if action == "add" then 
+        if _foreignUnits[id] == nil then
+          _foreignUnits[id] = true
+          adds [id] = details
+          hasAdds = true
+          _foreignUnitsFrom[from][id] = true
+        end
+      elseif action == "remove" then
+        if _foreignUnits[id] then
+          _foreignUnits[id] = nil
+          removes[id] = true
+          hasRemoves = true
+          if _foreignUnitsFrom[from][id] then _foreignUnitsFrom[from][id] = nil end
+        end
+      else
+        if _foreignUnits[id] then
+          updates[id] = details
+          hasUpdates = true
+        else
+          _foreignUnits[id] = true
+          details.type = "UNIT.ENEMY"
+          adds [id] = details
+          hasAdds = true
+          _foreignUnitsFrom[from][id] = true        
+        end
+      end
+    end
+    
+  end
+  
+  if hasRemoves then map.UpdateMap (removes, "remove") end
+  if hasAdds then map.UpdateMap (adds, "add", "events.messageReceive") end
+  if hasUpdates then  map.UpdateMap (updates, "change", 'events.messageReceive')  end
+
+end
+
+function mapEvents.removeTargets ()
+
+  for key, _ in pairs(_foreignUnits) do
+    map.UpdateMap ({[key] = true}, "remove")
+  end
+  
+  _foreignUnits = {}
+
+end
+
+function mapEvents.ZoneChange (_, info) 
+
+	for unit, zoneId in pairs (info) do
+		if unit == LibEKL.Unit.GetPlayerID() then
+			if uiElements.mapUI == nil then 
+				map.initMap ()
+			else
+				map.SetZone (zoneId) 
+			end
+
+			return
+		end
+	end
+
+end
+
+function mapEvents.ShardChange (_, info)
+
+  if data.lastShard == nil then data.lastShard = info end
+
+  if uiElements.mapUI == nil then return end
+  if data.lastShard == info then return end
+  
+  data.lastShard = info
+
+  local points, units = LibMapMapGetAll()
+  map.UpdateMap(points, "remove")
+  
+  map.SetZone (data.lastZone)  
+  
+  local details = InspectUnitDetail('player')
+
+  map.UpdateUnit ({[details.id] = {id = details.id, type = "player", coordX = details.coordX, coordY = details.coordY, coordZ = details.coordZ}}, "add")
+  
+  local petDetails = InspectUnitDetail('player.pet')
+  if petDetails ~= nil then
+    map.UpdateUnit ({[petDetails.id] = {id = petDetails.id, type = "player.pet", coordX = petDetails.coordX, coordY = petDetails.coordY, coordZ = petDetails.coordZ}}, "add")
+  end
+
+end
+
+function mapEvents.playerAvailable (_, info) 
+
+	local debugId
+	--if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.playerAvailable") end
+
+	--data.playerUID = info.id
+	map.initMap()
+	local details = LibEKL.Unit.GetUnitDetail('player.target')
+  if details ~= nil then mapEvents.processPlayerTarget(details.id, details) end    
+	
+	map.UpdateWaypointArrows()
+	
+	--if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.playerAvailable", debugId) end
+
+end
+
+function mapEvents.UnitUnavailable (_, info)
+
+  for unitId, _ in pairs (info) do _units[unitId] = nil end
+
+end
+
+function mapEvents.UnitCoordChange (_, x, y, z)
+
+	local debugId
+	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.UnitCoordChange") end
+
+	local updates, adds = {}, {}
+	local hasUpdates, hasAdds = false, false
+
+	for unit, _ in pairs (x) do
+		if unit == LibEKL.Unit.GetPlayerID() then
+			updates[unit] = {id = unit, center = true, coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
+			hasUpdates = true
+		elseif _units[unit] == nil then
+			adds[unit] = {id = unit, type = "UNKNOWN", coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
+			_units[unit] = true
+			hasAdds = true
+		else    
+			updates[unit] = {id = unit, coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
+			hasUpdates = true
+		end
+	end
+
+	if hasUpdates == true then map.UpdateMap (updates, "coord", "events.UnitCoordChange") end
+	if hasAdds == true then map.UpdateMap (adds, "add") end
+
+	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.UnitCoordChange", debugId) end
+
+end
+
+function mapEvents.UnitCastBar (_, info)
+  
+  if info[LibEKL.Unit.GetPlayerID()] then
+    local details = InspectUnitCastbar(LibEKL.Unit.GetPlayerID())
+    if details and details.abilityNew == "A0000002B72E024A4" then
+      data.collectStart = InspectTimeReal()
+    end
+  end
+
+end
+
+function mapEvents.UnitChange (_, unitID, unitType)
+
+  local debugId
+  if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.UnitChange") end
+
+  -- check for player target change and check if group status changes and process their targets
+  
+  if unitType == "player.target" then
+  
+    if data.playerTargetUID ~= nil then map.UpdateMap ({["t" .. data.playerTargetUID] = false, ["npc" .. data.playerTargetUID] = false}, "remove") end
+      
+    if data.playerHostileTargetUID ~= nil then
+      local bData = {remove = {["e" .. data.playerHostileTargetUID] = false }}
+      events.broadcastTarget(bData)
+    end
+  
+    if unitID == false then
+      data.playerHostileTargetUID = nil
+      data.playerTargetUID = nil
+    else
+      local unitDetails = InspectUnitDetail(unitID)
+      mapEvents.processPlayerTarget(unitID, unitDetails)
+    end
+  elseif stringFind(unitType, "player.target") == nil and stringFind(unitType, "group") == 1 and stringFind(unitType, "group..%.target") == nil then
+  
+    if unitID == false then
+      local removes, hasRemoves = {}, false
+    
+      if _foreignUnitsFrom[_unitsMapping[unitType]] ~= nil then
+        for id, _ in pairs(_foreignUnitsFrom[_unitsMapping[unitType]]) do
+          removes[id] = true
+          hasRemoves = true
+        end
+        
+        _foreignUnitsFrom[_unitsMapping[unitType]] = {}
+        
+      end
+
+      _unitsMapping[unitType] = nil      
+      
+      if hasRemoves then map.UpdateMap (removes, "remove") end
+    else
+      local details = InspectUnitDetail(unitID)
+      if details ~= nil then _unitsMapping[unitType] = details.name end
+    end
+  end
+  
+  if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.UnitChange", debugId) end
+
+end
+
+function mapEvents.GroupStatus (_, status)
+	
+	local debugId
+	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "events.GroupStatus") end
+
+	if data.lastGroupStatus ~= status then
+
+		local removes = {}
+		local hasRemoves = false
+
+		if status ~= "group" and status ~= "raid" then
+			for k, v in pairs(data.waypoints) do
+				if v.player ~= true then
+					removes[k] = v
+					hasRemoves = true
+				end
+			end
+		end
+
+		if hasRemoves then map.UpdateMap(removes, "waypoint-remove") end
+		data.lastGroupStatus = status
+	end
+
+	if nkUISetup.modules.map.syncTarget ~= true then 
+		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
+		return 
+	end
+	
+	if data.playerHostileTargetUID == nil then
+		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
+		return
+	end
+	
+	if status ~= "group" and status ~= "raid" then
+		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
+		return
+	end
+
+	local details = InspectUnitDetail(data.playerHostileTargetUID)
+	if details == nil then 
+		if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
+		return 
+	end
+
+	local bData = {add = {["e" .. details.id] = {id = "e" .. details.id, type = "UNIT.ENEMY", coordX = details.coordX, coordY = details.coordY, coordZ = details.coordZ, title = details.name }}}
+	events.broadcastTarget(bData)
+	
+	if nkDebug then nkDebug.traceEnd (addonInfo.identifier, "events.GroupStatus", debugId) end
+
+end
+
+function mapEvents.achievementUpdate (_, info)
+
+  local achievement = nil
+  local refreshNeeded = false
+  
+  for id, _ in pairs(info) do
+    if LibEKLTableIsMember(data.rareMobAchievements, id) == true then
+      
+      for idx = 1, #data.rareMobAchievements, 1 do
+        achievement = InspectAchievementDetail(data.rareMobAchievements[idx])
+        
+        if achievement ~= nil then
+        
+          for requirement, details in pairs(achievement.requirement) do
+            if details.complete == true then
+              if data.rareMobKilled[details.name] == false then
+                data.rareMobKilled[details.name] = true
+                refreshNeeded = true
+              else
+                data.rareMobKilled[details.name] = true
+              end
+            else
+              data.rareMobKilled[details.name] = false
+            end
+          end
+        end
+        
+      end
+  
+    end
+  end
+  
+  if nkUISetup.modules.map.rareMobs == true and refreshNeeded == true then
+    map.ShowRareMobs(false)
+    map.ShowRareMobs(true)
+  end
+  
+end
+
+function mapEvents.UpdateLocation (_, info)
+
+  local playerID = LibEKL.Unit.GetPlayerID()
+
+  if playerID == nil then return end
+    
+  if info[playerID] == nil or info[playerID] == false then return end   
+    
+  data.locationName = info[playerID]
+  uiElements.mapUI:SetZoneTitle(nkUISetup.modules.map.showZoneTitle)
+    
+end

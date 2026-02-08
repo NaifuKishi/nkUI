@@ -77,6 +77,16 @@ RunOnStartup = {
 
 	"modules/tooltip/tooltip.lua",
 
+	"modules/map/map.lua",
+	"modules/map/data.lua",
+	"modules/map/event.lua",
+	"modules/map/quest.lua",
+	"modules/map/map_core.lua",
+	"modules/map/map_elements.lua",
+	"modules/map/map_quests.lua",
+	"modules/map/map_ui.lua",
+	"modules/map/map_utils.lua",
+
 	"settings/settings.lua",
 	"settings/settings-tabTheme.lua",
 	"settings/settings-tabQuestTracker.lua",

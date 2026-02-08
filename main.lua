@@ -209,14 +209,14 @@ local function commandHandler (commandline)
 		if stringFind(commandline, "toggle") ~= nil then 
 			uiElements.mapUI:ToggleMinMax(true)
 		elseif stringFind(commandline, "debug") ~= nil and nkDebug then
-			if uiElements.debugPanel == nil then 
-				uiElements.debugPanel = internalFunc.debugPanel()
+			if uiElements.mapDebugPanel == nil then 
+				uiElements.mapDebugPanel = internalFunc.mapDebugPanel()
 			else
-				uiElements.debugPanel:SetVisible(not uiElements.debugPanel:GetVisible())
+				uiElements.mapDebugPanel:SetVisible(not uiElements.mapDebugPanel:GetVisible())
 			end
 			
 			local mapInfo = uiElements.mapUI:GetMapInfo()
-			uiElements.debugPanel:SetCoord(mapInfo.x1, mapInfo.x2, mapInfo.y1, mapInfo.y2)
+			uiElements.mapDebugPanel:SetCoord(mapInfo.x1, mapInfo.x2, mapInfo.y1, mapInfo.y2)
 			
 		elseif stringFind(commandline, "show") ~= nil then
 			internalFunc.mapShowHide()
@@ -362,6 +362,11 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.chat and nkUISetup.modules.chat.activate then
 					internalFunc.chat ()
 				end
+
+				if nkUISetup.modules.map and nkUISetup.modules.map.activate then
+					internalFunc.mapInit()
+				end
+
 				--internalFunc.questLogInit()							
 			end
 
