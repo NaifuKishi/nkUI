@@ -33,8 +33,6 @@ function internalFunc.updateUnit (frame, unitID, identifier)
     frame:ContextMenu(unitID)
     frame:MouseOverUnit(unitID)
 
-    --print (identifier, details.name)
-
     frame:SetMacro(stringFormat("/target %s", details.name))
     frame:SetName(details.name)
     frame:SetCalling(details.calling)

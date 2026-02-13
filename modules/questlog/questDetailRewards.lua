@@ -187,12 +187,10 @@ function questLog.uiRewards (name, parent)
 
     function rewardsFrame:Clear()
         for id, v in pairs(rewards) do
-            --print (id)
             v:SetVisible(false)
         end
 
         for id, v in pairs(notorieties) do
-            --print (id)
             v:SetVisible(false)
         end
     end

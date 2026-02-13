@@ -265,16 +265,17 @@ end
 local function mapWaypointRemove (key)
 
 	uiElements.mapUI:RemoveElement( "wp-" .. key)
-	if mapData.waypoints[key] ~= nil and mapData.waypoints[key].gfx ~= nil then 
-		--mapData.waypoints[key].gfx:destroy()
-		--LibMap.ElementManager.ReturnElement("nkMapElementCanvas", mapData.waypoints[key].gfx)
-		
-		mapData.waypoints[key].gfx:SetVisible(false)
+
+	local thisWayPoint = mapData.waypoints[key]
+
+	if thisWayPoint ~= nil and thisWayPoint.gfx ~= nil then
+		thisWayPoint.gfx:SetVisible(false)
 		if not uiElements.mapWaypoints then uiElements.mapWaypoints = {} end		
-    	table.insert(uiElements.mapWaypoints, mapData.waypoints[key].gfx)
+    	table.insert(uiElements.mapWaypoints, thisWayPoint.gfx)
 	end
+
 	mapData.waypoints[key] = nil
-	map.UpdateWaypointArrows ()
+	map.UpdateWaypointArrows()
 
 end
 

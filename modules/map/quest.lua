@@ -332,8 +332,6 @@ local function checkUnknown(npcName, thisData)
 		for idx = 1, #_npcCache[npcName], 1 do
 			local npcQuestList = questNPCQuests(_npcCache[npcName][idx])
 
-			--dump (npcQuestList)
-			
 			if npcQuestList ~= nil then
 				for _, questId in pairs (npcQuestList) do
 					table.insert(quests, questId)
@@ -389,17 +387,14 @@ end
 ---------- addon internal function block ---------
 
 function map.GetQuests() 
-	--print ("get quests")
 	processQuests (inspectQuestList()) 
 end
 
 function mapEvents.QuestAccept (_, data) 
-	--print ("quest accept")
 	processQuests (data, true) 
 end
 
 function mapEvents.QuestChange (_, data) 
-	--print ("change quests")
 	processQuests (data, false) 
 end
   

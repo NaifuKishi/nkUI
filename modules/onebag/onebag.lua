@@ -79,9 +79,6 @@ function internalFunc.oneBagInit()
         Command.Event.Attach(Event.Item.Update, oneBag.itemUpdate, "nkUI.OneBag.Item.Update")
 
         Command.Event.Attach(LibEKL.Events["LibEKL.InventoryManager"].SlotUpdate, function(_, slots)
-            --print ("SlotUpdate")
-            --dump (slots)
-
             if cachedBagItems then
                 for k, v in pairs(slots) do
                     if stringMatch(k, "^si%d%d%.%d%d%d$") then
@@ -343,8 +340,6 @@ end
 
 function oneBag.itemSlot (_, slots)
 
-    --print ("oneBag.itemSlot")
-
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemSlot", "", slots) end
 
     if not uiElements.oneBag or not uiElements.oneBag:GetVisible() then return end
@@ -385,8 +380,6 @@ function oneBag.itemSlot (_, slots)
 end
 
 function oneBag.itemUpdate (_, slots)
-
-    --print ("OneBag.itemUpdate")
 
     if nkDebug then nkDebug.logEntry (addonInfo.identifier, "itemUpdate", "", slots) end
 

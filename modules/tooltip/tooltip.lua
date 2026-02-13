@@ -180,15 +180,11 @@ local function calculateTooltipDimensions(tooltip, title, lines, stats, versionT
     
     local tooltipWidth = title:GetWidth() + TOOLTIP_INNERBORDER
 
-    --print (1, tooltipWidth)
-    
     if tooltipWidth > TOOLTIP_MAXWIDTH then
         title:SetWidth(TOOLTIP_MAXWIDTH - TOOLTIP_INNERBORDER)
         tooltipWidth = TOOLTIP_MAXWIDTH
     end
 
-    --print (2, tooltipWidth)
-    
     local height = title:GetHeight() + TOOLTIP_INNERBORDER
     
     for idx = 1, #lines, 1 do
@@ -206,8 +202,6 @@ local function calculateTooltipDimensions(tooltip, title, lines, stats, versionT
         end
     end
 
-    --print (3, tooltipWidth)
-    
     for idx = 1, #stats, 1 do
         if stats[idx]:GetVisible() then
             local lineWidth = stats[idx]:GetWidth()
@@ -225,8 +219,6 @@ local function calculateTooltipDimensions(tooltip, title, lines, stats, versionT
     
     height = height + versionText:GetHeight()
 
-    --print (4, tooltipWidth)
-    
     return tooltipWidth, height
 end
 
@@ -360,8 +352,6 @@ local function formatUnitTooltip(unitInfo)
     local unitDetail = InspectUnitDetail(unitInfo)
 
     if unitDetail == nil then return end
-
-    --dump(unitDetail)
 
     uiElements.tooltip:SetTier(unitDetail.tier)
 

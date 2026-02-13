@@ -174,8 +174,6 @@ function questLog.buildUI ()
 	
 	function ui:AddQuest(key, questCategory, title, subTitle, level)
 
-		--print (key, questCategory, title, subTitle, level)
-
 		local hasCategory = false
 
 		for k, v in pairs(questCategories) do

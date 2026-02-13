@@ -242,9 +242,6 @@ function questLog.buildUseUI ()
 			local thisItem = tempList[idx]
 			local useItem = ui:GetUseItemByKey(thisItem.id)
 
-			--
-			--dump (thisItem.stack)
-
 			if useItem == nil and (thisItem.stack == nil or thisItem.stack == 1) then
 				ui:AddUseItem(thisItem.id, thisItem.name, thisItem.icon, thisItem.qKey, thisItem.type)
 			end

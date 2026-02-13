@@ -40,8 +40,6 @@ function lowerBar.currency()
     --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
     datasetFrame:SetLayer(2)    
 
-    --print ("currency", -data.aFourth - (13/2))
-    
     local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
     datasetCurrency:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)

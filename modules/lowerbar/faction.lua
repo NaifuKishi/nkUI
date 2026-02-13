@@ -37,7 +37,6 @@ function lowerBar.faction()
         for key, details in pairs(detailList) do
             if details.name == "The Lycini" then
                 currentFaction = details.id
-                --dump (details)
                 break
             end
         end

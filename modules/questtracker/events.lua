@@ -110,8 +110,6 @@ local function getCarnageNPC (objectiveText)
 		end
 	end
 
-	--print (fullName)
-
    -- Handle German pluralization
     if lang == "DE" then
         -- Remove common German plural endings

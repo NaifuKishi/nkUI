@@ -246,8 +246,6 @@ function sct.DisplayText(sctText, icon, isPet, inComing, crit)
         end
     end
 
-    --print (yVariation)
-
     sct.AnimateFrame(frame, text, icon, xVariation, yVariation, inComing)
 
     yVariation = yVariation - 20
