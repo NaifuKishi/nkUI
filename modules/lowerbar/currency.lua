@@ -74,8 +74,8 @@ function lowerBar.currency()
 
             -- Build the coin string with only non-zero values
             local coinParts = {}
-            if platin > 0 then
-                table.insert(coinParts, string.format("<font color=\"#efebff\">%dp</font>", platin))
+            if platin > 0 then                
+                table.insert(coinParts, string.format("<font color=\"#efebff\">%sp</font>", LibEKL.strings.formatNumber(platin)))
             end
             
             if gold > 0 or platin > 0 then

@@ -1,3 +1,6 @@
+V1.3.1
+    - updates: Lowerbar - improved display of large platinum amounts
+
 V1.3.0
     - new: Minimap module
     - updates: Ressource Bar - added option to display always
