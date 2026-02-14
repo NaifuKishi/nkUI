@@ -99,6 +99,8 @@ function internalFunc.oneBagInit()
             
         end, "nkUI.OneBag.LibEKL.InventoryManager.SlotUpdate")
     end
+
+    oneBag.initItemTooltip()
     
     oneBag.populateBag()
     oneBag.getBagSlots()

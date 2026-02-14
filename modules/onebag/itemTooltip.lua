@@ -9,10 +9,12 @@ local oneBag        = privateVars.oneBag
 local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
-local InspectTimeReal   = Inspect.Time.Real
+local inspectTimeReal   = Inspect.Time.Real
 
 local stringFormat  = string.format
 local mathFloor     = math.floor
+
+local showTooltip   = false
 
 ---------- local functions ---------
 
@@ -96,7 +98,7 @@ local function uiItemTooltip ()
 
             if thisAuctionItem then
            
-                local difference = math.abs(InspectTimeReal() - thisAuctionItem.lastSeen)
+                local difference = math.abs(inspectTimeReal() - thisAuctionItem.lastSeen)
                 local days = difference / 3600 / 24
 
                 local coinText = internalFunc.formatCoins(thisAuctionItem.avgPrice)
@@ -125,12 +127,30 @@ function oneBag.showItemTooltip (thisItemID)
     end
 
     uiElements.oneBagItemTooltip:SetItem(thisItemID)
-    uiElements.oneBagItemTooltip:SetVisible(true)
+    --uiElements.oneBagItemTooltip:SetVisible(true)
+    showTooltip = true
 
 end
 
 function oneBag.hideItemTooltip ()
 
+    showTooltip = false
     if uiElements.oneBagItemTooltip then uiElements.oneBagItemTooltip:SetVisible(false) end
+
+end
+
+function oneBag.initItemTooltip ()
+
+    UI.Native.Tooltip:EventAttach(Event.UI.Native.Loaded, function()
+        
+        if not showTooltip then return end
+
+        -- Wird benötigt weil der Ingame Tooltip rumspringt und sonst der Zusatzframe kurz oben Links im Screen angezeigt wird
+
+        LibEKL.Events.AddInsecure(function()            
+            uiElements.oneBagItemTooltip:SetVisible(UI.Native.Tooltip:GetLoaded())    
+        end, inspectTimeReal(), 0.3) 
+        
+    end, "nkUI.OneBag.Native.Tooltip.Loaded")
 
 end
