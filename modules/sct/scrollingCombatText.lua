@@ -554,10 +554,10 @@ function internalFunc.sctInit()
     --Command.Event.Attach(Event.Quest.Change, processQuestChanges, "nkUI.SCT.Quest.Change")
 
     -- Event-Handler für Event.System.Error (Fehlermeldungen)
-    Command.Event.Attach(Event.System.Error, function(_, errorInfo)
+    --[[Command.Event.Attach(Event.System.Error, function(_, errorInfo)
         local errorMessage = string.format("<font color='#FF0000'>[ERROR] %s</font>", errorInfo.error)
         sct.displayMessageAtTopCenter(errorMessage, 5) -- 5 Sekunden anzeigen
-    end, "nkUI.SCT.System.Error")
+    end, "nkUI.SCT.System.Error")]]
         
     sctInit = true
 end
