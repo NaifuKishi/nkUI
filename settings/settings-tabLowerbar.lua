@@ -32,7 +32,7 @@ function settingsUI.uiConfigTabLowerBar (name, parent)
             internalFunc.lowerBarInit(newValue)
         end)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
         activateCheckbox:SetChecked(nkUISetup.modules.lowerBar.activate, true)
 
         local moduleActive = nkUISetup.modules.lowerBar.activate
@@ -42,18 +42,18 @@ function settingsUI.uiConfigTabLowerBar (name, parent)
             LibEKL.UI.reloadDialog ("nkUI")
         end)
 
-        transparentCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 10)
+        transparentCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         transparentCheckbox:SetChecked(nkUISetup.modules.lowerBar.transparent, true)        
 
         fontHeader = settingsUI.header(name .. ".fontHeader", frame, langTexts.settings.fontSizes)
-        fontHeader:SetPoint("TOPLEFT", transparentCheckbox, "BOTTOMLEFT", 0, 15)
+        fontHeader:SetPoint("TOPLEFT", transparentCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         fontSizeSlider = settingsUI.slider(name .. ".fontSizeSlider", frame, langTexts.settings.textDisplay, moduleActive, function(newValue)
             nkUISetup.modules.lowerBar.fontSize = newValue
             internalFunc.lowerBarRedraw()
         end)
 
-        fontSizeSlider:SetPoint("TOPLEFT", fontHeader, "BOTTOMLEFT", 0, 15)
+        fontSizeSlider:SetPoint("TOPLEFT", fontHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         fontSizeSlider:SetRange(8, 40)
         fontSizeSlider:SetMidValue(24)
         fontSizeSlider:SetPrecision(1)
@@ -64,7 +64,7 @@ function settingsUI.uiConfigTabLowerBar (name, parent)
             internalFunc.lowerBarRedraw()
         end)
 
-        timeSizeSlider:SetPoint("TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, 10)
+        timeSizeSlider:SetPoint("TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         timeSizeSlider:SetRange(10, 60)
         timeSizeSlider:SetMidValue(35)
         timeSizeSlider:SetPrecision(1)
@@ -82,14 +82,14 @@ function settingsUI.uiConfigTabLowerBar (name, parent)
         dateSizeSlider:AdjustValue(nkUISetup.modules.lowerBar.dateSize)
 ]]
         barHeader = settingsUI.header(name .. ".barHeader", frame, langTexts.settings.expNotoriety)
-        barHeader:SetPoint("TOPLEFT", timeSizeSlider, "BOTTOMLEFT", 0, 15)
+        barHeader:SetPoint("TOPLEFT", timeSizeSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         barTextSlider = settingsUI.slider(name .. ".barTextSlider", frame, langTexts.settings.textDisplay, moduleActive, function(newValue)
             nkUISetup.modules.lowerBar.barText = newValue
             internalFunc.lowerBarRedraw()
         end)
 
-        barTextSlider:SetPoint("TOPLEFT", barHeader, "BOTTOMLEFT", 0, 15)
+        barTextSlider:SetPoint("TOPLEFT", barHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         barTextSlider:SetRange(10, 40)
         barTextSlider:SetMidValue(25)
         barTextSlider:SetPrecision(1)
@@ -100,7 +100,7 @@ function settingsUI.uiConfigTabLowerBar (name, parent)
             internalFunc.lowerBarRedraw()
         end)
 
-        barHeightSlider:SetPoint("TOPLEFT", barTextSlider, "BOTTOMLEFT", 0, 10)
+        barHeightSlider:SetPoint("TOPLEFT", barTextSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         barHeightSlider:SetRange(10, 40)
         barHeightSlider:SetMidValue(25)
         barHeightSlider:SetPrecision(1)

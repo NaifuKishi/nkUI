@@ -20,14 +20,14 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
     function frame:build()
 
         sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.unitFrameSize)
-        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
 
         widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
 
-        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
+        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         widthSlider:SetRange(100, 400)
         widthSlider:SetMidValue(250)
         widthSlider:SetPrecision(1)
@@ -50,18 +50,18 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            reverseCheckbox:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 5)
+            reverseCheckbox:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
             reverseCheckbox:SetChecked(thisSettings.reverse, true)
         end
 
         -- font sizes
 
-        fontSizesHeader = settingsUI.header(name .. ".fontSizesHeader", frame, langTexts.settings.textSizeHeaders)
+        fontSizesHeader = settingsUI.header(name .. ".fontSizesHeader", frame, langTexts.settings.textSizeHeader)
 
         if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "group" then
-            fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT", 0, 15)
+            fontSizesHeader:SetPoint("TOPLEFT", reverseCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         else
-            fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 15)
+            fontSizesHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         end
 
         nameFontSize = settingsUI.slider(name .. ".nameFontSize", frame, langTexts.settings.unitName, true, function(newValue)
@@ -69,7 +69,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             internalFunc.uiFrameRedraw(unitType)
         end)
 
-        nameFontSize:SetPoint("TOPLEFT", fontSizesHeader, "BOTTOMLEFT", 0, 10)
+        nameFontSize:SetPoint("TOPLEFT", fontSizesHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         nameFontSize:SetRange(10, 40)
         nameFontSize:SetMidValue(25)
         nameFontSize:SetPrecision(1)
@@ -92,7 +92,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            energyFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
+            energyFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
             energyFontSize:SetRange(10, 40)
             energyFontSize:SetMidValue(25)
             energyFontSize:SetPrecision(1)
@@ -116,9 +116,9 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         end)
 
         if unitType ~= "raid" and unitType ~= "target.target" then
-            levelFontSize:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT", 0, 5)
+            levelFontSize:SetPoint("TOPLEFT", energyFontSize, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         else
-            levelFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, 5)
+            levelFontSize:SetPoint("TOPLEFT", nameFontSize, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         end
 
         levelFontSize:SetRange(10, 40)
@@ -131,14 +131,14 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
         if unitType ~= "player.pet" then
 
             iconSizeHeader = settingsUI.header(name .. ".iconSizeHeader", frame, langTexts.settings.iconSizes)
-            iconSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, 15)
+            iconSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
             roleIconSize = settingsUI.slider(name .. ".roleIconSize", frame, langTexts.settings.roleIcon, true, function(newValue)
                 thisSettings.iconSizes.role = newValue
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            roleIconSize:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, 15)
+            roleIconSize:SetPoint("TOPLEFT", iconSizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
             roleIconSize:SetRange(10, 40)
             roleIconSize:SetMidValue(25)
             roleIconSize:SetPrecision(1)
@@ -151,7 +151,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            combatIconSize:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, 5)
+            combatIconSize:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
             combatIconSize:SetRange(10, 40)
             combatIconSize:SetMidValue(25)
             combatIconSize:SetPrecision(1)
@@ -179,11 +179,11 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
             buffSizeHeader = settingsUI.header(name .. ".buffSizeHeader", frame, langTexts.settings.buffDisplaySetup)
 
             if unitType ~= "raid" and unitType ~= "target.target" and unitType ~= "player.pet" then
-                buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT", 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", combatIconSize, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
             elseif unitType ~= "player.pet" then
-                buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", roleIconSize, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
             else
-                buffSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, 15)
+                buffSizeHeader:SetPoint("TOPLEFT", levelFontSize, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
             end
 
             buffWidth = settingsUI.slider(name .. ".buffWidth", frame, langTexts.settings.buffIconSize, true, function(newValue)
@@ -192,7 +192,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            buffWidth:SetPoint("TOPLEFT", buffSizeHeader, "BOTTOMLEFT", 0, 15)
+            buffWidth:SetPoint("TOPLEFT", buffSizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
             buffWidth:SetRange(10, 40)
             buffWidth:SetMidValue(25)
             buffWidth:SetPrecision(1)
@@ -203,7 +203,7 @@ function settingsUI.uiConfigTabUF (name, parent, unitType, thisSettings)
                 internalFunc.uiFrameRedraw(unitType)
             end)
 
-            timerFontSize:SetPoint("TOPLEFT", buffWidth, "BOTTOMLEFT", 0, 20)
+            timerFontSize:SetPoint("TOPLEFT", buffWidth, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
             timerFontSize:SetRange(10, 30)
             timerFontSize:SetMidValue(20)
             timerFontSize:SetPrecision(1)

@@ -3,8 +3,9 @@ local addonInfo, privateVars = ...
 ---------- init namespace ---------
 
 local internalFunc  = privateVars.internalFunc
-local settingsUI     = privateVars.settingsUI
+local settingsUI    = privateVars.settingsUI
 local langTexts     = privateVars.langTexts
+local uiElements    = privateVars.uiElements
 
 local stringFormat = string.format
 
@@ -15,19 +16,27 @@ function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local widthSlider, heightSlider, comboWidthSlider, comboHeightSlider, chargeWidthSlider, chargeHeightSlider, marginRessourceSlider, chargeFontSize, ressourceFontSize
     local sizeHeader, comboHeader, chargeHeader, marginHeader, fontSizeHeader
-    local introText
+    local introText, alwaysShowRessourceBarCheckbox
 
     function frame:build()
 
+        alwaysShowRessourceBarCheckbox = settingsUI.checkbox(name .. ".alwaysShowRessourceBarCheckbox", frame, langTexts.settings.alwaysShowRessourceBar, true, function(newValue)
+            nkUISetup.modules.unitFrames.alwaysShowRessourceBar = newValue
+            uiElements.frames["player.ressourcebar"]:SetVisible(newValue)
+        end)
+
+        alwaysShowRessourceBarCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
+        alwaysShowRessourceBarCheckbox:SetChecked(nkUISetup.modules.unitFrames.alwaysShowRessourceBar, true)
+
         sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.ressourceBarSize)
-        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        sizeHeader:SetPoint("TOPLEFT", alwaysShowRessourceBarCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
-        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 10)
+        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         widthSlider:SetRange(100, 400)
         widthSlider:SetMidValue(250)
         widthSlider:SetPrecision(1)
@@ -47,14 +56,14 @@ function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
         -- combo display
 
         comboHeader = settingsUI.header(name .. ".comboHeader", frame, langTexts.settings.comboPointSize)
-        comboHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 15)
+        comboHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         comboWidthSlider = settingsUI.slider(name .. ".comboWidthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.combo.width = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
-        comboWidthSlider:SetPoint("TOPLEFT", comboHeader, "BOTTOMLEFT", 0, 15)
+        comboWidthSlider:SetPoint("TOPLEFT", comboHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         comboWidthSlider:SetRange(10, 30)
         comboWidthSlider:SetMidValue(20)
         comboWidthSlider:SetPrecision(1)
@@ -74,14 +83,14 @@ function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
         -- charge display
 
         chargeHeader = settingsUI.header(name .. ".chargeHeader", frame, langTexts.settings.chargeDisplaySize)
-        chargeHeader:SetPoint("TOPLEFT", comboWidthSlider, "BOTTOMLEFT", 0, 15)
+        chargeHeader:SetPoint("TOPLEFT", comboWidthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         chargeWidthSlider = settingsUI.slider(name .. ".chargeWidthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.charge.width = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
-        chargeWidthSlider:SetPoint("TOPLEFT", chargeHeader, "BOTTOMLEFT", 0, 15)
+        chargeWidthSlider:SetPoint("TOPLEFT", chargeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         chargeWidthSlider:SetRange(100, 400)
         chargeWidthSlider:SetMidValue(250)
         chargeWidthSlider:SetPrecision(1)
@@ -100,15 +109,15 @@ function settingsUI.uiConfigTabRessourceBar (name, parent, thisSettings)
 
         -- font sizes
 
-        fontSizeHeader = settingsUI.header(name .. ".fontSizeHeader", frame, langTexts.settings.textSizeHeaders)
-        fontSizeHeader:SetPoint("TOPLEFT", chargeWidthSlider, "BOTTOMLEFT", 0, 15)
+        fontSizeHeader = settingsUI.header(name .. ".fontSizeHeader", frame, langTexts.settings.textSizeHeader)
+        fontSizeHeader:SetPoint("TOPLEFT", chargeWidthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         chargeFontSize = settingsUI.slider(name .. ".chargeFontSize", frame, langTexts.settings.charge, true, function(newValue)
             thisSettings.fontSizes.charge = newValue
             internalFunc.uiFrameRedraw("player.ressourcebar")
         end)
 
-        chargeFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, 10)
+        chargeFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         chargeFontSize:SetRange(10, 30)
         chargeFontSize:SetMidValue(20)
         chargeFontSize:SetPrecision(1)

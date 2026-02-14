@@ -19,6 +19,13 @@ uiElements.settingsContext = UI.CreateContext("nkUI.Settings")
 uiElements.settingsContext:SetStrata('dialog')
 uiElements.settingsContext:SetLayer(10)
 
+settingsUI.PADDING = {
+    ACTIVE = 5,
+    HEADING = 15,
+    AFTERHEADING = 15,
+    REGULAR = 10,
+}
+
 ---------- init local variables ---------
 
 local _defaults = {
@@ -60,6 +67,7 @@ local _defaults = {
                         buffDuration = 60,
                         smoothAnimation = true,
                         colorScheme = "wow",
+                        alwaysShowRessourceBar = false,
                         maxBuffCount = 9,
                         frames = {  player          = { x = -300, y = 300, width = 250, height = 35, 
                                                         reverse = false,
@@ -112,7 +120,7 @@ local _defaults = {
                                                         combo = { width = 30, height = 12},
                                                         charge = { width = 160, height = 12},
                                                         margins = { ressource = 10 },
-                                                        fontSizes = {charge = 16, ressource = 20}
+                                                        fontSizes = {charge = 16, ressource = 20},
                                                      },
                                     playerCastBar   = { x = 0, y = 400, width = 250, height = 24,
                                                         fontSizes = {text = 16, timer = 14}
@@ -398,9 +406,9 @@ end
 function settingsUI.header (name, parent, text)
 
     local thisHeader = LibEKL.UICreateFrame("nkText", name, parent)
-    thisHeader:SetFontSize(16)
+    thisHeader:SetFontSize(18)
     thisHeader:SetText(text)
-    thisHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    thisHeader:SetTextFont(addonInfo.id, "MontserratBold")
     thisHeader:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
     thisHeader:SetEffectGlow({strength = 3})
 

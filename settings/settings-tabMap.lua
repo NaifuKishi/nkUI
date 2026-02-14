@@ -38,7 +38,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             LibEKL.UI.reloadDialog("nkUI")
         end)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
         activateCheckbox:SetChecked(nkUISetup.modules.map.activate, true)
 
         local moduleActive = nkUISetup.modules.map.activate
@@ -47,18 +47,18 @@ function settingsUI.uiConfigTabMap (name, parent)
             nkUISetup.modules.map.locked = newValue            
         end)
 
-        lockedCheckBox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
+        lockedCheckBox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         lockedCheckBox:SetChecked(nkUISetup.modules.map.locked)
 
         labelDisplay = settingsUI.header ( name .. ".labelDisplay", frame, langTexts.map.labelDisplaySettings)
-        labelDisplay:SetPoint("TOPLEFT", lockedCheckBox, "BOTTOMLEFT", 0, 20)
+        labelDisplay:SetPoint("TOPLEFT", lockedCheckBox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         poiCheckbox = settingsUI.checkbox(name .. ".poiCheckbox", frame, langTexts.map.poiCheckbox, moduleActive, function(newValue)        
             nkUISetup.modules.map.showPOI = newValue
             map.ShowPOI(newValue)
         end)
 
-        poiCheckbox:SetPoint("TOPLEFT", labelDisplay, "BOTTOMLEFT", 0, 10)
+        poiCheckbox:SetPoint("TOPLEFT", labelDisplay, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         poiCheckbox:SetChecked(nkUISetup.modules.map.showPOI)
 
         zoneTitleCheckbox = settingsUI.checkbox(name .. ".zoneTitleCheckbox", frame, langTexts.map.zoneTitleCheckbox, moduleActive, function(newValue)        
@@ -66,7 +66,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             if uiElements.mapUI then uiElements.mapUI:SetZoneTitle(newValue) end
         end)
 
-        zoneTitleCheckbox:SetPoint("TOPLEFT", poiCheckbox, "BOTTOMLEFT", 0, 10)
+        zoneTitleCheckbox:SetPoint("TOPLEFT", poiCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         zoneTitleCheckbox:SetChecked(nkUISetup.modules.map.showZoneTitle)
 
         animationsCheckbox = settingsUI.checkbox(name .. ".animationsCheckbox", frame, langTexts.map.animationsCheckbox, moduleActive, function(newValue)        
@@ -77,14 +77,14 @@ function settingsUI.uiConfigTabMap (name, parent)
 
             if rareCheckBox then
                 if newValue == true then
-                    rareCheckbox:SetPoint("TOPLEFT", animationSpeedSlider, "BOTTOMLEFT", 0, 10)
+                    rareCheckbox:SetPoint("TOPLEFT", animationSpeedSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
                 else
-                    rareCheckbox:SetPoint("TOPLEFT", animationsCheckbox, "BOTTOMLEFT", 0, 10)
+                    rareCheckbox:SetPoint("TOPLEFT", animationsCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
                 end
             end
         end)
 
-        animationsCheckbox:SetPoint("TOPLEFT", zoneTitleCheckbox, "BOTTOMLEFT", 0, 10)
+        animationsCheckbox:SetPoint("TOPLEFT", zoneTitleCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         animationsCheckbox:SetChecked(nkUISetup.modules.map.animations)
         
         animationsCheckboxheckboxInfo = settingsUI.label (name .. '.animationsCheckboxheckboxInfo', frame, langTexts.map.animationsCheckboxheckboxInfo)
@@ -96,7 +96,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             if uiElements.mapUI then uiElements.mapUI:SetAnimated(nkUISetup.modules.map.animations, nkUISetup.modules.map.animationSpeed) end
         end)
         
-        animationSpeedSlider:SetPoint("TOPLEFT", animationsCheckbox, "BOTTOMLEFT", 0, 10)
+        animationSpeedSlider:SetPoint("TOPLEFT", animationsCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         animationSpeedSlider:SetRange(0, 100)
         animationSpeedSlider:SetMidValue(50)
         animationSpeedSlider:SetPrecision(1)
@@ -107,7 +107,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             map.ShowRareMobs(newValue)
         end)
         
-        rareCheckbox:SetPoint("TOPLEFT", animationSpeedSlider, "BOTTOMLEFT", 0, 10)
+        rareCheckbox:SetPoint("TOPLEFT", animationSpeedSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         rareCheckbox:SetChecked(nkUISetup.modules.map.rareMobs)
         
         rareCheckboxInfo = settingsUI.label (name .. '.rareCheckboxInfo', frame, langTexts.map.rareCheckboxInfo)
@@ -119,25 +119,25 @@ function settingsUI.uiConfigTabMap (name, parent)
             map.ShowQuest(newValue)
         end)
         
-        questCheckbox:SetPoint("TOPLEFT", rareCheckbox, "BOTTOMLEFT", 0, 10)
+        questCheckbox:SetPoint("TOPLEFT", rareCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         questCheckbox:SetChecked(nkUISetup.modules.map.showQuest)
 
         unknownCheckbox = settingsUI.checkbox(name .. ".unknownCheckbox", frame, langTexts.map.unknownCheckbox, moduleActive, function(newValue)        
             nkUISetup.modules.map.showUnknown = newValue
         end)
         
-        unknownCheckbox:SetPoint("TOPLEFT", questCheckbox, "BOTTOMLEFT", 0, 10)
+        unknownCheckbox:SetPoint("TOPLEFT", questCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         unknownCheckbox:SetChecked(nkUISetup.modules.map.showUnknown)
 
         labelTrack = settingsUI.header ( name .. ".labelTrack", frame, langTexts.map.labelTrackSettings)
-        labelTrack:SetPoint("TOPLEFT", unknownCheckbox, "BOTTOMLEFT", 0, 20)
+        labelTrack:SetPoint("TOPLEFT", unknownCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         
         gatheringCheckbox = settingsUI.checkbox(name .. ".gatheringCheckbox", frame, langTexts.map.gatheringCheckbox, moduleActive, function(newValue)        
             nkUISetup.modules.map.trackGathering = newValue
             map.ShowGathering(newValue)
         end)
 
-        gatheringCheckbox:SetPoint("TOPLEFT", labelTrack, "BOTTOMLEFT", 0, 10)
+        gatheringCheckbox:SetPoint("TOPLEFT", labelTrack, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         gatheringCheckbox:SetChecked(nkUISetup.modules.map.trackGathering)
 
         artifactCheckbox = settingsUI.checkbox(name .. ".artifactCheckbox", frame, langTexts.map.artifactCheckbox, moduleActive, function(newValue)        
@@ -145,7 +145,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             map.ShowArtifacts(newValue)
         end)
         
-        artifactCheckbox:SetPoint("TOPLEFT", gatheringCheckbox, "BOTTOMLEFT", 0, 10)
+        artifactCheckbox:SetPoint("TOPLEFT", gatheringCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         artifactCheckbox:SetChecked(nkUISetup.modules.map.trackArtifacts)
 
     end

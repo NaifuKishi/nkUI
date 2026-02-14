@@ -32,13 +32,13 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
             if stackFontSizeSlider then stackFontSizeSlider:SetActive(newValue) end
         end)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
         activateCheckbox:SetChecked(nkUISetup.modules.buffBar.activate, true)
 
         local moduleActive = nkUISetup.modules.buffBar.activate
 
         sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.sizeSetup)
-        sizeHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 15)
+        sizeHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.buffSize, moduleActive, function(newValue)
             nkUISetup.modules.buffBar.buffs.width = newValue
@@ -47,21 +47,21 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
             internalFunc.buffBar.Redraw()
         end)
 
-        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
+        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         widthSlider:SetRange(10, 100)
         widthSlider:SetMidValue(55)
         widthSlider:SetPrecision(1)
         widthSlider:AdjustValue(nkUISetup.modules.buffBar.buffs.width)
 
         fontHeader = settingsUI.header(name .. ".fontHeader", frame, langTexts.settings.comboPointSetup)
-        fontHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 15)
+        fontHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         timerFontSizeSlider = settingsUI.slider(name .. ".timerFontSizeSlider", frame, langTexts.settings.timerSize, moduleActive, function(newValue)
             nkUISetup.modules.buffBar.buffs.timer = newValue
             internalFunc.buffBar.Redraw()
         end)
 
-        timerFontSizeSlider:SetPoint("TOPLEFT", fontHeader, "BOTTOMLEFT", 0, 15)
+        timerFontSizeSlider:SetPoint("TOPLEFT", fontHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         timerFontSizeSlider:SetRange(10, 40)
         timerFontSizeSlider:SetMidValue(25)
         timerFontSizeSlider:SetPrecision(1)

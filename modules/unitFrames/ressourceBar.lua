@@ -39,7 +39,10 @@ function internalFunc.ressourcBar (unit, setup)
     ressourceBGFrame:SetWidth(setup.width)
     ressourceBGFrame:SetHeight(setup.height)
     ressourceBGFrame:SetBackgroundColor(0, 0, 0, .25)
-    ressourceBGFrame:SetVisible(false)
+
+    if not nkUISetup.modules.unitFrames.alwaysShowRessourceBar then
+        ressourceBGFrame:SetVisible(false)
+    end
 
     local ressourceFrame = LibEKL.UICreateFrame("nkCanvas", thisName .. ".ressourceFrame", ressourceBGFrame)
     

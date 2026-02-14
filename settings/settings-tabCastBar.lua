@@ -20,14 +20,14 @@ function settingsUI.uiConfigTabCastBar (name, parent, unitType, thisSettings)
     function frame:build()
 
         sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.castBarSize)
-        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        sizeHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
 
         widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.width, true, function(newValue)
             thisSettings.width = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
 
-        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, 15)
+        widthSlider:SetPoint("TOPLEFT", sizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         widthSlider:SetRange(100, 400)
         widthSlider:SetMidValue(250)
         widthSlider:SetPrecision(1)
@@ -47,14 +47,14 @@ function settingsUI.uiConfigTabCastBar (name, parent, unitType, thisSettings)
         -- font sizes
 
         fontSizeHeader = settingsUI.header(name .. ".fontSizeHeader", frame, langTexts.settings.textSizeHeader)
-        fontSizeHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, 15)
+        fontSizeHeader:SetPoint("TOPLEFT", widthSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         textFontSize = settingsUI.slider(name .. ".textFontSize", frame, langTexts.settings.spellName, true, function(newValue)
             thisSettings.fontSizes.text = newValue
             internalFunc.uiFrameRedraw(unitType)
         end)
 
-        textFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, 10)
+        textFontSize:SetPoint("TOPLEFT", fontSizeHeader, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         textFontSize:SetRange(10, 40)
         textFontSize:SetMidValue(25)
         textFontSize:SetPrecision(1)

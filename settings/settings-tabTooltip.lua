@@ -22,7 +22,7 @@ function settingsUI.uiConfigTabTooltip (name, parent)
             internalFunc.sctToggle(newValue)
         end)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
         activateCheckbox:SetChecked(nkUISetup.modules.tooltip.activate, false)
 
     end

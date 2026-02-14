@@ -24,7 +24,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
             --if messageOffsetSizeSlider then messageOffsetSizeSlider:SetActive(newValue) end
         end)
 
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
         activateCheckbox:SetChecked(nkUISetup.modules.sct.activate, true)
 
         showXPCheckbox = settingsUI.checkbox(name .. ".showXPCheckbox", frame, langTexts.settings.showXPGains, true, function(newValue)
@@ -32,7 +32,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
              LibEKL.UI.reloadDialog("nkUI")
         end)
 
-        showXPCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 10)
+        showXPCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         showXPCheckbox:SetChecked(nkUISetup.modules.sct.showExpGains, true)
 
         showLootCheckbox = settingsUI.checkbox(name .. ".showLootCheckbox", frame, langTexts.settings.showLootGains, true, function(newValue)
@@ -40,7 +40,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
              LibEKL.UI.reloadDialog("nkUI")
         end)
 
-        showLootCheckbox:SetPoint("TOPLEFT", showXPCheckbox, "BOTTOMLEFT", 0, 10)
+        showLootCheckbox:SetPoint("TOPLEFT", showXPCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         showLootCheckbox:SetChecked(nkUISetup.modules.sct.showLoot, true)
 
     end

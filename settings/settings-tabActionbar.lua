@@ -36,13 +36,13 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         local moduleActive = nkUISetup.modules.actionBars.activate
 
         activateCheckbox:SetChecked(nkUISetup.modules.actionBars.activate, true)
-        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 5)
+        activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
        
         combatAlphaSlider = settingsUI.slider(name .. ".combatAlphaSlider", frame, langTexts.settings.combatAlpha, moduleActive, function (newValue)
              nkUISetup.modules.actionBars.combatAlpha = newValue / 100
         end)
 
-        combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, 30)
+        combatAlphaSlider:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         combatAlphaSlider:SetRange(0, 100)
         combatAlphaSlider:SetMidValue(50)
         combatAlphaSlider:SetPrecision(5)
@@ -53,7 +53,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             internalFunc.actionBarToggleAlpha()
         end)
         
-        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, 10)
+        nonCombatAlphaSlider:SetPoint("TOPLEFT", combatAlphaSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.AFTERHEADING)
         nonCombatAlphaSlider:SetRange(0, 100)
         nonCombatAlphaSlider:SetMidValue(50)
         nonCombatAlphaSlider:SetPrecision(5)    
@@ -64,7 +64,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             LibEKL.UI.reloadDialog ("nkUI")
         end)
         
-        noOfMainBarsSlider:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, 10)
+        noOfMainBarsSlider:SetPoint("TOPLEFT", nonCombatAlphaSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         noOfMainBarsSlider:SetRange(1, 3)
         noOfMainBarsSlider:AdjustValue(nkUISetup.modules.actionBars.mainbars)
 
@@ -73,7 +73,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             uiElements.actionbars.rightScreen:SetVisible(newValue)
         end)
 
-        rightBarCheckbox:SetPoint("TOPLEFT", noOfMainBarsSlider, "BOTTOMLEFT", 0, 10)
+        rightBarCheckbox:SetPoint("TOPLEFT", noOfMainBarsSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         rightBarCheckbox:SetChecked(nkUISetup.modules.actionBars.rightbar, true)
 
         iconSizeSlider = settingsUI.slider(name .. ".iconSizeSlider", frame, langTexts.settings.iconSize, moduleActive, function (newValue)
@@ -81,7 +81,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
             LibEKL.UI.reloadDialog ("nkUI")
         end)
         
-        iconSizeSlider:SetPoint("TOPLEFT", rightBarCheckbox, "BOTTOMLEFT", 0, 10)
+        iconSizeSlider:SetPoint("TOPLEFT", rightBarCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         iconSizeSlider:SetRange(20, 60)
         iconSizeSlider:SetMidValue(40)
         iconSizeSlider:SetPrecision(1)

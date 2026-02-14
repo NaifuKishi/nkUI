@@ -53,7 +53,10 @@ local function secureLeave()
 	uiElements.frames["player.pet"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 	uiElements.frames["player.target.target"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
-	uiElements.frames["player.ressourcebar"]:SetVisible(false)
+	
+	if not nkUISetup.modules.unitFrames.alwaysShowRessourceBar then
+		uiElements.frames["player.ressourcebar"]:SetVisible(false)
+	end
 
 	uiElements.frames["focus"]:SetAlpha(nkUISetup.modules.unitFrames.nonCombatAlpha)
 
