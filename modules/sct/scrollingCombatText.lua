@@ -530,7 +530,7 @@ function internalFunc.sctInit()
             if lastAccumulated == nil then lastAccumulated = accumulated end
             local gain = accumulated - lastAccumulated
             if gain <= 0 then return end
-            sct.DisplayMovingMessage("nkUI", "gfx/lowerbarExperience.png", stringFormat("<font color='#E8B630'>%d exp</font>", gain), 2, -200, -400, 24)
+            sct.DisplayMovingMessage("nkUI", "gfx/lowerbarExperience.png", stringFormat("<font color='#E8B630'>%s exp</font>", LibEKL.strings.formatNumber (gain)), 2, -200, -400, 24)
             lastAccumulated = accumulated
         end, "nkui.SCT.TEMPORARY.Experience")
 
@@ -541,7 +541,7 @@ function internalFunc.sctInit()
                 lastAttunementAccumulated = accumulated
                 return 
             end
-            sct.DisplayMovingMessage("nkUI", "gfx/iconPlanar.png", stringFormat("<font color='#A366CC'>%d planar exp</font>", gain), 2, -225, -425, 24)
+            sct.DisplayMovingMessage("nkUI", "gfx/iconPlanar.png", stringFormat("<font color='#A366CC'>%s planar exp</font>", LibEKL.strings.formatNumber (gain)), 2, -225, -425, 24)
             lastAttunementAccumulated = accumulated
         end, "nkui.SCT.Attunement.Progress.Accumulated")
     end
