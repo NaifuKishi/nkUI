@@ -1,3 +1,15 @@
+V1.3.0
+    - new: Minimap module
+    - updates: Ressource Bar - added option to display always
+    - updates: SCT - formatted exp and planar gains for readability
+    - updates: SCT - large damage numbers will now be displayed trunkated
+    - updates: Quest Tracker - optimized quest item
+    - updates: Unit Frames - health bar will not be animated when switching between targets
+    - updates: Generic - worked on general addon performance    
+    - updates: Generic - Improved performance by changing how textures are displayed
+    - fixes: One Bag - Fixed flickering tooltip frame
+    - fixes: Found some dialogs not using nkUI theme
+
 V1.2.10
     - updates: Some performance optimiziations
     - updates: Unit Frames - raid frames name and level display tweaks
