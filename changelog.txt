@@ -2,6 +2,7 @@ V1.3.1
     - updates: Lowerbar - improved display of large platinum amounts
     - fixes: Map - Fixed missing icons for dragging and resizing
     - fixes: Map - Disabling animations no longer throw error on zone change
+    - fixes: Actionbar - fix for actionbar not clickable affter editing
 
 V1.3.0
     - new: Minimap module

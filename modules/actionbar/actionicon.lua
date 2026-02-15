@@ -30,7 +30,7 @@ local DEFAULT_SCALE = 1
 local DEFAULT_DESIGN = 'default'
 
 local contextSecure = UI.CreateContext("nkUI.actioniconSecure")
-contextSecure:SetStrata('tooltip')
+contextSecure:SetStrata('notify')
 contextSecure:SetSecureMode("restricted")
 
 --[[
@@ -362,7 +362,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 				macroFrame:SetPoint("CENTER", frame, "CENTER", 1, 1)
 				macroFrame:SetSecureMode("restricted")
 				macroFrame:SetMouseMasking("limited")
-				--macroFrame:SetBackgroundColor(1, 0, 0, .2)
+				macroFrame:SetBackgroundColor(1, 0, 0, .2)
 				
 				local thisSize = frame:GetWidth() -2
 				macroFrame:SetWidth(thisSize)
