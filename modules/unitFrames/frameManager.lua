@@ -162,7 +162,12 @@ function internalFunc.FrameManagerGet(unitType, unitFrameType, setup)
         nameText:SetPoint("BOTTOMLEFT", unitFrame, "TOPLEFT", 2, 3)
     end
 
-    nameText:SetTextFont(addonInfo.id, "MontserratExtraBold")
+    if unitFrameType == "raid" then
+        nameText:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    else
+        nameText:SetTextFont(addonInfo.id, "MontserratExtraBold")
+    end
+    
     nameText:SetFontSize(setup.fontSizes.name)
     nameText:SetFontColor(1, 1, 1, 1)
     nameText:SetEffectGlow({ strength = 5})    

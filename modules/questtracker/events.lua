@@ -287,6 +287,8 @@ end
 
 function questTracker.eventInventoryUpdate(_, items)
 
+	if not uiElements.useUI then return end
+
 	for k, v in pairs(items) do
 		local thisItem = inspectItemDetail(k)
 		if thisItem ~=  nil and thisItem.category == 'misc quest' then

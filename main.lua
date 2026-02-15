@@ -22,7 +22,8 @@ local events     	= privateVars.events
 
 -- Cache frequently used functions and values
 
-local inspectTimeFrame	= Inspect.Time.Frame
+local inspectTimeFrame		= Inspect.Time.Frame
+local inspectSystemSecure	= Inspect.System.Secure
 
 local stringFind	= string.find
 local stringFormat	= string.format

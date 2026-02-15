@@ -12,6 +12,8 @@ privateVars.settingsUI = {}
 
 local settingsUI = privateVars.settingsUI
 
+local inspectSystemSecure   = Inspect.System.Secure
+
 local stringFind    = string.find
 local stringFormat  = string.format
 
@@ -585,6 +587,9 @@ function internalFunc.setupUI ()
 end
 
 function internalFunc.setupInit ()
+
+    if inspectSystemSecure() then return end
+
     if uiElements.settings == nil then
         uiElements.settings = internalFunc.setupUI ()
     else

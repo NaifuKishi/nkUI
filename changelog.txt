@@ -1,7 +1,10 @@
 V1.3.2
     - new: Buff Bar - new option to switch alignment 
+    - updates: Unit Frames - changed font on raid frames for names
+    - updates: It's no longer possible to open nkUI panel while in combat
     - fixes: Map - elements are no longer drawn in wrong zoom
-    - fixes: Actionbar - removed accidently colored macro overlay
+    - fixes: Map - fixed switched icons of minor death and earth rifts
+    - fixes: Actionbar - removed accidently colored macro overlay    
 
 V1.3.1
     - new: SCT - new options to disable combat and cooldown messages
