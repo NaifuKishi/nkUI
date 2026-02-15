@@ -158,7 +158,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									showChat = "Chat Hintergrund",
 									alwaysShowRessourceBar = "Zeige immer",
 									showSCTCombat = "Zeige Schaden & Heilung",
-									showSCTCooldowns = "Zeige Abklingszeiten"
+									showSCTCooldowns = "Zeige Abklingszeiten",
+									oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>"
 								},
 		map = {	tabHeaderSettings    			= 'Einstellungen',
 				tabHeaderAbout		 			= 'Über',

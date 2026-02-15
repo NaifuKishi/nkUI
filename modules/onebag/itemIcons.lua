@@ -13,6 +13,10 @@ local InspectItemDetail = Inspect.Item.Detail
 local stringFormat  = string.format
 local stringFind    = string.find
 
+local ICON_SIZE = 40
+local QTY_FONTSIZE = 14
+local BIND_FONTSIZE = 10
+
 ---------- local functions ---------
 
 -- Creates an item icon UI element
@@ -22,8 +26,8 @@ function oneBag.createItemIcon(name, parent)
     local stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 1 }
     
     local itemFrame = LibEKL.UICreateFrame("nkCanvas", name, parent)
-    itemFrame:SetWidth(40 * data.bagScale)
-    itemFrame:SetHeight(40 * data.bagScale)
+    itemFrame:SetWidth(ICON_SIZE * data.bagScale)
+    itemFrame:SetHeight(ICON_SIZE * data.bagScale)
     
     local itemIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", itemFrame)
     itemIcon:SetPoint("TOPLEFT", itemFrame, "TOPLEFT", 1, 1)
@@ -32,7 +36,7 @@ function oneBag.createItemIcon(name, parent)
     
     local quantityText = LibEKL.UICreateFrame("nkText", name .. ".quantityText", itemFrame)
     quantityText:SetPoint("BOTTOMRIGHT", itemIcon, "BOTTOMRIGHT", -1, 1)
-    quantityText:SetFontSize(14 * data.bagScale)
+    quantityText:SetFontSize(QTY_FONTSIZE * data.bagScale)
     quantityText:SetFontColor(1, 1, 1, 1)
     quantityText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     quantityText:SetEffectGlow({ strength = 3})
@@ -40,7 +44,7 @@ function oneBag.createItemIcon(name, parent)
     
     local bindText = LibEKL.UICreateFrame("nkText", name .. ".bindText", itemFrame)
     bindText:SetPoint("TOPLEFT", itemIcon, "TOPLEFT", -1, 1)
-    bindText:SetFontSize(10 * data.bagScale)
+    bindText:SetFontSize(BIND_FONTSIZE * data.bagScale)
     bindText:SetFontColor(1, 1, 1, 1)
     bindText:SetTextFont(addonInfo.id, "MontserratSemiBold")
     bindText:SetEffectGlow({ strength = 3})
@@ -58,7 +62,8 @@ function oneBag.createItemIcon(name, parent)
         --itemIcon:SetTextureAsync(addonName, path)
 
         local width = itemFrame:GetWidth()
-		fill = { type = "texture", source = "Rift", texture = icon, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+        local iconMod = 1 / width * (32 * data.bagScale)
+		fill = { type = "texture", source = "Rift", texture = icon, transform = Utility.Matrix.Create(iconMod, iconMod, 0, 0, 0) }
         itemFrame:SetShape(path, fill, stroke)
     end
     

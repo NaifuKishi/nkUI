@@ -158,7 +158,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     showChat = "Fond de discussion",
                                     alwaysShowRessourceBar = "Montre toujours",
                                     showSCTCombat = "Afficher dégâts & soins",
-									howSCTCooldowns = "Afficher temps de recharge"
+									howSCTCooldowns = "Afficher temps de recharge",
+                                    oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>"
                                 },
             tutorial = {
                         welcomeTitle = "Bienvenue dans nkUI Version %s",

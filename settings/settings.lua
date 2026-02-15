@@ -157,7 +157,8 @@ local _defaults = {
                         x = 2000,
                         y = 600,
                         bankX = 1200,
-                        bankY = 600
+                        bankY = 600,
+                        scale = 1,
                     },
         buffBar     = { activate = true,
                         x = -1690, y = -690,

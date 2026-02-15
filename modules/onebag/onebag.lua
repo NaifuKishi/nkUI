@@ -63,8 +63,10 @@ function internalFunc.oneBagInit()
             uiElements.oneBag:SetVisible(true)
         end
     else
-        local parentHeight = UIParent:GetHeight()
-        data.bagScale = parentHeight / 1440
+        --local parentHeight = UIParent:GetHeight()
+        --data.bagScale = parentHeight / 1440
+
+        data.bagScale = nkUISetup.modules.oneBag.scale
 
         LibEKL.Inventory.updateDB()
         uiElements.oneBag = oneBag.createBagUI("nkUI.oneBag", langTexts.oneBag.bagTitle, true)
