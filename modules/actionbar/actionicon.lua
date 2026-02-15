@@ -30,8 +30,7 @@ local DEFAULT_SCALE = 1
 local DEFAULT_DESIGN = 'default'
 
 local contextSecure = UI.CreateContext("nkUI.actioniconSecure")
-contextSecure:SetStrata('hud')
-contextSecure:SetLayer(2)
+contextSecure:SetStrata('tooltip')
 contextSecure:SetSecureMode("restricted")
 
 --[[
