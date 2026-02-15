@@ -1,3 +1,6 @@
+V1.3.2
+    - fixes: Map - elements are no longer drawn in wrong zoom
+
 V1.3.1
     - new: SCT - new options to disable combat and cooldown messages
     - new: OneBag - new setting to change bag & bank scaling
