@@ -14,7 +14,7 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local activateCheckBox, widthSlider, heightSlider, timerFontSizeSlider, stackFontSizeSlider, labelFontSizeSlider
-    local sizeHeader, fontHeader
+    local sizeHeader, fontHeader, growRightCheckbox
 
     function frame:build()
 
@@ -30,6 +30,7 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
             if widthSlider then widthSlider:SetActive(newValue) end
             if timerFontSizeSlider then timerFontSizeSlider:SetActive(newValue) end
             if stackFontSizeSlider then stackFontSizeSlider:SetActive(newValue) end
+            if growRightCheckbox then growRightCheckbox:SetActive(newValue) end
 
             LibEKL.UI.reloadDialog ("nkUI")
         end)
@@ -39,8 +40,16 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
 
         local moduleActive = nkUISetup.modules.buffBar.activate
 
+        growRightCheckbox = settingsUI.checkbox(name .. ".growRightCheckbox", frame, langTexts.settings.buffBarGrowRight, moduleActive, function(newValue)
+            nkUISetup.modules.unitFrames.buffBarGrowRight = newValue            
+            LibEKL.UI.reloadDialog ("nkUI")
+        end)
+
+        growRightCheckbox:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
+        growRightCheckbox:SetChecked(nkUISetup.modules.unitFrames.buffBarGrowRight, true)
+
         sizeHeader = settingsUI.header(name .. ".sizeHeader", frame, langTexts.settings.sizeSetup)
-        sizeHeader:SetPoint("TOPLEFT", activateCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
+        sizeHeader:SetPoint("TOPLEFT", growRightCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
 
         widthSlider = settingsUI.slider(name .. ".widthSlider", frame, langTexts.settings.buffSize, moduleActive, function(newValue)
             nkUISetup.modules.buffBar.buffs.width = newValue

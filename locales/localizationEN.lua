@@ -161,7 +161,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									alwaysShowRessourceBar = "Always show",
 									showSCTCombat = "Show damage & heal",
 									showSCTCooldowns = "Show Cooldowns",
-									oneBagScale = "OneBag size <font color='#3399FF'>%d%%</font>"
+									oneBagScale = "OneBag size <font color='#3399FF'>%d%%</font>",
+									buffBarGrowRight = "Grow right",
 								},
 		map = {	tabHeaderSettings	   			= 'Settings',
 				tabHeaderAbout		   			= 'About',

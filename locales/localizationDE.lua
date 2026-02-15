@@ -159,7 +159,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									alwaysShowRessourceBar = "Zeige immer",
 									showSCTCombat = "Zeige Schaden & Heilung",
 									showSCTCooldowns = "Zeige Abklingszeiten",
-									oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>"
+									oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>",
+									buffBarGrowRight = "Nach Rechts wachsen",
 								},
 		map = {	tabHeaderSettings    			= 'Einstellungen',
 				tabHeaderAbout		 			= 'Über',

@@ -65,6 +65,7 @@ local _defaults = {
                         showBuffs = true,
                         showOnlyOwnBuffs = false,
                         buffDuration = 60,
+                        buffBarGrowRight = true,
                         smoothAnimation = true,
                         colorScheme = "wow",
                         alwaysShowRessourceBar = false,

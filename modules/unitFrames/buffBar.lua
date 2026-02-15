@@ -58,7 +58,12 @@ function internalFunc.buffBar.UpdateBuffDisplay()
 
         if thisIcon.lastX ~= x then
             local icon = thisIcon.icon
-            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, 0)
+
+            if nkUISetup.modules.unitFrames.buffBarGrowRight then
+                icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, 0)
+            else
+                icon:SetPoint("TOPRIGHT", uiElements.frames["buffBar"], "TOPRIGHT", -x, 0)
+            end
         end
 
         thisIcon.lastX = x
@@ -80,7 +85,12 @@ function internalFunc.buffBar.UpdateBuffDisplay()
 
         if thisIcon.lastX ~= x then
             local icon = thisIcon.icon
-            icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, debuffOffset)
+
+            if nkUISetup.modules.unitFrames.buffBarGrowRight then
+                icon:SetPoint("TOPLEFT", uiElements.frames["buffBar"], "TOPLEFT", x, debuffOffset)
+            else
+                icon:SetPoint("TOPRIGHT", uiElements.frames["buffBar"], "TOPRIGHT", -x, debuffOffset)
+            end            
         end
 
         thisIcon.lastX = x
