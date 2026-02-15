@@ -5,6 +5,7 @@ V1.3.1
     - fixes: Map - Fixed missing icons for dragging and resizing
     - fixes: Map - Disabling animations no longer throw error on zone change
     - fixes: Actionbar - fix for actionbar not clickable affter editing
+    - fixes: Generic - fixed some errors in settings and layout module
 
 V1.3.0
     - new: Minimap module

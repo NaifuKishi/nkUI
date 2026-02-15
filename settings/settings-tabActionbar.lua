@@ -68,7 +68,7 @@ function settingsUI.uiConfigTabActionBar (name, parent)
         noOfMainBarsSlider:SetRange(1, 3)
         noOfMainBarsSlider:AdjustValue(nkUISetup.modules.actionBars.mainbars)
 
-        rightBarCheckbox = settingsUI.checkbox(name .. ".rightBarCheckbox", frame, langTexts.settings.activateRightBar, true, function(newValue)        
+        rightBarCheckbox = settingsUI.checkbox(name .. ".rightBarCheckbox", frame, langTexts.settings.activateRightBar, moduleActive, function(newValue)        
             nkUISetup.modules.actionBars.rightbar = newValue
             uiElements.actionbars.rightScreen:SetVisible(newValue)
         end)

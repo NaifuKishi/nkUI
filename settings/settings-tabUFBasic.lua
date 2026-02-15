@@ -31,13 +31,15 @@ function settingsUI.uiConfigTabUFBasic (name, parent)
             if smoothAnimationCheckbox then smoothAnimationCheckbox:SetActive(newValue) end
             if alwaysShowRessourceBarCheckbox then alwaysShowRessourceBarCheckbox:SetActive(newValue) end
 
-            internalFunc.uiFramesToggle(newValue)
+            LibEKL.UI.reloadDialog ("nkUI")
+
+            --[[internalFunc.uiFramesToggle(newValue)
 
             if newValue == false then
                 internalFunc.uiFramesRemoveBuffs()
             else
                 internalFunc.uiFramesLoadAllBuffs()
-            end
+            end]]
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)

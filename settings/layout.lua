@@ -92,88 +92,93 @@ end
 
 function internalFunc.initMove ()
 
-    if uiElements.frames["player"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player"], "PLAYER FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.player.x = newX
-            nkUISetup.modules.unitFrames.frames.player.y = newY        
-        end))
+    if nkUISetup.modules.unitFrames.activate then
+
+        if uiElements.frames["player"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player"], "PLAYER FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.player.x = newX
+                nkUISetup.modules.unitFrames.frames.player.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.pet"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.pet"], "PET FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.playerPet.x = newX
+                nkUISetup.modules.unitFrames.frames.playerPet.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.target"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.target"], "TARGET FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.target.x = newX
+                nkUISetup.modules.unitFrames.frames.target.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.target.target"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.target"], "ToT FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.targetOfTarget.x = newX
+                nkUISetup.modules.unitFrames.frames.targetOfTarget.y = newY        
+            end))
+        end
+
+        if uiElements.frames["focus"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["focus"], "FOCUS FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.focus.x = newX
+                nkUISetup.modules.unitFrames.frames.focus.y = newY        
+            end))
+        end
+
+        if uiElements.frames["group01"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["group01"], "GROUP FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.group.x = newX
+                nkUISetup.modules.unitFrames.frames.group.y = newY        
+            end))
+        end
+
+        if uiElements.frames["raid01"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["raid01"], "RAID FRAME", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.raid.x = newX
+                nkUISetup.modules.unitFrames.frames.raid.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.ressourcebar"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.ressourcebar"], "RESSOURCE BAR", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.ressourceBar.x = newX
+                nkUISetup.modules.unitFrames.frames.ressourceBar.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.castbar"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.castbar"], "PLAYER CASTBAR", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.playerCastBar.x = newX
+                nkUISetup.modules.unitFrames.frames.playerCastBar.y = newY        
+            end))
+        end
+
+        if uiElements.frames["player.target.castbar"] then
+            table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.castbar"], "TARGET CASTBAR", function (newX, newY)
+                nkUISetup.modules.unitFrames.frames.targetCastBar.x = newX
+                nkUISetup.modules.unitFrames.frames.targetCastBar.y = newY        
+            end))
+        end
     end
 
-    if uiElements.frames["player.pet"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.pet"], "PET FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.playerPet.x = newX
-            nkUISetup.modules.unitFrames.frames.playerPet.y = newY        
-        end))
-    end
+    if nkUISetup.modules.actionBars.activate then
+        if uiElements.actionbars.main then
+            table.insert(moveFrames, _moveFrame (uiElements.actionbars.main, "ACTION BAR", function (newX, newY)
+                nkUISetup.modules.actionBars.x = newX
+                nkUISetup.modules.actionBars.y = newY        
+            end))
+        end
 
-    if uiElements.frames["player.target"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.target"], "TARGET FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.target.x = newX
-            nkUISetup.modules.unitFrames.frames.target.y = newY        
-        end))
-    end
-
-    if uiElements.frames["player.target.target"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.target"], "ToT FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.targetOfTarget.x = newX
-            nkUISetup.modules.unitFrames.frames.targetOfTarget.y = newY        
-        end))
-    end
-
-    if uiElements.frames["focus"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["focus"], "FOCUS FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.focus.x = newX
-            nkUISetup.modules.unitFrames.frames.focus.y = newY        
-        end))
-    end
-
-    if uiElements.frames["group01"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["group01"], "GROUP FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.group.x = newX
-            nkUISetup.modules.unitFrames.frames.group.y = newY        
-        end))
-    end
-
-    if uiElements.frames["raid01"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["raid01"], "RAID FRAME", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.raid.x = newX
-            nkUISetup.modules.unitFrames.frames.raid.y = newY        
-        end))
-    end
-
-    if uiElements.frames["player.ressourcebar"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.ressourcebar"], "RESSOURCE BAR", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.ressourceBar.x = newX
-            nkUISetup.modules.unitFrames.frames.ressourceBar.y = newY        
-        end))
-    end
-
-    if uiElements.frames["player.castbar"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.castbar"], "PLAYER CASTBAR", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.playerCastBar.x = newX
-            nkUISetup.modules.unitFrames.frames.playerCastBar.y = newY        
-        end))
-    end
-
-    if uiElements.frames["player.target.castbar"] then
-        table.insert(moveFrames, _moveFrame (uiElements.frames["player.target.castbar"], "TARGET CASTBAR", function (newX, newY)
-            nkUISetup.modules.unitFrames.frames.targetCastBar.x = newX
-            nkUISetup.modules.unitFrames.frames.targetCastBar.y = newY        
-        end))
-    end
-
-    if uiElements.actionbars.main then
-        table.insert(moveFrames, _moveFrame (uiElements.actionbars.main, "ACTION BAR", function (newX, newY)
-            nkUISetup.modules.actionBars.x = newX
-            nkUISetup.modules.actionBars.y = newY        
-        end))
-    end
-
-    if uiElements.actionbars.rightScreen then
-        table.insert(moveFrames, _moveFrame (uiElements.actionbars.rightScreen, "RIGHT BAR", function (newX, newY)
-            nkUISetup.modules.actionBars.rightBarX = newX
-            nkUISetup.modules.actionBars.rightBarY = newY        
-        end))
+        if uiElements.actionbars.rightScreen then
+            table.insert(moveFrames, _moveFrame (uiElements.actionbars.rightScreen, "RIGHT BAR", function (newX, newY)
+                nkUISetup.modules.actionBars.rightBarX = newX
+                nkUISetup.modules.actionBars.rightBarY = newY        
+            end))
+        end
     end
 
     if nkUISetup.modules.buffBar.activate then

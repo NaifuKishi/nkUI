@@ -20,16 +20,18 @@ function settingsUI.uiConfigTabBuffBar (name, parent)
 
         activateCheckbox = settingsUI.checkbox(name .. ".activateCheckbox", frame, langTexts.settings.activateModule, true, function(newValue)
             nkUISetup.modules.buffBar.activate = newValue
-
+--[[
             if newValue then
                 internalFunc.buffBar.loadAllBuffs()
             else
                 internalFunc.buffBar.clearAllBuffs()
             end
-
+]]
             if widthSlider then widthSlider:SetActive(newValue) end
             if timerFontSizeSlider then timerFontSizeSlider:SetActive(newValue) end
             if stackFontSizeSlider then stackFontSizeSlider:SetActive(newValue) end
+
+            LibEKL.UI.reloadDialog ("nkUI")
         end)
 
         activateCheckbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, settingsUI.PADDING.ACTIVE)
