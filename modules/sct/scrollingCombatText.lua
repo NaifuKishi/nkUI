@@ -509,19 +509,24 @@ function internalFunc.sctInit()
     
     local experience = inspectExperience()
     local attunement = inspectAttunementProgress()
+
     lastAccumulated = experience.accumulated    
     lastAttunementAccumulated = attunement.accumulated
 
-    Command.Event.Attach(Event.Combat.Damage, handleCombatDamage, "nkUI.SCT.Combat.Damage")
-    Command.Event.Attach(Event.Combat.Dodge, function( _, info ) handleCombatEvent(info, TEXT_DODGE) end, "nkUI.SCT.Combat.Dodge")
-    Command.Event.Attach(Event.Combat.Immune, function( _, info ) handleCombatEvent(info, TEXT_IMMUNE) end, "nkUI.SCT.Combat.Immune")
-    Command.Event.Attach(Event.Combat.Miss, function( _, info ) handleCombatEvent(info, TEXT_MISS) end, "nkUI.SCT.Combat.Miss")
-    Command.Event.Attach(Event.Combat.Parry, function( _, info ) handleCombatEvent(info, TEXT_PARRY) end, "nkUI.SCT.Combat.Parry")
-    Command.Event.Attach(Event.Combat.Resist, function( _, info ) handleCombatEvent(info, TEXT_RESIST) end, "nkUI.SCT.Combat.Resist")
-    Command.Event.Attach(Event.Combat.Heal, handleCombatHeal, "nkUI.SCT.Combat.Heal")
+    if nkUISetup.modules.sct.showCombat then
+        Command.Event.Attach(Event.Combat.Damage, handleCombatDamage, "nkUI.SCT.Combat.Damage")
+        Command.Event.Attach(Event.Combat.Dodge, function( _, info ) handleCombatEvent(info, TEXT_DODGE) end, "nkUI.SCT.Combat.Dodge")
+        Command.Event.Attach(Event.Combat.Immune, function( _, info ) handleCombatEvent(info, TEXT_IMMUNE) end, "nkUI.SCT.Combat.Immune")
+        Command.Event.Attach(Event.Combat.Miss, function( _, info ) handleCombatEvent(info, TEXT_MISS) end, "nkUI.SCT.Combat.Miss")
+        Command.Event.Attach(Event.Combat.Parry, function( _, info ) handleCombatEvent(info, TEXT_PARRY) end, "nkUI.SCT.Combat.Parry")
+        Command.Event.Attach(Event.Combat.Resist, function( _, info ) handleCombatEvent(info, TEXT_RESIST) end, "nkUI.SCT.Combat.Resist")
+        Command.Event.Attach(Event.Combat.Heal, handleCombatHeal, "nkUI.SCT.Combat.Heal")
+    end
 
-    Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
-    Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
+    if nkUISetup.modules.sct.showCooldowns then
+        Command.Event.Attach(Event.Ability.New.Cooldown.Begin, handleCooldownStart, "nkUI.SCT.Ability.New.Cooldown.Begin")
+        Command.Event.Attach(Event.Ability.New.Cooldown.End, handleCooldownEnd, "nkUI.SCT.Ability.New.Cooldown.End")
+    end
 
 --    Command.Event.Attach(Event.Achievement.Complete, handleAchievement, "nkUI.SCT.Achievement.Complete")
 

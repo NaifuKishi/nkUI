@@ -166,7 +166,9 @@ local _defaults = {
         sct         = { activate = true,
                         messageOffset = -200,
                         showExpGains = true,
-                        showLoot = true
+                        showLoot = true,
+                        showCombat = true,
+                        showCooldowns = true,                        
                     },
         tooltip     = { activate = true,
                         fontSizes = {header = 14, body = 12 } },

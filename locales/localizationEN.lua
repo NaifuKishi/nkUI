@@ -158,7 +158,9 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									useBank = "Bank module",
 									transparent = "Transparent",
 									showChat = "Chat background",
-									alwaysShowRessourceBar = "Always show"
+									alwaysShowRessourceBar = "Always show",
+									showSCTCombat = "Show damage & heal",
+									showSCTCooldowns = "Show Cooldowns"
 								},
 		map = {	tabHeaderSettings	   			= 'Settings',
 				tabHeaderAbout		   			= 'About',

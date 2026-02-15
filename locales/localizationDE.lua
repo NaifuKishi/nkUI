@@ -156,7 +156,9 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									useBank = "Bank Modul",
 									transparent = "Transparent",
 									showChat = "Chat Hintergrund",
-									alwaysShowRessourceBar = "Zeige immer"
+									alwaysShowRessourceBar = "Zeige immer",
+									showSCTCombat = "Zeige Schaden & Heilung",
+									showSCTCooldowns = "Zeige Abklingszeiten"
 								},
 		map = {	tabHeaderSettings    			= 'Einstellungen',
 				tabHeaderAbout		 			= 'Über',

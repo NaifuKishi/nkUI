@@ -13,7 +13,7 @@ local stringFormat = string.format
 function settingsUI.uiConfigTabSCT (name, parent)
 
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
-    local activateCheckbox, showXPCheckbox, showLootCheckbox
+    local activateCheckbox, showXPCheckbox, showLootCheckbox, showCombatCheckbox, showCooldownsCheckbox
 
     function frame:build()
 
@@ -42,6 +42,22 @@ function settingsUI.uiConfigTabSCT (name, parent)
 
         showLootCheckbox:SetPoint("TOPLEFT", showXPCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         showLootCheckbox:SetChecked(nkUISetup.modules.sct.showLoot, true)
+
+        showCombatCheckbox = settingsUI.checkbox(name .. ".showCombatCheckbox", frame, langTexts.settings.showSCTCombat, true, function(newValue)
+             nkUISetup.modules.sct.showCombat = newValue
+             LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        showCombatCheckbox:SetPoint("TOPLEFT", showLootCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
+        showCombatCheckbox:SetChecked(nkUISetup.modules.sct.showCooldowns, true)
+
+        showCooldownsCheckbox = settingsUI.checkbox(name .. ".showCooldownsCheckbox", frame, langTexts.settings.showSCTCooldowns, true, function(newValue)
+             nkUISetup.modules.sct.showCooldowns = newValue
+             LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        showCooldownsCheckbox:SetPoint("TOPLEFT", showCombatCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
+        showCooldownsCheckbox:SetChecked(nkUISetup.modules.sct.showCooldowns, true)        
 
     end
 

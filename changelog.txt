@@ -1,4 +1,5 @@
 V1.3.1
+    - new: SCT - new options to disable combat and cooldown messages
     - updates: Lowerbar - improved display of large platinum amounts
     - fixes: Map - Fixed missing icons for dragging and resizing
     - fixes: Map - Disabling animations no longer throw error on zone change
