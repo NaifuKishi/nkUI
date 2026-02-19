@@ -45,6 +45,9 @@ local function _getRareDarData()
 end
 
 local function _getRareTrackerData()
+
+    if not mapData then return end
+
     local zoneData = Inspect.Addon.Detail('RareTracker').mapData.moblocs[mapData.lastZone]
     if zoneData == nil then return end
     local mobs = zonemapData.mobs

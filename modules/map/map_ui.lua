@@ -163,3 +163,13 @@ function map.createMapUI ()
 	return mapUI
 	
 end
+
+function map.createMinimapUI ()
+
+	local minimapUI = LibMap.uiCreateFrame("nkMiniMap", "nkUI.map.minimap", uiElements.mapContext)
+	minimapUI:SetWorld(LibMap.map.getMapData("world2_tiles"))	
+	minimapUI:SetCoord(LibEKL.Unit.GetPlayerDetails().coordX, LibEKL.Unit.GetPlayerDetails().coordZ)	
+
+	return minimapUI
+
+end
