@@ -49,7 +49,6 @@ function map.initMap ()
 	if nkDebug then debugId = nkDebug.traceStart (addonInfo.identifier, "map.initMap") end
 
 	if uiElements.mapUI == nil then uiElements.mapUI = map.createMapUI() end
-	if not uiElements.minimapUI then uiElements.minimapUI = map.createMinimapUI() end
 
 	uiElements.mapUI:SetAnimated(nkUISetup.modules.map.animations, nkUISetup.modules.map.animationSpeed)
 	uiElements.mapUI:SetSmoothScroll(nkUISetup.modules.map.smoothScroll)
@@ -399,8 +398,6 @@ local function unitChange(key, details)
 	if key == LibEKL.Unit.GetPlayerID() then
 		uiElements.mapUI:SetCoord(details.coordX, details.coordZ)		
 		uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)	
-
-		uiElements.minimapUI:SetCoord(details.coordX, details.coordZ)		
 		map.UpdateWaypointArrows ()
 	end
 
