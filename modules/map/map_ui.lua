@@ -20,6 +20,7 @@ local InspectMouse 			= Inspect.Mouse
 local InspectTimeReal 		= Inspect.Time.Real
 
 local LibEKLGetLanguage			= LibEKL.Tools.Lang.GetLanguage
+local mathRad				= math.rad
 local LibEKLGetLanguageShort	= LibEKL.Tools.Lang.GetLanguageShort
 local LibEKLTableCopy			= LibEKL.Tools.Table.Copy
 local LibEKLUUID				= LibEKL.Tools.UUID
@@ -171,5 +172,169 @@ function map.createMinimapUI ()
 	minimapUI:SetCoord(LibEKL.Unit.GetPlayerDetails().coordX, LibEKL.Unit.GetPlayerDetails().coordZ)	
 
 	return minimapUI
+
+end
+
+function map.createTiledMapUI ()
+
+	local tiledMapUI = LibMap.uiCreateFrame("nkMiniMap", "nkUI.map.tiled", uiElements.mapContext)
+	tiledMapUI:SetWorld(LibMap.map.getMapData("world1_tiles"))	
+	tiledMapUI:SetCoord(LibEKL.Unit.GetPlayerDetails().coordX, LibEKL.Unit.GetPlayerDetails().coordZ)	
+	tiledMapUI:SetWidth(425)
+	tiledMapUI:SetHeight(370)	
+	tiledMapUI:SetVisible(true)
+	
+	-- Hide the header to match the original map look
+	if tiledMapUI.DisplayHeader then
+		tiledMapUI:DisplayHeader(false)
+	end
+	
+	-- Add element management to tiled map
+	tiledMapUI.elements = {}
+	tiledMapUI.elementCount = 0
+	
+	-- Store map info for coordinate conversion
+	tiledMapUI.mapInfo = LibMap.map.getMapData("world1_tiles")
+	
+	-- Add zone name display
+	tiledMapUI.zoneTitle = LibEKL.UICreateFrame("nkText", "nkUI.map.tiled.zoneTitle", tiledMapUI:GetContent())
+	tiledMapUI.zoneTitle:SetPoint("CENTERTOP", tiledMapUI:GetContent(), "CENTERTOP", 0, 10)
+	tiledMapUI.zoneTitle:SetLayer(9999)
+	tiledMapUI.zoneTitle:SetFontSize(20)
+	tiledMapUI.zoneTitle:SetEffectGlow({ colorB = 0, colorA = 1, colorG = 0, colorR = 0, strength = 3, blurX = 3, blurY = 3 })
+	LibEKL.UI.SetFont (tiledMapUI.zoneTitle, addonInfo.id, "MontserratSemiBold")
+	
+	function tiledMapUI:SetZoneTitle(text)
+		if tiledMapUI.zoneTitle then
+			tiledMapUI.zoneTitle:SetText(text or "")
+		end
+	end
+	
+	-- Add player coordinates display
+	tiledMapUI.coordsDisplay = LibEKL.UICreateFrame("nkText", "nkUI.map.tiled.coords", tiledMapUI)
+	tiledMapUI.coordsDisplay:SetPoint("CENTERBOTTOM", tiledMapUI:GetContent(), "CENTERBOTTOM", 0, -15)
+	tiledMapUI.coordsDisplay:SetLayer(9999)
+	tiledMapUI.coordsDisplay:SetFontSize(20)
+	tiledMapUI.coordsDisplay:SetEffectGlow({ strength = 3})
+	LibEKL.UI.SetFont (tiledMapUI.coordsDisplay, addonInfo.id, "MontserratBold")
+	
+	function tiledMapUI:SetCoordsLabel(x, y)
+		if tiledMapUI.coordsDisplay then
+			tiledMapUI.coordsDisplay:SetText(string.format("%d / %d", x, y))
+		end
+	end
+	
+	function tiledMapUI:SetWorld(newWorld)
+		-- Call original SetWorld method
+		local success, errorMsg = pcall(function()
+			-- The minimap frame might have its own SetWorld method
+			if self._SetWorld then
+				self:_SetWorld(newWorld)
+			end
+		end)
+		
+		-- Update our stored map info
+		if newWorld and newWorld.path then
+			self.mapInfo = newWorld
+		elseif newWorld then
+			self.mapInfo = LibMap.map.getMapData(newWorld)
+		end
+	end
+	
+	function tiledMapUI:AddElement(details)
+		if self.elements[details.id] then
+			-- Element already exists, update it
+			return self:UpdateElement(details)
+		end
+		
+		-- Create a canvas element for the player icon (supports rotation)
+		local element = LibEKL.UICreateFrame("nkCanvas", "nkUI.map.tiled.element." .. self.elementCount, self:GetContent())
+		element:SetWidth(32)
+		element:SetHeight(32)
+		element:SetLayer(10)  -- High layer to be visible
+		
+		-- Use the same default square path as the standard map elements
+		local path = {
+			{xProportional = 0, yProportional = 0}, 
+			{xProportional = 0, yProportional = 1}, 
+			{xProportional = 1, yProportional = 1}, 
+			{xProportional = 1, yProportional = 0}, 
+			{xProportional = 0, yProportional = 0}
+		}
+		
+		local fill = {
+			type = "texture",
+			source = "LibMap",
+			texture = "gfx/mapIcons/iconPlayerPosition.png"
+		}
+		
+		element:SetShape(path, fill, nil)
+		
+		-- Store element data with rotation support
+		details.element = element
+		details.type = details.type or "UNIT.PLAYER"
+		details.angleCorr = 280  -- Match the standard map's angle correction
+		
+		self.elements[details.id] = details
+		self.elementCount = self.elementCount + 1
+		
+		return true
+	end
+	
+	function tiledMapUI:UpdateElement(details)
+		local existing = self.elements[details.id]
+		if not existing then return false end
+		
+		if details.coordX and details.coordZ then
+			existing.coordX = details.coordX
+			existing.coordZ = details.coordZ
+			
+			-- For the tiled map, the player should always be at the center
+			-- The map tiles move to center the player, not the player icon
+			existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
+		end
+		
+		-- Handle rotation for canvas elements
+		if details.angle and existing.element and existing.element.SetShape then
+			local radian = mathRad(details.angle + (existing.angleCorr or 0))
+			local path = {
+				{xProportional = 0, yProportional = 0}, 
+				{xProportional = 0, yProportional = 1}, 
+				{xProportional = 1, yProportional = 1}, 
+				{xProportional = 1, yProportional = 0}, 
+				{xProportional = 0, yProportional = 0}
+			}
+			local fill = {
+				type = "texture",
+				source = "LibMap",
+				texture = "gfx/mapIcons/iconPlayerPosition.png",
+				transform = LibEKL.Tools.Gfx.Rotate(existing.element, radian, 1)
+			}
+			existing.element:SetShape(path, fill, nil)
+		end
+		
+		return true
+	end
+	
+	function tiledMapUI:RemoveElement(id)
+		local existing = self.elements[id]
+		if existing and existing.element then
+			existing.element:SetVisible(false)
+			existing.element = nil
+		end
+		self.elements[id] = nil
+	end
+	
+	function tiledMapUI:ClearElements()
+		for id, elementData in pairs(self.elements) do
+			if elementData.element then
+				elementData.element:SetVisible(false)
+				elementData.element = nil
+			end
+		end
+		self.elements = {}
+	end
+
+	return tiledMapUI
 
 end
