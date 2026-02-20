@@ -237,6 +237,12 @@ local function mapAdd (key, details)
 		end
 	elseif details.type ~= "UNKNOWN" and details.type ~= "PORTAL" then		
 		uiElements.mapUI:AddElement(details)
+		
+		-- Also add to tiled map if it exists
+		if uiElements.tiledMapUI then
+			uiElements.tiledMapUI:AddElement(details)
+		end
+		
 		local thisType = RESOURCE_TYPE_MAP[details.type] or stringMatch(details.type, "RESOURCE%.(.+)")
 		if thisType and nkUISetup.modules.map.trackGathering == true then _trackGathering(details, thisType) end
 	elseif details.type == "UNKNOWN" then
@@ -250,10 +256,18 @@ local function mapAdd (key, details)
 				if map.IsKnownMinimapQuest (details.id) == false then
 					if nkUISetup.modules.map.showUnknown == true then
 						local retValue = map.CheckUnknownForQuest(details)
-						if not retValue then uiElements.mapUI:AddElement(details) end
+						if not retValue then 
+							uiElements.mapUI:AddElement(details)
+							if uiElements.tiledMapUI then
+								uiElements.tiledMapUI:AddElement(details)
+							end
+						end
 					end
 				else
 					uiElements.mapUI:AddElement(mapData.minimapIdToQuest[details.id])
+					if uiElements.tiledMapUI then
+						uiElements.tiledMapUI:AddElement(mapData.minimapIdToQuest[details.id])
+					end
 				end
 			end
 		end
@@ -268,6 +282,11 @@ local function mapChange (key, details, debugSource)
 			nkDebug.logEntry (addonInfo.identifier, "map.UpdateMap change", "failed " .. debugSource, details)
 			map.UpdateMap ({[key] = details}, "add", debugSource)
 		end
+	end
+	
+	-- Also update tiled map if it exists
+	if uiElements.tiledMapUI then
+		uiElements.tiledMapUI:UpdateElement(details)
 	end
 
 end

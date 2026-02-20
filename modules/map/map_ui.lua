@@ -21,6 +21,8 @@ local InspectTimeReal 		= Inspect.Time.Real
 
 local LibEKLGetLanguage			= LibEKL.Tools.Lang.GetLanguage
 local mathRad				= math.rad
+local mathMax				= math.max
+local mathMin				= math.min
 local LibEKLGetLanguageShort	= LibEKL.Tools.Lang.GetLanguageShort
 local LibEKLTableCopy			= LibEKL.Tools.Table.Copy
 local LibEKLUUID				= LibEKL.Tools.UUID
@@ -193,6 +195,21 @@ function map.createTiledMapUI ()
 	tiledMapUI.elements = {}
 	tiledMapUI.elementCount = 0
 	
+	-- Element type configurations (simplified versions of main map elements)
+	tiledMapUI.elementConfigs = {
+		["UNIT.PLAYER"] = {width = 32, height = 32, texture = "gfx/mapIcons/iconPlayerPosition.png", addon = "LibMap", layer = 99, gfxType = "canvas", angleCorr = 280},
+		["UNIT.PLAYERPET"] = {width = 24, height = 24, texture = "MainMap_I345.dds", addon = "Rift", layer = 98},
+		["UNIT.GROUPMEMBER"] = {width = 32, height = 32, texture = "indicator_group.png.dds", addon = "Rift", layer = 98},
+		["UNIT.RARE"] = {width = 32, height = 32, texture = "target_portrait_LootPinata.png.dds", addon = "Rift", layer = 98},
+		["WAYPOINT"] = {width = 16, height = 16, texture = "gfx/mapIcons/iconWaypoint.png", addon = "LibMap", layer = 100},
+		["UNKNOWN"] = {width = 32, height = 32, texture = "gfx/mapIcons/iconUnknown.png", addon = "LibMap", layer = 70},
+		["TRACK.MINE"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconMine.png", addon = "LibMap", layer = 50},
+		["TRACK.HERB"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconHerb.png", addon = "LibMap", layer = 50},
+		["TRACK.WOOD"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconWood.png", addon = "LibMap", layer = 50},
+		["TRACK.FISH"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconFish.png", addon = "LibMap", layer = 50},
+		["TRACK.ARTIFACT"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconArtifact.png", addon = "LibMap", layer = 50}
+	}
+	
 	-- Store map info for coordinate conversion
 	tiledMapUI.mapInfo = LibMap.map.getMapData("world1_tiles")
 	
@@ -247,11 +264,17 @@ function map.createTiledMapUI ()
 			return self:UpdateElement(details)
 		end
 		
-		-- Create a canvas element for the player icon (supports rotation)
+		-- Get configuration for this element type
+		local config = self.elementConfigs[details.type] or self.elementConfigs["UNKNOWN"]
+		if not config then
+			return false  -- Unknown element type
+		end
+		
+		-- Create canvas element with appropriate size
 		local element = LibEKL.UICreateFrame("nkCanvas", "nkUI.map.tiled.element." .. self.elementCount, self:GetContent())
-		element:SetWidth(32)
-		element:SetHeight(32)
-		element:SetLayer(10)  -- High layer to be visible
+		element:SetWidth(config.width or 32)
+		element:SetHeight(config.height or 32)
+		element:SetLayer(config.layer or 10)
 		
 		-- Use the same default square path as the standard map elements
 		local path = {
@@ -264,16 +287,20 @@ function map.createTiledMapUI ()
 		
 		local fill = {
 			type = "texture",
-			source = "LibMap",
-			texture = "gfx/mapIcons/iconPlayerPosition.png"
+			source = config.addon or "LibMap",
+			texture = config.texture or "gfx/mapIcons/iconUnknown.png"
 		}
+		
+		-- Rotation will be handled in UpdateElement to ensure we have the correct angle
+		-- Initialize without rotation, it will be applied when we get the first angle update
 		
 		element:SetShape(path, fill, nil)
 		
-		-- Store element data with rotation support
+		-- Store element data
 		details.element = element
-		details.type = details.type or "UNIT.PLAYER"
-		details.angleCorr = 280  -- Match the standard map's angle correction
+		details.config = config
+		details.coordX = details.coordX or 0
+		details.coordZ = details.coordZ or 0
 		
 		self.elements[details.id] = details
 		self.elementCount = self.elementCount + 1
@@ -289,14 +316,40 @@ function map.createTiledMapUI ()
 			existing.coordX = details.coordX
 			existing.coordZ = details.coordZ
 			
-			-- For the tiled map, the player should always be at the center
-			-- The map tiles move to center the player, not the player icon
-			existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
+			-- Special handling for player: always center (tiles move to center player)
+			-- Other elements: position at their actual coordinates
+			if existing.type == "UNIT.PLAYER" then
+				-- Player stays centered, tiles move around them
+				existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
+			else
+				-- Convert game coordinates to map coordinates for other elements
+				local mapInfo = self.mapInfo
+				if mapInfo and mapInfo.x1 and mapInfo.x2 and mapInfo.y1 and mapInfo.y2 then
+					-- Ensure coordinates are within map bounds
+					local normalizedX = (details.coordX - mapInfo.x1) / (mapInfo.x2 - mapInfo.x1)
+					local normalizedY = (details.coordZ - mapInfo.y1) / (mapInfo.y2 - mapInfo.y1)
+					
+					-- Clamp to valid range
+					normalizedX = mathMax(0, mathMin(1, normalizedX))
+					normalizedY = mathMax(0, mathMin(1, normalizedY))
+					
+					local mapX = normalizedX * self:GetWidth()
+					local mapY = normalizedY * self:GetHeight()
+					
+					-- Position the element at its correct location
+					existing.element:SetPoint("CENTER", self:GetContent(), "TOPLEFT", mapX, mapY)
+				else
+					-- Fallback: center the element if map info is not available
+					existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
+				end
+			end
 		end
 		
 		-- Handle rotation for canvas elements
 		if details.angle and existing.element and existing.element.SetShape then
-			local radian = mathRad(details.angle + (existing.angleCorr or 0))
+			-- Adjust angle correction for tiled map (standard map uses 280, but tiled map needs adjustment)
+			local angleCorrection = (existing.angleCorr or 0) - 90  -- Subtract 90 degrees to fix orientation
+			local radian = mathRad(details.angle + angleCorrection)
 			local path = {
 				{xProportional = 0, yProportional = 0}, 
 				{xProportional = 0, yProportional = 1}, 
