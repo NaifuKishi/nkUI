@@ -207,7 +207,18 @@ function map.createTiledMapUI ()
 		["TRACK.HERB"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconHerb.png", addon = "LibMap", layer = 50},
 		["TRACK.WOOD"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconWood.png", addon = "LibMap", layer = 50},
 		["TRACK.FISH"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconFish.png", addon = "LibMap", layer = 50},
-		["TRACK.ARTIFACT"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconArtifact.png", addon = "LibMap", layer = 50}
+		["TRACK.ARTIFACT"] = {width = 24, height = 24, texture = "gfx/mapIcons/iconArtifact.png", addon = "LibMap", layer = 50},
+		["VENDOR.OTHER"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.MOUNTS"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.DIMENSIONS"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.PLANES"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.MINIONS"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.HUNT"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.PROFESSION"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VENDOR.DYES"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconVendor.png", addon = "LibMap", layer = 60},
+		["VARIA.BANK"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconBank.png", addon = "LibMap", layer = 61},
+		["VARIA.AUCTIONHOUSE"] = {width = 20, height = 20, texture = "gfx/mapIcons/iconAuctionHouse.png", addon = "LibMap", layer = 61},
+		["VARIA.GUILDBANK"] = {width = 20, height = 20, texture = "indicator_banker.png.dds", addon = "Rift", layer = 61}
 	}
 	
 	-- Store map info for coordinate conversion
@@ -304,7 +315,28 @@ function map.createTiledMapUI ()
 		
 		self.elements[details.id] = details
 		self.elementCount = self.elementCount + 1
-		
+
+		-- Convert game coordinates to map coordinates for other elements
+		local mapInfo = self.mapInfo
+		if mapInfo and mapInfo.x1 and mapInfo.x2 and mapInfo.y1 and mapInfo.y2 then
+			-- Ensure coordinates are within map bounds
+			local normalizedX = (details.coordX - mapInfo.x1) / (mapInfo.x2 - mapInfo.x1)
+			local normalizedY = (details.coordZ - mapInfo.y1) / (mapInfo.y2 - mapInfo.y1)
+			
+			-- Clamp to valid range
+			normalizedX = mathMax(0, mathMin(1, normalizedX))
+			normalizedY = mathMax(0, mathMin(1, normalizedY))
+			
+			local mapX = normalizedX * self:GetWidth()
+			local mapY = normalizedY * self:GetHeight()
+			
+			-- Position the element at its correct location
+			element:SetPoint("CENTER", self:GetContent(), "TOPLEFT", mapX, mapY)
+		else
+			-- Fallback: center the element if map info is not available
+			element:SetPoint("CENTER", self:GetContent(), "CENTER")
+		end
+				
 		return true
 	end
 	
@@ -321,27 +353,6 @@ function map.createTiledMapUI ()
 			if existing.type == "UNIT.PLAYER" then
 				-- Player stays centered, tiles move around them
 				existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
-			else
-				-- Convert game coordinates to map coordinates for other elements
-				local mapInfo = self.mapInfo
-				if mapInfo and mapInfo.x1 and mapInfo.x2 and mapInfo.y1 and mapInfo.y2 then
-					-- Ensure coordinates are within map bounds
-					local normalizedX = (details.coordX - mapInfo.x1) / (mapInfo.x2 - mapInfo.x1)
-					local normalizedY = (details.coordZ - mapInfo.y1) / (mapInfo.y2 - mapInfo.y1)
-					
-					-- Clamp to valid range
-					normalizedX = mathMax(0, mathMin(1, normalizedX))
-					normalizedY = mathMax(0, mathMin(1, normalizedY))
-					
-					local mapX = normalizedX * self:GetWidth()
-					local mapY = normalizedY * self:GetHeight()
-					
-					-- Position the element at its correct location
-					existing.element:SetPoint("CENTER", self:GetContent(), "TOPLEFT", mapX, mapY)
-				else
-					-- Fallback: center the element if map info is not available
-					existing.element:SetPoint("CENTER", self:GetContent(), "CENTER")
-				end
 			end
 		end
 		
