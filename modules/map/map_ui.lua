@@ -336,7 +336,7 @@ function map.createTiledMapUI ()
 			-- Fallback: center the element if map info is not available
 			element:SetPoint("CENTER", self:GetContent(), "CENTER")
 		end
-				
+		
 		return true
 	end
 	
