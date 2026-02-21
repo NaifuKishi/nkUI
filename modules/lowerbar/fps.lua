@@ -40,7 +40,10 @@ function lowerBar.fps()
     datasetFPS:SetLayer(5)
 
     datasetFPS:SetSecureMode('restricted')
-	datasetFPS:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "/nkd")
+
+    if nkDebug then
+	    datasetFPS:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "/nkd")
+    end
 
     local datasetFPSIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
     datasetFPSIcon:SetPoint("CENTERRIGHT", datasetFPS, "CENTERLEFT", -5, 0)
