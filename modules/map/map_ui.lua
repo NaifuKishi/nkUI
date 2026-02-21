@@ -49,7 +49,6 @@ function map.createMapUI ()
 	if nkUISetup.modules.map.locked == true then locked = false else locked = true end
 	
 	mapUI:SetResizable(locked)
-	mapUI:SetDragable(locked)
 	mapUI:SetLayer(2)
 
 	mapUI:ShowHeader(false)

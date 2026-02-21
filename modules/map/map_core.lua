@@ -64,8 +64,6 @@ function map.initMap ()
 	uiElements.mapUI:SetHeightMaximized(nkUISetup.modules.map.maximizedHeight)
 
 	uiElements.mapUI:SetPoint("TOPLEFT", UIParent, "TOPLEFT", nkUISetup.modules.map.x, nkUISetup.modules.map.y)
-	uiElements.mapUI:SetZoom(nkUISetup.modules.map.scale, false)
-	uiElements.mapUI:SetZoom(nkUISetup.modules.map.maximizedScale, true)
 
 	local points, units = LibMap.map.getAll()
 	map.UpdateMap(points, "add", "map.initMap")

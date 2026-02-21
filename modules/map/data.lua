@@ -13,12 +13,11 @@ local _roundPath = {	{xProportional = 0.5, yProportional = 0},
 ---------- resource data information ---------
 
 mapData.resourceData = {
-	--[[["RESOURCE.ORE"]		  = { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.9, g = 0.78, b = 0.26, a = 0.3}, width = 16, height = 16, layer = 2},
-	["RESOURCE.WOOD"]		  = { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.2, g = 0.11, b = 0.06, a = 0.5}, width = 16, height = 16, layer = 2},
-	["RESOURCE.PLANTS"]		= { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = 0.49, g = 0.78, b = 0.51, a = 0.3}, width = 16, height = 16, layer = 2},	
-	["RESOURCE.BOAT"]		  = { gfxType = "canvas", path = _roundPath, stroke = {r = 0, g = 0, b = 0, a = 1, thickness = 2}, fill = { type = "solid", r = .8, g = .8, b = .8, a = 0.5}, width = 16, height = 16, layer = 2}	,
-  ["RESOURCE.FISH"]     = {addon = "LibMap", path = "gfx/mapIcons/iconFishingGround.png", width = 24, height = 24, layer = 2},
-  ["RESOURCE.ARTIFACT"] = {addon = "LibMap", path = "gfx/mapIcons/iconArtifact.png", width = 24, height = 24, layer = 2},]]
+
+
+
+
+
 
   ["RESOURCE.ORE"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceGray.png", width = 24, height = 24, layer = 2 },
 	["RESOURCE.WOOD"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBrown.png", width = 24, height = 24, layer = 2 },
