@@ -56,8 +56,10 @@ function map.initMap ()
 	uiElements.mapUI:SetWidth(nkUISetup.modules.map.width)
 	uiElements.mapUI:SetHeight(nkUISetup.modules.map.height)
 
+	--[[
 	-- Create tiled map UI
 	if uiElements.tiledMapUI == nil then uiElements.tiledMapUI = map.createTiledMapUI() end
+	]]
 
 	local details = LibEKL.Unit.GetPlayerDetails()		
 	map.SetZone (details.zone)
@@ -135,7 +137,7 @@ function map.SetZone (newZoneID)
 	end
 
 	uiElements.mapUI:SetMap("world", mapData.currentWorld)
-
+--[[
 	-- Update tiled map world if it's world1-4
 	if uiElements.tiledMapUI then
 		if mapData.currentWorld == "world1" then
@@ -148,7 +150,7 @@ function map.SetZone (newZoneID)
 			uiElements.tiledMapUI:SetWorld(LibMap.map.getMapData("world4_tiles"))
 		end
 	end
-
+]]
 	local details = LibEKL.Unit.GetPlayerDetails()
 	mapData.locationName = details.locationName
 	uiElements.mapUI:SetCoord(details.coordX, details.coordZ)	

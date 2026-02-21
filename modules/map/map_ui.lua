@@ -270,6 +270,7 @@ function map.createTiledMapUI ()
 	end
 	
 	function tiledMapUI:AddElement(details)
+		
 		if self.elements[details.id] then
 			-- Element already exists, update it
 			return self:UpdateElement(details)
@@ -341,6 +342,7 @@ function map.createTiledMapUI ()
 	end
 	
 	function tiledMapUI:UpdateElement(details)
+
 		local existing = self.elements[details.id]
 		if not existing then return false end
 		
