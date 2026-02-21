@@ -147,17 +147,6 @@ function map.createMapUI ()
 
 	end, "nkUI.map.map.Moved")
 
-	Command.Event.Attach(LibMap.events["nkUI.map.map"].Zoomed, function (_, newScale, maximized)
-		if maximized == true then
-			nkUISetup.modules.map.maximizedScale = newScale
-		else
-			nkUISetup.modules.map.scale = newScale
-		end
-
-	map.UpdateWaypointArrows ()
-
-	end, "nkUI.map.map.Zoomed")
-
 	Command.Event.Attach(LibMap.events["nkUI.map.map"].Toggled, function (_, newScale, maximized)
 		map.UpdateWaypointArrows ()
 		mapUI:SetZoneTitle(nkUISetup.modules.map.showZoneTitle)
