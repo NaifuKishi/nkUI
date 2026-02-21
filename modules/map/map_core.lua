@@ -56,11 +56,6 @@ function map.initMap ()
 	uiElements.mapUI:SetWidth(nkUISetup.modules.map.width)
 	uiElements.mapUI:SetHeight(nkUISetup.modules.map.height)
 
-	--[[
-	-- Create tiled map UI
-	if uiElements.tiledMapUI == nil then uiElements.tiledMapUI = map.createTiledMapUI() end
-	]]
-
 	local details = LibEKL.Unit.GetPlayerDetails()		
 	map.SetZone (details.zone)
 
@@ -121,11 +116,6 @@ function map.SetZone (newZoneID)
 		if isNewWorld then map.ShowQuest(false) end
 		if nkUISetup.modules.map.trackGathering == true then map.ShowGathering(false) end
 		if nkUISetup.modules.map.trackArtifacts == true then map.ShowArtifacts(false) end
-		
-		-- Clear tiled map elements when changing zones
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:ClearElements()
-		end
 	end
 
 	mapData.currentWorld = newWorld
@@ -137,37 +127,14 @@ function map.SetZone (newZoneID)
 	end
 
 	uiElements.mapUI:SetMap("world", mapData.currentWorld)
---[[
-	-- Update tiled map world if it's world1-4
-	if uiElements.tiledMapUI then
-		if mapData.currentWorld == "world1" then
-			uiElements.tiledMapUI:SetWorld(LibMap.map.getMapData("world1_tiles"))
-		elseif mapData.currentWorld == "world2" then
-			uiElements.tiledMapUI:SetWorld(LibMap.map.getMapData("world2_tiles"))
-		elseif mapData.currentWorld == "world3" then
-			uiElements.tiledMapUI:SetWorld(LibMap.map.getMapData("world3_tiles"))
-		elseif mapData.currentWorld == "world4" then
-			uiElements.tiledMapUI:SetWorld(LibMap.map.getMapData("world4_tiles"))
-		end
-	end
-]]
+
 	local details = LibEKL.Unit.GetPlayerDetails()
 	mapData.locationName = details.locationName
 	uiElements.mapUI:SetCoord(details.coordX, details.coordZ)	
 	uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)	
 	
-	-- Update tiled map coordinates
-	if uiElements.tiledMapUI then
-		uiElements.tiledMapUI:SetCoord(details.coordX, details.coordZ)
-	end
-
 	_zoneDetails = InspectZoneDetail(newZoneID)
 	uiElements.mapUI:SetZoneTitle(nkUISetup.modules.map.showZoneTitle)
-	
-	-- Update tiled map zone title
-	if uiElements.tiledMapUI then
-		uiElements.tiledMapUI:SetZoneTitle(mapData.locationName)
-	end
 
 	if InspectSystemSecure() == false then Command.System.Watchdog.Quiet() end
 
@@ -240,11 +207,6 @@ local function mapAdd (key, details)
 	elseif details.type ~= "UNKNOWN" and details.type ~= "PORTAL" then		
 		uiElements.mapUI:AddElement(details)
 		
-		-- Also add to tiled map if it exists
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:AddElement(details)
-		end
-		
 		local thisType = RESOURCE_TYPE_MAP[details.type] or stringMatch(details.type, "RESOURCE%.(.+)")
 		if thisType and nkUISetup.modules.map.trackGathering == true then _trackGathering(details, thisType) end
 	elseif details.type == "UNKNOWN" then
@@ -260,16 +222,10 @@ local function mapAdd (key, details)
 						local retValue = map.CheckUnknownForQuest(details)
 						if not retValue then 
 							uiElements.mapUI:AddElement(details)
-							if uiElements.tiledMapUI then
-								uiElements.tiledMapUI:AddElement(details)
-							end
 						end
 					end
 				else
 					uiElements.mapUI:AddElement(mapData.minimapIdToQuest[details.id])
-					if uiElements.tiledMapUI then
-						uiElements.tiledMapUI:AddElement(mapData.minimapIdToQuest[details.id])
-					end
 				end
 			end
 		end
@@ -284,11 +240,6 @@ local function mapChange (key, details, debugSource)
 			nkDebug.logEntry (addonInfo.identifier, "map.UpdateMap change", "failed " .. debugSource, details)
 			map.UpdateMap ({[key] = details}, "add", debugSource)
 		end
-	end
-	
-	-- Also update tiled map if it exists
-	if uiElements.tiledMapUI then
-		uiElements.tiledMapUI:UpdateElement(details)
 	end
 
 end
@@ -387,22 +338,12 @@ local function unitAdd (key, details)
 		details.angle = 0         
 		mapData.centerElement = key
 		uiElements.mapUI:AddElement(details)
-		
-		-- Also add to tiled map if it exists
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:AddElement(details)
-		end
 
 	elseif details.type == "player.pet" then
 		local unitDetails = InspectUnitDetail("player.pet")
 		details.type = "UNIT.PLAYERPET"
 		details.title = unitDetails.name         
 		uiElements.mapUI:AddElement(details)
-		
-		-- Also add to tiled map if it exists
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:AddElement(details)
-		end
 	
 	elseif stringFind(details.type, "group") ~= nil and stringFind(details.type, "group..%.") == nil then					
 		local unitDetails = InspectUnitDetail(details.type)
@@ -410,10 +351,7 @@ local function unitAdd (key, details)
 		details.title = unitDetails.name
 		details.smoothCoords = true
 		uiElements.mapUI:AddElement(details)
-		
-		--if nkDebug and details.type == "UNIT.GROUPMEMBER" then 
-		--	nkDebug.logEntry (addonInfo.identifier, "map.UpdateUnit", action .. ": " .. (details.type or '?'), details)
-		--end
+
 	end
 
 end
@@ -461,13 +399,6 @@ local function unitChange(key, details)
 		uiElements.mapUI:SetCoord(details.coordX, details.coordZ)		
 		uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)	
 		
-		-- Update tiled map coordinates too
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:SetCoord(details.coordX, details.coordZ)
-			uiElements.tiledMapUI:UpdateElement(details)
-			uiElements.tiledMapUI:SetCoordsLabel(details.coordX, details.coordZ)
-		end
-		
 		map.UpdateWaypointArrows ()
 	end
 
@@ -476,11 +407,6 @@ end
 local function unitRemove (key)
 
 	uiElements.mapUI:RemoveElement(key)
-	
-	-- Also remove from tiled map if it exists
-	if uiElements.tiledMapUI then
-		uiElements.tiledMapUI:RemoveElement(key)
-	end
 	
 	if key == mapData.centerElement then mapData.centerElement = nil end
 
