@@ -179,6 +179,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 				animationsCheckbox   			= 'Animations',
 				animationsCheckboxheckboxInfo   = 'WARNING: performance intensive!',
 				animationSpeedSlider 			= "Update frequency <font color='#3399FF'>%d%%</font>",
+				iconSize             			= "Element size <font color='#3399FF'>%d</font>",
 				rareCheckbox         			= 'Rare Mobs',
 				rareCheckboxInfo     			= 'Requires RareDar or RareTracker addon',
 				questCheckBox        			= 'Quests',

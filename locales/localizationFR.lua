@@ -160,7 +160,8 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     showSCTCombat = "Afficher dégâts & soins",
 									howSCTCooldowns = "Afficher temps de recharge",
                                     oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>",
-                                    buffBarGrowRight = "Croître vers la droite"
+                                    buffBarGrowRight = "Croître vers la droite",
+                                    iconSize = "Taille de l'élément <font color='#3399FF'>%d</font>",
                                 },
             tutorial = {
                         welcomeTitle = "Bienvenue dans nkUI Version %s",

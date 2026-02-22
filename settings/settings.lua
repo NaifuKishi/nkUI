@@ -199,7 +199,8 @@ local _defaults = {
                         smoothScroll = true, 
                         showUnknown = true,
                         zones = {},
-                        userPOI = {} }
+                        userPOI = {},
+                        iconSize = 24 }
                 },
     showLogo = true,
     useManager = true

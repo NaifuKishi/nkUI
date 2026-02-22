@@ -17,7 +17,7 @@ function settingsUI.uiConfigTabMap (name, parent)
     local frame = LibEKL.UICreateFrame("nkFrame", name, parent)
     local activateCheckbox, lockedCheckBox
     local labelDisplay, poiCheckbox, zoneTitleCheckbox, animationsCheckbox, rareCheckbox, rareCheckboxInfo, labelTrack, gatheringCheckbox, artifactCheckbox, animationsCheckboxheckboxInfo, animationSpeedSlider
-    local questCheckbox, unknownCheckbox    
+    local questCheckbox, unknownCheckbox, iconSizeSlider
 
     function frame:build()
 
@@ -34,6 +34,7 @@ function settingsUI.uiConfigTabMap (name, parent)
             if animationSpeedSlider then animationSpeedSlider:SetActive(newValue) end
             if questCheckbox then questCheckbox:SetActive(newValue) end
             if unknownCheckbox then unknownCheckbox:SetActive(newValue) end
+            if iconSizeSlider then iconSizeSlider:SetActive(newValue) end
 
             LibEKL.UI.reloadDialog("nkUI")
         end)
@@ -129,8 +130,19 @@ function settingsUI.uiConfigTabMap (name, parent)
         unknownCheckbox:SetPoint("TOPLEFT", questCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
         unknownCheckbox:SetChecked(nkUISetup.modules.map.showUnknown)
 
+        iconSizeSlider = settingsUI.slider(name .. ".iconSizeSlider", frame, langTexts.map.iconSize, moduleActive, function(newValue)
+            nkUISetup.modules.map.iconSize = newValue
+            LibEKL.UI.reloadDialog("nkUI")
+        end)
+
+        iconSizeSlider:SetPoint("TOPLEFT", unknownCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
+        iconSizeSlider:SetRange(12, 48)
+        iconSizeSlider:SetMidValue(24)
+        iconSizeSlider:SetPrecision(1)
+        iconSizeSlider:AdjustValue(nkUISetup.modules.map.iconSize)
+
         labelTrack = settingsUI.header ( name .. ".labelTrack", frame, langTexts.map.labelTrackSettings)
-        labelTrack:SetPoint("TOPLEFT", unknownCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
+        labelTrack:SetPoint("TOPLEFT", iconSizeSlider, "BOTTOMLEFT", 0, settingsUI.PADDING.HEADING)
         
         gatheringCheckbox = settingsUI.checkbox(name .. ".gatheringCheckbox", frame, langTexts.map.gatheringCheckbox, moduleActive, function(newValue)        
             nkUISetup.modules.map.trackGathering = newValue

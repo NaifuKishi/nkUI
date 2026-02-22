@@ -54,6 +54,8 @@ end
 
 function internalFunc.mapInit()
 
+  LibMap.defaultIconSize = nkUISetup.modules.map.iconSize
+
   local syslang = Inspect.System.Language()
 
   if syslang == "French" then return end
