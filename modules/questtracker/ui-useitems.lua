@@ -115,7 +115,7 @@ function questTracker.buildUseUI()
     function ui:AddUseItem(key, itemName, icon, questId, itemType)
         if not useItems[key] then
             local point, targetFrame, targetPoint, x, y = calculatePosition(_itemCounter)
-            local thisItem = createUseItem(name .. '.useItem.' .. key, ui)
+            local thisItem = createUseItem(name .. '.useItem.' .. LibEKL.Tools.UUID(), ui)
             thisItem:SetPoint(point, targetFrame, targetPoint, x, y)
             thisItem:SetTexture(icon)
             thisItem:SetVisible(true)

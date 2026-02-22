@@ -390,12 +390,14 @@ function map.GetQuests()
 	processQuests (inspectQuestList()) 
 end
 
-function mapEvents.QuestAccept (_, data) 
-	processQuests (data, true) 
+function mapEvents.QuestAccept (_, data)
+	if nkUISetup.modules.map.showQuest ~= true then return end
+	processQuests (data, true)
 end
 
-function mapEvents.QuestChange (_, data) 
-	processQuests (data, false) 
+function mapEvents.QuestChange (_, data)
+	if nkUISetup.modules.map.showQuest ~= true then return end
+	processQuests (data, false)
 end
   
 function mapEvents.QuestAbandon (_, updateData)
@@ -432,7 +434,7 @@ function mapEvents.QuestAbandon (_, updateData)
   end
   
   if hasRemove == true then map.UpdateMap (removeInfo, "remove") end
-  if hasAdd == true then map.UpdateMap (addInfo, "add") end
+  if hasAdd == true and nkUISetup.modules.map.showQuest == true then map.UpdateMap (addInfo, "add") end
 
 end
 
@@ -462,6 +464,8 @@ function mapEvents.QuestComplete (_, updateData)
 end
 
 function map.FindMissing ()
+
+  if nkUISetup.modules.map.showQuest ~= true then return end
 
   -- check aktuelle quests berücksichtigen
 

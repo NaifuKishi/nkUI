@@ -329,6 +329,7 @@ function mapEvents.UpdateLocation (_, info)
   if info[playerID] == nil or info[playerID] == false then return end   
     
   mapData.locationName = info[playerID]
+  if uiElements.mapUI == nil then return end
   uiElements.mapUI:SetZoneTitle(nkUISetup.modules.map.showZoneTitle)
     
 end
