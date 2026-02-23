@@ -38,9 +38,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									noPrice = "No price information",
 									bagTitle = "%s's inventory",
 									bankTitle = "%s's bank",
+										lastSeenPrice = "Last: %s",
+																		noLastPrice = "No last price",
 									noAuction = "No known auction price",
 									auctionPrice = "%s (%d days ago)",
-									youOwn	= "You own: %d"
+									youOwn	= "You own: %d",
 								},
 		auction					= { scanStarted = "Scan started. Please wait!",
 									scanProgress = "Scan %d%% done",

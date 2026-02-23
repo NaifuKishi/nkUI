@@ -22,7 +22,7 @@ local function uiItemTooltip ()
 
     local tooltip = LibEKL.UICreateFrame("nkCanvas", "nkUI.oneBag.tooltip", uiElements.contextTooltip)
     tooltip:SetPoint("TOPLEFT", UI.Native.Tooltip, "BOTTOMLEFT", 5, 5)
-    tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 70)
+    tooltip:SetPoint("BOTTOMRIGHT", UI.Native.Tooltip, "BOTTOMRIGHT", -5, 85)
     
     local stroke = {r = .6, g = .6, b = .6, a = .8, thickness = 1 }
     local path =  {  {xProportional = 0, yProportional = 0},
@@ -63,8 +63,23 @@ local function uiItemTooltip ()
 
     LibEKL.UI.SetFont(auctionText, addonInfo.id, "MontserratSemiBold")
 
+    -- Add price trend icon
+    local priceTrendIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.priceTrendIcon", tooltip)
+    priceTrendIcon:SetPoint("TOPLEFT", auctionIcon, "BOTTOMLEFT", 0, 5)
+    priceTrendIcon:SetHeight(12)
+    priceTrendIcon:SetWidth(12)
+    priceTrendIcon:SetVisible(false)
+
+    -- Add second line for last seen price
+    local lastSeenText = LibEKL.UICreateFrame("nkText", "nkUI.oneBag.tooltip.lastSeenText", tooltip)
+    lastSeenText:SetPoint("CENTERLEFT", priceTrendIcon, "CENTERRIGHT", 5, 0)
+    lastSeenText:SetFontSize(12 * data.bagScale)
+    lastSeenText:SetEffectGlow({strength = 3})
+    lastSeenText:SetFontColor(1, 1, 1, 1)
+    LibEKL.UI.SetFont(lastSeenText, addonInfo.id, "MontserratSemiBold")
+
     local bagIcon = LibEKL.UICreateFrame("nkTexture", "nkUI.oneBag.tooltip.BagSlotsIcon.icon", tooltip)
-    bagIcon:SetPoint("TOPLEFT", auctionIcon, "BOTTOMLEFT", 0, 5)
+    bagIcon:SetPoint("TOPLEFT", priceTrendIcon, "BOTTOMLEFT", 0, 5)
     bagIcon:SetHeight(12)
     bagIcon:SetWidth(12)
     bagIcon:SetTextureAsync("nkUI", "gfx/iconPackage.png")
@@ -101,14 +116,43 @@ local function uiItemTooltip ()
                 local difference = math.abs(inspectTimeReal() - thisAuctionItem.lastSeen)
                 local days = difference / 3600 / 24
 
-                local coinText = internalFunc.formatCoins(thisAuctionItem.avgPrice)
+                local avgCoinText = internalFunc.formatCoins(thisAuctionItem.avgPrice)
                 
-                auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, coinText, days), true)
+                -- Check if we have last seen price data
+                if thisAuctionItem.lastSeenPrice then
+                    local lastSeenCoinText = internalFunc.formatCoins(thisAuctionItem.lastSeenPrice)
+                    
+                    -- Determine price trend and set appropriate icon
+                    if thisAuctionItem.lastSeenPrice < thisAuctionItem.avgPrice then
+                        -- Last price is lower than average (down arrow)
+                        priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-down.png")
+                    elseif thisAuctionItem.lastSeenPrice > thisAuctionItem.avgPrice then
+                        -- Last price is higher than average (up arrow)
+                        priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-up.png")
+                    else
+                        -- Prices are equal (right arrow)
+                        priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-right.png")
+                    end
+                    
+                    priceTrendIcon:SetVisible(true)
+                    lastSeenText:SetText(stringFormat(langTexts.oneBag.lastSeenPrice, lastSeenCoinText), true)
+                else
+                    -- No last seen price available
+                    priceTrendIcon:SetVisible(false)
+                    lastSeenText:SetText(langTexts.oneBag.noLastPrice, true)
+                end
+                
+                lastSeenText:SetVisible(true)
+                auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, avgCoinText, days), true)
             else
                 auctionText:SetText(langTexts.oneBag.noAuction)
+                lastSeenText:SetText(langTexts.oneBag.noLastPrice, true)
+                priceTrendIcon:SetVisible(false)
             end
         else
             auctionText:SetText(langTexts.oneBag.noAuction)
+            lastSeenText:SetText(langTexts.oneBag.noLastPrice, true)
+            priceTrendIcon:SetVisible(false)
         end
         
         qty = LibEKL.Inventory.queryQtyById (itemID)

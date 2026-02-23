@@ -142,6 +142,8 @@ local function ahScanResult(result, ahTools)
                                 nkUIAuction[shard].items[id].count = nkUIAuction[shard].items[id].count + 1
                                 nkUIAuction[shard].items[id].avgPrice = nkUIAuction[shard].items[id].totalPrice / nkUIAuction[shard].items[id].count
 
+                                -- Track last seen price
+                                nkUIAuction[shard].items[id].lastSeenPrice = thisValue
                                 nkUIAuction[shard].items[id].lastSeen = scanTime
                             else
                                 nkUIAuction[shard].items[id] = {
@@ -149,6 +151,7 @@ local function ahScanResult(result, ahTools)
                                     highestPrice = thisValue,
                                     totalPrice = thisValue,
                                     avgPrice = thisValue,
+                                    lastSeenPrice = thisValue,
                                     count = 1,
                                     lastSeen = scanTime
                                 }
