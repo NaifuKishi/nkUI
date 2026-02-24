@@ -32,7 +32,7 @@ function lowerBar.vitality()
     datasetVitality:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetVitality:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetVitality:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetVitality:SetEffectGlow({ strength = 1})
+    datasetVitality:SetEffectGlow(data.theme.GLOW_WEAK)
     datasetVitality:SetLayer(10)
 
     local datasetVitalityIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)

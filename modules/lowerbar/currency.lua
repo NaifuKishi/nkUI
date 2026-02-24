@@ -45,7 +45,7 @@ function lowerBar.currency()
     datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetCurrency:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetCurrency:SetEffectGlow({ strength = 1})
+    datasetCurrency:SetEffectGlow(data.theme.GLOW_WEAK)
     datasetCurrency:SetLayer(10)
         
     datasetCurrency:EventAttach(Event.UI.Input.Mouse.Left.Click, function()

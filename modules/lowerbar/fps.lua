@@ -36,7 +36,7 @@ function lowerBar.fps()
     datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetFPS:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetFPS:SetEffectGlow({ strength = 1})
+    datasetFPS:SetEffectGlow(data.theme.GLOW_WEAK)
     datasetFPS:SetLayer(5)
 
     datasetFPS:SetSecureMode('restricted')

@@ -221,6 +221,43 @@ function internalFunc.setupConfirmDialog(dialog)
 end
 
 --[[
+   @function setElementFont
+   @description Applies consistent font styling to UI elements, handling different element types
+   @param {element} element - The UI element to style
+   @param {string} fontType - Font name (default: "MontserratSemiBold")
+   @return {nil}
+]]
+function internalFunc.setElementFont(element, fontType)
+	fontType = fontType or "MontserratSemiBold"
+	if element.SetFont then
+		element:SetFont(addonInfo.id, fontType)
+	elseif element.SetTextFont then
+		element:SetTextFont(addonInfo.id, fontType)
+	else
+		LibEKL.UI.SetFont(element, addonInfo.id, fontType)
+	end
+end
+
+--[[
+   @function createCategoryGradient
+   @description Creates a standard category gradient fill with fade-in/fade-out effect
+   @param {table} color - Color table {r, g, b} with values 0-1
+   @return {table} Gradient fill definition
+]]
+function internalFunc.createCategoryGradient(color)
+	return {
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
+		color = {
+			{ r = color[1], g = color[2], b = color[3], a = 0, position = 0 },
+			{ r = color[1], g = color[2], b = color[3], a = 1, position = 0.25 },
+			{ r = color[1], g = color[2], b = color[3], a = 1, position = 0.75 },
+			{ r = color[1], g = color[2], b = color[3], a = 0, position = 1 }
+		}
+	}
+end
+
+--[[
    @function commandHandler
    @description Handles slash commands for the addon
    @param {string} commandline - The command entered by the user

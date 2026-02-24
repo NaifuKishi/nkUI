@@ -19,5 +19,23 @@ data.theme = {
         cap = "round",
         miter = "miter",
         thickness = 2
+    },
+
+    -- Standard color values
+    COLOR_WHITE = { r = 1, g = 1, b = 1, a = 1 },
+    COLOR_DEFAULT = { r = 1, g = 1, b = 1, a = 1 },
+
+    -- Standard effect glow strengths
+    GLOW_WEAK = { strength = 1 },
+    GLOW_STANDARD = { strength = 3 },
+    GLOW_COOLDOWN = { strength = 2 },
+
+    -- Standard canvas paths
+    CANVAS_RECT_PATH = {
+        {xProportional = 0, yProportional = 0},
+        {xProportional = 1, yProportional = 0},
+        {xProportional = 1, yProportional = 1},
+        {xProportional = 0, yProportional = 1},
+        {xProportional = 0, yProportional = 0}
     }
 }

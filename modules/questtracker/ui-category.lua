@@ -94,11 +94,11 @@ function questTracker.questCategory(category, parent)
 	headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
 	headerText:SetText(privateVars.langTexts.showCategoryCheckbox[category])
 	headerText:SetWidth(header:GetWidth() - 15)
-	headerText:SetEffectGlow ({ strength = 3 })
+	headerText:SetEffectGlow(data.theme.GLOW_STANDARD)
 
-	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratSemiBold")
+	internalFunc.setElementFont(headerText, "MontserratSemiBold")
 
-	local color = data.categoryColor[category]
+	local color = data.categoryColor[category] or data.theme.COLOR_DEFAULT
 	headerText:SetFontColor(color[1], color[2], color[3], 0)
 
 	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
@@ -118,25 +118,8 @@ function questTracker.questCategory(category, parent)
 	headerLine:SetHeight(2)
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 
-	--local stroke = {r = colorR, g = colorG, b = colorB, a = 1, thickness = 1 }
-    local path =  {  {xProportional = 0, yProportional = 0},
-                  {xProportional = 1, yProportional = 0},
-                  {xProportional = 1, yProportional = 1},
-                  {xProportional = 0, yProportional = 1},
-                  {xProportional = 0, yProportional = 0}
-                  }
-	local fill = {
-		type = "gradientLinear",
-		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
-		color = {
-		{ r = color[1], g = color[2], b = color[3], a = 0, position = 0 },
-        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.25 },
-        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.75 },
-        { r = color[1], g = color[2], b = color[3], a = 0, position = 1 }
-		}
-	}
-
-	headerLine:SetShape(path, fill, nil)
+	local fill = internalFunc.createCategoryGradient(color)
+	headerLine:SetShape(data.theme.CANVAS_RECT_PATH, fill, nil)
 
 	headerLine:SetWidth(header:GetWidth())
 	headerLine:SetHeight(1)

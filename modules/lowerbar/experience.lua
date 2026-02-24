@@ -65,7 +65,7 @@ function lowerBar.experience()
     datasetExpLabel:SetFontColor(1, 1, 1, 1)
     datasetExpLabel:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetExpLabel:SetLayer(2)
-    datasetExpLabel:SetEffectGlow({ strength = 3 })
+    datasetExpLabel:SetEffectGlow(data.theme.GLOW_STANDARD)
 
     local datasetExpBarBGIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetExpBarBG)
     datasetExpBarBGIcon:SetPoint("CENTERRIGHT", datasetExpBarBG, "CENTERLEFT", -5, 0)

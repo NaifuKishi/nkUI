@@ -39,7 +39,7 @@ function lowerBar.location()
     datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetLocation:SetTextFont(addonInfo.id, "MontserratMedium")
     datasetLocation:SetSecureMode('restricted')
-    datasetLocation:SetEffectGlow({ strength = 1})
+    datasetLocation:SetEffectGlow(data.theme.GLOW_WEAK)
     datasetLocation:SetLayer(10)
     
     function datasetFrame:Redraw()
