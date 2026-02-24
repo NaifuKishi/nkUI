@@ -25,15 +25,7 @@ function questLog.uiBox (name, parent)
     }
 
     -- Set stroke color
-    local stroke = {
-        r = 0x66 / 255,
-        g = 0x56 / 255,
-        b = 0x2e / 255,
-        a = 1,
-        cap = "round",
-        miter = "miter",
-        thickness = 2
-    }
+    local stroke = data.theme.STROKE_BORDER
 
     ui:SetShape(path, nil, stroke)
     ui:SetWidth(parent:GetWidth()-40)

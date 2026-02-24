@@ -50,30 +50,9 @@ local function abandonQuest ()
 	
 	local text = stringFormat(privateVars.langTexts.abandonQuestConfirm, quest.name)
 
-	local dialog = LibEKL.UI.confirmDialog (text, yesFunc, noFunc) 
-	dialog:SetTitle("nkUI")
-	dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetTitleFontSize (20)    
-	dialog:SetTitleAlign("center")
-	dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+	local dialog = LibEKL.UI.confirmDialog(text, yesFunc, noFunc)
+	internalFunc.setupConfirmDialog(dialog)
 
-	dialog:SetFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetEffectGlow({ strength = 3 })
-	dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-	dialog:SetButtonLabelColor (data.theme.labelColor)
-	dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
-	dialog:SetButtonEffect({ strength = 3 })
-	dialog:SetHeight(200)
-	
-	dialog:SetColor({	type = "gradientLinear",
-						transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
-						color = {
-							data.theme.windowStartColor,
-							data.theme.windowEndColor
-							}
-					},  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
-	
 end
 
 local function showMenu (parent, key)
@@ -131,14 +110,14 @@ function questLog.questEntry (key, parent, counter)
 		header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
 			uiElements.questLog:UpdateQuestDetails(key)
 		end, name .. "Header.Left.Down")
-	
+
 		header:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 			if uiElements.menu ~= nil and uiElements.menu:GetVisible() == true then
 				uiElements.menu:SetVisible(false)
 			else
 				showMenu(header, key)
 			end
-		end, name .. "Header.Left.Down")
+		end, name .. "Header.Right.Down")
 	end
 		
 	---------------------------------------

@@ -40,29 +40,8 @@ local function abandonQuestCategory ()
 
 	local text = stringFormat(privateVars.langTexts.abandonAllQuestsConfirm, privateVars.langTexts.showCategoryCheckbox[categoryMenuCategory])
 
-	local dialog = LibEKL.UI.confirmDialog (text, yesFunc, noFunc)
-	dialog:SetTitle("nkUI")
-	dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetTitleFontSize (20)    
-	dialog:SetTitleAlign("center")
-	dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
-
-	dialog:SetFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetEffectGlow({ strength = 3 })
-	dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-	dialog:SetButtonLabelColor (data.theme.labelColor)
-	dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
-	dialog:SetButtonEffect({ strength = 3 })
-	dialog:SetHeight(200)
-	
-	dialog:SetColor({	type = "gradientLinear",
-						transform = Utility.Matrix.Create(2, 2, -(math.pi / 6), 0, 0), -- Negative angle for opposite direction
-						color = {
-							data.theme.windowStartColor,
-							data.theme.windowEndColor
-							}
-					},  { r = 0, g = 0, b = 0, a = 1, thickness = 1})
+	local dialog = LibEKL.UI.confirmDialog(text, yesFunc, noFunc)
+	internalFunc.setupConfirmDialog(dialog)
 
 end
 
@@ -81,7 +60,7 @@ local function showMenuCategory (parent, category)
 	local mouse = inspectMouse()
 
 	menuCategory:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouse.x, mouse.y)
-	menuCategory:SetVisible(true)  
+	menuCategory:SetVisible(true)
 
 end
 
@@ -98,7 +77,7 @@ function questTracker.questCategory(category, parent)
 	frame:SetWidth(parent:GetWidth())
 
 	local header = UI.CreateFrame("Frame", name .. '.header', frame)
-	header:SetPoint("TOPLEFT", frame, "TOPLEFT")	
+	header:SetPoint("TOPLEFT", frame, "TOPLEFT")
 	header:SetWidth(frame:GetWidth())
 
 	header:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
@@ -109,20 +88,20 @@ function questTracker.questCategory(category, parent)
 		end
 	end, name .. "Header.Left.Down")
 
-	local headerText = UI.CreateFrame("Text", name .. '.headerText', frame)	
+	local headerText = UI.CreateFrame("Text", name .. '.headerText', frame)
 	headerText:SetWordwrap(true)
 	headerText:SetPoint("CENTERLEFT", header, "CENTERLEFT", 5, 0)
 	headerText:SetFontSize(nkUISetup.modules.questtracker.categoryHeaderSize)
 	headerText:SetText(privateVars.langTexts.showCategoryCheckbox[category])
 	headerText:SetWidth(header:GetWidth() - 15)
-	headerText:SetEffectGlow ({ strength = 3 })	
+	headerText:SetEffectGlow ({ strength = 3 })
 
 	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratSemiBold")
 
 	local color = data.categoryColor[category]
 	headerText:SetFontColor(color[1], color[2], color[3], 0)
 
-	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)    
+	header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
 		if subFrame:GetVisible() == true then
 			subFrame:SetVisible(false)
 		else
@@ -131,7 +110,7 @@ function questTracker.questCategory(category, parent)
 		frame:RecalcHeight()
 		parent:RecalcHeight()
 		nkUISetup.modules.questtracker.categoryCollapseState[category] = subFrame:GetVisible()
-	end, name .. "Header.Left.Down")  
+	end, name .. "Header.Left.Down")
 
 	header:SetHeight(headerText:GetHeight())
 
@@ -145,7 +124,7 @@ function questTracker.questCategory(category, parent)
                   {xProportional = 1, yProportional = 1},
                   {xProportional = 0, yProportional = 1},
                   {xProportional = 0, yProportional = 0}
-                  }  
+                  }
 	local fill = {
 		type = "gradientLinear",
 		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
@@ -160,7 +139,7 @@ function questTracker.questCategory(category, parent)
 	headerLine:SetShape(path, fill, nil)
 
 	headerLine:SetWidth(header:GetWidth())
-	headerLine:SetHeight(1) 
+	headerLine:SetHeight(1)
 
 	subFrame = UI.CreateFrame('Frame', name .. '.subFrame', frame)
 	subFrame:SetWidth(frame:GetWidth())
@@ -168,7 +147,7 @@ function questTracker.questCategory(category, parent)
 
 	if nkUISetup.modules.questtracker.categoryCollapseState[category] == nil then nkUISetup.modules.questtracker.categoryCollapseState[category] = true end
 	subFrame:SetVisible(nkUISetup.modules.questtracker.categoryCollapseState[category])
-	
+
 	local questEntries = {}
 	local questCount = 0
 
@@ -181,20 +160,20 @@ function questTracker.questCategory(category, parent)
 	function frame:HasQuest(key)
 		for k, v in pairs(questEntries) do
 			if v:GetVisible() == true and v:GetKey() == key then return true end
-		end    
+		end
 		return false
 	end
 
 	function frame:GetQuestCount() return questCount end
 
 	function frame:GetQuestList()
-		local questList = {} 
+		local questList = {}
 		for k, v in pairs(questEntries) do
 			if v:GetVisible() == true then table.insert(questList, v:GetKey()) end
-		end    
+		end
 
 		return questList
-	end 
+	end
 
 	---------------------------------------
 	----- UI dimension recalcualtions -----
@@ -232,7 +211,7 @@ function questTracker.questCategory(category, parent)
 
 		for idx = 1, #questEntries, 1 do questEntries[idx]:SetWidth(newWidth, true) end
 		if frame:GetVisible() == true then frame:RecalcHeight() end
-	end 
+	end
 
 	---------------------------------------
 	------------ Quest methods ------------
@@ -245,7 +224,7 @@ function questTracker.questCategory(category, parent)
 			thisEntry = recycleBin[1]
 			thisEntry:SetKey(key);
 			table.remove(recycleBin, 1)
-		else    
+		else
 			thisEntry = questTracker.questEntry(key, subFrame, #questEntries+1)
 			thisEntry:SetTitleFontSize (nkUISetup.modules.questtracker.categoryFontSize.header)
 			thisEntry:SetBodyFontSize (nkUISetup.modules.questtracker.categoryFontSize.body)
@@ -275,7 +254,7 @@ function questTracker.questCategory(category, parent)
 				questEntries[idx]:SetPoint("TOPLEFT", subFrame, "TOPLEFT", 5, 0)
 			else
 				questEntries[idx]:SetPoint("TOPLEFT", questEntries[idx-1], "BOTTOMLEFT", 0, 5)
-			end 
+			end
 		end
 
 		questCount = questCount + 1
@@ -286,7 +265,7 @@ function questTracker.questCategory(category, parent)
 
 		if complete ~= true then
 			for k, v in pairs(objectives) do
-				if not v.complete then					
+				if not v.complete then
 					thisEntry:AddObjective(v.description, v.count, v.countDone, v.complete)
 				end
 			end
@@ -316,7 +295,7 @@ function questTracker.questCategory(category, parent)
 						questEntries[idx]:SetPoint("TOPLEFT", subFrame, "TOPLEFT", 5, 0)
 					else
 						questEntries[idx]:SetPoint("TOPLEFT", questEntries[idx-1], "BOTTOMLEFT", 0, 5)
-					end 
+					end
 				end
 
 				return
@@ -332,7 +311,7 @@ function questTracker.questCategory(category, parent)
 				local thisEntry = questEntries[idx]
 				local isUpdate = false
 
-				if thisEntry:GetTitle() ~= title then 
+				if thisEntry:GetTitle() ~= title then
 					thisEntry:SetTitle(title)
 					isUpdate = true
 				end
@@ -352,13 +331,13 @@ function questTracker.questCategory(category, parent)
 
 				thisEntry:RecalcHeight()
 
-				if isUpdate == true then 
+				if isUpdate == true then
 					return false
 				else
 					return thisEntry:GetCollapsed()
 				end
 			end
-		end 
+		end
 	end
 
 	---------------------------------------
@@ -389,7 +368,7 @@ function questTracker.questCategory(category, parent)
 				questEntries[idx]:SetBodyColor (questTracker.bodyColor)
 				questEntries[idx]:RecalcHeight()
 			end
-		
+
 		end
 
 		frame:RecalcHeight()

@@ -71,15 +71,7 @@ function internalFunc.macroEditDialog (editBar)
 						{r = 0.1294, g = 0.1533, b = 0.2157, a = 1, position = 0}, -- Start color
 						{r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1}  -- End color
 					}
-				},  {
-					r = 0x66 / 255,
-					g = 0x56 / 255,
-					b = 0x2e / 255,
-					a = 1,
-					cap = "round",
-					miter = "miter",
-					thickness = 2
-				})
+				}, data.theme.STROKE_BORDER)
 	
 	-- Create icon edit button for macro icon selection
 	local iconEdit = LibEKL.UICreateFrame("nkActionButton", name .. ".iconEdit", ui:GetContent())

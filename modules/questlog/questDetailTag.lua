@@ -46,13 +46,7 @@ function questLog.questDetailTag (name, parent)
     }
 
     -- Set stroke color
-    local stroke = {
-        r = 0x66 / 255,
-        g = 0x56 / 255,
-        b = 0x2e / 255,
-        a = 1,
-        thickness = 2
-    }
+    local stroke = data.theme.STROKE_BORDER
 
     -- Set the shape of the UI element with fill and stroke
     --ui:SetShape(path, fill, stroke)

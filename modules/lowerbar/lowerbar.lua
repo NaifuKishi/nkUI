@@ -42,13 +42,7 @@ function lowerBar.build()
         uiElements.lowerBarCanvas:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
         uiElements.lowerBarCanvas:SetLayer(1)
 
-        local stroke = {r = 0x66 / 255,
-                        g = 0x56 / 255,
-                        b = 0x2e / 255,
-                        a = 1,
-                        cap = "round",
-                        miter = "miter",
-                        thickness = 2}
+        local stroke = data.theme.STROKE_BORDER
 
         local path = {  {xProportional = 0, yProportional = 0},
                         {xProportional = 1, yProportional = 0},

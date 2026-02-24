@@ -47,7 +47,7 @@ local function uiItemReward(name, parent)
         }
     }
 
-    -- Set stroke color
+    -- Set stroke color (lighter thickness variant)
     local stroke = {
         r = 0x66 / 255,
         g = 0x56 / 255,

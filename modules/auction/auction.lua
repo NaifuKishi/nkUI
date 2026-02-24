@@ -279,10 +279,7 @@ local function buildScanDialog()
             { r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0 },
             { r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1 },
         }
-    }, {
-        r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1,
-        cap = "round", miter = "miter", thickness = 2
-    })
+    }, data.theme.STROKE_BORDER)
 
     local msg = LibEKL.UICreateFrame("nkText", "nkUI.auction.scanDialog.msg", scanDialog:GetContent())
     msg:SetPoint("CENTERTOP", scanDialog:GetContent(), "CENTERTOP", 0, 20)
@@ -439,6 +436,14 @@ local function buildBrowseTab(parent, gridName)
     grid:SetSelectable(true)
     grid:SetSortable(true)
 
+    -- Match grid colors to the nkUI window theme (dark blue-grey body, gold accents)
+    grid:SetBodyColor(    { r = 0.10, g = 0.12, b = 0.16, a = 1 })   -- window bg
+    grid:SetBorderColor(  { r = 0.22, g = 0.24, b = 0.30, a = 1 })   -- subtle dividers
+    grid:SetBodyHighlightColor( { r = 0.20, g = 0.22, b = 0.28, a = 1 })
+    grid:SetLabelHighlightColor({ r = 1,    g = 1,    b = 1,    a = 1 })
+    grid:SetBodySelectedColor(  { r = 0.26, g = 0.21, b = 0.06, a = 1 })   -- dark amber tint
+    grid:SetLabelSelectedColor(data.theme.labelColor)
+
     -- Layout is deferred until GridFinished fires on the tab pane's first show,
     -- but we do it now since this initFunc is called on first switch.
     local rowCount = BROWSE_ROWS
@@ -446,7 +451,7 @@ local function buildBrowseTab(parent, gridName)
     browseGrid = grid
 
     -- ── search logic ─────────────────────────────────────────────────────────
-    searchBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+    searchBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if not atAuctionHouse then
             Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
             return
@@ -457,7 +462,7 @@ local function buildBrowseTab(parent, gridName)
         local text = searchField:GetText()
         if text == "" then text = nil end
         Command.Auction.Scan({ type = "search", text = text })
-    end, gridName .. ".searchBar.btn.Click")
+    end, gridName .. ".searchBar.btn.Up")
 
     -- ── result handler ───────────────────────────────────────────────────────
     -- Listen for search-type scans (distinguished by info.text being set or nil
@@ -555,10 +560,7 @@ local function buildWindow()
             { r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0 },
             { r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1 },
         }
-    }, {
-        r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1,
-        cap = "round", miter = "miter", thickness = 2
-    })
+    }, data.theme.STROKE_BORDER)
 
     local cfg = nkUISetup.modules.auction
     win:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cfg.x, cfg.y)
@@ -622,13 +624,13 @@ local function buildWindow()
     local scanBtn = makeBtn(name .. ".strip.scan", strip, langTexts.auction.btnScan, 100, 22)
     scanBtn:SetPoint("CENTERRIGHT", strip, "CENTERRIGHT", -10, 0)
 
-    scanBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+    scanBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if not atAuctionHouse then
             Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
             return
         end
         internalFunc.ahScanDialog()
-    end, name .. ".strip.scan.Click")
+    end, name .. ".strip.scan.Up")
 
     -- Save position on move
     win:EventAttach(Event.UI.Input.Mouse.Left.Up, function()

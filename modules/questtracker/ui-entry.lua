@@ -50,39 +50,9 @@ local function abandonQuest ()
 	
 	local text = stringFormat(privateVars.langTexts.abandonQuestConfirm, quest.name)
 
-	local dialog = LibEKL.UI.confirmDialog (text, yesFunc, noFunc) 
-	dialog:SetTitle("nkUI")
-	dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetTitleFontSize (20)    
-	dialog:SetTitleAlign("center")
-	dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)	
+	local dialog = LibEKL.UI.confirmDialog(text, yesFunc, noFunc)
+	internalFunc.setupConfirmDialog(dialog)
 
-	dialog:SetFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetEffectGlow({ strength = 3 })
-	dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
-	dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-	dialog:SetButtonLabelColor (data.theme.labelColor)
-	dialog:SetButtonBorderColor ({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
-	dialog:SetButtonEffect({ strength = 3 })
-	dialog:SetHeight(200)
-	
-	dialog:SetColor({
-        type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
-        color = {
-            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
-            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
-        }
-    },  {
-        r = 0x66 / 255,
-        g = 0x56 / 255,
-        b = 0x2e / 255,
-        a = 1,
-        cap = "round",
-        miter = "miter",
-        thickness = 2
-    })
-	
 end
 
 local function showMenu (parent, key)
@@ -158,26 +128,26 @@ function questTracker.questEntry (key, parent, counter)
 	subHeader:SetWidth(frame:GetWidth())
 	
 	if parent.GetCategory ~= nil then
-		header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)			
+		header:EventAttach(Event.UI.Input.Mouse.Left.Down, function (self)
 			internalFunc.questLogInit(true)
 			uiElements.questLog:UpdateQuestDetails(key)
 		end, name .. "Header.Left.Down")
-	
+
 		header:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 			if uiElements.menu ~= nil and uiElements.menu:GetVisible() == true then
 				uiElements.menu:SetVisible(false)
 			else
 				showMenu(header, key)
 			end
-		end, name .. "Header.Left.Down")
-	
-		header:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)		
+		end, name .. "Header.Right.Down")
+
+		header:EventAttach(Event.UI.Input.Mouse.Cursor.In, function (self)
 			questTracker.showTooltip(header, key, nil, parent:GetCategory())
-		end, name .. "Header.Left.Down")
-		
-		header:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)		
+		end, name .. "Header.Cursor.In")
+
+		header:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function (self)
 			if uiElements.qtTooltip ~= nil then uiElements.qtTooltip:SetVisible(false) end
-		end, name .. "Header.Left.Down")
+		end, name .. "Header.Cursor.Out")
 	end
 	
 	subFrame = LibEKL.UICreateFrame("nkFrame", name .. '.subFrame', parent)

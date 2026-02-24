@@ -9,7 +9,6 @@ local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local events        = privateVars.events
 local oneBag        = privateVars.oneBag
-local langTexts     = privateVars.langTexts
 
 local InspectTimeReal   = Inspect.Time.Real
 local InspectItemDetail = Inspect.Item.Detail
@@ -69,11 +68,12 @@ function internalFunc.oneBagInit()
         data.bagScale = nkUISetup.modules.oneBag.scale
 
         LibEKL.Inventory.updateDB()
-        uiElements.oneBag = oneBag.createBagUI("nkUI.oneBag", langTexts.oneBag.bagTitle, true)
+        local langTexts = privateVars.langTexts
+        uiElements.oneBag = oneBag.createBagUI("nkUI.oneBag", langTexts and langTexts.oneBag and langTexts.oneBag.bagTitle or nil, true)
         uiElements.oneBagBagSlots = oneBag.createBagSlots(uiElements.oneBag)
 
         if nkUISetup.modules.oneBag.bankActivate then
-            uiElements.oneBank = oneBag.createBagUI("nkUI.oneBank", langTexts.oneBag.bankTitle, false)
+            uiElements.oneBank = oneBag.createBagUI("nkUI.oneBank", langTexts and langTexts.oneBag and langTexts.oneBag.bankTitle or nil, false)
             uiElements.oneBank:SetVisible(UI.Native.Bank:GetLoaded())
         end
 
@@ -164,6 +164,7 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
 
     if not cachedItems then return end
 
+    local langTexts = privateVars.langTexts
     local counter = 1
     local firstIcon = nil
     local lastIcon = nil
@@ -174,7 +175,7 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
     for k, v in pairs(cachedItems) do
         local realCategory = oneBag.getRealCategory(v.category, v.rarity)
 
-        if realCategory == langTexts.itemCategories.trash then
+        if langTexts and langTexts.itemCategories and realCategory == langTexts.itemCategories.trash then
             hasTrash = true
             trashItems[k] = v
         else
@@ -196,7 +197,7 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
 
     local sortedCategories = LibEKL.Tools.Table.GetSortedKeys (categories)
 
-    if hasTrash then
+    if hasTrash and langTexts and langTexts.itemCategories then
         table.insert(sortedCategories, langTexts.itemCategories.trash)
         categories[langTexts.itemCategories.trash] = {
             original = trashItems,

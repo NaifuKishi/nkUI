@@ -6,7 +6,6 @@ local data          = privateVars.data
 local uiElements    = privateVars.uiElements
 local internalFunc  = privateVars.internalFunc
 local oneBag        = privateVars.oneBag
-local langTexts     = privateVars.langTexts
 
 ---------- local functions ---------
 
@@ -22,8 +21,12 @@ context:SetLayer(2)
 -- Creates the main bag UI window
 function oneBag.createBagUI(bagName, bagTitle, isBag)
 
-    local currencyText, currencyText, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame, auctionIcon
-    
+    local currencyText, currencyIcon, freeBagSlotsText, bagIcon, searchIcon, searchFrame, searchInput, toolsFrame, auctionIcon
+
+    if not bagTitle then
+        bagTitle = isBag and "%s's inventory" or "%s's bank"
+    end
+
     local bagWindow = LibEKL.UICreateFrame("nkWindow", bagName, context)
     bagWindow:SetTitle(stringFormat(bagTitle, LibEKL.Unit.GetPlayerDetails().name))
     bagWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
@@ -50,15 +53,7 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
             {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
             {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
         }
-    },  {
-        r = 0x66 / 255,
-        g = 0x56 / 255,
-        b = 0x2e / 255,
-        a = 1,
-        cap = "round",
-        miter = "miter",
-        thickness = 2
-    })
+    }, data.theme.STROKE_BORDER)
     
     bagWindow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()            
         if not oneBag.dragItem then return end
