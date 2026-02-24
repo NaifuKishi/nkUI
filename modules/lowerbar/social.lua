@@ -47,7 +47,7 @@ function lowerBar.social()
     datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetSocial:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetSocial:SetEffectGlow(data.theme.GLOW_WEAK)
+    datasetSocial:SetEffectGlow({ strength = 1})
     datasetSocial:SetLayer(10)
    
     function datasetFrame:Redraw()

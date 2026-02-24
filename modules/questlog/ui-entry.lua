@@ -89,20 +89,20 @@ function questLog.questEntry (key, parent, counter)
 	local level = LibEKL.UICreateFrame("nkText", name .. '.levelText', frame)
 	level:SetPoint("CENTERLEFT", frame, "CENTERLEFT")
 	level:SetFontSize(fontSize)
-	level:SetFontColor(data.theme.COLOR_WHITE.r, data.theme.COLOR_WHITE.g, data.theme.COLOR_WHITE.b, data.theme.COLOR_WHITE.a)
-	level:SetEffectGlow(data.theme.GLOW_STANDARD)
+	level:SetFontColor(1, 1, 1, 1)
+	level:SetEffectGlow({ strength = 3})
 
-	internalFunc.setElementFont(level, "MontserratSemiBold")
+	LibEKL.UI.SetFont(level, addonInfo.id, "MontserratSemiBold")
 
 	local header = LibEKL.UICreateFrame("nkText", name .. '.Header', frame)
-	header:SetPoint("CENTERLEFT", level, "CENTERLEFT", 20, 0)
+	header:SetPoint("CENTERLEFT", level, "CENTERLEFT", 20, 0)		
 	header:SetFontSize(fontSize)
-	header:SetFontColor(data.theme.COLOR_WHITE.r, data.theme.COLOR_WHITE.g, data.theme.COLOR_WHITE.b, data.theme.COLOR_WHITE.a)
+	header:SetFontColor(1, 1, 1, 1)
 	--header:SetWordwrap(true)
-	header:SetEffectGlow(data.theme.GLOW_STANDARD)
+	header:SetEffectGlow({ strength = 3})
 	header:SetWidth(frame:GetWidth() - 20)
 
-	internalFunc.setElementFont(header, "MontserratSemiBold")
+	LibEKL.UI.SetFont(header, addonInfo.id, "MontserratSemiBold")
 
 	header:SetWidth(frame:GetWidth())
 	

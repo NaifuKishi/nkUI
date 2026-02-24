@@ -23,7 +23,7 @@ function lowerBar.timeDate()
     datasetTime:SetFontSize(nkUISetup.modules.lowerBar.timeSize)
     datasetTime:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetTime:SetTextFont(addonInfo.id, "MontserratSemiBold")
-    datasetTime:SetEffectGlow(data.theme.GLOW_STANDARD)
+    datasetTime:SetEffectGlow({ strength = 3 })
     datasetTime:SetLayer(10)
     
     function datasetTime:Redraw()

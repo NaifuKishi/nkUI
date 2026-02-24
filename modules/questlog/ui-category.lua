@@ -98,11 +98,12 @@ function questLog.questCategory(category, parent)
 	if categoryText == nil then categoryText = category end
 	headerText:SetText(categoryText)
 	headerText:SetWidth(header:GetWidth() - 15)
-	headerText:SetEffectGlow(data.theme.GLOW_STANDARD)
+	headerText:SetEffectGlow ({ strength = 3 })	
 
-	internalFunc.setElementFont(headerText, "MontserratBold")
+	LibEKL.UI.SetFont(headerText, addonInfo.id, "MontserratBold")
 
-	local color = data.categoryColor[category] or data.theme.COLOR_DEFAULT
+	local color = data.categoryColor[category]
+	if color == nil then color = {1, 1, 1, 1} end
 
 	headerText:SetFontColor(color[1], color[2], color[3], 0)
 
@@ -123,8 +124,25 @@ function questLog.questCategory(category, parent)
 	headerLine:SetHeight(2)
 	headerLine:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
 
-	local fill = internalFunc.createCategoryGradient(color)
-	headerLine:SetShape(data.theme.CANVAS_RECT_PATH, fill, nil)
+	--local stroke = {r = colorR, g = colorG, b = colorB, a = 1, thickness = 1 }
+    local path =  {  {xProportional = 0, yProportional = 0},
+                  {xProportional = 1, yProportional = 0},
+                  {xProportional = 1, yProportional = 1},
+                  {xProportional = 0, yProportional = 1},
+                  {xProportional = 0, yProportional = 0}
+                  }  
+	local fill = {
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(2, 2, (math.pi / 4), 0, 0),
+		color = {
+		{ r = color[1], g = color[2], b = color[3], a = 0, position = 0 },
+        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.25 },
+        { r = color[1], g = color[2], b = color[3], a = 1, position = 0.75 },
+        { r = color[1], g = color[2], b = color[3], a = 0, position = 1 }
+		}
+	}
+
+	headerLine:SetShape(path, fill, nil)
 
 	headerLine:SetWidth(header:GetWidth())
 	headerLine:SetHeight(1) 
