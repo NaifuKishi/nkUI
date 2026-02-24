@@ -13,298 +13,699 @@ local langTexts     = privateVars.langTexts
 
 local InspectTimeReal       = Inspect.Time.Real
 local InspectAuctionDetail  = Inspect.Auction.Detail
+local InspectItemDetail     = Inspect.Item.Detail
+local InspectShard          = Inspect.Shard
 
-local stringFormat      = string.format
-local stringFind        = string.find
-local stringMatch       = string.match
-local mathFloor         = math.floor
+local stringFormat  = string.format
+local mathFloor     = math.floor
+local mathMax       = math.max
+local mathMin       = math.min
 
-local dialog
+local SNAPSHOT_CAPACITY = 30  -- ring buffer size per item
+
 local context = UI.CreateContext("nkUI.auction")
 context:SetStrata('dialog')
-context:SetLayer(2)
+context:SetLayer(3)
 
----------- init variables ---------
+---------- data model helpers ----------
 
-local context = UI.CreateContext("nkUI.onebag")
-context:SetStrata('dialog')
-context:SetLayer(2)
-
-local function build()
-
-    local name = "nkUI.auction"
-
-    local ahToolsWindow = LibEKL.UICreateFrame("nkWindow", name, context)
-    ahToolsWindow:SetTitle("Auction Tools")
-    ahToolsWindow:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-    ahToolsWindow:SetTitleFontSize(16)
-    ahToolsWindow:SetTitleEffect({ strength = 3})
-    ahToolsWindow:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
-
-    ahToolsWindow:SetWidth(200)
-    ahToolsWindow:SetHeight(200)
-    ahToolsWindow:SetLayer(1)
-
-    ahToolsWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 500, 500)
-
-    ahToolsWindow:SetColor({
-        type = "gradientLinear",
-        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
-        color = {
-            {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
-            {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
+local function initShard(shard)
+    if not nkUIAuction then nkUIAuction = {} end
+    if not nkUIAuction[shard] then
+        nkUIAuction[shard] = {
+            schemaVer   = 1,
+            lastScan    = nil,
+            items       = {},
         }
-    },  {
-        r = 0x66 / 255,
-        g = 0x56 / 255,
-        b = 0x2e / 255,
-        a = 1,
-        cap = "round",
-        miter = "miter",
-        thickness = 2
+    end
+    -- migrate old schema (pre-phase1): contained auctions{} and flat price fields
+    local shardData = nkUIAuction[shard]
+    if shardData.schemaVer == nil then
+        shardData.schemaVer  = 1
+        shardData.auctions   = nil   -- drop old auction ID table
+        -- old items had lowestPrice/highestPrice/avgPrice/count — convert to one snapshot
+        for itemType, old in pairs(shardData.items or {}) do
+            if old.lowestPrice ~= nil then
+                shardData.items[itemType] = {
+                    name         = old.name,
+                    icon         = old.icon,
+                    rarity       = old.rarity,
+                    vendor       = nil,
+                    snapshots    = { [1] = { t = old.lastSeen or 0, lo = old.lowestPrice, hi = old.highestPrice, count = old.count or 1 } },
+                    snapshotHead = 1,
+                }
+            end
+        end
+    end
+end
+
+-- Write one snapshot entry into the ring buffer for itemType.
+local function writeSnapshot(shard, itemType, scanTime, lo, hi, count)
+    local shardData = nkUIAuction[shard]
+    local item = shardData.items[itemType]
+
+    if item == nil then return end  -- must be seeded via seedItem first
+
+    local head = (item.snapshotHead or 0) % SNAPSHOT_CAPACITY + 1
+    item.snapshots[head] = { t = scanTime, lo = lo, hi = hi, count = count }
+    item.snapshotHead = head
+end
+
+-- Seed item metadata on first encounter.
+local function seedItem(shard, itemType, name, icon, rarity, vendor)
+    local shardData = nkUIAuction[shard]
+    if shardData.items[itemType] == nil then
+        shardData.items[itemType] = {
+            name         = name,
+            icon         = icon,
+            rarity       = rarity or 0,
+            vendor       = vendor,
+            snapshots    = {},
+            snapshotHead = 0,
+        }
+    else
+        -- update mutable fields in case they were missing
+        local item = shardData.items[itemType]
+        if name   ~= nil then item.name   = name   end
+        if icon   ~= nil then item.icon   = icon   end
+        if rarity ~= nil then item.rarity = rarity end
+        if vendor ~= nil then item.vendor = vendor end
+    end
+end
+
+---------- public price API ----------
+
+-- Returns a price summary across the last `depth` snapshots (default: scanDepth setting).
+-- Returns nil if no data exists for the item.
+function auction.getPriceSummary(itemType)
+    if not nkUIAuction then return nil end
+    local shard = InspectShard().name
+    local shardData = nkUIAuction[shard]
+    if shardData == nil then return nil end
+    local item = shardData.items[itemType]
+    if item == nil or item.snapshots == nil then return nil end
+
+    local depth = (nkUISetup and nkUISetup.modules.auction and nkUISetup.modules.auction.scanDepth) or 3
+    local head  = item.snapshotHead or 0
+    if head == 0 then return nil end
+
+    local loAll, hiAll, loRecent, count = math.huge, 0, nil, 0
+    local total, snapCount = 0, 0
+    local latestTime = 0
+
+    for i = 0, mathMin(depth, SNAPSHOT_CAPACITY) - 1 do
+        local idx = (head - 1 - i) % SNAPSHOT_CAPACITY + 1
+        local snap = item.snapshots[idx]
+        if snap and snap.t and snap.t > 0 then
+            loAll    = mathMin(loAll, snap.lo)
+            hiAll    = mathMax(hiAll, snap.hi)
+            total    = total + snap.lo   -- average over lowest price per scan
+            snapCount = snapCount + 1
+            count    = count + (snap.count or 1)
+            if snap.t > latestTime then
+                latestTime = snap.t
+                loRecent   = snap.lo
+            end
+        end
+    end
+
+    if snapCount == 0 then return nil end
+
+    return {
+        lo        = loAll,
+        hi        = hiAll,
+        avg       = mathFloor(total / snapCount),
+        lastLo    = loRecent,
+        snapCount = snapCount,
+        totalSeen = count,
+        lastSeen  = latestTime,
+        daysSince = mathFloor((InspectTimeReal() - latestTime) / 86400),
+    }
+end
+
+-- Returns the ratio of the last-known AH floor price to vendor sell value.
+-- e.g. 3.5 means cheapest AH listing is 3.5x vendor price.
+-- Returns nil if either value is unknown or vendor is zero.
+function auction.getVendorRatio(itemType)
+    if not nkUIAuction then return nil end
+    local shard = InspectShard().name
+    local shardData = nkUIAuction[shard]
+    if shardData == nil then return nil end
+    local item = shardData.items[itemType]
+    if item == nil then return nil end
+
+    local vendor = item.vendor
+    if vendor == nil or vendor <= 0 then return nil end
+
+    local summary = auction.getPriceSummary(itemType)
+    if summary == nil or summary.lastLo == nil then return nil end
+
+    return summary.lastLo / vendor
+end
+
+---------- scan engine ----------
+
+-- Processes one batch (table of up to 50 auction IDs) within a coroutine.
+-- Accumulates per-item lo/hi/count, then writes one snapshot per item at end.
+local function processBatch(batch, scanTime, shard, accumulator)
+    for i = 1, #batch do
+        local detail = InspectAuctionDetail(batch[i])
+        if detail and detail.itemType and detail.buyout then
+            local stack = detail.itemStack or 1
+            local unitPrice = mathFloor(detail.buyout / stack)
+
+            local itemType = detail.itemType
+            local acc = accumulator[itemType]
+
+            if acc == nil then
+                -- First time seeing this item in this scan — fetch metadata
+                local itemDetail = InspectItemDetail(detail.item or detail.itemType)
+                local name, icon, rarity, vendor
+                if itemDetail then
+                    name   = itemDetail.name
+                    icon   = itemDetail.icon
+                    rarity = itemDetail.rarity
+                    vendor = itemDetail.sell  -- copper value from vendor
+                end
+                seedItem(shard, itemType, name, icon, rarity, vendor)
+
+                accumulator[itemType] = { lo = unitPrice, hi = unitPrice, count = 1 }
+            else
+                if unitPrice < acc.lo then acc.lo = unitPrice end
+                if unitPrice > acc.hi then acc.hi = unitPrice end
+                acc.count = acc.count + 1
+            end
+        end
+    end
+end
+
+-- Flushes the scan accumulator: writes one snapshot per item.
+local function flushAccumulator(accumulator, scanTime, shard)
+    for itemType, acc in pairs(accumulator) do
+        writeSnapshot(shard, itemType, scanTime, acc.lo, acc.hi, acc.count)
+    end
+end
+
+-- Internal: called from Event.Auction.Scan handler.
+-- onProgress(pct)          — called each coroutine tick (0–100)
+-- onComplete(newCount)     — called when processing finishes
+local function runScanProcessing(rawAuctions, onProgress, onComplete)
+
+    local shard    = InspectShard().name
+    local scanTime = InspectTimeReal()
+
+    initShard(shard)
+
+    -- Split all auction IDs into batches of 50
+    local batches   = {}
+    local batch     = {}
+    local total     = 0
+    for auctionID in pairs(rawAuctions) do
+        table.insert(batch, auctionID)
+        total = total + 1
+        if #batch >= 50 then
+            table.insert(batches, batch)
+            batch = {}
+        end
+    end
+    if #batch > 0 then table.insert(batches, batch) end
+
+    if total == 0 then
+        if onComplete then onComplete(0) end
+        return
+    end
+
+    local accumulator = {}
+    local processed   = 0
+
+    local co = coroutine.create(function()
+        for b = 1, #batches do
+            processBatch(batches[b], scanTime, shard, accumulator)
+            processed = processed + #batches[b]
+            if onProgress then
+                onProgress(mathFloor(processed / total * 100))
+            end
+            coroutine.yield(true)   -- yield between batches, not per-auction
+        end
+        flushAccumulator(accumulator, scanTime, shard)
+        nkUIAuction[shard].lastScan = scanTime
+        if onComplete then onComplete(total) end
+    end)
+
+    LibEKL.Coroutines.Add({ func = co, active = true })
+end
+
+---------- scan dialog (called from bag UI) ----------
+
+local scanDialog
+
+local function buildScanDialog()
+    scanDialog = LibEKL.UICreateFrame("nkWindow", "nkUI.auction.scanDialog", context)
+    scanDialog:ClearAll()
+    scanDialog:SetTitle("nkUI")
+    scanDialog:SetTitleAlign('center')
+    scanDialog:SetWidth(400)
+    scanDialog:SetHeight(150)
+    scanDialog:SetCloseable(false)
+    scanDialog:SetTitleFont(addonInfo.id, "MontserratBold")
+    scanDialog:SetTitleFontSize(16)
+    scanDialog:SetTitleEffect({ strength = 3 })
+    scanDialog:SetTitleFontColor(1, .8, 0, 1)
+
+    scanDialog:SetColor({
+        type      = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0),
+        color     = {
+            { r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0 },
+            { r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1 },
+        }
+    }, {
+        r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1,
+        cap = "round", miter = "miter", thickness = 2
     })
 
-    local itemCounter = LibEKL.UICreateFrame("nkText", name .. ".counter", ahToolsWindow:GetContent())
-    itemCounter:SetPoint("TOPLEFT", ahToolsWindow:GetContent(), "TOPLEFT", 10, 10)
-    
-    local button = LibEKL.UICreateFrame("nkButton", name .. ".button", ahToolsWindow:GetContent())
+    local msg = LibEKL.UICreateFrame("nkText", "nkUI.auction.scanDialog.msg", scanDialog:GetContent())
+    msg:SetPoint("CENTERTOP", scanDialog:GetContent(), "CENTERTOP", 0, 20)
+    msg:SetFontSize(16)
+    msg:SetFontColor(1, 1, 1, 1)
+    LibEKL.UI.SetFont(msg, addonInfo.id, "MontserratSemiBold")
 
-    button:SetPoint("TOPLEFT", itemCounter, "BOTTOMLEFT", 0, 10)
-    button:SetWidth(100)
-    button:SetHeight(50)
-    button:SetText("Scan")
-    button:SetFont(addonInfo.id, "MontserratSemiBold")
-	button:SetEffectGlow ({ strength = 3 })
-    button:SetLabelColor(data.theme.labelColor)
-	button:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-    button:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    scanDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT",
+        (LibEKL.UI.getBoundRight() / 2) - (scanDialog:GetWidth() / 2), 100)
 
-    button:EventAttach(Event.UI.Input.Mouse.Left.Click, function ()
-		Command.Auction.Scan({type = "search"})
-	end, name .. "_leftButton_LeftClick")
+    function scanDialog:SetMessage(text) msg:SetText(text) end
 
-    ahToolsWindow:SetVisible(false)
+    -- Attach the scan result event once, here
+    Command.Event.Attach(Event.Auction.Scan, function(_, info, auctions)
+        if info.type ~= "search" then return end
+        if not fullScanPending then return end
+        fullScanPending = false
 
-    function ahToolsWindow:SetCounter(counter)
-        itemCounter:SetText(stringFormat("%d items processed", counter))
-    end
+        local shard = InspectShard().name
+        initShard(shard)
 
-    function ahToolsWindow:SetProgress(progress)
-        itemCounter:SetText(stringFormat("%d%% done", progress))
-    end
+        scanDialog:SetVisible(true)
+        scanDialog:SetMessage(langTexts.auction.scanStarted)
 
-    return ahToolsWindow
-
-end
-
-local function ahScanResult(result, ahTools) 
-
-    local processResults = coroutine.create(
-
-        function (result, ahTools)
-            local counter = 0
-            local index = 1
-            local scanTime = InspectTimeReal()
-            local shard = Inspect.Shard().name
-            
-            while counter < result.count do
-                
-                local thisSet = result.data[index] -- get current set of up to 50 auctions
-
-                for idx = 1, #thisSet, 1 do
-
-                    local thisAuction = InspectAuctionDetail(thisSet[idx]) -- get details of one auction
-
-                    if thisAuction then
-                        local thisValue
-                        if thisAuction.buyout and thisAuction.itemStack then
-                            thisValue = thisAuction.buyout / thisAuction.itemStack -- get price of single item if is a stack
-                        elseif thisAuction.buyout then
-                            thisValue = thisAuction.buyout -- get price of single item if is not a stack
-                        else
-                            thisValue = nil
-                        end
-
-                        if thisValue then
-                            local id = thisAuction.itemType -- get type of item from auction information
-                            if nkUIAuction[shard].items[id] then -- do we know this item type yet?                                
-
-                                if nkUIAuction[shard].items[id].lowestPrice > thisValue then -- is this price highr than the lowest we ever saw? 
-                                    nkUIAuction[shard].items[id].lowestPrice = thisValue
-                                end
-
-                                if nkUIAuction[shard].items[id].highestPrice < thisValue then -- is this price highr than the highest we ever saw?         
-                                    nkUIAuction[shard].items[id].highestPrice = thisValue
-                                end
-
-                                -- Update average price calculation
-                                nkUIAuction[shard].items[id].totalPrice = nkUIAuction[shard].items[id].totalPrice + thisValue
-                                nkUIAuction[shard].items[id].count = nkUIAuction[shard].items[id].count + 1
-                                nkUIAuction[shard].items[id].avgPrice = nkUIAuction[shard].items[id].totalPrice / nkUIAuction[shard].items[id].count
-
-                                -- Track last seen price
-                                nkUIAuction[shard].items[id].lastSeenPrice = thisValue
-                                nkUIAuction[shard].items[id].lastSeen = scanTime
-                            else
-                                nkUIAuction[shard].items[id] = {
-                                    lowestPrice = thisValue,
-                                    highestPrice = thisValue,
-                                    totalPrice = thisValue,
-                                    avgPrice = thisValue,
-                                    lastSeenPrice = thisValue,
-                                    count = 1,
-                                    lastSeen = scanTime
-                                }
-                            end
-                        end
-                    end
-                    
-                    counter = counter + 1                    
-                end
-
-                index = index + 1
-
-                dialog:SetMessage(string.format(langTexts.auction.scanProgress, counter / result.count * 100))
---                ahTools:SetProgress(counter / result.count * 100)
-                coroutine.yield(auction)
-
-            end           
-
-            dialog:SetVisible(false)
-            nkUIAuction[shard].lastScan = scanTime
-            
-            coroutine.yield()
-        end
-    )
-
-    LibEKL.Coroutines.Add ({ func = processResults, active = true, para1 = result, para2 = ahTools })                
-end
-
-local function ahScan(_, info, auctions) 
-
-    if info.type == "search" and not info.text then           
-
-        if not nkUIAuction then nkUIAuction = {} end
-
-        local shard = Inspect.Shard().name
-        
-        if not nkUIAuction[shard] then
-            nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
-        end
-
-        local counter, totalCounter = 0, 0
-        local auctionSet = {}
-        local newAuctions = {}
-        
-        local previousAuctions = nkUIAuction[shard].auctions or {}
-        local knownAuctions = {}
-
-        -- build tables of 50 auctions for the later processing
-
-        for thisAuction, v in pairs (auctions) do
-
-            if not previousAuctions[thisAuction] then -- only process new auctions
-                table.insert(auctionSet, thisAuction)                        
-                knownAuctions[thisAuction] = true -- mark the new auction as known
-
-                counter = counter + 1
-                totalCounter = totalCounter + 1
-                if counter >= 50 then
-                    counter = 0
-                    table.insert(newAuctions, auctionSet)
-                    auctionSet = {}
-                end
+        runScanProcessing(
+            auctions,
+            function(pct)
+                scanDialog:SetMessage(stringFormat(langTexts.auction.scanProgress, pct))
+            end,
+            function(newCount)
+                scanDialog:SetVisible(false)
+                Command.Console.Display("general", true,
+                    stringFormat(langTexts.auction.newAuctions, newCount), true)
+                auction.refreshStatusStrip()
             end
-        end
-
-        if counter > 0 then
-            table.insert(newAuctions, auctionSet)
-        end
-        
-        local removedAuctions = 0
-
-        for k, v in pairs(previousAuctions) do
-            if auctions[k] then -- if the auction is still running
-                knownAuctions[k] =  true -- mark as known
-            else
-                removedAuctions = removedAuctions + 1
-            end
-        end
-
-        Command.Console.Display("general", true, stringFormat(langTexts.auction.newAuctions, totalCounter), true)		        
-        Command.Console.Display("general", true, stringFormat(langTexts.auction.removedAuctions, removedAuctions), true)		        
-
-        nkUIAuction[shard].auctions = knownAuctions -- set known to previous plus new auctions
-
-        local result = { count = totalCounter, data = newAuctions}
-
-        ahScanResult(result, ahTools)
-    end            
-
+        )
+    end, "nkUI.Auction.Scan")
 end
 
 function internalFunc.ahScanDialog()
+    if not scanDialog then
+        buildScanDialog()
+    end
 
-    if not dialog then
+    local shard = InspectShard().name
+    initShard(shard)
 
-        dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.auction.scanDialog", context)
-        dialog:ClearAll()
-        dialog:SetTitle("nkUI")
-        dialog:SetTitleAlign('center')
-        dialog:SetWidth(400)
-        dialog:SetHeight(150)
-        dialog:SetCloseable(false)	
-        dialog:SetTitleFont(addonInfo.id, "MontserratBold")
-        dialog:SetTitleFontSize(16)
-        dialog:SetTitleEffect ( {strength = 3})
-        dialog:SetTitleFontColor(1, .8, 0, 1)
+    scanDialog:SetVisible(true)
+    scanDialog:SetMessage(langTexts.auction.scanStarted)
 
-        dialog:SetColor({
-            type = "gradientLinear",
-            transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0), -- 180 degree angle
-            color = {
-                {r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0}, -- Start color
-                {r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1}  -- End color
-            }
-        },  {
-            r = 0x66 / 255,
-            g = 0x56 / 255,
-            b = 0x2e / 255,
-            a = 1,
-            cap = "round",
-            miter = "miter",
-            thickness = 2
-        })
-        
-        local msg = LibEKL.UICreateFrame("nkText", "nkUI.auction.scanDialog.msg", dialog:GetContent())
-        msg:SetText(privateVars.langTexts.msgReload)
-        msg:SetPoint("CENTERTOP", dialog:GetContent(), "CENTERTOP", 0, 10)
-        msg:SetFontSize(16)
-        msg:SetFontColor(1,1,1,1)
+    browseSearchPending = false   -- full scan supersedes any pending browse
+    fullScanPending     = true
+    Command.Auction.Scan({ type = "search" })
+end
 
-        LibEKL.UI.SetFont(msg, addonInfo.id, "MontserratSemiBold")
+---------- helpers ----------
 
-        dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2 ) - (dialog:GetWidth() / 2), 100)
+local function makeBtn(name, parent, label, w, h)
+    local btn = LibEKL.UICreateFrame("nkButton", name, parent)
+    btn:SetWidth(w or 100)
+    btn:SetHeight(h or 22)
+    btn:SetText(label)
+    btn:SetFont(addonInfo.id, "MontserratSemiBold")
+    btn:SetEffectGlow({ strength = 3 })
+    btn:SetLabelColor(data.theme.labelColor)
+    btn:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = 0.4 })
+    btn:SetBorderColor({ r = 0, g = 0, b = 0, a = 0.7, thickness = 1 })
+    return btn
+end
 
-        function dialog:SetMessage(newMessage)
-            msg:SetText(newMessage)
+local function formatExpiry(seconds)
+    if not seconds then return "?" end
+    local h = mathFloor(seconds / 3600)
+    local m = mathFloor((seconds % 3600) / 60)
+    if h > 0 then return stringFormat("%dh%dm", h, m) end
+    return stringFormat("%dm", m)
+end
+
+---------- interaction state ----------
+
+local atAuctionHouse = false   -- tracked via Event.Interaction; Inspect.Interaction() is unreliable when polled
+
+Command.Event.Attach(Event.Interaction, function(_, interaction)
+    atAuctionHouse = (interaction == "auction")
+end, "nkUI.Auction.InteractionState")
+
+---------- browse tab ----------
+
+local browseGrid          -- nkGrid for live AH results
+local browseResultLabel   -- "N results" text
+local browseSearchPending = false   -- true while we're waiting for a browse search result
+local fullScanPending     = false   -- true while scanDialog is waiting for a full scan result
+local browseAuctionData   = {}  -- raw sorted rows for the grid
+
+local BROWSE_COLS = {
+    { header = "", width =  30, align = "CENTER",      texture = true, textureType = "Rift" },
+    { header = "", width = 260, align = "CENTERLEFT"  },   -- colItem    (filled at build)
+    { header = "", width = 120, align = "CENTERLEFT"  },   -- colSeller
+    { header = "", width =  60, align = "CENTERRIGHT" },   -- colStack
+    { header = "", width = 110, align = "CENTERRIGHT" },   -- colBuyout
+    { header = "", width = 110, align = "CENTERRIGHT" },   -- colUnit
+    { header = "", width =  80, align = "CENTERRIGHT" },   -- colExpires
+}
+local BROWSE_ROWS = 20
+
+local function buildBrowseTab(parent, gridName)
+
+    -- Inject localised column headers now that langTexts is available
+    BROWSE_COLS[2].header = langTexts.auction.colItem
+    BROWSE_COLS[3].header = langTexts.auction.colSeller
+    BROWSE_COLS[4].header = langTexts.auction.colStack
+    BROWSE_COLS[5].header = langTexts.auction.colBuyout
+    BROWSE_COLS[6].header = langTexts.auction.colUnit
+    BROWSE_COLS[7].header = langTexts.auction.colExpires
+
+    -- ── search bar ──────────────────────────────────────────────────────────
+    local searchBar = LibEKL.UICreateFrame("nkFrame", gridName .. ".searchBar", parent)
+    searchBar:SetPoint("TOPLEFT",  parent, "TOPLEFT",  0,  0)
+    searchBar:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0,  0)
+    searchBar:SetHeight(30)
+
+    local gridWidth = 0
+    for _, c in ipairs(BROWSE_COLS) do gridWidth = gridWidth + c.width end
+
+    local searchBtn = makeBtn(gridName .. ".searchBar.btn", searchBar, langTexts.auction.btnSearch, 100, 22)
+    searchBtn:SetPoint("CENTERRIGHT", searchBar, "CENTERRIGHT", -4, 0)
+
+    local searchField = LibEKL.UICreateFrame("nkTextField", gridName .. ".searchBar.field", searchBar)
+    searchField:SetPoint("CENTERLEFT", searchBar, "CENTERLEFT", 4, 0)
+    searchField:SetWidth(gridWidth - 108)
+    searchField:SetHeight(22)
+    searchField:SetBorderColor({ r = 0.4, g = 0.4, b = 0.4, a = 1 })
+    searchField:SetFocusColor(data.theme.labelColor)
+    searchField:SetInnerColor({ r = 0.08, g = 0.08, b = 0.10, a = 1 })
+
+    -- ── result count label ───────────────────────────────────────────────────
+    local resultLabel = LibEKL.UICreateFrame("nkText", gridName .. ".resultLabel", parent)
+    resultLabel:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", 4, 0)
+    resultLabel:SetWidth(gridWidth)
+    resultLabel:SetHeight(18)
+    resultLabel:SetFontSize(11)
+    resultLabel:SetFontColor(0.6, 0.6, 0.6, 1)
+    LibEKL.UI.SetFont(resultLabel, addonInfo.id, "MontserratSemiBold")
+    resultLabel:SetText("")
+    browseResultLabel = resultLabel
+
+    -- ── grid ────────────────────────────────────────────────────────────────
+    local grid = LibEKL.UICreateFrame("nkGrid", gridName, parent)
+    grid:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 32)
+    grid:SetFont(addonInfo.id, "MontserratSemiBold")
+    grid:SetFontSize(12)
+    grid:SetHeaderFontSize(12)
+    grid:SetHeaderLabelColor(data.theme.labelColor)
+    grid:SetSelectable(true)
+    grid:SetSortable(true)
+
+    -- Layout is deferred until GridFinished fires on the tab pane's first show,
+    -- but we do it now since this initFunc is called on first switch.
+    local rowCount = BROWSE_ROWS
+    grid:Layout(BROWSE_COLS, rowCount)
+    browseGrid = grid
+
+    -- ── search logic ─────────────────────────────────────────────────────────
+    searchBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+        if not atAuctionHouse then
+            Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
+            return
+        end
+        if browseSearchPending then return end
+        browseSearchPending = true
+        fullScanPending = false
+        local text = searchField:GetText()
+        if text == "" then text = nil end
+        Command.Auction.Scan({ type = "search", text = text })
+    end, gridName .. ".searchBar.btn.Click")
+
+    -- ── result handler ───────────────────────────────────────────────────────
+    -- Listen for search-type scans (distinguished by info.text being set or nil
+    -- but info.type == "search" and NOT a full scan-all trigger).
+    -- We use a separate named listener so it doesn't conflict with scanDialog.
+    Command.Event.Attach(Event.Auction.Scan, function(_, info, auctions)
+        -- Only handle user-initiated searches from this tab.
+        -- Full scan-all (no text filter, triggered by scanDialog) is handled
+        -- by the scanDialog listener. We handle all "search" type events here
+        -- and let the scanDialog listener filter by its own state.
+        if info.type ~= "search" then return end
+        if not browseSearchPending then return end
+        browseSearchPending = false
+
+        local rows = {}
+        for auctionID in pairs(auctions) do
+            local d = InspectAuctionDetail(auctionID)
+            if d and d.buyout and d.buyout > 0 then
+                local stack    = d.itemStack or 1
+                local unitPrice = mathFloor(d.buyout / stack)
+                local itemDetail = InspectItemDetail(d.item or d.itemType)
+                local itemName = (itemDetail and itemDetail.name) or "?"
+                local itemIcon = (itemDetail and itemDetail.icon) or ""
+
+                table.insert(rows, {
+                    _auctionID  = auctionID,
+                    _unitPrice  = unitPrice,
+                    _buyout     = d.buyout,
+                    icon        = itemIcon,
+                    name        = itemName,
+                    seller      = d.seller or "?",
+                    stack       = stack,
+                    buyout      = d.buyout,
+                    unit        = unitPrice,
+                    expires     = d.timeRemaining,
+                })
+            end
         end
 
-        Command.Event.Attach(Event.Auction.Scan, ahScan, "nkUI.Auction.Scan")
-    else
-        dialog:SetVisible(true)
-    end
+        -- Sort by unit price ascending
+        table.sort(rows, function(a, b) return a._unitPrice < b._unitPrice end)
 
-    if not nkUIAuction then nkUIAuction = {} end
+        -- Convert to grid cell-values format
+        local cellRows = {}
+        for _, r in ipairs(rows) do
+            table.insert(cellRows, {
+                { value = r.icon, key = r._auctionID },
+                r.name,
+                r.seller,
+                tostring(r.stack),
+                { value = r._buyout,  color = data.theme.labelColor },
+                { value = r._unitPrice, color = data.theme.labelColor },
+                formatExpiry(r.expires),
+            })
+        end
 
-    local shard = Inspect.Shard().name
-    
-    if not nkUIAuction[shard] then
-        nkUIAuction[shard] = { lastScan = nil, items = {}, auctions = {}}
-    end
+        browseAuctionData = rows
+        grid:SetCellValues(cellRows)
+        resultLabel:SetText(stringFormat("%d", #rows) .. " results")
 
-    dialog:SetMessage(langTexts.auction.scanStarted)
+        -- Format coin values for display after grid is populated
+        for i, r in ipairs(rows) do
+            if cellRows[i] then
+                cellRows[i][5] = { value = internalFunc.formatCoins(r._buyout),  color = data.theme.labelColor }
+                cellRows[i][6] = { value = internalFunc.formatCoins(r._unitPrice), color = data.theme.labelColor }
+            end
+        end
+        grid:SetCellValues(cellRows, false)
 
-    Command.Auction.Scan({type = "search"})
+    end, gridName .. ".Scan")
 
 end
+
+---------- main window skeleton ----------
+
+local WIN_W, WIN_H = 900, 600
+
+local function buildWindow()
+    local name = "nkUI.auction"
+
+    local win = LibEKL.UICreateFrame("nkWindow", name, context)
+    win:SetTitle(langTexts.auction.windowTitle)
+    win:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+    win:SetTitleFontSize(16)
+    win:SetTitleEffect({ strength = 3 })
+    win:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    win:SetWidth(WIN_W)
+    win:SetHeight(WIN_H)
+    win:SetLayer(2)
+
+    win:SetColor({
+        type      = "gradientLinear",
+        transform = Utility.Matrix.Create(2, 2, math.pi, 0, 0),
+        color     = {
+            { r = 0.13, g = 0.15, b = 0.20, a = 1, position = 0 },
+            { r = 0.10, g = 0.11, b = 0.15, a = 1, position = 1 },
+        }
+    }, {
+        r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1,
+        cap = "round", miter = "miter", thickness = 2
+    })
+
+    local cfg = nkUISetup.modules.auction
+    win:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cfg.x, cfg.y)
+
+    -- Tab pane fills the top portion of the content area
+    local tabs = LibEKL.UICreateFrame("nkTabPane", name .. ".tabs", win:GetContent())
+    tabs:SetPoint("TOPLEFT",     win:GetContent(), "TOPLEFT",     0,    0)
+    tabs:SetPoint("BOTTOMRIGHT", win:GetContent(), "BOTTOMRIGHT", 0, -30)
+
+    -- Create content frames that live inside the tab pane's body
+    local bodyFrame = tabs:GetBodyFrame()
+
+    local browseFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.browse", bodyFrame)
+    browseFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
+    browseFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
+    browseFrame:SetVisible(false)
+
+    local postFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.post", bodyFrame)
+    postFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
+    postFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
+    postFrame:SetVisible(false)
+
+    local mineFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.mine", bodyFrame)
+    mineFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
+    mineFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
+    mineFrame:SetVisible(false)
+
+    local pricesFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.prices", bodyFrame)
+    pricesFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
+    pricesFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
+    pricesFrame:SetVisible(false)
+
+    local tabStroke = { r = 0x66/255, g = 0x56/255, b = 0x2e/255, a = 1, thickness = 1 }
+    local tabFill   = { type = "solid", r = 0.13, g = 0.15, b = 0.20, a = 1 }
+    tabs:SetColor(tabStroke, tabFill, data.theme.labelColor, { r = 1, g = 1, b = 1, a = 1 })
+    tabs:SetFont(addonInfo.id, "MontserratSemiBold")
+
+    tabs:AddPane({ label = langTexts.auction.tabBrowse,  frame = browseFrame,  effect = { strength = 3 },
+        initFunc = function() buildBrowseTab(browseFrame, name .. ".browse.grid") end }, false)
+    tabs:AddPane({ label = langTexts.auction.tabPost,    frame = postFrame,    effect = { strength = 3 },
+        initFunc = function() end }, false)
+    tabs:AddPane({ label = langTexts.auction.tabMine,    frame = mineFrame,    effect = { strength = 3 },
+        initFunc = function() end }, false)
+    tabs:AddPane({ label = langTexts.auction.tabPrices,  frame = pricesFrame,  effect = { strength = 3 },
+        initFunc = function() end }, false)
+
+    tabs:UpdatePanes()
+
+    -- Status strip at the bottom: "Last scan: X" + [Scan Now] button
+    local strip = LibEKL.UICreateFrame("nkFrame", name .. ".strip", win:GetContent())
+    strip:SetPoint("BOTTOMLEFT",  win:GetContent(), "BOTTOMLEFT",  0, 0)
+    strip:SetPoint("BOTTOMRIGHT", win:GetContent(), "BOTTOMRIGHT", 0, 0)
+    strip:SetHeight(30)
+
+    local statusLabel = LibEKL.UICreateFrame("nkText", name .. ".strip.status", strip)
+    statusLabel:SetPoint("CENTERLEFT", strip, "CENTERLEFT", 10, 0)
+    statusLabel:SetFontSize(13)
+    statusLabel:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    LibEKL.UI.SetFont(statusLabel, addonInfo.id, "MontserratSemiBold")
+
+    local scanBtn = makeBtn(name .. ".strip.scan", strip, langTexts.auction.btnScan, 100, 22)
+    scanBtn:SetPoint("CENTERRIGHT", strip, "CENTERRIGHT", -10, 0)
+
+    scanBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+        if not atAuctionHouse then
+            Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
+            return
+        end
+        internalFunc.ahScanDialog()
+    end, name .. ".strip.scan.Click")
+
+    -- Save position on move
+    win:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        if win:GetLeft() ~= nil then
+            nkUISetup.modules.auction.x = win:GetLeft()
+            nkUISetup.modules.auction.y = win:GetTop()
+        end
+    end, name .. ".Moved")
+
+    -- Helper: update the status strip text
+    function win:UpdateStatus()
+        local shard = InspectShard().name
+        if nkUIAuction and nkUIAuction[shard] and nkUIAuction[shard].lastScan then
+            local elapsed = InspectTimeReal() - nkUIAuction[shard].lastScan
+            local hours   = mathFloor(elapsed / 3600)
+            local mins    = mathFloor((elapsed % 3600) / 60)
+            local timeStr
+            if hours > 0 then
+                timeStr = stringFormat("%dh %dm", hours, mins)
+            else
+                timeStr = stringFormat("%dm", mins)
+            end
+            statusLabel:SetText(stringFormat(langTexts.auction.lastScan, timeStr))
+        else
+            statusLabel:SetText(langTexts.auction.neverScanned)
+        end
+    end
+
+    win:UpdateStatus()
+    win:SetVisible(false)
+
+    return win
+end
+
+-- Called by other sub-modules (browse, post, mine, prices) to refresh the strip.
+function auction.refreshStatusStrip()
+    if uiElements.auctionWindow then
+        uiElements.auctionWindow:UpdateStatus()
+    end
+end
+
+---------- public entry point ----------
+
+function internalFunc.auctionOpen()
+
+    -- bootstrap settings if the auction block is missing from an older save
+    if nkUISetup and nkUISetup.modules and nkUISetup.modules.auction == nil then
+        nkUISetup.modules.auction = { activate = true, x = 300, y = 200,
+                                      autoOpenWithAH = false, showInTooltip = true, scanDepth = 3 }
+    end
+
+    if uiElements.auctionWindow == nil then
+        uiElements.auctionWindow = buildWindow()
+    end
+
+    local win = uiElements.auctionWindow
+    win:SetVisible(not win:GetVisible())
+    if win:GetVisible() then
+        win:UpdateStatus()
+    end
+end
+
+---------- auto-open with AH (optional) ----------
+
+Command.Event.Attach(Event.Interaction, function(_, interaction)
+    if not nkUISetup or not nkUISetup.modules.auction then return end
+    if not nkUISetup.modules.auction.autoOpenWithAH then return end
+
+    if interaction == "auction" then
+        if uiElements.auctionWindow == nil then
+            uiElements.auctionWindow = buildWindow()
+        end
+        uiElements.auctionWindow:SetVisible(true)
+        uiElements.auctionWindow:UpdateStatus()
+    elseif interaction == nil then
+        if uiElements.auctionWindow and uiElements.auctionWindow:GetVisible() then
+            uiElements.auctionWindow:SetVisible(false)
+        end
+    end
+end, "nkUI.Auction.Interaction")

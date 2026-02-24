@@ -202,6 +202,13 @@ local _defaults = {
                         userPOI = {},
                         iconSize = 24 }
                 },
+        auction     = { activate        = true,
+                        x               = 300,
+                        y               = 200,
+                        autoOpenWithAH  = false,
+                        showInTooltip   = true,
+                        scanDepth       = 3,
+                      },
     showLogo = true,
     useManager = true
 }

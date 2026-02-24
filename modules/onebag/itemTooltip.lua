@@ -10,6 +10,7 @@ local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
 local inspectTimeReal   = Inspect.Time.Real
+local auction           = privateVars.auction
 
 local stringFormat  = string.format
 local mathFloor     = math.floor
@@ -103,45 +104,35 @@ local function uiItemTooltip ()
             valueText:SetText(langTexts.oneBag.noPrice)
         end
 
-        if not nkUIAuction then nkUIAuction = {} end
-        local shard = Inspect.Shard().name
-        if not nkUIAuction[shard] then nkUIAuction[shard] = { lastScan = nil, items = {}} end        
-
         if flag and details and details.type then
 
-            local thisAuctionItem = nkUIAuction[shard].items[details.type]
+            local summary = auction and auction.getPriceSummary and auction.getPriceSummary(details.type)
 
-            if thisAuctionItem then
-           
-                local difference = math.abs(inspectTimeReal() - thisAuctionItem.lastSeen)
-                local days = difference / 3600 / 24
+            if summary then
 
-                local avgCoinText = internalFunc.formatCoins(thisAuctionItem.avgPrice)
-                
-                -- Check if we have last seen price data
-                if thisAuctionItem.lastSeenPrice then
-                    local lastSeenCoinText = internalFunc.formatCoins(thisAuctionItem.lastSeenPrice)
-                    
-                    -- Determine price trend and set appropriate icon
-                    if thisAuctionItem.lastSeenPrice < thisAuctionItem.avgPrice then
-                        -- Last price is lower than average (down arrow)
+                local days = summary.daysSince or 0
+
+                local avgCoinText = internalFunc.formatCoins(summary.avg)
+
+                -- Check if we have last-scan lowest price for trend arrow
+                if summary.lastLo and summary.avg then
+                    local lastSeenCoinText = internalFunc.formatCoins(summary.lastLo)
+
+                    if summary.lastLo < summary.avg then
                         priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-down.png")
-                    elseif thisAuctionItem.lastSeenPrice > thisAuctionItem.avgPrice then
-                        -- Last price is higher than average (up arrow)
+                    elseif summary.lastLo > summary.avg then
                         priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-up.png")
                     else
-                        -- Prices are equal (right arrow)
                         priceTrendIcon:SetTextureAsync("nkUI", "gfx/arrow-right.png")
                     end
-                    
+
                     priceTrendIcon:SetVisible(true)
                     lastSeenText:SetText(stringFormat(langTexts.oneBag.lastSeenPrice, lastSeenCoinText), true)
                 else
-                    -- No last seen price available
                     priceTrendIcon:SetVisible(false)
                     lastSeenText:SetText(langTexts.oneBag.noLastPrice, true)
                 end
-                
+
                 lastSeenText:SetVisible(true)
                 auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, avgCoinText, days), true)
             else
