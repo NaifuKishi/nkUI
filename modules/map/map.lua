@@ -46,9 +46,15 @@ function internalFunc.mapShowHide()
 
 	if uiElements.mapUI:GetVisible() == true then
       uiElements.mapUI:SetVisible(false)
+      if uiElements.tiledMapUI then
+		    uiElements.tiledMapUI:SetVisible(false)
+	    end
     else
       uiElements.mapUI:SetVisible(true)
-    end 
+      if uiElements.tiledMapUI then
+		    uiElements.tiledMapUI:SetVisible(true)
+	    end
+    end
 
 end
 
