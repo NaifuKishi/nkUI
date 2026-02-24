@@ -186,6 +186,40 @@ local function animateLogo ()
 
 end
 
+---------- Dialog styling helper function ---------
+
+--[[
+   @function setupConfirmDialog
+   @description Applies consistent styling to confirmation dialogs across the addon
+   @param {dialog} dialog - The LibEKL dialog object to style
+   @return {nil}
+]]
+function internalFunc.setupConfirmDialog(dialog)
+	dialog:SetTitle("nkUI")
+	dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+	dialog:SetTitleFontSize(20)
+	dialog:SetTitleAlign("center")
+	dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+
+	dialog:SetFont(addonInfo.id, "MontserratSemiBold")
+	dialog:SetEffectGlow({ strength = 3 })
+	dialog:SetButtonFont(addonInfo.id, "MontserratSemiBold")
+	dialog:SetButtonFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+	dialog:SetButtonLabelColor(data.theme.labelColor)
+	dialog:SetButtonBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+	dialog:SetButtonEffect({ strength = 3 })
+	dialog:SetHeight(200)
+
+	dialog:SetColor({
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(12, 12, math.pi / 4, 0, 0),
+		color = {
+			{r = 0.1294, g = 0.1533, b = 0.2157, a = 1, position = 0},
+			{r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1}
+		}
+	}, data.theme.STROKE_BORDER)
+end
+
 --[[
    @function commandHandler
    @description Handles slash commands for the addon
