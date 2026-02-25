@@ -366,175 +366,10 @@ Command.Event.Attach(Event.Interaction, function(_, interaction)
     atAuctionHouse = (interaction == "auction")
 end, "nkUI.Auction.InteractionState")
 
----------- browse tab ----------
+---------- phase 0: placeholder for browse tab ----------
 
-local browseGrid          -- nkGrid for live AH results
-local browseResultLabel   -- "N results" text
-local browseSearchPending = false   -- true while we're waiting for a browse search result
-local fullScanPending     = false   -- true while scanDialog is waiting for a full scan result
-local browseAuctionData   = {}  -- raw sorted rows for the grid
-
-local BROWSE_COLS = {
-    { header = "", width =  30, align = "CENTER",      texture = true, textureType = "Rift" },
-    { header = "", width = 260, align = "CENTERLEFT"  },   -- colItem    (filled at build)
-    { header = "", width = 120, align = "CENTERLEFT"  },   -- colSeller
-    { header = "", width =  60, align = "CENTERRIGHT" },   -- colStack
-    { header = "", width = 110, align = "CENTERRIGHT" },   -- colBuyout
-    { header = "", width = 110, align = "CENTERRIGHT" },   -- colUnit
-    { header = "", width =  80, align = "CENTERRIGHT" },   -- colExpires
-}
-local BROWSE_ROWS = 20
-
-local function buildBrowseTab(parent, gridName)
-
-    -- Inject localised column headers now that langTexts is available
-    BROWSE_COLS[2].header = langTexts.auction.colItem
-    BROWSE_COLS[3].header = langTexts.auction.colSeller
-    BROWSE_COLS[4].header = langTexts.auction.colStack
-    BROWSE_COLS[5].header = langTexts.auction.colBuyout
-    BROWSE_COLS[6].header = langTexts.auction.colUnit
-    BROWSE_COLS[7].header = langTexts.auction.colExpires
-
-    -- ── search bar ──────────────────────────────────────────────────────────
-    local searchBar = LibEKL.UICreateFrame("nkFrame", gridName .. ".searchBar", parent)
-    searchBar:SetPoint("TOPLEFT",  parent, "TOPLEFT",  0,  0)
-    searchBar:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0,  0)
-    searchBar:SetHeight(30)
-
-    local gridWidth = 0
-    for _, c in ipairs(BROWSE_COLS) do gridWidth = gridWidth + c.width end
-
-    local searchBtn = makeBtn(gridName .. ".searchBar.btn", searchBar, langTexts.auction.btnSearch, 100, 22)
-    searchBtn:SetPoint("CENTERRIGHT", searchBar, "CENTERRIGHT", -4, 0)
-
-    local searchField = LibEKL.UICreateFrame("nkTextField", gridName .. ".searchBar.field", searchBar)
-    searchField:SetPoint("CENTERLEFT", searchBar, "CENTERLEFT", 4, 0)
-    searchField:SetWidth(gridWidth - 108)
-    searchField:SetHeight(22)
-    searchField:SetBorderColor({ r = 0.4, g = 0.4, b = 0.4, a = 1 })
-    searchField:SetFocusColor(data.theme.labelColor)
-    searchField:SetInnerColor({ r = 0.08, g = 0.08, b = 0.10, a = 1 })
-
-    -- ── result count label ───────────────────────────────────────────────────
-    local resultLabel = LibEKL.UICreateFrame("nkText", gridName .. ".resultLabel", parent)
-    resultLabel:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", 4, 0)
-    resultLabel:SetWidth(gridWidth)
-    resultLabel:SetHeight(18)
-    resultLabel:SetFontSize(11)
-    resultLabel:SetFontColor(0.6, 0.6, 0.6, 1)
-    LibEKL.UI.SetFont(resultLabel, addonInfo.id, "MontserratSemiBold")
-    resultLabel:SetText("")
-    browseResultLabel = resultLabel
-
-    -- ── grid ────────────────────────────────────────────────────────────────
-    local grid = LibEKL.UICreateFrame("nkGrid", gridName, parent)
-    grid:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 32)
-    grid:SetFont(addonInfo.id, "MontserratSemiBold")
-    grid:SetFontSize(12)
-    grid:SetHeaderFontSize(12)
-    grid:SetHeaderLabelColor(data.theme.labelColor)
-    grid:SetSelectable(true)
-    grid:SetSortable(true)
-
-    -- Match grid colors to the nkUI window theme (dark blue-grey body, gold accents)
-    grid:SetBodyColor(    { r = 0.10, g = 0.12, b = 0.16, a = 1 })   -- window bg
-    grid:SetBorderColor(  { r = 0.22, g = 0.24, b = 0.30, a = 1 })   -- subtle dividers
-    grid:SetBodyHighlightColor( { r = 0.20, g = 0.22, b = 0.28, a = 1 })
-    grid:SetLabelHighlightColor({ r = 1,    g = 1,    b = 1,    a = 1 })
-    grid:SetBodySelectedColor(  { r = 0.26, g = 0.21, b = 0.06, a = 1 })   -- dark amber tint
-    grid:SetLabelSelectedColor(data.theme.labelColor)
-
-    -- Layout is deferred until GridFinished fires on the tab pane's first show,
-    -- but we do it now since this initFunc is called on first switch.
-    local rowCount = BROWSE_ROWS
-    grid:Layout(BROWSE_COLS, rowCount)
-    browseGrid = grid
-
-    -- ── search logic ─────────────────────────────────────────────────────────
-    searchBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-        if not atAuctionHouse then
-            Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
-            return
-        end
-        if browseSearchPending then return end
-        browseSearchPending = true
-        fullScanPending = false
-        local text = searchField:GetText()
-        if text == "" then text = nil end
-        Command.Auction.Scan({ type = "search", text = text })
-    end, gridName .. ".searchBar.btn.Up")
-
-    -- ── result handler ───────────────────────────────────────────────────────
-    -- Listen for search-type scans (distinguished by info.text being set or nil
-    -- but info.type == "search" and NOT a full scan-all trigger).
-    -- We use a separate named listener so it doesn't conflict with scanDialog.
-    Command.Event.Attach(Event.Auction.Scan, function(_, info, auctions)
-        -- Only handle user-initiated searches from this tab.
-        -- Full scan-all (no text filter, triggered by scanDialog) is handled
-        -- by the scanDialog listener. We handle all "search" type events here
-        -- and let the scanDialog listener filter by its own state.
-        if info.type ~= "search" then return end
-        if not browseSearchPending then return end
-        browseSearchPending = false
-
-        local rows = {}
-        for auctionID in pairs(auctions) do
-            local d = InspectAuctionDetail(auctionID)
-            if d and d.buyout and d.buyout > 0 then
-                local stack    = d.itemStack or 1
-                local unitPrice = mathFloor(d.buyout / stack)
-                local itemDetail = InspectItemDetail(d.item or d.itemType)
-                local itemName = (itemDetail and itemDetail.name) or "?"
-                local itemIcon = (itemDetail and itemDetail.icon) or ""
-
-                table.insert(rows, {
-                    _auctionID  = auctionID,
-                    _unitPrice  = unitPrice,
-                    _buyout     = d.buyout,
-                    icon        = itemIcon,
-                    name        = itemName,
-                    seller      = d.seller or "?",
-                    stack       = stack,
-                    buyout      = d.buyout,
-                    unit        = unitPrice,
-                    expires     = d.timeRemaining,
-                })
-            end
-        end
-
-        -- Sort by unit price ascending
-        table.sort(rows, function(a, b) return a._unitPrice < b._unitPrice end)
-
-        -- Convert to grid cell-values format
-        local cellRows = {}
-        for _, r in ipairs(rows) do
-            table.insert(cellRows, {
-                { value = r.icon, key = r._auctionID },
-                r.name,
-                r.seller,
-                tostring(r.stack),
-                { value = r._buyout,  color = data.theme.labelColor },
-                { value = r._unitPrice, color = data.theme.labelColor },
-                formatExpiry(r.expires),
-            })
-        end
-
-        browseAuctionData = rows
-        grid:SetCellValues(cellRows)
-        resultLabel:SetText(stringFormat("%d", #rows) .. " results")
-
-        -- Format coin values for display after grid is populated
-        for i, r in ipairs(rows) do
-            if cellRows[i] then
-                cellRows[i][5] = { value = internalFunc.formatCoins(r._buyout),  color = data.theme.labelColor }
-                cellRows[i][6] = { value = internalFunc.formatCoins(r._unitPrice), color = data.theme.labelColor }
-            end
-        end
-        grid:SetCellValues(cellRows, false)
-
-    end, gridName .. ".Scan")
-
-end
+-- Browse tab implementation moved to auction-browse.lua
+-- Phase 1A will add: rarity filters, bid column, my price column, sort persistence
 
 ---------- main window skeleton ----------
 
@@ -599,13 +434,17 @@ local function buildWindow()
     tabs:SetFont(addonInfo.id, "MontserratSemiBold")
 
     tabs:AddPane({ label = langTexts.auction.tabBrowse,  frame = browseFrame,  effect = { strength = 3 },
-        initFunc = function() buildBrowseTab(browseFrame, name .. ".browse.grid") end }, false)
+        initFunc = function() -- Phase 1A: browse tab builder goes here
+        end }, false)
     tabs:AddPane({ label = langTexts.auction.tabPost,    frame = postFrame,    effect = { strength = 3 },
-        initFunc = function() end }, false)
+        initFunc = function() -- Phase 3: post tab builder goes here
+        end }, false)
     tabs:AddPane({ label = langTexts.auction.tabMine,    frame = mineFrame,    effect = { strength = 3 },
-        initFunc = function() end }, false)
+        initFunc = function() -- Phase 1B: my auctions tab builder goes here
+        end }, false)
     tabs:AddPane({ label = langTexts.auction.tabPrices,  frame = pricesFrame,  effect = { strength = 3 },
-        initFunc = function() end }, false)
+        initFunc = function() -- Phase 2: prices tab builder goes here
+        end }, false)
 
     tabs:UpdatePanes()
 

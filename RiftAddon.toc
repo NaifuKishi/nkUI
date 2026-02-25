@@ -18,6 +18,11 @@ RunOnStartup = {
 	"locales/localizationDE.lua",
 
 	"modules/auction/auction.lua",
+	"modules/auction/auction-browse.lua",
+	"modules/auction/auction-post.lua",
+	"modules/auction/auction-mine.lua",
+	"modules/auction/auction-prices.lua",
+	"modules/auction/auction-settings.lua",
 
 	"modules/lowerbar/lowerbar.lua",
 	"modules/lowerbar/currency.lua",
