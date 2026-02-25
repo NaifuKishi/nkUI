@@ -194,17 +194,20 @@ local function setupKeyCapture()
 
 	-- Attach key handler for capturing
 	captureFrame:EventAttach(Event.UI.Input.Key.Down, function(self, key)
-		if key and key ~= "" then
-			capturedKey = key
+		if key then
+			local keyStr = tostring(key)
+			if keyStr ~= "" then
+				capturedKey = keyStr
 
-			-- Update dialog display
-			if keybindDialog and keybindDialog.capturedText then
-				keybindDialog.capturedText:SetText("Captured: " .. key)
-				keybindDialog.capturedText:SetFontColor(0.5, 1, 0.5, 1)
+				-- Update dialog display
+				if keybindDialog and keybindDialog.capturedText then
+					keybindDialog.capturedText:SetText("Captured: " .. keyStr)
+					keybindDialog.capturedText:SetFontColor(0.5, 1, 0.5, 1)
+				end
+
+				-- Auto-save after capture (optional: comment out if you want manual save)
+				-- saveKeybind()
 			end
-
-			-- Auto-save after capture (optional: comment out if you want manual save)
-			-- saveKeybind()
 		end
 	end, "nkUI.keybindCapture.KeyDown")
 
