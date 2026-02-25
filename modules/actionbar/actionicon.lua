@@ -562,10 +562,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	end, frame:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
 	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
-		internalFunc.checkSecureAction(function()
-			frame:ClearItem()
-			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
-		end)
+		-- Open keybind dialog for assigning keybind labels
+		internalFunc.openKeybindDialog(barIndex, buttonIndex)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 
 	return frame
