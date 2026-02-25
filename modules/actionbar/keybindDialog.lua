@@ -12,6 +12,8 @@ local inspectTEMPORARYRole = Inspect.TEMPORARY.Role
 
 local keybindDialog = nil
 local captureFrame = nil
+local dialogContext = nil
+local captureContext = nil
 local capturedKey = nil
 local pendingSlot = nil  -- Store {barIndex, buttonIndex} for the slot being edited
 
@@ -19,11 +21,13 @@ local pendingSlot = nil  -- Store {barIndex, buttonIndex} for the slot being edi
 
 local function createCaptureFrame()
 	-- Create an invisible frame that captures key input
-	local context = UI.CreateContext("nkUI.keybindCapture")
-	context:SetStrata('tooltip')
-	context:SetLayer(100)
+	if not captureContext then
+		captureContext = UI.CreateContext("nkUI.keybindCapture")
+		captureContext:SetStrata('tooltip')
+		captureContext:SetLayer(100)
+	end
 
-	local frame = LibEKL.UICreateFrame("nkFrame", "nkUI.keybindCapture", context)
+	local frame = LibEKL.UICreateFrame("nkFrame", "nkUI.keybindCapture", captureContext)
 	frame:SetWidth(1)
 	frame:SetHeight(1)
 	frame:SetBackgroundColor(0, 0, 0, 0)  -- Fully transparent
@@ -83,14 +87,20 @@ local function saveKeybind()
 end
 
 local function createKeybindDialog()
+	-- Create context for dialog if needed
+	if not dialogContext then
+		dialogContext = UI.CreateContext("nkUI.keybindDialog")
+		dialogContext:SetStrata('hud')
+		dialogContext:SetLayer(99)
+	end
+
 	-- Create main dialog window
-	local dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.keybindDialog", UIParent)
+	local dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.keybindDialog", dialogContext)
 	dialog:SetWidth(350)
 	dialog:SetHeight(180)
 	dialog:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	dialog:SetTitle("Set Keybind")
 	dialog:SetVisible(false)
-	dialog:SetLayer(99)
 
 	-- Instructions text
 	local instructionsText = LibEKL.UICreateFrame("nkText", "nkUI.keybindDialog.instructions", dialog)
