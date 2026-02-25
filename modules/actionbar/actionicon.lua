@@ -47,7 +47,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	local frame = LibEKL.UICreateFrame("nkCanvas", name, parent)
 	
 	-- Local variables for the icon components and state
-	local cooldown, macroFrame, tint
+	local cooldown, macroFrame, tint, keyBindLabel
 	local thisItemKey, thisItemType, thisMacroIcon, thisMacroCDType, thisMacroCDKey
 
 	local cooldownActive = false
@@ -90,6 +90,18 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		cooldown:SetFontColor (1, 1, 1, 1)
 		cooldown:SetEffectGlow({ strength = 3 })
 		cooldown:SetLayer(99)
+	end
+
+	local function createKeyBindLabel()
+		-- Create the keybind label text element
+		keyBindLabel = LibEKL.UICreateFrame("nkText", name .. '.keyBindLabel', frame)
+		keyBindLabel:SetVisible(false)
+		keyBindLabel:SetFontSize(10)
+		keyBindLabel:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, -2)
+		keyBindLabel:SetFontColor(1, 1, 1, 1)
+		keyBindLabel:SetEffectGlow({ strength = 1 })
+		keyBindLabel:SetLayer(3)
+		LibEKL.UI.SetFont(keyBindLabel, addonInfo.id, "MontserratBold")
 	end
 
 	function frame:SetTint(state)
@@ -187,11 +199,24 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 	--[[
       Function to set keybind label
-      Stub implementation for Phase 1 (no-op until Phase 2)
-      @param {string|nil} key - The keybind label to display
+      Creates/updates a text element showing the keybind label in the bottom-right corner
+      @param {string|nil} key - The keybind label to display (e.g. "Q", "Shift+1"), or nil to hide
     ]]
 	function frame:SetKeyBind(key)
-		-- Phase 2 will implement full UI display
+		if key == nil then
+			-- Hide the label if no key is set
+			if keyBindLabel then
+				keyBindLabel:SetVisible(false)
+			end
+		else
+			-- Lazy-create the label on first non-nil call
+			if not keyBindLabel then
+				createKeyBindLabel()
+			end
+			-- Set the text and show the label
+			keyBindLabel:SetText(key)
+			keyBindLabel:SetVisible(true)
+		end
 	end
 
 	--[[
