@@ -19,12 +19,12 @@ mapData.resourceData = {
 
 
 
-  ["RESOURCE.ORE"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceGray.png", width = 24, height = 24, layer = 2 },
-	["RESOURCE.WOOD"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBrown.png", width = 24, height = 24, layer = 2 },
-	["RESOURCE.PLANTS"]		= { addon = "LibMap", path = "gfx/mapIcons/iconRessourceGreen.png", width = 24, height = 24, layer = 2 },
-	["RESOURCE.BOAT"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBlue.png", width = 24, height = 24, layer = 2 },
-  ["RESOURCE.FISH"]     = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBlue.png", width = 24, height = 24, layer = 2 },
-  ["RESOURCE.ARTIFACT"] = { addon = "LibMap", path = "gfx/mapIcons/iconArtifact.png", width = 24, height = 24, layer = 2},
+  ["RESOURCE.ORE"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceGray.png", width = 16, height = 16, layer = 2 },
+	["RESOURCE.WOOD"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBrown.png", width = 16, height = 16, layer = 2 },
+	["RESOURCE.PLANTS"]		= { addon = "LibMap", path = "gfx/mapIcons/iconRessourceGreen.png", width = 16, height = 16, layer = 2 },
+	["RESOURCE.BOAT"]		  = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBlue.png", width = 16, height = 16, layer = 2 },
+  ["RESOURCE.FISH"]     = { addon = "LibMap", path = "gfx/mapIcons/iconRessourceBlue.png", width = 16, height = 16, layer = 2 },
+  ["RESOURCE.ARTIFACT"] = { addon = "LibMap", path = "gfx/mapIcons/iconArtifact.png", width = 16, height = 16, layer = 2},
 }
 
 mapData.customElements = {
