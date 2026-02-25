@@ -98,7 +98,7 @@ local function createKeybindDialog()
 	local dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.keybindDialog", dialogContext)
 	dialog:SetWidth(350)
 	dialog:SetHeight(180)
-	dialog:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 100)
 	dialog:SetTitle("Set Keybind")
 	dialog:SetVisible(false)
 
