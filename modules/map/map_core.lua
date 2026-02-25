@@ -202,7 +202,7 @@ local function _trackGathering(details)
 
     if nkUIMapGathering.gatheringData[mapData.lastZone] == nil then nkUIMapGathering.gatheringData[mapData.lastZone] = {} end
     if nkUIMapGathering.artifactsData[mapData.lastZone] == nil then nkUIMapGathering.artifactsData[mapData.lastZone] = {} end
-    
+
     for key, data in pairs(nkUIMapGathering.gatheringData[mapData.lastZone]) do
         if mapData.coordX == details.coordX and mapData.coordZ == details.coordZ then return end
     end
@@ -211,6 +211,7 @@ local function _trackGathering(details)
     thisData.type = "TRACK" .. string.match(thisData.type, "RESOURCE(.+)")
     local thisType = string.match(details.type, "RESOURCE%.(.+)") or string.match(details.type, "RESOURCE%.(.+)%.")
     thisData.id = thisType .. "-" .. LibEKLUUID()
+    thisData.alpha = 0.5  -- stored gathering locations at 50% opacity to distinguish from live resources
 
     if thisType == "ARTIFACT" then
         nkUIMapGathering.artifactsData[mapData.lastZone][thisData.id] = thisData
