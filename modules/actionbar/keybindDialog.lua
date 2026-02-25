@@ -219,7 +219,7 @@ end
 
 ---------- addon functions ---------
 
-function internalFunc.openKeybindDialog(barIndex, buttonIndex)
+function internalFunc.openKeybindDialog(barIndex, buttonIndex, iconFrame)
 	-- Create dialog if needed
 	if not keybindDialog then
 		keybindDialog = createKeybindDialog()
@@ -228,6 +228,17 @@ function internalFunc.openKeybindDialog(barIndex, buttonIndex)
 	-- Store which slot is being edited
 	pendingSlot = { barIndex = barIndex, buttonIndex = buttonIndex }
 	capturedKey = nil
+
+	-- Position dialog near the clicked icon if frame is provided
+	if iconFrame then
+		local iconLeft = iconFrame:GetLeft()
+		local iconTop = iconFrame:GetTop()
+
+		if iconLeft and iconTop then
+			-- Position dialog to the right of the icon, offset by a bit
+			keybindDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", iconLeft + 50, iconTop - 20)
+		end
+	end
 
 	-- Reset display
 	if keybindDialog.capturedText then

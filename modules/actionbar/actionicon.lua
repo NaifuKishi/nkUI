@@ -563,7 +563,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 		-- Open keybind dialog for assigning keybind labels
-		internalFunc.openKeybindDialog(barIndex, buttonIndex)
+		internalFunc.openKeybindDialog(barIndex, buttonIndex, self)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 
 	return frame
