@@ -117,6 +117,7 @@ RunOnStartup = {
 	"modules/actionbar/actionicon.lua",
 	"modules/actionbar/events.lua",
 	"modules/actionbar/macroEditDialog.lua",
+	"modules/actionbar/keybindDialog.lua",
 }
 
 Embed = {	

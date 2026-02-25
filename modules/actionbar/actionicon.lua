@@ -490,13 +490,26 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	]]
 	local function editMacroDialog ()
 		if uiElements.macroEdit == nil then
-			uiElements.macroEdit = internalFunc.macroEditDialog(parent)			
+			uiElements.macroEdit = internalFunc.macroEditDialog(parent)
 		end
-		
+
 		uiElements.macroEdit:SetVisible(true)
 		uiElements.macroEdit:SetButton(barIndex, buttonIndex)
 	end
-	
+
+	--[[
+	Function to edit keybind label
+	Opens the keybind editor dialog for the current action icon
+	]]
+	local function editKeybindDialog ()
+		if uiElements.keybindEdit == nil then
+			uiElements.keybindEdit = internalFunc.keybindDialog(parent)
+		end
+
+		uiElements.keybindEdit:SetVisible(true)
+		uiElements.keybindEdit:SetButton(barIndex, buttonIndex)
+	end
+
 	--[[
 	Attach event handlers
 	Sets up mouse event handlers for the action icon
@@ -548,10 +561,16 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		end)		
 	end, frame:GetName() .. ".UI.Input.Mouse.Middle.Down")
 	
-	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)		
+	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 		internalFunc.checkSecureAction(function()
-			frame:ClearItem()
-			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}			
+			-- Right-click + Shift: Edit keybind label
+			if Command.KeyDown("shift") then
+				editKeybindDialog()
+			else
+				-- Right-click alone: Clear item
+				frame:ClearItem()
+				data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
+			end
 		end)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
 	
