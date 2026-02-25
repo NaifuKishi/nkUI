@@ -126,6 +126,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
                         end
 
                         thisRow[colIndex]:SetUsable(true)
+                        thisRow[colIndex]:SetKeyBind(slotInfo.keyBind)
                     else
                         thisRow[colIndex]:ClearItem()
                     end
@@ -140,9 +141,10 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
         for rowIndex = 1, rows, 1 do
             local thisRow = actionButtons[rowIndex]
 
-            for colIndex = 1, cols, 1 do                
+            for colIndex = 1, cols, 1 do
                 thisRow[colIndex]:ClearItem()
                 thisRow[colIndex]:SetCooldown()
+                thisRow[colIndex]:SetKeyBind(nil)
             end
         end
     end

@@ -182,9 +182,18 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			if lastCooldown ~= timer then
 				cooldown:SetText(timer)
 			end
-		end		
+		end
 	end
-	
+
+	--[[
+      Function to set keybind label
+      Stub implementation for Phase 1 (no-op until Phase 2)
+      @param {string|nil} key - The keybind label to display
+    ]]
+	function frame:SetKeyBind(key)
+		-- Phase 2 will implement full UI display
+	end
+
 	--[[
       Function to set out-of-range state
       @param {boolean} flag - Whether the ability is out of range
@@ -269,6 +278,13 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroIcon = nil
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
+
+		-- clear keyBind from SavedVars slot (do not wipe entire slot since Clear writes {} anyway)
+		local role = inspectTEMPORARYRole()
+		if data.actionBarSetup and data.actionBarSetup.roles[role] then
+			local slot = data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex]
+			if slot then slot.keyBind = nil end
+		end
 
 		fill = LibEKL.Tools.Table.Copy(defaultFill)
 		frame:SetShape(path, defaultFill, stroke)
