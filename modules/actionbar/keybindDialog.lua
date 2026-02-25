@@ -229,14 +229,21 @@ function internalFunc.openKeybindDialog(barIndex, buttonIndex, iconFrame)
 	pendingSlot = { barIndex = barIndex, buttonIndex = buttonIndex }
 	capturedKey = nil
 
-	-- Position dialog: bottom-right corner at icon's top-left with offset
+	-- Position dialog: TOPLEFT positioned so dialog's bottom-right is near icon's top-left
 	if iconFrame then
 		local iconLeft = iconFrame:GetLeft()
 		local iconTop = iconFrame:GetTop()
 
 		if iconLeft and iconTop then
-			-- Position dialog so its BOTTOMRIGHT corner is at the icon's TOPLEFT with offset -50, -50
-			keybindDialog:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", iconLeft - 50, iconTop - 50)
+			local dialogWidth = keybindDialog:GetWidth()
+			local dialogHeight = keybindDialog:GetHeight()
+
+			-- Calculate TOPLEFT position so dialog's BOTTOMRIGHT ends up at icon's TOPLEFT with -50, -50 offset
+			-- TOPLEFT = icon's TOPLEFT - (dialogWidth + offset_x, dialogHeight + offset_y)
+			local dialogLeft = iconLeft - dialogWidth - 50
+			local dialogTop = iconTop - dialogHeight - 50
+
+			keybindDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", dialogLeft, dialogTop)
 		end
 	end
 
