@@ -233,10 +233,43 @@ function internalFunc.openKeybindDialog(barIndex, buttonIndex, iconFrame)
 	if iconFrame then
 		local iconLeft = iconFrame:GetLeft()
 		local iconTop = iconFrame:GetTop()
+		local iconWidth = iconFrame:GetWidth()
+		local iconHeight = iconFrame:GetHeight()
+
+		local dialogWidth = keybindDialog:GetWidth()
+		local dialogHeight = keybindDialog:GetHeight()
+
+		local screenWidth = UIParent:GetWidth()
+		local screenHeight = UIParent:GetHeight()
 
 		if iconLeft and iconTop then
-			-- Position dialog to the right of the icon, offset by a bit
-			keybindDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", iconLeft + 50, iconTop - 20)
+			local dialogX = iconLeft
+			local dialogY = iconTop
+
+			-- Try to position to the right of the icon first
+			if iconLeft + iconWidth + dialogWidth + 10 <= screenWidth then
+				-- Plenty of space on the right
+				dialogX = iconLeft + iconWidth + 10
+				dialogY = iconTop
+			-- Try above the icon
+			elseif iconTop - dialogHeight - 10 >= 0 then
+				dialogX = iconLeft
+				dialogY = iconTop - dialogHeight - 10
+			-- Try below the icon
+			elseif iconTop + iconHeight + dialogHeight + 10 <= screenHeight then
+				dialogX = iconLeft
+				dialogY = iconTop + iconHeight + 10
+			-- Try to the left of the icon
+			elseif iconLeft - dialogWidth - 10 >= 0 then
+				dialogX = iconLeft - dialogWidth - 10
+				dialogY = iconTop
+			-- Fallback: center of screen
+			else
+				dialogX = (screenWidth - dialogWidth) / 2
+				dialogY = (screenHeight - dialogHeight) / 2
+			end
+
+			keybindDialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", dialogX, dialogY)
 		end
 	end
 
