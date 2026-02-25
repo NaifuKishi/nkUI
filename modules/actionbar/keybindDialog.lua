@@ -100,6 +100,17 @@ local function createKeybindDialog()
 	dialog:SetHeight(180)
 	dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 100)
 	dialog:SetTitle("Set Keybind")
+	dialog:SetTitleFont(addonInfo.id, "MontserratSemiBold")
+	dialog:SetTitleEffect({ strength = 3 })
+	dialog:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+	dialog:SetColor({
+		type = "gradientLinear",
+		transform = Utility.Matrix.Create(12, 12, math.pi / 4, 0, 0),
+		color = {
+			{ r = 0.1294, g = 0.1533, b = 0.2157, a = 1, position = 0 },
+			{ r = 0.0549, g = 0.0706, b = 0.1059, a = 1, position = 1 }
+		}
+	}, data.theme.STROKE_BORDER)
 	dialog:SetVisible(false)
 
 	-- Instructions text
@@ -156,7 +167,7 @@ local function createKeybindDialog()
 	local cancelButton = LibEKL.UICreateFrame("nkButton", "nkUI.keybindDialog.cancel", dialog)
 	cancelButton:SetWidth(100)
 	cancelButton:SetHeight(25)
-	cancelButton:SetPoint("BOTTOM", dialog, "BOTTOM", 0, 10)
+	cancelButton:SetPoint("CENTERBOTTOM", dialog, "CENTERBOTTOM", 0, 10)
 	cancelButton:SetText("Cancel")
 	cancelButton:SetFont(addonInfo.id, "MontserratSemiBold")
 	cancelButton:SetScale(0.9)
