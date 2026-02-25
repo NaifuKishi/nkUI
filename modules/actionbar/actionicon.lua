@@ -563,17 +563,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 	
 	frame:EventAttach(Event.UI.Input.Mouse.Right.Down, function (self)
 		internalFunc.checkSecureAction(function()
-			-- Right-click + Shift: Edit keybind label
-			if Command.KeyDown("shift") then
-				editKeybindDialog()
-			else
-				-- Right-click alone: Clear item
-				frame:ClearItem()
-				data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
-			end
+			frame:ClearItem()
+			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = {}
 		end)
 	end, frame:GetName() .. ".UI.Input.Mouse.Right.Down")
-	
+
 	return frame
 
 end

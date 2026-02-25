@@ -109,10 +109,22 @@ function internalFunc.macroEditDialog (editBar)
 	iconEditLabel:SetText("Macro icon")
 
 	-- Text field for macro editing
-    local macroEdit = createTextField(ui:GetContent(), name .. ".macroEdit", ui:GetWidth() - 20, 100, 10, 68)
-	
+    local macroEdit = createTextField(ui:GetContent(), name .. ".macroEdit", ui:GetWidth() - 20, 80, 10, 68)
+
+	-- Keybind label input
+	local keybindLabel = LibEKL.UICreateFrame("nkText", name .. ".keybindLabel", ui:GetContent())
+	keybindLabel:SetPoint("TOPLEFT", ui:GetContent(), "TOPLEFT", 10, 155)
+	keybindLabel:SetWidth(100)
+	keybindLabel:SetFontColor(1, 1, 1, 1)
+	keybindLabel:SetFontSize(12)
+    keybindLabel:SetTextFont(addonInfo.id, "Montserrat")
+	keybindLabel:SetText("Keybind label:")
+
+	-- Text field for keybind label
+    local keybindInput = createTextField(ui:GetContent(), name .. ".keybindInput", ui:GetWidth() - 20, 20, 10, 170)
+
 	-- Cancel button for the dialog
-    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 150, 30, 10, ui:GetContent():GetHeight() - 35, "Cancel macro")
+    local cancelButton = createButton(ui:GetContent(), name .. ".cancelButton", 100, 30, 10, ui:GetContent():GetHeight() - 35, "Cancel macro")
 	
 	-- Event handler for cancel button
 	Command.Event.Attach(LibEKL.Events[name .. ".cancelButton"].Clicked, function (_, newValue)
@@ -124,11 +136,18 @@ function internalFunc.macroEditDialog (editBar)
     local saveButton = createButton(ui:GetContent(), name .. ".saveButton", 150, 30, cancelButton:GetWidth() + 20, ui:GetContent():GetHeight() - 35, "Save macro")
 	
 	-- Event handler for save button
-	Command.Event.Attach(LibEKL.Events[name .. ".saveButton"].Clicked, function (_, newValue)		
+	Command.Event.Attach(LibEKL.Events[name .. ".saveButton"].Clicked, function (_, newValue)
 		if inspectSystemSecure() then return end
 
-		data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] =  { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
+		local slotData = { itemType = "macro", itemKey = macroEdit:GetText(), macroIcon = icon, macroCD = {contentType, contentKey} }
+		-- Preserve keybind label if user set it
+		local keybindText = keybindInput:GetText()
+		if keybindText ~= "" then
+			slotData.keyBind = keybindText
+		end
+		data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = slotData
 		macroEdit:Leave(true)
+		keybindInput:Leave(true)
 		ui:SetVisible(false)
 		editBar:Populate()
 	end, name .. ".saveButton.Clicked")
@@ -187,6 +206,7 @@ function internalFunc.macroEditDialog (editBar)
 		end
 		
 		macroEdit:SetText(button.itemKey or "")
+	keybindInput:SetText(button.keyBind or "")
 		
 		if button.macroCD then	
 			contentType, contentKey = button.macroCD[1], button.macroCD[2]
