@@ -119,8 +119,6 @@ RunOnStartup = {
 	"modules/actionbar/macroEditDialog.lua",
 	"modules/actionbar/keybindDialog.lua",
 
-	-- TEST: Key events testing (for keybind label implementation research)
-	"test_keyevents.lua",
 }
 
 Embed = {	

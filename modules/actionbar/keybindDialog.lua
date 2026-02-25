@@ -16,6 +16,7 @@ local dialogContext = nil
 local captureContext = nil
 local capturedKey = nil
 local pendingSlot = nil  -- Store {barIndex, buttonIndex} for the slot being edited
+local mathFloor = math.floor
 
 ---------- local functions ---------
 
@@ -86,7 +87,7 @@ local function saveKeybind()
 	closeKeybindDialog()
 end
 
-local function createKeybindDialog()
+local function createKeybindDialog(iconFrame)
 	-- Create context for dialog if needed
 	if not dialogContext then
 		dialogContext = UI.CreateContext("nkUI.keybindDialog")
@@ -96,7 +97,7 @@ local function createKeybindDialog()
 
 	-- Create main dialog window
 	local dialog = LibEKL.UICreateFrame("nkWindow", "nkUI.keybindDialog", dialogContext)
-	dialog:SetWidth(350)
+	dialog:SetWidth(450)
 	dialog:SetHeight(180)
 	dialog:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 100, 100)
 	dialog:SetTitle("Set Keybind")
@@ -116,7 +117,7 @@ local function createKeybindDialog()
 	-- Instructions text
 	local instructionsText = LibEKL.UICreateFrame("nkText", "nkUI.keybindDialog.instructions", dialog)
 	instructionsText:SetPoint("TOPLEFT", dialog, "TOPLEFT", 15, 30)
-	instructionsText:SetWidth(320)
+	instructionsText:SetWidth(420)
 	instructionsText:SetText("Press any key to assign as the keybind for this action.\n\nThe key will be captured and displayed on the icon.")
 	instructionsText:SetFontColor(1, 1, 1, 0.8)
 	instructionsText:SetFontSize(11)
@@ -125,7 +126,7 @@ local function createKeybindDialog()
 	-- Captured key display
 	local capturedText = LibEKL.UICreateFrame("nkText", "nkUI.keybindDialog.captured", dialog)
 	capturedText:SetPoint("TOPLEFT", dialog, "TOPLEFT", 15, 100)
-	capturedText:SetWidth(320)
+	capturedText:SetWidth(420)
 	capturedText:SetText("Waiting for key input...")
 	capturedText:SetFontColor(0.5, 1, 0.5, 1)
 	capturedText:SetFontSize(12)
@@ -135,8 +136,8 @@ local function createKeybindDialog()
 	local clearButton = LibEKL.UICreateFrame("nkButton", "nkUI.keybindDialog.clear", dialog)
 	clearButton:SetWidth(100)
 	clearButton:SetHeight(25)
-	clearButton:SetPoint("BOTTOMLEFT", dialog, "BOTTOMLEFT", 10, -10)
-	clearButton:SetText("Clear")
+	clearButton:SetPoint("BOTTOMLEFT", dialog, "BOTTOMLEFT", 20, -10)
+	clearButton:SetText("Clear key")
 	clearButton:SetFont(addonInfo.id, "MontserratSemiBold")
 	clearButton:SetScale(0.9)
 	clearButton:SetLabelColor(data.theme.labelColor)
@@ -148,11 +149,27 @@ local function createKeybindDialog()
 		capturedText:SetFontColor(1, 0.5, 0.5, 1)
 	end, "nkUI.keybindDialog.clear.click")
 
+	-- Clear Slot button
+	local clearSlotButton = LibEKL.UICreateFrame("nkButton", "nkUI.keybindDialog.clearSlot", dialog)
+	clearSlotButton:SetWidth(100)
+	clearSlotButton:SetHeight(25)
+	clearSlotButton:SetPoint("CENTERLEFT", clearButton, "CENTERRIGHT", 20, 0)
+	clearSlotButton:SetText("Clear Slot")
+	clearSlotButton:SetFont(addonInfo.id, "MontserratSemiBold")
+	clearSlotButton:SetScale(0.9)
+	clearSlotButton:SetLabelColor(data.theme.labelColor)
+	clearSlotButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+	clearSlotButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+	clearSlotButton:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self)	
+		iconFrame:ClearItem()
+		closeKeybindDialog()
+	end, "nkUI.keybindDialog.clearSlot.click")
+
 	-- Save button
 	local saveButton = LibEKL.UICreateFrame("nkButton", "nkUI.keybindDialog.save", dialog)
 	saveButton:SetWidth(100)
 	saveButton:SetHeight(25)
-	saveButton:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -10, -10)
+	saveButton:SetPoint("CENTERLEFT", clearSlotButton, "CENTERRIGHT", 20, 0)
 	saveButton:SetText("Save")
 	saveButton:SetFont(addonInfo.id, "MontserratSemiBold")
 	saveButton:SetScale(0.9)
@@ -167,7 +184,7 @@ local function createKeybindDialog()
 	local cancelButton = LibEKL.UICreateFrame("nkButton", "nkUI.keybindDialog.cancel", dialog)
 	cancelButton:SetWidth(100)
 	cancelButton:SetHeight(25)
-	cancelButton:SetPoint("CENTERBOTTOM", dialog, "CENTERBOTTOM", 0, -10)
+	cancelButton:SetPoint("CENTERLEFT", saveButton, "CENTERRIGHT", 20, 0)
 	cancelButton:SetText("Cancel")
 	cancelButton:SetFont(addonInfo.id, "MontserratSemiBold")
 	cancelButton:SetScale(0.9)
@@ -222,7 +239,7 @@ end
 function internalFunc.openKeybindDialog(barIndex, buttonIndex, iconFrame)
 	-- Create dialog if needed
 	if not keybindDialog then
-		keybindDialog = createKeybindDialog()
+		keybindDialog = createKeybindDialog(iconFrame)
 	end
 
 	-- Store which slot is being edited
