@@ -16,6 +16,7 @@ local dialogContext = nil
 local captureContext = nil
 local capturedKey = nil
 local pendingSlot = nil  -- Store {barIndex, buttonIndex} for the slot being edited
+local pendingIconFrame = nil  -- Store reference to the icon frame being edited
 local mathFloor = math.floor
 
 ---------- local functions ---------
@@ -93,7 +94,13 @@ local function saveKeybind()
 		end
 	end
 
-	-- Update all affected icons: the newly set one and any that had the keybind removed
+	-- Directly update the icon frame being edited without waiting for Populate
+	if pendingIconFrame and pendingIconFrame.SetKeyBind then
+		pendingIconFrame:SetKeyBind(capturedKey)
+	end
+
+	-- Update all other bars' icons by calling Populate on them
+	-- This will update keybinds and handle removed keybinds via SetKeyBind
 	if uiElements.actionBars then
 		for barIdx, bar in ipairs(uiElements.actionBars) do
 			if bar.Populate then
@@ -260,8 +267,9 @@ function internalFunc.openKeybindDialog(barIndex, buttonIndex, iconFrame)
 		keybindDialog = createKeybindDialog(iconFrame)
 	end
 
-	-- Store which slot is being edited
+	-- Store which slot is being edited and the icon frame reference
 	pendingSlot = { barIndex = barIndex, buttonIndex = buttonIndex }
+	pendingIconFrame = iconFrame
 	capturedKey = nil
 
 	-- Position dialog: TOPLEFT positioned so dialog's bottom-right is near icon's top-left

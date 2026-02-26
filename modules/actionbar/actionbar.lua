@@ -106,7 +106,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
     -- @desc Populates the action bar with abilities from the setup
     function actionBar:Populate()
         local barSetup = data.actionBarSetup.roles[Inspect.TEMPORARY.Role()].bars[barIndex]
-        
+
         if barSetup ~= nil then
             local slots = barSetup.slots
 
@@ -117,7 +117,7 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
                 for colIndex = 1, cols, 1 do
                     local buttonIndex = ((rowIndex -1) * cols + colIndex)
                     local slotInfo = slots[buttonIndex]
-                    
+
            			if slotInfo ~= nil then
                         if slotInfo.macroCD ~= nil then
                             thisRow[colIndex]:SetItem(slotInfo.itemType, slotInfo.itemKey, slotInfo.macroIcon, slotInfo.macroCD[1], slotInfo.macroCD[2])
@@ -129,6 +129,12 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
                         thisRow[colIndex]:SetKeyBind(slotInfo.keyBind)
                     else
                         thisRow[colIndex]:ClearItem()
+                    end
+
+                    -- Always check for keybind, even on empty slots (after clearing)
+                    -- This allows keybinds to show on empty action slots
+                    if slotInfo and slotInfo.keyBind then
+                        thisRow[colIndex]:SetKeyBind(slotInfo.keyBind)
                     end
                 end
             end
