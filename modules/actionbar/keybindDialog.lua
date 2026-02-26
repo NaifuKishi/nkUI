@@ -93,8 +93,14 @@ local function saveKeybind()
 		end
 	end
 
-	-- Reload UI to apply changes
-	Command.Script.Reload()
+	-- Update all affected icons: the newly set one and any that had the keybind removed
+	if uiElements.actionBars then
+		for barIdx, bar in ipairs(uiElements.actionBars) do
+			if bar.Populate then
+				bar:Populate()
+			end
+		end
+	end
 
 	closeKeybindDialog()
 end
