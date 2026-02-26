@@ -47,13 +47,35 @@ local function fmtCoins(v)
     return internalFunc.formatCoins(v)
 end
 
+-- Map text rarities to numeric indices for filtering
+local function getRarityIndex(rarity)
+    -- Handle both numeric and text rarities
+    if type(rarity) == "number" then
+        return rarity
+    end
+    
+    -- Map text rarities to numeric indices
+    local rarityMap = {
+        sellable = 0,
+        uncommon = 1,
+        rare = 2,
+        epic = 3,
+        relic = 4,
+        transcendent = 5,
+        quest = 6
+    }
+    
+    return rarityMap[rarity] or 0  -- Default to common (0) if unknown
+end
+
 local function isRarityVisible(rarity)
+    local numericRarity = getRarityIndex(rarity)
     local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
     if not browse then return true end
     local rf = browse.rarityFilter
     -- rarityFilter stores EXCLUDED rarities; empty = show all
     if not rf then return true end
-    return rf[rarity] ~= true
+    return rf[numericRarity] ~= true
 end
 
 local function updateRarityBtnVisuals()
@@ -88,7 +110,7 @@ local function applyFilterAndSort()
         if not isRarityVisible(rarity) then
             -- skip this row
         else
-            -- Check name filter
+            -- Check name filter (use clean name without HTML tags)
             local itemName = row.name or ""
             if searchText == "" or itemName:lower():find(searchText, 1, true) then
                 tableInsert(filtered, row)
@@ -117,11 +139,22 @@ local function applyFilterAndSort()
         end)
     else
         -- String sort for name, seller, stack, expiry
+        -- For item names (column 2), use clean name without HTML tags
         tableSort(filtered, function(a, b)
             local aVal = a.row and a.row[sortCol] or ""
             local bVal = b.row and b.row[sortCol] or ""
-            aVal = tostring(aVal):lower()
-            bVal = tostring(bVal):lower()
+            
+            -- Special handling for item name column (column 2)
+            if sortCol == 2 then
+                aVal = a.name or ""  -- Use clean name for sorting
+                bVal = b.name or ""
+            else
+                aVal = tostring(aVal)
+                bVal = tostring(bVal)
+            end
+            
+            aVal = aVal:lower()
+            bVal = bVal:lower()
             if sortAsc then
                 return aVal < bVal
             else
@@ -176,6 +209,11 @@ local function populateBrowseGrid(rawAuctions)
             vendor = itemDetail.sell or 0
         end
 
+        -- Fallback icon for items without proper icon data
+        if icon == nil then
+            icon = "iconBag.png"  -- Default fallback icon
+        end
+
         -- Get my price from ownAuctions
         local myPrice = auction.ownAuctions[itemType]
 
@@ -210,12 +248,24 @@ local function populateBrowseGrid(rawAuctions)
         local expiryTime = detail.timeRemaining or 0
         local expiryStr = auction.formatExpiry(expiryTime)
 
-        local rarityColor = RARITY_COLOR[rarity] or RARITY_COLOR[0]
+        -- Get rarity color using the proper function that handles both numeric and text rarities
+        local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
+
+        -- Format item name with rarity color using HTML (like formatCoins does)
+        local coloredName = name
+
+        if rarityColor then
+            coloredName = string.format('<font color="#%02x%02x%02x">%s</font>', 
+                math.floor(rarityColor.r * 255), 
+                math.floor(rarityColor.g * 255), 
+                math.floor(rarityColor.b * 255), 
+                name)
+        end
 
         -- Build row with sort keys
         local row = {
             icon,                                                          -- 1: texture
-            { value = name, color = rarityColor },                         -- 2: item name, colored by rarity
+            coloredName,                                                   -- 2: item name, colored by rarity (HTML)
             detail.seller or "Unknown",                                    -- 3: seller
             tostring(stack),                                               -- 4: stack
             bidStr,                                                        -- 5: bid
@@ -236,7 +286,7 @@ local function populateBrowseGrid(rawAuctions)
                     [8] = vendorRatio or 0,
                     [9] = myPrice or 0
                 },
-                rarity = rarity,
+                rarity = getRarityIndex(rarity),  -- Store numeric index for filtering
                 name = name
             })
         end
@@ -349,7 +399,7 @@ function auction.buildBrowseTab(browseFrame)
     grid:SetSortable(true)
 
     local cols = {
-        { width = 28,  header = "" },                                    -- 1: icon
+        { width = 28,  header = "", texture = true, textureType = "Rift", texturePath = "" },  -- 1: icon
         { width = 200, header = langTexts.auction.colItem },              -- 2: item name
         { width = 100, header = langTexts.auction.colSeller },            -- 3: seller
         { width = 40,  header = langTexts.auction.colStack },             -- 4: stack
