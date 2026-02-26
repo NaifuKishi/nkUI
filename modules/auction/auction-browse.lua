@@ -154,14 +154,6 @@ local function toggleRarity(rarity)
     updateRarityBtnVisuals()
 end
 
-local function colorRarityToHex(rarity)
-    local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
-    local r = mathFloor(color.r * 255)
-    local g = mathFloor(color.g * 255)
-    local b = mathFloor(color.b * 255)
-    return stringFormat("%02X%02X%02X", r, g, b)
-end
-
 local function populateBrowseGrid(rawAuctions)
     browseRows = {}
     local newRows = {}
@@ -205,10 +197,11 @@ local function populateBrowseGrid(rawAuctions)
         local buyoutStr = fmtCoins(detail.buyout)
         local unitStr = fmtCoins(unitPrice)
         local vendorStr = "-"
+        local vendorColor = nil
         if vendorRatio then
             vendorStr = stringFormat("%.1fx", vendorRatio)
             if vendorRatio > 5 then
-                vendorStr = "<font color=\"#FF0000\">" .. vendorStr .. "</font>"
+                vendorColor = { r = 1, g = 0.2, b = 0.2, a = 1 }
             end
         end
         local myPriceStr = fmtCoins(myPrice)
@@ -217,23 +210,21 @@ local function populateBrowseGrid(rawAuctions)
         local expiryTime = detail.timeRemaining or 0
         local expiryStr = auction.formatExpiry(expiryTime)
 
+        local rarityColor = RARITY_COLOR[rarity] or RARITY_COLOR[0]
+
         -- Build row with sort keys
         local row = {
-            icon,                                              -- 1: texture
-            "<font color=\"#" .. colorRarityToHex(rarity) .. "\">" .. name .. "</font>",  -- 2: item name
-            detail.seller or "Unknown",                        -- 3: seller
-            tostring(stack),                                   -- 4: stack
-            bidStr,                                            -- 5: bid
-            buyoutStr,                                         -- 6: buyout
-            unitStr,                                           -- 7: unit price
-            vendorStr,                                         -- 8: vendor ratio
-            myPriceStr,                                        -- 9: my price
-            { value = expiryStr, key = auctionID }             -- 10: expiry + row key
+            icon,                                                          -- 1: texture
+            { value = name, color = rarityColor },                         -- 2: item name, colored by rarity
+            detail.seller or "Unknown",                                    -- 3: seller
+            tostring(stack),                                               -- 4: stack
+            bidStr,                                                        -- 5: bid
+            buyoutColor and { value = buyoutStr, color = buyoutColor } or buyoutStr,  -- 6: buyout
+            unitStr,                                                       -- 7: unit price
+            vendorColor and { value = vendorStr, color = vendorColor } or vendorStr,  -- 8: vendor ratio
+            myPriceStr,                                                    -- 9: my price
+            { value = expiryStr, key = auctionID }                         -- 10: expiry + row key
         }
-
-        if buyoutColor then
-            row[6] = "<font color=\"#00FF00\">" .. buyoutStr .. "</font>"
-        end
 
         -- Store row data with sort keys
             tableInsert(newRows, {
