@@ -86,12 +86,15 @@ local function saveKeybind()
 
 		-- Now set the keybind on the target slot
 		local slot = roleSetup.bars[barIndex].slots[buttonIndex]
-		if slot then
-			slot.keyBind = capturedKey
-			Command.Console.Display("general", true,
-				string.format("<font color='#00FF00'>[nkUI]</font> Keybind set to: <font color='#FFFF00'>%s</font>", capturedKey),
-				true)
+		if not slot then
+			-- Create empty slot if it doesn't exist
+			slot = {}
+			roleSetup.bars[barIndex].slots[buttonIndex] = slot
 		end
+		slot.keyBind = capturedKey
+		Command.Console.Display("general", true,
+			string.format("<font color='#00FF00'>[nkUI]</font> Keybind set to: <font color='#FFFF00'>%s</font>", capturedKey),
+			true)
 	end
 
 	-- Directly update the icon frame being edited without waiting for Populate

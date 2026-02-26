@@ -131,10 +131,10 @@ local function createActionBar(thisName, rows, cols, scale, barIndex)
                         thisRow[colIndex]:ClearItem()
                     end
 
-                    -- Always check for keybind, even on empty slots (after clearing)
-                    -- This allows keybinds to show on empty action slots
-                    if slotInfo and slotInfo.keyBind then
-                        thisRow[colIndex]:SetKeyBind(slotInfo.keyBind)
+                    -- Always check for keybind on this slot, even if empty
+                    -- This ensures keybinds persist on empty slots after zone changes/reloads
+                    if slots[buttonIndex] and slots[buttonIndex].keyBind then
+                        thisRow[colIndex]:SetKeyBind(slots[buttonIndex].keyBind)
                     end
                 end
             end
