@@ -56,20 +56,6 @@ local function isRarityVisible(rarity)
     return rf[rarity] == true
 end
 
-local function toggleRarity(rarity)
-    local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
-    if not browse then return end
-    local rf = browse.rarityFilter
-    if not rf then browse.rarityFilter = {} rf = browse.rarityFilter end
-    if rf[rarity] then
-        rf[rarity] = nil
-    else
-        rf[rarity] = true
-    end
-    applyFilterAndSort()
-    updateRarityBtnVisuals()
-end
-
 local function updateRarityBtnVisuals()
     for rarity = 0, 6 do
         local btn = rarityBtns[rarity]
@@ -148,6 +134,20 @@ local function applyFilterAndSort()
     end
 
     grid:SetCellValues(gridRows)
+end
+
+local function toggleRarity(rarity)
+    local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+    if not browse then return end
+    local rf = browse.rarityFilter
+    if not rf then browse.rarityFilter = {} rf = browse.rarityFilter end
+    if rf[rarity] then
+        rf[rarity] = nil
+    else
+        rf[rarity] = true
+    end
+    applyFilterAndSort()
+    updateRarityBtnVisuals()
 end
 
 local function colorRarityToHex(rarity)
