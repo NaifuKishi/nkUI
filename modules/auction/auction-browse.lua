@@ -292,7 +292,6 @@ function auction.buildBrowseTab(browseFrame)
     searchContainer:SetPoint("TOPLEFT",     browseFrame, "TOPLEFT",     0, 0)
     searchContainer:SetPoint("TOPRIGHT",    browseFrame, "TOPRIGHT",    0, 0)
     searchContainer:SetHeight(28)
-    searchContainer:SetColor({type="solid", r=0, g=0, b=0, a=0}, nil)
 
     searchInput = LibEKL.UICreateFrame("nkTextField", "nkUI.auction.browse.search", searchContainer)
     searchInput:SetPoint("TOPLEFT", searchContainer, "TOPLEFT", 5, 2)
@@ -319,7 +318,6 @@ function auction.buildBrowseTab(browseFrame)
     rarityContainer:SetPoint("TOPLEFT",     browseFrame, "TOPLEFT",     0, 28)
     rarityContainer:SetPoint("TOPRIGHT",    browseFrame, "TOPRIGHT",    0, 28)
     rarityContainer:SetHeight(30)
-    rarityContainer:SetColor({type="solid", r=0, g=0, b=0, a=0}, nil)
 
     local xOff = 5
     for rarity = 0, 6 do
