@@ -51,9 +51,9 @@ local function isRarityVisible(rarity)
     local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
     if not browse then return true end
     local rf = browse.rarityFilter
-    -- empty table = show all
-    if not rf or next(rf) == nil then return true end
-    return rf[rarity] == true
+    -- rarityFilter stores EXCLUDED rarities; empty = show all
+    if not rf then return true end
+    return rf[rarity] ~= true
 end
 
 local function updateRarityBtnVisuals()
@@ -62,9 +62,12 @@ local function updateRarityBtnVisuals()
         if btn then
             local visible = isRarityVisible(rarity)
             if visible then
-                btn:SetFillColor({ type = "solid", r = 0.1, g = 0.1, b = 0.1, a = 0.7 })
+                -- bright: rarity is shown
+                local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
+                btn:SetFillColor({ type = "solid", r = color.r * 0.25, g = color.g * 0.25, b = color.b * 0.25, a = 0.9 })
             else
-                btn:SetFillColor({ type = "solid", r = 0.3, g = 0.1, b = 0.1, a = 0.7 })
+                -- dark: rarity is filtered out
+                btn:SetFillColor({ type = "solid", r = 0.08, g = 0.08, b = 0.08, a = 0.9 })
             end
         end
     end
@@ -139,12 +142,13 @@ end
 local function toggleRarity(rarity)
     local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
     if not browse then return end
+    if not browse.rarityFilter then browse.rarityFilter = {} end
     local rf = browse.rarityFilter
-    if not rf then browse.rarityFilter = {} rf = browse.rarityFilter end
+    -- rarityFilter stores EXCLUDED rarities; toggle exclude/include
     if rf[rarity] then
-        rf[rarity] = nil
+        rf[rarity] = nil   -- was excluded, now include
     else
-        rf[rarity] = true
+        rf[rarity] = true  -- now excluded
     end
     applyFilterAndSort()
     updateRarityBtnVisuals()
@@ -401,4 +405,7 @@ function auction.buildBrowseTab(browseFrame)
     Command.Event.Attach(LibEKL.Events["nkUI.auction.browse.search"].TextfieldChanged, function()
         applyFilterAndSort()
     end, "nkUI.auction.browse.search.Changed")
+
+    -- Set initial button visuals
+    updateRarityBtnVisuals()
 end
