@@ -65,7 +65,26 @@ local function saveKeybind()
 
 	-- Save keybind to SavedVars
 	if data.actionBarSetup and data.actionBarSetup.roles[role] then
-		local slot = data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex]
+		local roleSetup = data.actionBarSetup.roles[role]
+
+		-- First, remove this keybind from any other slots that have it
+		for barIdx = 1, #roleSetup.bars do
+			local bar = roleSetup.bars[barIdx]
+			if bar and bar.slots then
+				for slotIdx = 1, #bar.slots do
+					local otherSlot = bar.slots[slotIdx]
+					if otherSlot and otherSlot.keyBind == capturedKey then
+						-- Don't clear if it's the same slot we're setting
+						if not (barIdx == barIndex and slotIdx == buttonIndex) then
+							otherSlot.keyBind = nil
+						end
+					end
+				end
+			end
+		end
+
+		-- Now set the keybind on the target slot
+		local slot = roleSetup.bars[barIndex].slots[buttonIndex]
 		if slot then
 			slot.keyBind = capturedKey
 			Command.Console.Display("general", true,
@@ -74,15 +93,8 @@ local function saveKeybind()
 		end
 	end
 
-	-- Repopulate the bar to show the new label
-	if uiElements.actionBars then
-		for barIdx, bar in ipairs(uiElements.actionBars) do
-			if barIdx == barIndex and bar.Populate then
-				bar:Populate()
-				break
-			end
-		end
-	end
+	-- Reload UI to apply changes
+	Command.Script.Reload()
 
 	closeKeybindDialog()
 end
