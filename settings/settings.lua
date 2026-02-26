@@ -208,6 +208,7 @@ local _defaults = {
                         autoOpenWithAH  = false,
                         showInTooltip   = true,
                         scanDepth       = 3,
+                        browse          = { sortCol = 7, sortAsc = true, rarityFilter = {} },
                       },
     showLogo = true,
     useManager = true

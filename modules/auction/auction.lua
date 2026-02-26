@@ -27,6 +27,11 @@ local context = UI.CreateContext("nkUI.auction")
 context:SetStrata('dialog')
 context:SetLayer(3)
 
+---------- scan state ----------
+
+local fullScanPending = false
+local browseSearchPending = false
+
 ---------- data model helpers ----------
 
 local function initShard(shard)
@@ -337,7 +342,7 @@ end
 
 ---------- helpers ----------
 
-local function makeBtn(name, parent, label, w, h)
+function auction.makeBtn(name, parent, label, w, h)
     local btn = LibEKL.UICreateFrame("nkButton", name, parent)
     btn:SetWidth(w or 100)
     btn:SetHeight(h or 22)
@@ -350,12 +355,16 @@ local function makeBtn(name, parent, label, w, h)
     return btn
 end
 
-local function formatExpiry(seconds)
+function auction.formatExpiry(seconds)
     if not seconds then return "?" end
     local h = mathFloor(seconds / 3600)
     local m = mathFloor((seconds % 3600) / 60)
     if h > 0 then return stringFormat("%dh%dm", h, m) end
     return stringFormat("%dm", m)
+end
+
+function auction.isAtAH()
+    return atAuctionHouse
 end
 
 ---------- interaction state ----------
@@ -370,6 +379,19 @@ end, "nkUI.Auction.InteractionState")
 
 -- Browse tab implementation moved to auction-browse.lua
 -- Phase 1A will add: rarity filters, bid column, my price column, sort persistence
+
+-- Own auctions cache: [itemType] = lowestUnitPrice
+auction.ownAuctions = {}
+
+-- Accessor to check if browse search is pending
+function auction.isBrowseSearchPending()
+    return browseSearchPending
+end
+
+-- Setter for browse search pending
+function auction.setBrowseSearchPending(flag)
+    browseSearchPending = flag
+end
 
 ---------- main window skeleton ----------
 
@@ -434,7 +456,10 @@ local function buildWindow()
     tabs:SetFont(addonInfo.id, "MontserratSemiBold")
 
     tabs:AddPane({ label = langTexts.auction.tabBrowse,  frame = browseFrame,  effect = { strength = 3 },
-        initFunc = function() -- Phase 1A: browse tab builder goes here
+        initFunc = function()
+            if auction.buildBrowseTab then
+                auction.buildBrowseTab(browseFrame)
+            end
         end }, false)
     tabs:AddPane({ label = langTexts.auction.tabPost,    frame = postFrame,    effect = { strength = 3 },
         initFunc = function() -- Phase 3: post tab builder goes here
@@ -460,7 +485,7 @@ local function buildWindow()
     statusLabel:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
     LibEKL.UI.SetFont(statusLabel, addonInfo.id, "MontserratSemiBold")
 
-    local scanBtn = makeBtn(name .. ".strip.scan", strip, langTexts.auction.btnScan, 100, 22)
+    local scanBtn = auction.makeBtn(name .. ".strip.scan", strip, langTexts.auction.btnScan, 100, 22)
     scanBtn:SetPoint("CENTERRIGHT", strip, "CENTERRIGHT", -10, 0)
 
     scanBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
