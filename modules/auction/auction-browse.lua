@@ -48,20 +48,24 @@ local function fmtCoins(v)
 end
 
 local function isRarityVisible(rarity)
-    local rf = nkUISetup.modules.auction.browse.rarityFilter
+    local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+    if not browse then return true end
+    local rf = browse.rarityFilter
     -- empty table = show all
     if not rf or next(rf) == nil then return true end
     return rf[rarity] == true
 end
 
 local function toggleRarity(rarity)
-    local rf = nkUISetup.modules.auction.browse.rarityFilter
+    local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+    if not browse then return end
+    local rf = browse.rarityFilter
+    if not rf then browse.rarityFilter = {} rf = browse.rarityFilter end
     if rf[rarity] then
         rf[rarity] = nil
     else
         rf[rarity] = true
     end
-    -- Re-apply filter to browseRows (re-populate grid from cached data)
     applyFilterAndSort()
     updateRarityBtnVisuals()
 end
@@ -104,9 +108,9 @@ local function applyFilterAndSort()
     end
 
     -- Sort by column
-    local cfg = nkUISetup.modules.auction.browse
-    local sortCol = cfg.sortCol or 7
-    local sortAsc = cfg.sortAsc ~= false
+    local cfg = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+    local sortCol = (cfg and cfg.sortCol) or 7
+    local sortAsc = not cfg or cfg.sortAsc ~= false
 
     -- Determine sort key based on column
     -- For numeric columns (bid, buyout, unit, vs vendor, myPrice), sort numerically
