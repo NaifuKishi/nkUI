@@ -305,7 +305,7 @@ function auction.buildBrowseTab(browseFrame)
         doSearch()
     end, "nkUI.auction.browse.searchBtn.Click")
 
-    searchInput:EventAttach(Event.UI.Input.Key.Down, function(self, _, key)
+    Command.Event.Attach(LibEKL.Events["nkUI.auction.browse.search"].KeyDown, function(_, key)
         if key == "Return" then
             doSearch()
         end
@@ -390,7 +390,7 @@ function auction.buildBrowseTab(browseFrame)
     end, "nkUI.Auction.Browse.Scan")
 
     -- Attach search input change event for live filtering
-    searchInput:EventAttach(Event.UI.Input.TextfieldChanged, function()
+    Command.Event.Attach(LibEKL.Events["nkUI.auction.browse.search"].TextfieldChanged, function()
         applyFilterAndSort()
     end, "nkUI.auction.browse.search.Changed")
 end
