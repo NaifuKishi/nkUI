@@ -327,7 +327,7 @@ function auction.buildBrowseTab(browseFrame)
         btn:SetPoint("TOPLEFT", rarityContainer, "TOPLEFT", xOff, 4)
 
         local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
-        btn:SetLabelColor(color.r, color.g, color.b, color.a or 1)
+        btn:SetLabelColor(color.r, color.g, color.b)
         btn:SetFillColor({ type = "solid", r = 0.1, g = 0.1, b = 0.1, a = 0.7 })
 
         btn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
