@@ -551,6 +551,10 @@ function internalFunc.auctionOpen()
         nkUISetup.modules.auction = { activate = true, x = 300, y = 200,
                                       autoOpenWithAH = false, showInTooltip = true, scanDepth = 3 }
     end
+    -- bootstrap browse sub-table if missing
+    if nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse == nil then
+        nkUISetup.modules.auction.browse = { sortCol = 7, sortAsc = true, rarityFilter = {} }
+    end
 
     if uiElements.auctionWindow == nil then
         uiElements.auctionWindow = buildWindow()

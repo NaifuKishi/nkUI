@@ -370,9 +370,10 @@ function auction.buildBrowseTab(browseFrame)
     local oSort = grid.Sort
     function grid:Sort(col, sortOrder)
         oSort(self, col, sortOrder)
-        if col then
-            nkUISetup.modules.auction.browse.sortCol = col
-            nkUISetup.modules.auction.browse.sortAsc = (sortOrder ~= false)
+        local browse = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+        if col and browse then
+            browse.sortCol = col
+            browse.sortAsc = (sortOrder ~= false)
         end
     end
 
