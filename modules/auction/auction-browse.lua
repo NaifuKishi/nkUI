@@ -243,6 +243,9 @@ local function populateBrowseGrid(rawAuctions)
     applyFilterAndSort()
 end
 
+-- Expose for full-scan hook in auction.lua
+auction.populateBrowseGrid = populateBrowseGrid
+
 local function colorRarityToHex(rarity)
     local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
     local r = mathFloor(color.r * 255)

@@ -309,6 +309,12 @@ local function buildScanDialog()
         scanDialog:SetVisible(true)
         scanDialog:SetMessage(langTexts.auction.scanStarted)
 
+        -- Also populate the browse grid if it is built
+        if auction.populateBrowseGrid then
+            auction.refreshOwnAuctions()
+            auction.populateBrowseGrid(auctions)
+        end
+
         runScanProcessing(
             auctions,
             function(pct)
@@ -363,10 +369,6 @@ function auction.formatExpiry(seconds)
     return stringFormat("%dm", m)
 end
 
-function auction.isAtAH()
-    return atAuctionHouse
-end
-
 ---------- interaction state ----------
 
 local atAuctionHouse = false   -- tracked via Event.Interaction; Inspect.Interaction() is unreliable when polled
@@ -374,6 +376,10 @@ local atAuctionHouse = false   -- tracked via Event.Interaction; Inspect.Interac
 Command.Event.Attach(Event.Interaction, function(_, interaction)
     atAuctionHouse = (interaction == "auction")
 end, "nkUI.Auction.InteractionState")
+
+function auction.isAtAH()
+    return atAuctionHouse
+end
 
 ---------- phase 0: placeholder for browse tab ----------
 
