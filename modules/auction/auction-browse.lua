@@ -284,9 +284,6 @@ function auction.buildBrowseTab(browseFrame)
     context:SetStrata('dialog')
     context:SetLayer(3)
 
-    -- Check and initialize event namespace
-    LibEKL.Events.CheckEvents(GRID_NAME, true)
-
     -- Search bar row
     local searchContainer = LibEKL.UICreateFrame("nkFrame", "nkUI.auction.browse.searchContainer", browseFrame)
     searchContainer:SetPoint("TOPLEFT",     browseFrame, "TOPLEFT",     0, 0)
@@ -343,39 +340,44 @@ function auction.buildBrowseTab(browseFrame)
     grid:SetPoint("TOPLEFT",     browseFrame, "TOPLEFT",     0, 60)
     grid:SetPoint("BOTTOMRIGHT", browseFrame, "BOTTOMRIGHT", 0, 0)
 
-    grid:SetColor(data.theme.GRID_FILL or {type="solid", r=0, g=0, b=0, a=0.3},
-                  data.theme.GRID_STROKE or {r=0.5, g=0.5, b=0.5, a=1, thickness=1})
     grid:SetFont(addonInfo.id, "MontserratMedium")
-    grid:SetTextColor(data.theme.labelColor)
+    grid:SetBodyColor(0.05, 0.06, 0.09, 0.9)
+    grid:SetBorderColor(0.3, 0.3, 0.3, 1)
+    grid:SetHeaderLabelColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    grid:SetSortable(true)
 
     local cols = {
-        { width = 28, texture = true },                        -- 1: icon
-        { width = 200, label = langTexts.auction.colItem },     -- 2: item name
-        { width = 100, label = langTexts.auction.colSeller },   -- 3: seller
-        { width = 40, label = langTexts.auction.colStack },     -- 4: stack
-        { width = 80, label = langTexts.auction.colBid },       -- 5: bid
-        { width = 80, label = langTexts.auction.colBuyout },    -- 6: buyout
-        { width = 80, label = langTexts.auction.colUnit },      -- 7: unit price
-        { width = 65, label = langTexts.auction.colVendorRatio }, -- 8: vs vendor
-        { width = 80, label = langTexts.auction.colMyPrice },   -- 9: my price
-        { width = 60, label = langTexts.auction.colExpires }    -- 10: expires
+        { width = 28,  header = "" },                                    -- 1: icon
+        { width = 200, header = langTexts.auction.colItem },              -- 2: item name
+        { width = 100, header = langTexts.auction.colSeller },            -- 3: seller
+        { width = 40,  header = langTexts.auction.colStack },             -- 4: stack
+        { width = 80,  header = langTexts.auction.colBid },               -- 5: bid
+        { width = 80,  header = langTexts.auction.colBuyout },            -- 6: buyout
+        { width = 80,  header = langTexts.auction.colUnit },              -- 7: unit price
+        { width = 65,  header = langTexts.auction.colVendorRatio },       -- 8: vs vendor
+        { width = 80,  header = langTexts.auction.colMyPrice },           -- 9: my price
+        { width = 60,  header = langTexts.auction.colExpires }            -- 10: expires
     }
 
-    grid:Layout(cols, 30)
+    -- Wrap grid:Sort to persist sort preference
+    local oSort = grid.Sort
+    function grid:Sort(col, sortOrder)
+        oSort(self, col, sortOrder)
+        if col then
+            nkUISetup.modules.auction.browse.sortCol = col
+            nkUISetup.modules.auction.browse.sortAsc = (sortOrder ~= false)
+        end
+    end
 
-    -- Attach grid finished event to restore sort
+    -- After layout finishes, restore saved sort
     grid:EventAttach(LibEKL.Events[GRID_NAME].GridFinished, function()
         local cfg = nkUISetup.modules.auction.browse
         if cfg.sortCol then
-            grid:Sort(cfg.sortCol, cfg.sortAsc ~= false)
+            oSort(grid, cfg.sortCol, cfg.sortAsc ~= false)
         end
     end, "nkUI.auction.browse.GridFinished")
 
-    -- Attach grid sort event to persist
-    grid:EventAttach(LibEKL.Events[GRID_NAME].ColumnSort, function(self, info)
-        nkUISetup.modules.auction.browse.sortCol = info.col
-        nkUISetup.modules.auction.browse.sortAsc = info.ascending ~= false
-    end, "nkUI.auction.browse.ColumnSort")
+    grid:Layout(cols, 30)
 
     -- Attach scan result event for browse tab
     Command.Event.Attach(Event.Auction.Scan, function(_, info, auctions)
