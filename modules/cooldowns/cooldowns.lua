@@ -93,7 +93,7 @@ local function updateCooldownBar(cooldown)
     if remainingTime <= 0 then
         return
     end
-    
+
     local progress = remainingTime / cooldown.duration
     cooldown.display.bar:SetWidth(100 * progress)
 
@@ -105,7 +105,7 @@ local function updateCooldownBar(cooldown)
     else
         cooldown.display.bar:SetBackgroundColor(0, 1, 0, 1) -- Green
     end
-    
+
     -- Display remaining time in minutes
     local minutes = mathFloor(remainingTime / 60)
     cooldown.display.timer:SetText(stringFormat("%d", minutes))
