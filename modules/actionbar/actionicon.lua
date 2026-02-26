@@ -277,12 +277,12 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
       Function to clear the current item
       Clears the current item, ability, or macro from the action icon
     ]]
-	function frame:ClearItem()		
-		
+	function frame:ClearItem()
+
 		LibEKL.UI.attachItemTooltip (frame, nil)
 		LibEKL.UI.attachAbilityTooltip (frame, nil)
 		LibEKL.UI.attachGenericTooltip (frame, nil)
-				
+
 		if thisMacroCDType ~= nil then
 			LibEKL.Cooldowns.Unsubscribe(thisMacroCDType, thisMacroCDKey)
 
@@ -296,7 +296,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 			data.abilityMap[thisItemKey] = nil
 			data.abilityList[thisItemKey] = nil
-		end	
+		end
 
 		thisItemKey = nil
 		thisItemType = nil
@@ -311,6 +311,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			if slot then slot.keyBind = nil end
 		end
 
+		-- Hide keybind label when clearing item
+		frame:SetKeyBind(nil)
+
 		fill = LibEKL.Tools.Table.Copy(defaultFill)
 		frame:SetShape(path, defaultFill, stroke)
 
@@ -318,7 +321,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 
 		if macroFrame then
 			LibEKL.Events.AddInsecure(function() macroFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, nil) end, nil, nil)
-		end		
+		end
 	end
 	
 	function frame:CheckState()
