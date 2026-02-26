@@ -30,13 +30,13 @@ local GRID_NAME     = "nkUI.auction.browse.grid"
 ---------- rarity colors and labels ----------
 
 local RARITY_COLOR = {
-    [0] = {r=0.8, g=0.8, b=0.8},   -- Common: grey
-    [1] = {r=0.1, g=0.9, b=0.1},   -- Uncommon: green
-    [2] = {r=0.0, g=0.5, b=1.0},   -- Rare: blue
-    [3] = {r=0.6, g=0.1, b=0.9},   -- Epic: purple
-    [4] = {r=1.0, g=0.5, b=0.0},   -- Relic: orange
-    [5] = {r=1.0, g=0.9, b=0.2},   -- Transcendent: gold
-    [6] = {r=0.9, g=0.4, b=0.4},   -- Primalist: pink-red
+    [0] = {r=0.8, g=0.8, b=0.8, a=1},   -- Common: grey
+    [1] = {r=0.1, g=0.9, b=0.1, a=1},   -- Uncommon: green
+    [2] = {r=0.0, g=0.5, b=1.0, a=1},   -- Rare: blue
+    [3] = {r=0.6, g=0.1, b=0.9, a=1},   -- Epic: purple
+    [4] = {r=1.0, g=0.5, b=0.0, a=1},   -- Relic: orange
+    [5] = {r=1.0, g=0.9, b=0.2, a=1},   -- Transcendent: gold
+    [6] = {r=0.9, g=0.4, b=0.4, a=1},   -- Primalist: pink-red
 }
 local RARITY_LABEL = { [0]="C", [1]="U", [2]="R", [3]="E", [4]="Rel", [5]="T", [6]="P" }
 
