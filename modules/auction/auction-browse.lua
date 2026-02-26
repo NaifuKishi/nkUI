@@ -150,6 +150,14 @@ local function applyFilterAndSort()
     grid:SetCellValues(gridRows)
 end
 
+local function colorRarityToHex(rarity)
+    local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
+    local r = mathFloor(color.r * 255)
+    local g = mathFloor(color.g * 255)
+    local b = mathFloor(color.b * 255)
+    return stringFormat("%02X%02X%02X", r, g, b)
+end
+
 local function populateBrowseGrid(rawAuctions)
     browseRows = {}
     local newRows = {}
@@ -245,14 +253,6 @@ end
 
 -- Expose for full-scan hook in auction.lua
 auction.populateBrowseGrid = populateBrowseGrid
-
-local function colorRarityToHex(rarity)
-    local color = RARITY_COLOR[rarity] or RARITY_COLOR[0]
-    local r = mathFloor(color.r * 255)
-    local g = mathFloor(color.g * 255)
-    local b = mathFloor(color.b * 255)
-    return stringFormat("%02X%02X%02X", r, g, b)
-end
 
 local function doSearch()
     if not auction.isAtAH() then
