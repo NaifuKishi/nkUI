@@ -371,8 +371,8 @@ function auction.buildBrowseTab(browseFrame)
 
     -- After layout finishes, restore saved sort
     Command.Event.Attach(LibEKL.Events[GRID_NAME].GridFinished, function()
-        local cfg = nkUISetup.modules.auction.browse
-        if cfg.sortCol then
+        local cfg = nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse
+        if cfg and cfg.sortCol then
             oSort(grid, cfg.sortCol, cfg.sortAsc ~= false)
         end
     end, "nkUI.auction.browse.GridFinished")
