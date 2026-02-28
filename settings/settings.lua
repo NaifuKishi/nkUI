@@ -487,6 +487,7 @@ function internalFunc.setupUI ()
     local paneTabSCT = settingsUI.uiConfigTabSCT(name .. ".tab.SCT", tabPane)
     local paneTabTooltip = settingsUI.uiConfigTabTooltip(name .. ".tab.Tooltip", tabPane)
     local paneTabBuffBar = settingsUI.uiConfigTabBuffBar(name .. ".tab.BuffBar", tabPane)
+    local paneTabOneBag  = settingsUI.uiConfigTabOneBag(name .. ".tab.OneBag", tabPane)
 
     local paneTabRessourceBar = settingsUI.uiConfigTabRessourceBar(name .. ".tab.RessourceBar", tabPane, nkUISetup.modules.unitFrames.frames.ressourceBar)
 
@@ -574,6 +575,7 @@ function internalFunc.setupUI ()
     tabPane:AddPane( { label = langTexts.settings.sct, effect = { strength = 3 }, frame = paneTabSCT, initFunc = function() paneTabSCT:build() end}, false)
     tabPane:AddPane( { label = langTexts.settings.tooltip, effect = { strength = 3 }, frame = paneTabTooltip, initFunc = function() paneTabTooltip:build() end}, false)
     tabPane:AddPane( { label = langTexts.settings.buffBar, effect = { strength = 3 }, frame = paneTabBuffBar, initFunc = function() paneTabBuffBar:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.oneBag,  effect = { strength = 3 }, frame = paneTabOneBag,  initFunc = function() paneTabOneBag:build()  end}, false)
 
     tabPane:AddPane( { label = langTexts.settings.ressourceBar, effect = { strength = 3 }, frame = paneTabRessourceBar, initFunc = function() paneTabRessourceBar:build() end}, false)
 

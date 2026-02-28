@@ -100,6 +100,7 @@ RunOnStartup = {
 	"settings/settings-tabUF.lua",
 	"settings/settings-tabActionbar.lua",
 	"settings/settings-tabBuffbar.lua",
+	"settings/settings-tabOneBag.lua",
 	"settings/settings-tabCastBar.lua",
 	"settings/settings-tabLowerbar.lua",
 	"settings/settings-tabRessourceBar.lua",

@@ -181,6 +181,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									sct = "SCT",
 									tooltip = "Tooltip",
 									buffBar = "Buff-Leiste",
+								oneBag = "OneBag",
 									ressourceBar = "Ressourcenleiste",
 									playerCastbar = "Spieler-Castleiste",
 									targetCastbar = "Ziel-Castleiste",

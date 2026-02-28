@@ -181,6 +181,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     sct = "SCT",
                                     tooltip = "Info-bulle",
                                     buffBar = "Barre de buffs",
+                                    oneBag = "OneBag",
                                     ressourceBar = "Ressources",
                                     playerCastbar = "Lancement joueur",
                                     targetCastbar = "Lancement cible",
