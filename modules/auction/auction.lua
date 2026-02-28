@@ -35,16 +35,16 @@ local browseSearchPending = false
 ---------- data model helpers ----------
 
 local function initShard(shard)
-    if not nkUIAuction then nkUIAuction = {} end
-    if not nkUIAuction[shard] then
-        nkUIAuction[shard] = {
+    if not nkUIAucData then nkUIAucData = {} end
+    if not nkUIAucData[shard] then
+        nkUIAucData[shard] = {
             schemaVer   = 1,
             lastScan    = nil,
             items       = {},
         }
     end
     -- migrate old schema (pre-phase1): contained auctions{} and flat price fields
-    local shardData = nkUIAuction[shard]
+    local shardData = nkUIAucData[shard]
     if shardData.schemaVer == nil then
         shardData.schemaVer  = 1
         shardData.auctions   = nil   -- drop old auction ID table
@@ -66,7 +66,7 @@ end
 
 -- Write one snapshot entry into the ring buffer for itemType.
 local function writeSnapshot(shard, itemType, scanTime, lo, hi, count)
-    local shardData = nkUIAuction[shard]
+    local shardData = nkUIAucData[shard]
     local item = shardData.items[itemType]
 
     if item == nil then return end  -- must be seeded via seedItem first
@@ -78,7 +78,7 @@ end
 
 -- Seed item metadata on first encounter.
 local function seedItem(shard, itemType, name, icon, rarity, vendor)
-    local shardData = nkUIAuction[shard]
+    local shardData = nkUIAucData[shard]
     if shardData.items[itemType] == nil then
         shardData.items[itemType] = {
             name         = name,
@@ -103,9 +103,9 @@ end
 -- Returns a price summary across the last `depth` snapshots (default: scanDepth setting).
 -- Returns nil if no data exists for the item.
 function auction.getPriceSummary(itemType)
-    if not nkUIAuction then return nil end
+    if not nkUIAucData then return nil end
     local shard = InspectShard().name
-    local shardData = nkUIAuction[shard]
+    local shardData = nkUIAucData[shard]
     if shardData == nil then return nil end
     local item = shardData.items[itemType]
     if item == nil or item.snapshots == nil then return nil end
@@ -152,9 +152,9 @@ end
 -- e.g. 3.5 means cheapest AH listing is 3.5x vendor price.
 -- Returns nil if either value is unknown or vendor is zero.
 function auction.getVendorRatio(itemType)
-    if not nkUIAuction then return nil end
+    if not nkUIAucData then return nil end
     local shard = InspectShard().name
-    local shardData = nkUIAuction[shard]
+    local shardData = nkUIAucData[shard]
     if shardData == nil then return nil end
     local item = shardData.items[itemType]
     if item == nil then return nil end
@@ -253,7 +253,7 @@ local function runScanProcessing(rawAuctions, onProgress, onComplete)
             coroutine.yield(true)   -- yield between batches, not per-auction
         end
         flushAccumulator(accumulator, scanTime, shard)
-        nkUIAuction[shard].lastScan = scanTime
+        nkUIAucData[shard].lastScan = scanTime
         if onComplete then onComplete(total) end
     end)
 
@@ -513,8 +513,8 @@ local function buildWindow()
     -- Helper: update the status strip text
     function win:UpdateStatus()
         local shard = InspectShard().name
-        if nkUIAuction and nkUIAuction[shard] and nkUIAuction[shard].lastScan then
-            local elapsed = InspectTimeReal() - nkUIAuction[shard].lastScan
+        if nkUIAucData and nkUIAucData[shard] and nkUIAucData[shard].lastScan then
+            local elapsed = InspectTimeReal() - nkUIAucData[shard].lastScan
             local hours   = mathFloor(elapsed / 3600)
             local mins    = mathFloor((elapsed % 3600) / 60)
             local timeStr

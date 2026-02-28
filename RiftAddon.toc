@@ -134,7 +134,7 @@ Dependencies = {
 
 SavedVariables = {
    nkUISetup	 	= "account",
-   nkUIAuction		= "account",
+   nkUIAucData		= "account",
    nkUIMapGathering	= "account"
 }
 
