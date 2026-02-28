@@ -15,6 +15,8 @@ local LibEKLGetLanguageShort = LibEKL.Tools.Lang.GetLanguageShort
 local LibEKLTableCopy       = LibEKL.Tools.Table.Copy
 local LibEKLUUID            = LibEKL.Tools.UUID
 
+local InspectTimeReal        = Inspect.Time.Real
+
 ---------- local function block ---------
 
 local function _processRareData(id, counter, name, x, z, comment)
@@ -148,6 +150,11 @@ end
 function map.UpdateWaypointArrows()
 
     if uiElements.mapUI == nil or mapData.centerElement == nil then return end
+    if next(mapData.waypoints) == nil then return end
+
+    local now = InspectTimeReal()
+    if mapData.lastWaypointArrowUpdate ~= nil and now - mapData.lastWaypointArrowUpdate < 0.2 then return end
+    mapData.lastWaypointArrowUpdate = now
 
     local map = uiElements.mapUI:GetMap()
     local mapInfo = uiElements.mapUI:GetMapInfo()
