@@ -40,7 +40,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 										lastSeenPrice = "Dernier: %s",
                                     noAuction = "pas de prix d'enchère connu",
 																		noLastPrice = "Pas de dernier prix",
-                                    auctionPrice = "%s (il y a %d jours)",
+                                    auctionPrice = "%s (il y a %s)",
                                     youOwn  = "Vous possédez: %d"},
         auction                 = { scanStarted = "Scan en cours. Veuillez patienter!",
                                     scanProgress = "Scan %d%% terminé",

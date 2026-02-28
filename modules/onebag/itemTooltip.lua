@@ -17,6 +17,18 @@ local mathFloor     = math.floor
 
 local showTooltip   = false
 
+local function formatTimeSince(seconds)
+    if seconds > 86400 then
+        return stringFormat("%dd", mathFloor(seconds / 86400))
+    elseif seconds > 3600 then
+        return stringFormat("%dh", mathFloor(seconds / 3600))
+    elseif seconds > 60 then
+        return stringFormat("%dm", mathFloor(seconds / 60))
+    else
+        return stringFormat("%ds", mathFloor(seconds))
+    end
+end
+
 ---------- local functions ---------
 
 local function uiItemTooltip ()
@@ -110,7 +122,8 @@ local function uiItemTooltip ()
 
             if summary then
 
-                local days = summary.daysSince or 0
+                local elapsed = summary.lastSeen and (inspectTimeReal() - summary.lastSeen) or nil
+                local timeAgoStr = elapsed and formatTimeSince(elapsed) or "?"
 
                 local avgCoinText = internalFunc.formatCoins(summary.avg)
 
@@ -134,7 +147,7 @@ local function uiItemTooltip ()
                 end
 
                 lastSeenText:SetVisible(true)
-                auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, avgCoinText, days), true)
+                auctionText:SetText(stringFormat(langTexts.oneBag.auctionPrice, avgCoinText, timeAgoStr), true)
             else
                 auctionText:SetText(langTexts.oneBag.noAuction)
                 lastSeenText:SetText(langTexts.oneBag.noLastPrice, true)

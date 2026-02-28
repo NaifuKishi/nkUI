@@ -40,7 +40,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 										lastSeenPrice = "Letzter: %s",
 									noAuction = "Kein Auktionspreis bekannt",
 																		noLastPrice = "Kein letzter Preis",
-									auctionPrice = "%s (vor %d Tagen)",
+									auctionPrice = "%s (vor %s)",
 									youOwn	= "Du besitzt: %d"},
 		auction					= { scanStarted = "Analyse gestartet. Bitte warten!",
 									scanProgress = "Analyse %d%% abgeschlossen",
