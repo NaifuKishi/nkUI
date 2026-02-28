@@ -343,6 +343,14 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
     ]]
 	function frame:SetItem(itemType, itemKey, macroIcon, macroCDType, macroCDKey)
 
+		-- Preserve existing keybind across item replacement
+		local role = inspectTEMPORARYRole()
+		local savedKeyBind
+		if data.actionBarSetup and data.actionBarSetup.roles[role] then
+			local slot = data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex]
+			if slot then savedKeyBind = slot.keyBind end
+		end
+
 		if thisItemType ~= nil then frame:ClearItem() end
 
 		if itemType == nil or itemKey == nil then return end
@@ -431,6 +439,11 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			LibEKL.UI.abilityTooltipSetFont (addonInfo.id, "MontserratSemiBold")
 		else -- macro
 			LibEKL.UI.attachGenericTooltip (frame, "nkUI macro", macro)
+		end
+
+		-- Restore keybind that was preserved before ClearItem
+		if savedKeyBind then
+			frame:SetKeyBind(savedKeyBind)
 		end
 	end
 	
