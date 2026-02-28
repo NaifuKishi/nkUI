@@ -19,6 +19,7 @@ local showTooltip    = false
 local activeHoverID  = nil
 
 local function formatTimeSince(seconds)
+
     if seconds > 86400 then
         return stringFormat("%dd", mathFloor(seconds / 86400))
     elseif seconds > 3600 then
@@ -124,6 +125,7 @@ local function uiItemTooltip ()
             if summary then
 
                 local elapsed = summary.lastSeen and (inspectTimeReal() - summary.lastSeen) or nil
+
                 local timeAgoStr = elapsed and formatTimeSince(elapsed) or "?"
 
                 local avgCoinText = internalFunc.formatCoins(summary.avg)

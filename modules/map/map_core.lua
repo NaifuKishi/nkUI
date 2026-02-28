@@ -16,6 +16,15 @@ local _zoneDetails          = nil
 local _rareData             = {}
 local mapInit				= false
 
+local RESOURCE_TYPE_MAP = {
+    ["RESOURCE.MINE"]             = "MINE",
+    ["RESOURCE.HERB"]             = "HERB",
+    ["RESOURCE.WOOD"]             = "WOOD",
+    ["RESOURCE.FISH"]             = "FISH",
+    ["RESOURCE.ARTIFACT"]         = "ARTIFACT",
+    ["RESOURCE.ARTIFACT.FAEYULE"] = "FAEYULE",
+}
+
 ---------- make global functions local ---------
 
 local InspectUnitDetail 	= Inspect.Unit.Detail
@@ -221,15 +230,6 @@ local function _trackGathering(details)
 end
 
 local function mapAdd (key, details)
-
-	local RESOURCE_TYPE_MAP = {
-        ["RESOURCE.MINE"] = "MINE",
-        ["RESOURCE.HERB"] = "HERB",
-        ["RESOURCE.WOOD"] = "WOOD",
-        ["RESOURCE.FISH"] = "FISH",
-        ["RESOURCE.ARTIFACT"] = "ARTIFACT",
-        ["RESOURCE.ARTIFACT.FAEYULE"] = "FAEYULE",
-    }
 
 	if details["type"] == nil then
 		if nkDebug then
