@@ -10,6 +10,7 @@ local oneBag        = privateVars.oneBag
 ---------- local functions ---------
 
 local inspectCurrencyDetail = Inspect.Currency.Detail
+local InspectInteraction    = Inspect.Interaction
 
 local stringFormat  = string.format
 local mathFloor     = math.floor
@@ -211,7 +212,9 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
 	searchInput:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
 
     auctionIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
-        internalFunc.ahScanDialog()
+        if InspectInteraction("auction") then
+            internalFunc.ahScanDialog()
+        end
     end, bagName .. ".auctionIcon.Left.Down.Click")
 
     -- Toggle search frame visibility when search icon is clicked
@@ -293,6 +296,12 @@ function oneBag.createBagUI(bagName, bagTitle, isBag)
         end
 
     end
+
+    function UI.Native.Auction.Event:Loaded()
+        bagWindow:ShowAuction(UI.Native.Auction:GetLoaded())
+    end
+
+    bagWindow:ShowAuction(false)
     
     return bagWindow
 end
