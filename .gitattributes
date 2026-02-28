@@ -1,0 +1,9 @@
+*.md
+*.txt
+*.sh
+nkUI-dev-1.0.rockspec
+.luacov
+.busted
+spec\*
+.claude\*
+.continue\*
