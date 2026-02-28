@@ -246,7 +246,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 						},
 						{
 							title = "Barre Inférieure",
-							body = "Le module Barre Inférieure affiche une barre d'information en bas de l'écran.\n\nInformations affichées:\n- Date et heure actuelles\n- Rôle actif\n- Zone actuelle et coordonnées\n- FPS et latence\n- Monnaie (platine, or, argent)\n- Barres de progression d'expérience et de réputation\n- Pourcentage de vitalité\n- Nombre d'amis et membres de guilde en ligne\n\nLa barre peut être transparente, les tailles de police et dimensions sont réglables dans les Paramètres."
+							body = "Le module Barre Inférieure affiche une barre d'information en bas de l'écran.\n\nInformations affichées:\n- Date et heure actuelles\n- Rôle actif\n- Zone actuelle et coordonnées\n- FPS et latence\n- Monnaie (platine, or, argent)\n- Barres de progression d'expérience et de réputation\n- Pourcentage de vitalité\n- Nombre d'amis et membres de guilde en ligne\n\nLa barre peut être transparente, les tailles de police et dimensions sont réglables dans les Paramètres.\n\nÉléments interactifs:\n- Cliquez sur la localisation pour afficher les options de téléportation\n- Cliquez sur le rôle pour basculer vers un autre rôle\n- Cliquez sur l'affichage du CPU/FPS pour ouvrir nkDebug s'il est installé"
 						},
 						{
 							title = "OneBag",

@@ -282,7 +282,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 						},
 						{
 							title = "Lower Bar",
-							body = "The Lower Bar module displays an information bar at the bottom of the screen.\n\nDisplayed information:\n- Current date and time\n- Your active role\n- Current zone and coordinates\n- Frames per second (FPS) and latency\n- Currency (platinum, gold, silver)\n- Current experience and notoriety progress bars\n- Vitality percentage\n- Friends and guild member online count\n- Social panel shortcut\n\nThe bar can be set to transparent mode, and font sizes and bar dimensions are adjustable in Settings."
+							body = "The Lower Bar module displays an information bar at the bottom of the screen.\n\nDisplayed information:\n- Current date and time\n- Your active role\n- Current zone and coordinates\n- Frames per second (FPS) and latency\n- Currency (platinum, gold, silver)\n- Current experience and notoriety progress bars\n- Vitality percentage\n- Friends and guild member online count\n\nThe bar can be set to transparent mode, and font sizes and bar dimensions are adjustable in Settings.\n\nInteractive elements:\n- Click on the location to show teleport options\n- Click on the role to switch to another role\n- Click on the CPU/FPS display to open nkDebug if installed"
 						},
 						{
 							title = "OneBag",

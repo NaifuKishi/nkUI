@@ -283,7 +283,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 						},
 						{
 							title = "Untere Leiste",
-							body = "Das Untere-Leiste-Modul zeigt eine Informationsleiste am unteren Bildschirmrand an.\n\nAngezeigte Informationen:\n- Aktuelles Datum und Uhrzeit\n- Aktive Rolle\n- Aktuelle Zone und Koordinaten\n- FPS und Latenz\n- Währung (Platin, Gold, Silber)\n- Erfahrungs- und Ruf-Fortschrittsleisten\n- Vitalitätsprozentsatz\n- Anzahl Freunde und Gildenmitglieder online\n\nDie Leiste kann transparent gesetzt werden, Schriftgrößen und Abmessungen sind in den Einstellungen anpassbar."
+							body = "Das Untere-Leiste-Modul zeigt eine Informationsleiste am unteren Bildschirmrand an.\n\nAngezeigte Informationen:\n- Aktuelles Datum und Uhrzeit\n- Aktive Rolle\n- Aktuelle Zone und Koordinaten\n- FPS und Latenz\n- Währung (Platin, Gold, Silber)\n- Erfahrungs- und Ruf-Fortschrittsleisten\n- Vitalitätsprozentsatz\n- Anzahl Freunde und Gildenmitglieder online\n\nDie Leiste kann transparent gesetzt werden, Schriftgrößen und Abmessungen sind in den Einstellungen anpassbar.\n\nInteraktive Elemente:\n- Klicke auf die Ortsangabe um Teleportoptionen anzuzeigen\n- Klicke auf die Rolle um zu einer anderen Rolle zu wechseln\n- Klicke auf die CPU-/FPS-Anzeige um nkDebug zu öffnen (sofern installiert)"
 						},
 						{
 							title = "OneBag",
