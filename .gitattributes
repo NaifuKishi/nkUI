@@ -1,9 +1,9 @@
-*.md
-*.txt
-*.sh
-nkUI-dev-1.0.rockspec
-.luacov
-.busted
-spec\*
-.claude\*
-.continue\*
+*.md export-ignore
+*.txt export-ignore
+*.sh export-ignore
+nkUI-dev-1.0.rockspec export-ignore
+.luacov export-ignore
+.busted export-ignore
+spec\* export-ignore
+.claude\* export-ignore
+.continue\* export-ignore
