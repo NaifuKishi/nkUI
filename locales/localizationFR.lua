@@ -172,7 +172,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     onlyOwnBuffs = "Buffs personnels",
                                     smoothAnimations = "Animations fluides",
                                     close = "Fermer",
-                                    tutorial = "Tutoriel",
                                     moveUI = "Déplacer",
                                     theme = "Basique",
                                     map = "Carte",
@@ -197,43 +196,89 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     buffBarGrowRight = "Croître vers la droite",
                                     iconSize = "Taille de l'élément <font color='#3399FF'>%d</font>",
                                 },
-            tutorial = {
-                        welcomeTitle = "Bienvenue dans nkUI Version %s",
-                        welcomeDescription = "Bienvenue dans nkUI et merci d'essayer mon addon.\n\nCe tutoriel vous guidera à travers les fonctionnalités de base de nkUI.",
-                        settingsTitle = "Paramètres nkUI",
-                        settingsDescription = "Il existe une configuration pour modifier les aspects de nkUI.\n\nVous pouvez accéder à la configuration en tapant /nkui ou en cliquant sur le bouton de la minicarte.\nAvec /nkui qlog, vous ouvrez le journal des quêtes.\nAvec /nkui bag, vous ouvrez l'inventaire.\nAvec /nkui map toggle, vous pouvez agrandir la carte.",
-                        defaultUIElementsTitle = "Éléments d'interface par défaut",
-                        defaultUIElementsDescription = "Cet addon fournit de nombreuses remplacements pour les éléments d'interface standard. Malheureusement, en raison de nombreuses limitations dans l'API RIFT, les éléments par défaut ne peuvent pas être désactivés par les addons.\n\nVous devez donc le faire manuellement une fois. Vous pouvez le faire en appuyant sur Échap et en utilisant l'option [Modifier la disposition]. Avec cette option, vous pouvez masquer les éléments d'interface par défaut.",
-                        mapTitle = "Nouvelle: Carte",
-			            mapDescription = "La carte est un remplacement complet de la carte en jeu. Elle offre des fonctionnalités supplémentaires comme l'affichage du nom de la zone actuelle, des coordonnées actuelles et prend en charge l'enregistrement et l'affichage des points de minage, de bois, d'artefacts, etc.",
-                        questLogTitle = "Journal des Quêtes",
-                        questLogDescription = "Le journal des quêtes nkUI peut être accédé via la commande \\nkui qlog.\nPour de meilleurs résultats, créez un macro, placez-le sur une barre d'action et liez la touche L à celui-ci.",
-                        questTrackerTitle = "Module de suivi de quête",
-                        questTrackerDescription = "Ce module nkUI est un remplacement du suivi de quête intégré, offrant de nombreuses fonctionnalités supplémentaires. Il correspond au thème nkUI et affichera toutes les quêtes dans votre journal. Vous pouvez faire défiler le suivi de quête en utilisant la molette de la souris.\n\nEn cliquant sur le 'C' dans l'en-tête, vous pouvez choisir quelles catégories de quêtes afficher. En cliquant sur le 'Z', vous pouvez filtrer les quêtes pour celles de votre zone actuelle.\n\nVous pouvez utiliser un objet de quête en cliquant dessus avec le bouton droit de la souris.",
-                        oneBagTitle1 = "Module de sac unique (1/2)",
-                        oneBagDescription1 = "Ce module nkUI est un remplacement des sacs intégrés et affiche tout dans un seul cadre.",
-                        oneBagTitle2 = "Module de sac unique (2/2)",
-                        oneBagDescription2 = "Vous pouvez charger l'interface des sacs en tapant '/nkui bag' dans le chat.\n\nPour que l'interface des sacs s'ouvre lorsque vous appuyez sur la touche 'B', je vous suggère de faire ce qui suit :\n\nCréez un macro avec la commande '/nkui bag', placez-le sur une barre d'action par défaut (que vous masquerez ensuite) et assignez la touche 'B' à cet emplacement de barre d'action.\n\nDe plus, je vous suggère de réduire l'échelle de vos sacs par défaut à la valeur minimale possible, qui est 50%.",
-                        unitFrameTitle = "Module de cadres d'unité",
-                        unitFrameDescription = "Ce module nkUI affichera les cadres de joueur, de cible et de familier ainsi que la barre de lancement et la barre de ressources. Le design est beaucoup plus moderne que l'interface standard.\n\nSi vous activez le module de cadres d'unité, vous pouvez décider individuellement d'utiliser le cadre de buffs/débuffs qui fait partie du module de cadres d'unité.",
-                        lowerBarTitle = "Module de barre inférieure",
-                        lowerBarDescription = "Ce module nkUI affiche une barre en bas de l'écran. Cette barre fournit diverses informations importantes comme la date et l'heure, la devise, la localisation, les FPS et plus encore, dans un style qui correspond au design de nkUI.",
-                        actionBarTitle1 = "Module de barre d'action (1/2)",
-                        actionBarDescription1 = "Ce module nkUI fournit des barres d'action qui correspondent au thème de nkUI.\n\nVous pouvez faire glisser et déposer des compétences et des objets sur la barre d'action. Vous pouvez vider un emplacement en cliquant dessus avec le bouton droit de la souris. Les indicateurs de temps de recharge et de portée vous aideront visuellement avec les compétences.\n\nEn raison de restrictions de l'API RIFT, il n'est PAS possible de faire des raccourcis clavier. Vous devrez configurer les barres d'action Rift normales avec vos compétences et les masquer ensuite. Désolé, il n'y a pas d'autre moyen :(",
-                        actionBarTitle2 = "Module de barre d'action (2/2)",
-                        actionBarDescription2 = "Les boutons à gauche et à droite de la barre principale ainsi que la barre à droite de l'écran sont interactifs. Cela signifie que vous pouvez cliquer dessus pour activer des compétences et des objets.\n\nDe plus, vous pouvez ajouter des macros en cliquant avec le bouton du milieu de la souris sur un emplacement de barre d'action. Dans la boîte de dialogue qui apparaît, vous pouvez configurer votre macro. Vous pouvez faire glisser n'importe quelle compétence ou objet dans le cadre de l'icône.",
-                        sctTitle = "Module de texte de combat défilant",
-                        sctDescription = "Ce module nkUI remplace le texte de combat défilant intégré. Vous devrez désactiver manuellement celui-ci dans les paramètres (Paramètres / Interface / Messages d'écran).",
-                        tooltipTitle = "Module d'info-bulle",
-                        tooltipDescription = "Ce module nkUI affiche une info-bulle pour les unités qui a un design beaucoup plus beau que l'info-bulle standard. Malheureusement, en raison de restrictions de l'API, il n'est pas possible d'afficher des informations de quête pour les PNJ. Par conséquent, l'info-bulle est parfois plus grande que nécessaire. J'essaierai de trouver une solution dans les prochaines semaines.",
-                        doneTitle = "Vous avez terminé - pour l'instant :)",
-                        doneDescription = "C'est tout pour l'instant. Assurez-vous de vérifier régulièrement Cursegorge ou le Discord pour les mises à jour.\n\nVous pouvez rouvrir cette fenêtre à partir des paramètres.",
-                        auctionTitle = "Enchères",
-                        auctionDescription = "Vous pouvez scanner la maison des enchères et stocker les informations sur les prix.\n\nLe prix moyen est affiché dans les informations supplémentaires de l'infobulle.\n\nCliquez sur le symbole bleu pour lancer un scan.",
-                        previousButton = "Précédent",
-                        nextButton = "Suivant",
-                        finishButton = "Terminer"
-                    },
+            manual = {
+					windowTitle = "Manuel nkUI",
+					buttonLabel = "Manuel",
+					sections = {
+						{
+							title = "Bienvenue",
+							body = string.format("Bienvenue dans nkUI Version %s\n\nMerci d'utiliser nkUI, une suite d'interface complète pour RIFT.\n\nCe manuel vous guide à travers tous les modules et fonctionnalités de nkUI.\n\nDerniers changements (v1.3.1):\n- Étiquettes de raccourci clavier pour les icônes de barre d'action\n- Affichage amélioré du suivi des temps de recharge\n- Meilleur filtrage de rareté dans la navigation de l'hôtel des ventes\n- Corrections de bugs dans le rendu des cadres d'unité\n\nCliquez sur les sections à gauche pour explorer chaque module.\n\nPour un accès rapide: /nkui (paramètres) | /nkui qlog (journal des quêtes) | /nkui bag (inventaire) | /nkui auction (hôtel des ventes)", addonInfo.toc.Version)
+						},
+						{
+							title = "Aperçu",
+							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag, et l'hôtel des ventes avec /nkui auction."
+						},
+						{
+							title = "Configuration de l'interface par défaut",
+							body = "Avant d'utiliser nkUI, vous devez masquer les éléments d'interface RIFT par défaut pour éviter les chevauchements.\n\nComment masquer les éléments d'interface par défaut:\n1. Appuyez sur Échap pendant le jeu pour ouvrir le menu Paramètres\n2. Sélectionnez [Modifier la disposition]\n3. Une fenêtre d'éditeur de disposition apparaîtra\n4. Décochez ou masquez les éléments par défaut suivants:\n   - Journal des quêtes (nous le remplaçons)\n   - Suivi de quête (nous le remplaçons)\n   - Barres d'action par défaut (si les barres d'action nkUI sont utilisées)\n   - Cadres d'unité par défaut (si les cadres d'unité nkUI sont utilisés)\n   - Cadre de buff/débuff (si la barre de buffs nkUI est utilisée)\n   - Minimap (si la carte nkUI est utilisée)\n\n5. Cliquez sur [Fait] pour enregistrer votre disposition\n6. Les éléments nkUI seront maintenant entièrement visibles sans chevauchement\n\nRemarque: L'API RIFT empêche les addons de masquer automatiquement ces éléments, donc cette étape manuelle est nécessaire et ne doit être effectuée qu'une fois par personnage."
+						},
+                        {
+							title = "Theme & Basic",
+							body = "L'onglet Basic / Theme dans les Paramètres contrôle les options d'apparence globales.\n\nOptions:\n- Afficher ou masquer le logo nkUI dans le coin\n- Afficher ou masquer l'icône du gestionnaire de minimap\n- Activer ou désactiver le fond de chat\n- Sélectionner le schéma de couleurs: RIFT (couleurs de classe par âme) ou style WoW\n- Régler la taille de la fenêtre OneBag\n\nCes paramètres s'appliquent globalement à tous les modules nkUI."
+						},
+						{
+							title = "Déplacer l'Interface",
+							body = "Le mode Déplacer l'Interface vous permet de repositionner tous les éléments nkUI sur votre écran.\n\nUtilisation:\n1. Ouvrir les Paramètres (/nkui)\n2. Cliquer sur le bouton 'Déplacer l'Interface'\n3. Faire glisser n'importe quel cadre mis en évidence à la position désirée\n4. Les coordonnées actuelles sont affichées lors du déplacement\n5. Une grille aide à l'alignement\n6. La fenêtre Paramètres réapparaît automatiquement\n\nÉléments déplaçables: tous les Cadres d'Unité, Barres de Lancement, Barre de Ressources, Barres d'Action et Barre de Buffs.\n\nLes positions sont sauvegardées par compte et persistent entre les sessions."
+						},
+						{
+							title = "Aperçu",
+							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag, et l'hôtel des ventes avec /nkui auction."
+						},
+						{
+							title = "Carte",
+							body = "Le module Carte est un remplacement complet de la carte RIFT par défaut.\n\nFonctionnalités:\n- Affiche le nom de la zone actuelle et les coordonnées\n- Points d'intérêt (POI)\n- Suivi des mobs rares (nécessite RareDar ou RareTracker)\n- Marqueurs de quêtes sur la carte\n- Enregistrement et affichage des nœuds de collecte et des artefacts\n- Zoom animé fluide\n- Basculer entre minimap et plein écran avec /nkui map toggle\n- Verrouiller la position de la carte pour éviter les déplacements accidentels\n\nAstuce: Vous pouvez ajouter des marqueurs personnalisés via les paramètres de la carte. Les zones inconnues peuvent optionnellement être affichées."
+						},
+						{
+							title = "Journal des Quêtes",
+							body = "Le module Journal des Quêtes remplace le journal de quêtes RIFT par défaut.\n\nOuvrir avec: /nkui qlog\n\nConseil: Créez un macro '/nkui qlog', placez-le sur une barre d'action et liez la touche L.\n\nFonctionnalités:\n- Organisé par catégorie de quête (Histoire, Quotidien, Hebdomadaire, Monde, Artisanat, Raid, etc.)\n- Cliquez sur une quête pour voir la description complète, les objectifs et les récompenses\n- Abandonner ou partager des quêtes directement depuis le journal\n- Filtrer les catégories visibles via le bouton catégorie dans l'en-tête\n- Abandonner toutes les quêtes d'une catégorie en une fois"
+						},
+						{
+							title = "Suivi de Quête",
+							body = "Le module Suivi de Quête remplace le suivi de quête par défaut à l'écran.\n\nFonctionnalités:\n- Affiche toutes les quêtes actives avec la progression des objectifs en temps réel\n- Faire défiler avec la molette de la souris\n- Bouton 'C' dans l'en-tête: choisir les catégories de quêtes à afficher\n- Bouton 'Z': filtrer les quêtes à la zone actuelle\n- Bouton 'I': afficher les objets de quête\n- Clic droit sur un objet de quête pour l'utiliser directement\n- Tailles de police et taille de fenêtre configurables dans les Paramètres"
+						},
+						{
+							title = "Cadres d'Unité",
+							body = "Le module Cadres d'Unité fournit un remplacement moderne pour les barres de vie et d'énergie par défaut.\n\nCadres affichés:\n- Joueur, Familier, Cible, Cible de la cible, Focalisation, Groupe, Raid\n- Barres de lancement Joueur et Cible\n- Barre de ressources (points de combo, charges, etc.)\n\nFonctionnalités:\n- Barres de vie, d'énergie et planaires avec animations fluides\n- Icône de rôle, icône de combat et badge de tier\n- Affichage des buffs et débuffs avec timer et nombre de charges\n- Transparence séparée pour le combat et hors combat\n- Schéma de couleurs RIFT ou style WoW\n- Tous les cadres repositionnables via Paramètres > Déplacer"
+						},
+						{
+							title = "Barre d'Action",
+							body = "Le module Barre d'Action fournit des barres d'action thématiques au style nkUI.\n\nFonctionnalités:\n- Jusqu'à 4 barres horizontales principales et 1 barre latérale verticale\n- Glisser-déposer des compétences, objets et macros\n- Minuteurs de temps de recharge affichés sur chaque emplacement\n- Indicateur hors de portée (l'emplacement s'assombrit si la cible est trop éloignée)\n- Clic du milieu: ouvrir l'éditeur de macro\n- Étiquettes de raccourci clavier: Clic droit sur un emplacement pour assigner une étiquette de touche qui apparaît sur l'icône\n- Utiliser la boîte de dialogue de raccourci pour effacer un emplacement\n- Transparence combat / hors combat configurables séparément\n\nImportant: En raison des restrictions de l'API RIFT, les véritables raccourcis clavier doivent être configurés sur les barres RIFT par défaut. Configurez vos compétences là-bas, masquez ces barres, et utilisez les barres nkUI pour l'affichage et l'interaction au clic."
+						},
+						{
+							title = "Barre Inférieure",
+							body = "Le module Barre Inférieure affiche une barre d'information en bas de l'écran.\n\nInformations affichées:\n- Date et heure actuelles\n- Rôle actif\n- Zone actuelle et coordonnées\n- FPS et latence\n- Monnaie (platine, or, argent)\n- Barres de progression d'expérience et de réputation\n- Pourcentage de vitalité\n- Nombre d'amis et membres de guilde en ligne\n\nLa barre peut être transparente, les tailles de police et dimensions sont réglables dans les Paramètres."
+						},
+						{
+							title = "OneBag",
+							body = "Le module OneBag remplace le système de sacs par défaut avec une fenêtre d'inventaire unifiée.\n\nOuvrir avec: /nkui bag\n\nConseil: Créez un macro avec '/nkui bag', placez-le sur un emplacement de barre d'action par défaut caché et liez la touche B.\n\nFonctionnalités:\n- Tous les emplacements de sac affichés dans une seule fenêtre\n- Fenêtre de banque également disponible (s'ouvre au banquier)\n- Objets colorés par catégorie\n- Affiche la valeur de l'objet (prix vendeur) et le dernier prix d'enchère connu\n- Taille configurable dans les Paramètres\n\nRemarque: Définissez vos sacs par défaut dans le jeu sur une mise à l'échelle de 50% pour minimiser le désordre visuel."
+						},
+						--[[{
+							title = "Hôtel des Ventes",
+							body = "Le module Hôtel des Ventes ajoute le suivi des prix et la navigation à l'Hôtel des Ventes RIFT.\n\nOuvrir avec: /nkui auction (ou s'ouvre automatiquement quand vous visitez l'HV)\n\nOnglets:\n- Parcourir: Rechercher les enchères actuelles par nom, filtrer par rareté, trier par n'importe quelle colonne\n- Mes Enchères: Afficher et annuler vos enchères\n- Poster: Mettre des objets en vente depuis l'inventaire\n- Prix: Afficher les données historiques des prix\n\nFonctionnalités:\n- Scanner l'hôtel des ventes pour construire une base de données de prix\n- Dernier prix d'enchère connu affiché dans les infobulles d'objets (OneBag, survol)\n- Suit les prix minimum absolu, maximum absolu et dernier scan minimum\n- Profondeur de scan configurable (combien de pages scanner par objet)\n- Cliquez sur l'icône de scan bleue pour démarrer un scan"
+						},]]
+						{
+							title = "Barre de Buffs",
+							body = "Le module Barre de Buffs affiche vos buffs et débuffs actifs sous forme de rangées d'icônes près du bord de l'écran.\n\nFonctionnalités:\n- Rangées séparées pour les buffs et débuffs\n- Chaque icône montre la durée restante et le nombre de charges\n- Taille des icônes, police du timer et des charges configurables\n- La barre peut croître vers la droite ou la gauche\n- Position réglable via Paramètres > Déplacer l'Interface"
+						},
+						{
+							title = "Scrolling Combat Text",
+							body = "Le module Scrolling Combat Text (SCT) remplace les messages de combat par défaut à l'écran.\n\nConfiguration initiale: Désactivez le SCT par défaut dans les paramètres RIFT sous Paramètres > Interface > Messages d'écran.\n\nMessages affichés:\n- Dégâts infligés et reçus\n- Soins effectués\n- Gains d'expérience et de réputation\n- Butin reçu\n- Fins de temps de recharge\n\nChaque type de message peut être activé ou désactivé individuellement dans Paramètres > SCT."
+						},
+						{
+							title = "Info-bulle",
+							body = "Le module Info-bulle restyse les infobulles d'unitése au style nkUI.\n\nFonctionnalités:\n- Cadre d'infobulle stylisé pour les unités et objets\n- Tailles de police pour l'en-tête et le corps configurables dans les Paramètres\n\nRemarque: En raison des restrictions de l'API RIFT, les informations de quête pour les PNJ ne peuvent pas être affichées."
+						},
+						{
+							title = "Chat",
+							body = "Le module Chat ajoute un fond stylisé à la fenêtre de chat RIFT par défaut.\n\nFonctionnalités:\n- Cadre de fond semi-transparent derrière la boîte de chat\n- Activable/désactivable dans Paramètres > Basique\n\nRemarque: La fenêtre de chat elle-même (position, canaux, police) est toujours gérée par l'interface RIFT par défaut."
+						},
+						--[[{
+							title = "Cooldowns",
+							body = "Le module Cooldowns suit les temps de recharge actifs des compétences et des objets et les affiche sous forme de liste.\n\nFonctionnalités:\n- Affiche tous les temps de recharge actifs sous forme de liste de barres verticales\n- Chaque entrée a une icône, une barre de progression et un minuteur décompte\n- Les temps de recharge sont triés par temps restant\n- Les entrées sont automatiquement supprimées quand les temps de recharge se terminent\n\nCe module fonctionne en arrière-plan et ne nécessite pas de configuration."
+						},]]
+						
+					}
+				},
             itemCategories = {
             various = "Divers",
             consumable = "Consommable",

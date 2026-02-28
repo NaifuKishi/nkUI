@@ -280,7 +280,6 @@ end
         None
     Notes:
         - Creates default configuration table if it doesn't exist
-        - Updates tutorial version and adds new configuration options
         - Sets default values for buffUnitFrame, combatAlpha, and nonCombatAlpha
 ]]
 function internalFunc.setupDefaults()
@@ -288,7 +287,7 @@ function internalFunc.setupDefaults()
     local parentWidth = UIParent:GetWidth()
     data.uiScale = parentWidth / 3440
 
-    if nkUISetup == nil or nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < 40 then
+    if nkUISetup == nil then
         nkUISetup = _defaults
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] = { roles = {} }
@@ -523,25 +522,25 @@ function internalFunc.setupUI ()
         uiElements.settings:SetVisible(false)   
     end, name .. ".closeButton.Clicked")
 
-    local tutorialButton = LibEKL.UICreateFrame("nkButton", name .. ".tutorialButton", config:GetContent())
+    local manualButton = LibEKL.UICreateFrame("nkButton", name .. ".manualButton", config:GetContent())
 
-    tutorialButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
-    tutorialButton:SetText(langTexts.settings.tutorial)
-    tutorialButton:SetScale(.8)
-    tutorialButton:SetLayer(9)
-    tutorialButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    tutorialButton:SetLabelColor(data.theme.labelColor)
-    tutorialButton:SetEffectGlow ({ strength = 3 })
-    tutorialButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
-    tutorialButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    manualButton:SetPoint("CENTERRIGHT", closeButton, "CENTERLEFT", -10, 0)
+    manualButton:SetText(langTexts.manual.buttonLabel)
+    manualButton:SetScale(.8)
+    manualButton:SetLayer(9)
+    manualButton:SetFont(addonInfo.id, "MontserratSemiBold")
+    manualButton:SetLabelColor(data.theme.labelColor)
+    manualButton:SetEffectGlow ({ strength = 3 })
+    manualButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
+    manualButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
 
-    Command.Event.Attach(LibEKL.Events[name .. ".tutorialButton"].Clicked, function (_, newValue)
-        internalFunc.tutorial()
-    end, name .. ".tutorialButton.Clicked")
+    Command.Event.Attach(LibEKL.Events[name .. ".manualButton"].Clicked, function (_, newValue)
+        internalFunc.manual()
+    end, name .. ".manualButton.Clicked")
 
     local moveButton = LibEKL.UICreateFrame("nkButton", name .. ".moveButton", config:GetContent())
 
-    moveButton:SetPoint("CENTERRIGHT", tutorialButton, "CENTERLEFT", -10, 0)
+    moveButton:SetPoint("CENTERRIGHT", manualButton, "CENTERLEFT", -10, 0)
     moveButton:SetText(langTexts.settings.moveUI)
     moveButton:SetScale(.8)
     moveButton:SetLayer(9)

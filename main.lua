@@ -79,7 +79,6 @@ data.colors = {
 }
 				
 data.uiScale = 1
-local thisTutorialVersion = 130
 
 
 -- Generate UI context
@@ -329,11 +328,6 @@ local function initializeAddon(_, addon)
 			LibEKL.Inventory.Init(false, false)
 
 			internalFunc.setupDefaults()
-
-			if nkUISetup.tutorialVersion == nil or nkUISetup.tutorialVersion < thisTutorialVersion then 				
-    			nkUISetup.tutorialVersion = thisTutorialVersion
-				internalFunc.tutorial()
-			end
 
 			if nkUISetup and nkUISetup.modules then
 				if nkUISetup.modules.tooltip and nkUISetup.modules.tooltip.activate then

@@ -172,7 +172,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									onlyOwnBuffs = "Nur eigene Buffs anzeigen",
 									smoothAnimations = "Glatte Animationen",
 									close = "Schließen",
-									tutorial = "Tutorial",
 									moveUI = "UI verschieben",
 						            theme = "Basis",
 									map = "Karte",
@@ -234,43 +233,89 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 				btSet				 			= 'Setzen',
 				questCarnage					= "Massaker:"
 		},
-		tutorial = {
-            welcomeTitle = "Willkommen bei nkUI Version %s",
-            welcomeDescription = "Willkommen bei nkUI und vielen Dank, dass Sie mein Addon ausprobieren.\n\nDieses Tutorial führt Sie durch die grundlegenden Funktionen von nkUI.",
-            settingsTitle = "nkUI Einstellungen",
-            settingsDescription = "Es gibt eine Konfiguration, um Aspekte von nkUI zu ändern.\n\nDu kannst auf die Konfiguration zugreifen, indem Du /nkui eingibst oder auf die Minikarten-Schaltfläche klickst.\n\nMit /nkui qlog öffnest Du das Quest Log.\nMit /nkui bag öffnest Du das Inventar.\nMit /nkui map toggle kannst Du die Map vergrössern.",
-            defaultUIElementsTitle = "Standard-UI-Elemente",
-            defaultUIElementsDescription = "Dieses Addon bietet viele Ersetzungen für die Standard-UI-Elemente. Leider aufgrund vieler Einschränkungen in der RIFT-API können die Standard-Elemente nicht von Addons deaktiviert werden.\n\nStattdessen müssen Sie dies manuell einmal tun. Sie können dies tun, indem Sie Escape drücken und die Option [Layout bearbeiten] verwenden. Mit dieser Option können Sie Standard-UI-Elemente ausblenden.",
-            mapTitle = "Neu: Karte",
-			mapDescription = "Die Karte ist eine vollständiger Ersatz der In-Game Karte. Sie bietet zusätzliche Funktionen wie die Anzeige des aktuellen Zonenamens, der aktuellen Koordinaten und unterstützt das Speichern und Anzeigen von Punkten von Erzen, Hölzern, Artekfate, usw.",
-			questLogTitle = "Quest log",
-			questLogDescription = "Das nkUI Questlog kann über den Befehl \\nkui qlog aufgerufen werden.\nAm besten legst Du ein Makro an, legst es auf einer Aktionsleiste ab und bindest Sie die Taste L.",
-			questTrackerTitle = "Questverfolgungsmodul",
-            questTrackerDescription = "Dieses nkUI-Modul ist eine Ersetzung des integrierten Questverfolgers und bietet viele zusätzliche Funktionen. Es passt zum nkUI-Design und zeigt alle Quests in Ihrem Log an. Sie können den Questverfolger mit dem Mausrad scrollen.\n\nDurch Klicken auf das 'C' in der Kopfzeile können Sie wählen, welche Questkategorien angezeigt werden sollen. Durch Klicken auf das 'Z' können Sie die Quests auf diejenigen Ihrer aktuellen Zone filtern.\n\nSie können ein Quest-Item verwenden, indem Sie darauf rechtsklicken.",
-            oneBagTitle1 = "Ein-Taschen-Modul (1/2)",
-            oneBagDescription1 = "Dieses nkUI-Modul ist eine Ersetzung für die integrierten Taschen und zeigt alles in einem einzigen Rahmen an.",
-            oneBagTitle2 = "Ein-Taschen-Modul (2/2)",
-            oneBagDescription2 = "Sie können die Taschen-UI laden, indem Sie '/nkui bag' im Chat eingeben.\n\nUm sicherzustellen, dass die Taschen-UI geöffnet wird, wenn Sie die 'B'-Taste drücken, schlage ich vor, Folgendes zu tun:\n\nErstellen Sie ein Makro mit dem Befehl '/nkui bag', platzieren Sie es auf einer beliebigen Standard-Aktionsleiste (die Sie danach ausblenden) und weisen Sie die Taste 'B' diesem Aktionsleisten-Slot zu.\n\nAußerdem schlage ich vor, dass Sie die Standard-Taschen auf die niedrigste mögliche Einstellung (50%) skalieren.",
-            unitFrameTitle = "Einheitenrahmen-Modul",
-            unitFrameDescription = "Dieses nkUI-Modul zeigt Spieler-, Ziel- und Begleiterrahmen sowie Castbar und Ressourcenleiste an. Das Design ist moderner als die Standard-UI.\n\nWenn Sie das Einheitenrahmen-Modul aktivieren, können Sie individuell entscheiden, ob Sie den Buff-/Debuff-Rahmen verwenden möchten, der Teil des Einheitenrahmen-Moduls ist.",
-            lowerBarTitle = "Untere Leiste-Modul",
-            lowerBarDescription = "Dieses nkUI-Modul zeigt eine Leiste am unteren Bildschirmrand an. Diese Leiste bietet verschiedene wichtige Informationen wie Datum & Uhrzeit, Währung, Standort, FPS und mehr in einem Stil, der zum Design von nkUI passt.",
-            actionBarTitle1 = "Aktionsleisten-Modul (1/2)",
-            actionBarDescription1 = "Dieses nkUI-Modul bietet Aktionsleisten, die zum Thema von nkUI passen.\n\nSie können Fähigkeiten und Gegenstände per Drag-and-Drop auf die Aktionsleiste ziehen. Sie können einen Slot leeren, indem Sie darauf rechtsklicken. Cooldowns und Out-of-Range-Indikatoren helfen Ihnen visuell bei den Fähigkeiten.\n\nAufgrund von Einschränkungen der RIFT-API ist es NICHT möglich, Tastenbelegungen vorzunehmen. Sie müssen die normalen Rift-Aktionsleisten mit Ihren Fähigkeiten einrichten und dann ausblenden. Sorry, es gibt keine andere Möglichkeit :(",
-            actionBarTitle2 = "Aktionsleisten-Modul (2/2)",
-            actionBarDescription2 = "Die Schaltflächen links und rechts der Hauptleiste sowie die Leiste rechts auf dem Bildschirm sind interaktiv. Das bedeutet, dass Sie darauf klicken können, um Fähigkeiten und Gegenstände zu aktivieren.\n\nDarüber hinaus können Sie Makros hinzufügen, indem Sie mit der Maus auf einen Aktionsleisten-Slot mittig klicken. Im erscheinenden Dialog können Sie Ihr Makro konfigurieren. Sie können jede Fähigkeit oder jeden Gegenstand in das Symbol-Feld ziehen.",
-            sctTitle = "Scrollender Kampftext-Modul",
-            sctDescription = "Dieses nkUI-Modul ersetzt den integrierten scrollenden Kampftext. Sie müssen den integrierten Kampftext manuell in den Einstellungen deaktivieren (Einstellungen / Schnittstelle / Bildschirmmeldungen).",
-            tooltipTitle = "Tooltip-Modul",
-            tooltipDescription = "Dieses nkUI-Modul zeigt einen Tooltip für Einheiten an, der besser aussieht als der Standard-Tooltip. Leider aufgrund von API-Einschränkungen ist es nicht möglich, Questinformationen für NPC anzuzeigen. Daher ist der Tooltip manchmal größer als nötig. Ich werde versuchen, dies in den nächsten Wochen zu beheben.",
-            doneTitle = "Sie sind fertig - fürs Erste :)",
-            doneDescription = "Das war alles bisher. Achten Sie regelmäßig auf Cursegorge oder Discord auf Updates.\n\nSie können dieses Fenster später wieder aus den Einstellungen öffnen.",
-			auctionTitle = "Auktionen",
-			auctionDescription = "Du kannst das Auktionshaus scannen und Preisinformationen speichern.\n\nDer durchschnittliche Preis wird bei den zusätzlichen Informationen im Tooltip angezeigt.\n\nKlicke auf das blaue Symbol um einen Scan zu starten.",
-            previousButton = "Zurück",
-            nextButton = "Weiter",
-            finishButton = "Fertig"
-        },
+		manual = {
+					windowTitle = "nkUI Handbuch",
+					buttonLabel = "Handbuch",
+					sections = {
+						{
+							title = "Willkommen",
+							body = string.format("Willkommen bei nkUI Version %s\n\nVielen Dank für die Nutzung von nkUI, einer umfassenden UI-Suite für RIFT.\n\nDieses Handbuch führt dich durch alle nkUI-Module und Funktionen.\n\nNeueste Änderungen (v1.3.1):\n- Tastenbelegungs-Labels für Aktionsleisten-Icons\n- Verbessertes Cooldown-Tracking-Display\n- Bessere Seltenheitsfilterung im Auktionshaus-Suchen\n- Fehlerkorrektionen beim Einheitenrahmen-Rendering\n\nKlicke auf die Abschnitte links um jedes Modul zu erkunden.\n\nFür schnellen Zugriff: /nkui (Einstellungen) | /nkui qlog (Questlog) | /nkui bag (Inventar) | /nkui auction (Auktionshaus)", addonInfo.toc.Version)
+						},
+						{
+							title = "Übersicht",
+							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine umfassende UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag und das Auktionshaus mit /nkui auction."
+						},
+						{
+							title = "Standard-UI-Setup",
+							body = "Bevor du nkUI verwendest, musst du die Standard-RIFT-UI-Elemente ausblenden um Überlappungen zu vermeiden.\n\nStandard-UI-Elemente ausblenden:\n1. Drücke während des Spiels die Escape-Taste um das Einstellungsmenü zu öffnen\n2. Wähle [Layout bearbeiten]\n3. Ein Layout-Editor-Fenster wird angezeigt\n4. Deaktiviere oder blende folgende Standard-Elemente aus:\n   - Questlog (wir ersetzen dieses)\n   - Questverfolgung (wir ersetzen dieses)\n   - Standard-Aktionsleisten (wenn nkUI-Aktionsleisten verwendet werden)\n   - Standard-Einheitenrahmen (wenn nkUI-Einheitenrahmen verwendet werden)\n   - Buff-/Debuff-Frame (wenn nkUI Buff-Leiste verwendet wird)\n   - Minikarte (wenn nkUI-Karte verwendet wird)\n\n5. Klicke [Fertig] um dein Layout zu speichern\n6. Die nkUI-Elemente sind jetzt vollständig sichtbar ohne Überlappung\n\nHinweis: Die RIFT-API verhindert dass Addons diese Elemente automatisch ausblenden können, daher ist dieser manuelle Schritt notwendig und muss nur einmal pro Charakter durchgeführt werden."
+						},
+						{
+							title = "Theme & Basic",
+							body = "Der Basic / Theme Tab in den Einstellungen steuert globale Erscheinungsoptionen.\n\nOptionen:\n- nkUI-Logo anzeigen oder ausblenden\n- Minikarten-Manager-Symbol anzeigen oder ausblenden\n- Chat-Hintergrund aktivieren oder deaktivieren\n- Farbschema wählen: RIFT (Klassennfarben nach Seele) oder WoW-Stil\n- OneBag-Fenstergröße anpassen\n\nDiese Einstellungen gelten global für alle nkUI-Module."
+						},
+						{
+							title = "UI verschieben",
+							body = "Der UI-verschieben-Modus ermöglicht die Neupositionierung aller nkUI-Elemente auf deinem Bildschirm.\n\nVerwendung:\n1. Einstellungen öffnen (/nkui)\n2. 'UI verschieben' Schaltfläche klicken\n3. Beliebiges markiertes Frame an die gewünschte Position ziehen\n4. Aktuelle Koordinaten werden beim Ziehen angezeigt\n5. Ein Gitterraster hilft bei der Ausrichtung\n6. Das Einstellungsfenster erscheint danach automatisch wieder\n\nVerschiebbare Elemente: alle Einheitenrahmen, Castleisten, Ressourcenleiste, Aktionsleisten und Buff-Leiste.\n\nPositionen werden pro Account gespeichert und bleiben über Sessions erhalten."
+						},						
+						{
+							title = "Übersicht",
+							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine vollständige UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag und das Auktionshaus mit /nkui auction."
+						},
+						{
+							title = "Karte",
+							body = "Das Karten-Modul ist ein vollständiger Ersatz für die Standard-RIFT-Karte.\n\nFunktionen:\n- Zeigt den aktuellen Zonennamen und Koordinaten an\n- Unterstützt Sehenswürdigkeits-Marker (POI)\n- Seltene Mobs-Verfolgung (benötigt RareDar oder RareTracker)\n- Questmarker auf der Karte\n- Aufzeichnung und Anzeige von Sammelknoten (Erz, Holz, etc.) und Artefaktorten\n- Sanfter animierter Zoom\n- Wechsel zwischen Minikarte und Vollbildmodus mit /nkui map toggle\n- Kartenposition sperren um versehentliches Verschieben zu verhindern\n\nTipp: Du kannst eigene Marker über die Karteneinstellungen hinzufügen. Unbekannte Zonen können optional angezeigt werden."
+						},
+						{
+							title = "Questlog",
+							body = "Das Questlog-Modul ersetzt das Standard-RIFT-Questjournal.\n\nÖffnen mit: /nkui qlog\n\nEmpfehlung: Erstelle ein Makro mit '/nkui qlog', lege es auf einen Aktionsleistenslot und weise die Taste L zu.\n\nFunktionen:\n- Organisiert nach Questkategorien (Geschichte, Täglich, Wöchentlich, Welt, Handwerk, Schlachtzug, etc.)\n- Klicke auf eine Quest für vollständige Beschreibung, Ziele und Belohnungen\n- Quests direkt aus dem Log aufgeben oder teilen\n- Sichtbare Kategorien über den Kategorie-Button im Header filtern\n- Alle Quests einer Kategorie auf einmal aufgeben"
+						},
+						{
+							title = "Questverfolgung",
+							body = "Das Questverfolgungsmodul ersetzt die Standard-Questverfolgung auf dem Bildschirm.\n\nFunktionen:\n- Zeigt alle aktiven Quests mit aktuellem Zielfortschritt\n- Mit dem Mausrad scrollen wenn viele Quests verfolgt werden\n- 'C'-Schaltfläche im Header: Questkategorien auswählen\n- 'Z'-Schaltfläche: Quests auf die aktuelle Zone filtern\n- 'I'-Schaltfläche: Quest-Items anzeigen\n- Rechtsklick auf ein Quest-Item-Symbol um es direkt zu verwenden\n- Schriftgrößen und Fenstergröße in den Einstellungen konfigurierbar"
+						},
+						{
+							title = "Einheitenrahmen",
+							body = "Das Einheitenrahmen-Modul bietet modernen Ersatz für die Standard-Gesundheits- und Energieleisten.\n\nAngezeigte Rahmen:\n- Spieler, Haustier, Ziel, Ziel des Ziels, Fokus, Gruppe, Schlachtzug\n- Spieler- und Ziel-Castleisten\n- Ressourcenleiste (Kombopunkte, Ladungen, etc.)\n\nFunktionen:\n- Gesundheits-, Energie- und Planarlleisten mit sanften Animationen\n- Rollensymbol, Kampfsymbol und Tierstufenabzeichen\n- Buff- und Debuff-Anzeige mit Timer und Stapelanzahl\n- Separate Transparenz für Kampf und Nicht-Kampf\n- RIFT- oder WoW-Farbschema wählbar\n- Alle Rahmen über Einstellungen > UI verschieben neu positionierbar"
+						},
+						{
+							title = "Aktionsleiste",
+							body = "Das Aktionsleisten-Modul bietet themenkonforme Aktionsleisten im nkUI-Stil.\n\nFunktionen:\n- Bis zu 4 horizontale Hauptleisten und 1 vertikale Seitenleiste\n- Fähigkeiten, Gegenstände und Makros per Drag & Drop zuweisen\n- Abklingzeit-Timer auf jedem Slot angezeigt\n- Außer-Reichweite-Anzeige (Slot wird dunkler wenn das Ziel zu weit entfernt ist)\n- Mittelklick auf einen Slot: Makro-Editor öffnen\n- Tastenbelegungs-Labels: Rechtsklick auf einen Slot um ein Tastenbelegungs-Label zuzuweisen das auf dem Icon angezeigt wird\n- Tastenbelegungs-Dialog zum Löschen eines Slots verwenden\n- Kampf- und Nicht-Kampf-Transparenz separat einstellbar\n\nWichtig: Aufgrund von RIFT-API-Einschränkungen müssen tatsächliche Tastenbelegungen über die Standard-RIFT-Aktionsleisten eingerichtet werden. Richte deine Fähigkeiten dort ein, blende diese Leisten aus, und verwende nkUI-Leisten für Anzeige und Klick-Interaktion."
+						},
+						{
+							title = "Untere Leiste",
+							body = "Das Untere-Leiste-Modul zeigt eine Informationsleiste am unteren Bildschirmrand an.\n\nAngezeigte Informationen:\n- Aktuelles Datum und Uhrzeit\n- Aktive Rolle\n- Aktuelle Zone und Koordinaten\n- FPS und Latenz\n- Währung (Platin, Gold, Silber)\n- Erfahrungs- und Ruf-Fortschrittsleisten\n- Vitalitätsprozentsatz\n- Anzahl Freunde und Gildenmitglieder online\n\nDie Leiste kann transparent gesetzt werden, Schriftgrößen und Abmessungen sind in den Einstellungen anpassbar."
+						},
+						{
+							title = "OneBag",
+							body = "Das OneBag-Modul ersetzt das Standard-Taschenssystem durch ein einzelnes, einheitliches Inventarfenster.\n\nÖffnen mit: /nkui bag\n\nTipp: Erstelle ein Makro mit '/nkui bag', lege es auf einen versteckten Standard-Aktionsleistenslot und weise die Taste B zu.\n\nFunktionen:\n- Alle Taschenslots in einem Fenster angezeigt\n- Bankfenster ebenfalls verfügbar (wird beim Bankier geöffnet)\n- Gegenstände farblich nach Kategorie markiert\n- Zeigt Gegenstandswert (Verkäufpreis) und letzten bekannten Auktionspreis\n- Größe in den Einstellungen konfigurierbar\n\nHinweis: Stelle deine Standard-Taschen im Spiel auf 50% Skalierung ein um visuellen Unordnung zu minimieren."
+						},
+						--[[{
+							title = "Auktionshaus",
+							body = "Das Auktionshaus-Modul fügt Preisverfolgung und Suche zum RIFT-Auktionshaus hinzu.\n\nÖffnen mit: /nkui auction (oder öffnet sich automatisch wenn du das AH besuchst)\n\nReiter:\n- Suchen: Aktuelle Auktionen nach Name durchsuchen, nach Seltenheit filtern, nach jeder Spalte sortieren\n- Meine Auktionen: Eigene Auktionen anzeigen und abbrechen\n- Einstellen: Gegenstände direkt aus dem Inventar einstellen\n- Preise: Historische Preisdaten für jeden Gegenstand anzeigen\n\nFunktionen:\n- Auktionshaus scannen um eine Preisdatenbank aufzubauen\n- Letzter bekannter Auktionspreis wird in Gegenstand-Tooltips angezeigt (OneBag, Hover)\n- Verfolgt All-Zeit-Tief, All-Zeit-Hoch und letzten Scan-Tief Preise\n- Scantierfe ist konfigurierbar (wie viele Seiten pro Gegenstand gescannt werden)\n- Klicke auf das blaue Scan-Symbol um einen Scan zu starten"
+						},]]
+						{
+							title = "Buff-Leiste",
+							body = "Das Buff-Leisten-Modul zeigt deine aktiven Buffs und Debuffs als Symbolreihen am Bildschirmrand an.\n\nFunktionen:\n- Separate Reihen für Buffs und Debuffs\n- Jedes Symbol zeigt verbleibende Dauer und Stapelanzahl\n- Symbolgröße, Timer-Schriftgröße und Stapel-Schriftgröße konfigurierbar\n- Leiste kann nach rechts oder links wachsen\n- Position über Einstellungen > UI verschieben anpassbar"
+						},
+						{
+							title = "Scrolling Combat Text",
+							body = "Das Scrolling Combat Text (SCT) Modul ersetzt die Standard-Bildschirm-Kampftexte.\n\nErste Einrichtung: Deaktiviere den Standard-SCT in RIFT-Einstellungen unter Einstellungen > Schnittstelle > Bildschirmmeldungen.\n\nAngezeigte Meldungen:\n- Ausgeteilter und erhaltener Schaden\n- Heilung\n- Erfahrungs- und Ruf-Gewinne\n- Erhaltene Beute\n- Fähigkeits-Abklingzeiten vollständig\n\nJeder Meldungstyp kann in Einstellungen > SCT einzeln aktiviert oder deaktiviert werden."
+						},
+						{
+							title = "Tooltip",
+							body = "Das Tooltip-Modul gestaltet Einheiten-Tooltips im nkUI-Stil um.\n\nFunktionen:\n- Gestalteter Tooltip-Rahmen für Einheiten und Gegenstände\n- Schriftgrößen für Kopfzeile und Text in den Einstellungen konfigurierbar\n\nHinweis: Aufgrund von RIFT-API-Einschränkungen können Questinformationen für NPCs nicht in Tooltips angezeigt werden."
+						},
+						{
+							title = "Chat",
+							body = "Das Chat-Modul fügt dem Standard-RIFT-Chatfenster einen gestalteten Hintergrund hinzu.\n\nFunktionen:\n- Halbtransparenter Hintergrundrahmen hinter der Chatbox\n- In Einstellungen > Basis aktivierbar/deaktivierbar\n\nHinweis: Das Chatfenster selbst (Position, Kanäle, Schrift) wird weiterhin von der Standard-RIFT-UI verwaltet."
+						},
+						--[[{
+							title = "Cooldowns",
+							body = "Das Cooldowns-Modul verfolgt aktive Fähigkeits- und Gegenstands-Abklingzeiten und zeigt sie als Liste an.\n\nFunktionen:\n- Zeigt alle aktiven Abklingzeiten als vertikale Leistenliste\n- Jeder Eintrag hat ein Symbol, eine Fortschrittsleiste und einen Countdown-Timer\n- Abklingzeiten werden nach verbleibender Zeit sortiert\n- Einträge werden automatisch entfernt wenn Abklingzeiten enden\n\nDieses Modul läuft im Hintergrund und benötigt keine Konfiguration."
+						},]]
+
+					}
+				},
 		itemCategories = {
             various = "Verschiedenes",
             consumable = "Verbrauchbar",

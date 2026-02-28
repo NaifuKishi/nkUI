@@ -175,7 +175,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									onlyOwnBuffs = "Show only own buffs",
 									smoothAnimations = "Smooth animations",
 									close = "Close",
-									tutorial = "Tutorial",
 									moveUI = "Move UI",
 									theme = "Basic",
 									map = "Map",
@@ -237,42 +236,84 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 				btSet				 			= 'Set',
 				questCarnage		 			= "Carnage:"
 		},
-		tutorial = {
-					welcomeTitle = "Welcome to nkUI Version %s",
-					welcomeDescription = "Welcome to nkUI and thank you for trying out my addon.\n\nThis tutorial will guide you through the basic features of nkUI.",
-					settingsTitle = "nkUI Settings",
-					settingsDescription = "There's a configuration to change aspects of nkUI.\n\nYou can access the configuration either by typing /nkui or by clicking the minimap button.\n\nWith /nkui qlog you open the Quest Log.\nWith /nkui bag you open the inventory.\nWith /nkui map toggle you can enlarge the map.",
-					defaultUIElementsTitle = "Default UI elements",
-					defaultUIElementsDescription = "This addon provides a lot of replacements for the standard UI elements. Unfortunately due to a lot of limitations in the RIFT API the default elements cannot be deactivated by addons.\n\nInstead you have to do so manually once. You can do so by hitting Escape and use the option [Edit Layout]. Using that option you can hide default ui elements.",
-					mapTitle = "New: Map",
-					mapDescription = "The map is a complete replacement of the ingame map. It offers additional features like showing the current zone name, the current coordinates and supports storing and displaying gathering node.",
-					questLogTitle = "Questlog",
-					questLogDescription = "The nkUI Questlog can be accessed via command \\nkui qlog.\nFor best results, create a macro, place it on an action bar, and bind the L key to it.",
-					questTrackerTitle = "Quest Tracker module",
-					questTrackerDescription = "This nkUI module is a replacement of the ingame quest tracker offering a lot of additional features. It matches the nkUI theme and will show all quests in your log. You can scroll the quest tracker by using the mouse wheel.\n\nBy clicking on the 'C' in the header you can choose which quest categories to show. By clicking on the 'Z' you can filter quests down to those of your current zone.\n\nYou can use a quest item by right clicking it.",
-					oneBagTitle1 = "One bag module (1/2)",
-					oneBagDescription1 = "This nkUI module is a replacement for the ingame bags and shows everything in one tiday frame.",
-					oneBagTitle2 = "One bag module (2/2)",
-					oneBagDescription2 = "You can load the bag ui by typing '/nkui bag' in the chat.\n\nIn order to have the bag ui open when hitting the 'B' key I suggest to do the following:\n\nCreate a macro with the command '/nkui bag', place it on any default action bar (which you afterwards hide) and ind the key 'B' to that action bar slot.\n\nAlso I suggest that you scale your default bags to the lowest setting possible which is 50%.",
-					unitFrameTitle = "Unit Frame module",
-					unitFrameDescription = "This nkUI module will display player, target and pet frames along with castbar and ressource bar. The design is much more modern than the standard ui.\n\nIf you activate the unit frame module you can individually decide to use the buff / debuff frame which is part of the unit frame module.",
-					lowerBarTitle = "Lower bar module",
-					lowerBarDescription = "This nkUI module displays a bar at the bottom of your screen. That bar provides various important informations like date & time, currency, location, fps and more in a way fitting with the design of nkUI.",
-					actionBarTitle1 = "Action bar module (1/2)",
-					actionBarDescription1 = "This nkUI module provides action bars fitting with the theme of nkUI.\n\nYou can drag and drop skills and items to the action bar. You can clear a slot by right-clicking it. Cooldowns and Out-Of-Range indicator will help you visually with the abilites.\n\nDue to restrictions of the RIFT API it is NOT possible to do key bindings. You'll have to set up the normal Rift action bars with your abilities and then hide them. Sorry no other way to do this :(",
-					actionBarTitle2 = "Action bar module (2/2)",
-					actionBarDescription2 = "The buttons left and right to the main bar as weel as the bar to the right of the screen are interactive. That means you can click on them to activate abilities and items.\n\nOn top of that you can add macros by middle clicking an action bar slot with your mouse. In the appearing dialog you can configure your macro. You can drop any ability or item in the icon frame.",
-					sctTitle = "Scrolling combat text module",
-					sctDescription = "This nkUI module replaces the in-game scrolling combat text. You will have to manually deactivate the ingame one in the settings (Setting / Interface / Screen Messages).",
-					tooltipTitle = "Tooltip module",
-					tooltipDescription = "This nkUI module shows a tooltip for units which does look a lot better than the standard tooltip. Unfortunately due to API restrictions it's not possible to display quest information for NPC. There fore sometimes the tooltip will be bigger than neccessary. I'll try to figure out something here in the upcoming weeks.",
-					doneTitle = "You are done - for now :)",
-					doneDescription = "That's all so far. Make sure to regularly check Cursegorge or the Discord for update.\n\nYou can reopen this window from the settings.",
-					auctionTitle = "Auctions",
-					auctionDescription = "You can scan the auction house and store price information.\n\nThe average price is displayed in the additional information in the tooltip.\n\nClick the blue icon to start a scan.",
-					previousButton = "Previous",					
-					nextButton = "Next",
-					finishButton = "Finish"
+		manual = {
+					windowTitle = "nkUI Manual",
+					buttonLabel = "Manual",
+					sections = {
+						{
+							title = "Welcome",
+							body = string.format("Welcome to nkUI Version %s\n\nThank you for using nkUI, a comprehensive UI suite for RIFT.\n\nThis manual guides you through all nkUI modules and features.\n\nLatest Changes (v1.3.1):\n- Keybind labels for action bar icons\n- Improved cooldown tracking display\n- Better rarity filtering in Auction House Browse\n- Bug fixes in unit frame rendering\n\nClick the sections on the left to explore each module.\n\nFor quick access: /nkui (settings) | /nkui qlog (quest log) | /nkui bag (inventory) | /nkui auction (auction house)", addonInfo.toc.Version)
+						},
+						{
+							title = "Overview",
+							body = "Welcome to the nkUI Manual.\n\nnkUI is a complete UI suite for RIFT, replacing or enhancing most default UI elements with a modern, cohesive design.\n\nUse the list on the left to jump to any module. Each section explains what the module does and how to use it.\n\nYou can open the settings at any time with /nkui, open the Quest Log with /nkui qlog, the bag with /nkui bag, and the Auction House with /nkui auction."
+						},						
+						{
+							title = "Default UI Setup",
+							body = "Before using nkUI, you need to hide the default RIFT UI elements to avoid overlap.\n\nHow to hide default UI elements:\n1. Press Escape during gameplay to open the Settings menu\n2. Select [Edit Layout]\n3. A layout editor window will appear\n4. Uncheck or hide the following default elements:\n   - Quest Log (we replace this)\n   - Quest Tracker (we replace this)\n   - Default action bars (if using nkUI action bars)\n   - Default unit frames (if using nkUI unit frames)\n   - Buff/Debuff frame (if using nkUI buff bar)\n   - Minimap (if using nkUI map)\n\n5. Click [Done] to save your layout\n6. The nkUI elements will now be fully visible without overlap\n\nNote: The RIFT API prevents addons from hiding these elements automatically, so this manual step is necessary and only needs to be done once per character."
+						},
+						{
+							title = "Theme & Basic",
+							body = "The Basic / Theme tab in Settings controls global appearance options.\n\nOptions:\n- Show or hide the nkUI logo in the corner\n- Show or hide the minimap manager icon\n- Enable or disable the chat background\n- Select the color scheme: RIFT (class colors by soul) or WoW-style coloring\n- Adjust the OneBag window scale\n\nThese settings apply globally across all nkUI modules."
+						},
+						{
+							title = "Move UI",
+							body = "The Move UI mode lets you reposition all nkUI elements on your screen.\n\nHow to use:\n1. Open Settings (/nkui)\n2. Click the 'Move UI' button\n3. Drag any highlighted frame to your desired position\n4. The current coordinates are shown while dragging\n5. A grid overlay helps with alignment\n6. When done, the Settings window reappears automatically\n\nMovable elements include: all Unit Frames, Castbars, Resource Bar, Action Bars, and the Buff Bar.\n\nPositions are saved per account and persist across sessions."
+						},												
+						{
+							title = "Map",
+							body = "The Map module is a full replacement for the default RIFT map.\n\nFeatures:\n- Displays your current zone name and coordinates\n- Supports Points of Interest (POI) markers\n- Rare mob tracking (requires RareDar or RareTracker addon)\n- Quest markers on the map\n- Records and displays gathering nodes (ore, wood, etc.) and artifact locations\n- Smooth animated zoom\n- Toggle between minimap and full-screen mode with /nkui map toggle\n- Lock the map position to prevent accidental movement\n\nTip: You can add custom markers from the map settings. Unknown zones can optionally be shown."
+						},
+						{
+							title = "Quest Log",
+							body = "The Quest Log module replaces the default RIFT quest journal.\n\nOpen it with: /nkui qlog\n\nFor convenience, create a macro with '/nkui qlog', place it on an action bar slot, and bind the L key to that slot.\n\nFeatures:\n- Organized by quest category (Story, Daily, Weekly, World, Crafting, Raid, etc.)\n- Click a quest to read its full description, objectives, and rewards\n- Abandon or share quests directly from the log\n- Abandon all quests in a category at once"
+						},
+						{
+							title = "Quest Tracker",
+							body = "The Quest Tracker module replaces the default on-screen quest tracker.\n\nFeatures:\n- Shows all active quests with live objective progress\n- Scroll with the mouse wheel when many quests are tracked\n- Click the 'C' button in the header to choose which quest categories to display\n- Click the 'Z' button to filter quests to your current zone only\n- Click the 'I' button to show quest items\n- Right-click a quest item button to use the item directly from the tracker\n- Font sizes and window size are configurable in Settings"
+						},
+						{
+							title = "Unit Frames",
+							body = "The Unit Frames module provides a modern replacement for the default health and energy bars.\n\nDisplayed frames:\n- Player, Player Pet, Target, Target of Target, Focus, Group, Raid\n- Player and Target Castbars\n- Resource Bar (combo points, charges, etc.)\n\nFeatures:\n- Health, energy, and planar bars with smooth animations\n- Role icon, combat icon, and tier badge on each frame\n- Buff and debuff display with timer and stack count\n- Separate alpha settings for combat and out-of-combat\n- Choose between RIFT color scheme (class colors) or WoW-style coloring\n- All frames can be repositioned via Settings > Move UI\n\nNote: Configure each frame individually in Settings > Units."
+						},
+						{
+							title = "Action Bar",
+							body = "The Action Bar module provides themed action bars that match the nkUI visual style.\n\nFeatures:\n- Up to 4 main horizontal bars and 1 vertical side bar\n- Drag and drop abilities, items, and macros onto slots\n- Cooldown timers shown on each slot\n- Out-of-range indicator (slot dims when target is too far)\n- Middle-click a slot to open the Macro Editor and assign a custom macro\n- Keybind labels: Right-click a slot to assign a keybind label that appears on the icon\n- Use the keybind dialog to clear a slot\n- Combat and non-combat transparency are independently configurable\n\nImportant: Due to RIFT API limitations, actual key bindings must be set up on the default RIFT action bars. Set your abilities there, hide those bars, and use nkUI bars for display and click interaction."
+						},
+						{
+							title = "Lower Bar",
+							body = "The Lower Bar module displays an information bar at the bottom of the screen.\n\nDisplayed information:\n- Current date and time\n- Your active role\n- Current zone and coordinates\n- Frames per second (FPS) and latency\n- Currency (platinum, gold, silver)\n- Current experience and notoriety progress bars\n- Vitality percentage\n- Friends and guild member online count\n- Social panel shortcut\n\nThe bar can be set to transparent mode, and font sizes and bar dimensions are adjustable in Settings."
+						},
+						{
+							title = "OneBag",
+							body = "The OneBag module replaces the default bag system with a single unified inventory window.\n\nOpen it with: /nkui bag\n\nTip: Create a macro with '/nkui bag', place it on a hidden default action bar slot, and bind the B key to that slot.\n\nFeatures:\n- All bag slots displayed in a single window\n- Bank window also available (/nkui bag will open the bank when at a banker)\n- Items color-coded by category\n- Shows item value (vendor price) and last known auction price\n- Configurable scale in Settings\n\nNote: Set your default in-game bags to 50% scale to minimize visual clutter."
+						},
+						--[[{
+							title = "Auction House",
+							body = "The Auction House module adds price tracking and browsing to the RIFT Auction House.\n\nOpen it with: /nkui auction (or it can open automatically when you visit the AH)\n\nTabs:\n- Browse: Search current auctions by name, filter by rarity, sort by any column\n- My Auctions: View and cancel your own posted auctions\n- Post: Post items directly from your inventory\n- Prices: View historical price data for any item\n\nFeatures:\n- Scan auctions to build a price database\n- Last known auction price is shown in item tooltips (OneBag, hover)\n- Tracks all-time low, all-time high, and last scan low prices\n- Scan depth is configurable (how many pages to scan per item)\n- Click the blue scan icon to start a scan"
+						},]]
+						{
+							title = "Buff Bar",
+							body = "The Buff Bar module shows your active buffs and debuffs as icon rows near the edge of the screen.\n\nFeatures:\n- Separate rows for buffs and debuffs\n- Each icon shows remaining duration and stack count\n- Icon size, timer font size, and stack font size are configurable\n- The bar can grow to the right or left\n- Position is adjustable via Settings > Move UI"
+						},
+						{
+							title = "Scrolling Combat Text",
+							body = "The Scrolling Combat Text (SCT) module replaces the default on-screen combat messages.\n\nFirst-time setup: Disable the default SCT in RIFT settings under Settings > Interface > Screen Messages.\n\nDisplayed messages:\n- Damage dealt and received\n- Healing done\n- Experience and notoriety gains\n- Loot received\n- Ability cooldown completions\n\nEach message type can be individually enabled or disabled in Settings > SCT."
+						},
+						{
+							title = "Tooltip",
+							body = "The Tooltip module reskins unit to match the nkUI style.\n\nFeatures:\n- Clean, styled tooltip frame for units and items\n- Header and body font sizes are configurable in Settings\n\nNote: Due to RIFT API limitations, quest information for NPCs cannot be displayed in tooltips."
+						},
+						{
+							title = "Chat",
+							body = "The Chat module adds a styled background to the default RIFT chat window.\n\nFeatures:\n- Semi-transparent background frame behind the chat box\n- Can be enabled or disabled in Settings > Basic\n\nNote: The chat window itself (position, channels, font) is still managed by the default RIFT UI."
+						},
+						--[[{
+							title = "Cooldowns",
+							body = "The Cooldowns module tracks active ability and item cooldowns and displays them as a list.\n\nFeatures:\n- Shows all currently cooling down abilities as a vertical bar list\n- Each entry has an icon, a progress bar, and a countdown timer\n- Cooldowns are sorted by remaining time\n- Automatically removes entries when cooldowns finish\n\nThis module runs in the background and requires no configuration."
+						},]]
+
+					}
 				},
 		itemCategories = {
 					various = "Various",

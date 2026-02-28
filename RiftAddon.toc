@@ -110,8 +110,7 @@ RunOnStartup = {
 	"settings/settings-tabUnitFrames.lua",
 
 	"settings/layout.lua",
-
-	"settings/tutorial.lua",
+	"settings/manual.lua",
 
 	"modules/actionbar/actionbar.lua",
 	"modules/actionbar/actionicon.lua",
