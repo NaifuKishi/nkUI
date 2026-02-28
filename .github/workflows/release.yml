@@ -1,0 +1,45 @@
+name: Create Release ZIP
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Create ZIP
+        run: |
+          mkdir -p release/nkUI/Libs
+          mkdir -p release/nkUI/modules
+          mkdir -p release/nkUI/settings
+          mkdir -p release/nkUI/locales
+          mkdir -p release/nkUI/fonts
+          mkdir -p release/nkUI/gfx
+
+          # Core files
+          cp *.lua release/nkUI/
+          cp RiftAddon.toc release/nkUI/
+
+          # Subdirectories
+          cp -r modules/ release/nkUI/modules/
+          cp -r settings/ release/nkUI/settings/
+          cp -r locales/ release/nkUI/locales/
+          cp -r fonts/ release/nkUI/fonts/
+          cp -r gfx/ release/nkUI/gfx/
+          cp -r Libs/ release/nkUI/Libs/
+
+          cd release
+          zip -r ../nkUI.zip nkUI/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: nkUI.zip
+          generate_release_notes: true
