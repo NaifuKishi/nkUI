@@ -203,6 +203,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
       @param {string|nil} key - The keybind label to display (e.g. "Q", "Shift+1"), or nil to hide
     ]]
 	function frame:SetKeyBind(key)
+		--print (key)
+
 		if key == nil then
 			-- Hide the label if no key is set
 			if keyBindLabel then
@@ -266,7 +268,9 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		
 		if cType == 'item' or cType == 'ability' then
 			frame:SetItem(cType, cHeld, nil)
-			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil }
+			local existingSlot = data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex]
+			local existingKeyBind = existingSlot and existingSlot.keyBind or nil
+			data.actionBarSetup.roles[inspectTEMPORARYRole()].bars[barIndex].slots[buttonIndex] = { itemType = cType, itemKey = cHeld, macroIcon = nil, keyBind = existingKeyBind }
 		end
 		
 		Command.Cursor(nil)
@@ -304,14 +308,8 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		thisMacroCDType = nil
 		thisMacroCDKey = nil
 
-		-- clear keyBind from SavedVars slot (do not wipe entire slot since Clear writes {} anyway)
-		local role = inspectTEMPORARYRole()
-		if data.actionBarSetup and data.actionBarSetup.roles[role] then
-			local slot = data.actionBarSetup.roles[role].bars[barIndex].slots[buttonIndex]
-			if slot then slot.keyBind = nil end
-		end
-
-		-- Hide keybind label when clearing item
+		-- Hide keybind label when clearing item (do NOT clear keyBind from SavedVars here,
+		-- because ClearItem is also called internally by SetItem during Populate)
 		frame:SetKeyBind(nil)
 
 		fill = LibEKL.Tools.Table.Copy(defaultFill)

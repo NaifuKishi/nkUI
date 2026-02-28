@@ -104,8 +104,8 @@ local function saveKeybind()
 
 	-- Update all other bars' icons by calling Populate on them
 	-- This will update keybinds and handle removed keybinds via SetKeyBind
-	if uiElements.actionBars then
-		for barIdx, bar in ipairs(uiElements.actionBars) do
+	if uiElements.actionbars then
+		for barIdx, bar in pairs(uiElements.actionbars) do
 			if bar.Populate then
 				bar:Populate()
 			end
@@ -188,7 +188,15 @@ local function createKeybindDialog(iconFrame)
 	clearSlotButton:SetLabelColor(data.theme.labelColor)
 	clearSlotButton:SetFillColor({ type = "solid", r = 0, g = 0, b = 0, a = .4})
 	clearSlotButton:SetBorderColor({ r = 0, g = 0, b = 0, a = .7, thickness = 1})
-	clearSlotButton:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self)	
+	clearSlotButton:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self)
+		-- Explicitly clear keyBind from SavedVars before ClearItem (ClearItem no longer does this)
+		if pendingSlot then
+			local role = inspectTEMPORARYRole()
+			if data.actionBarSetup and data.actionBarSetup.roles[role] then
+				local slot = data.actionBarSetup.roles[role].bars[pendingSlot.barIndex].slots[pendingSlot.buttonIndex]
+				if slot then slot.keyBind = nil end
+			end
+		end
 		iconFrame:ClearItem()
 		closeKeybindDialog()
 	end, "nkUI.keybindDialog.clearSlot.click")
