@@ -74,6 +74,8 @@ end
 
 function mapEvents.SystemUpdate ()
 
+  if uiElements.mapUI == nil or uiElements.mapUI:GetVisible() == false then return end
+
   local now = InspectTimeReal()
 
 	if mapData.forceUpdate ~= true then
