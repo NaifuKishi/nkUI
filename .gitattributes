@@ -1,7 +1,7 @@
 *.md export-ignore
 *.txt export-ignore
 *.sh export-ignore
-test_keyevents.lua export.ignore
+test_keyevents.lua export-ignore
 nkUI-dev-1.0.rockspec export-ignore
 .luacov export-ignore
 .busted export-ignore
