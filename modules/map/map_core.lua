@@ -448,7 +448,6 @@ local function unitChange(key, details)
 		end
 
 	elseif stringFind(details.type, "mouseover") == nil and stringFind(details.type, ".pet") == nil and stringFind(details.type, "player.target.target.target") == nil then
-		
 		if uiElements.mapUI:ChangeElement(details) == false then
 			if details.type == 'player.target' then
 				map.UpdateUnit ({[key] = details}, "add")
@@ -462,15 +461,7 @@ local function unitChange(key, details)
 
 	if key == LibEKL.Unit.GetPlayerID() then
 		uiElements.mapUI:SetCoord(details.coordX, details.coordZ)
-		uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)
-
-		--[[
-		-- Update tiled map element and coordinates
-		if uiElements.tiledMapUI then
-			uiElements.tiledMapUI:UpdateElement(details)
-			uiElements.tiledMapUI:SetCoordsLabel(details.coordX, details.coordZ)
-		end
-		]]
+		uiElements.mapUI:SetCoordsLabel(details.coordX, details.coordZ)		
 
 		map.UpdateWaypointArrows ()
 	end

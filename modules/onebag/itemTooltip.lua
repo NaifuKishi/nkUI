@@ -15,7 +15,8 @@ local auction           = privateVars.auction
 local stringFormat  = string.format
 local mathFloor     = math.floor
 
-local showTooltip   = false
+local showTooltip    = false
+local activeHoverID  = nil
 
 local function formatTimeSince(seconds)
     if seconds > 86400 then
@@ -175,14 +176,15 @@ function oneBag.showItemTooltip (thisItemID)
     end
 
     uiElements.oneBagItemTooltip:SetItem(thisItemID)
-    --uiElements.oneBagItemTooltip:SetVisible(true)
-    showTooltip = true
+    showTooltip  = true
+    activeHoverID = thisItemID
 
 end
 
 function oneBag.hideItemTooltip ()
 
-    showTooltip = false
+    showTooltip   = false
+    activeHoverID = nil
     if uiElements.oneBagItemTooltip then uiElements.oneBagItemTooltip:SetVisible(false) end
 
 end
@@ -190,15 +192,17 @@ end
 function oneBag.initItemTooltip ()
 
     UI.Native.Tooltip:EventAttach(Event.UI.Native.Loaded, function()
-        
+
         if not showTooltip then return end
 
         -- Wird benötigt weil der Ingame Tooltip rumspringt und sonst der Zusatzframe kurz oben Links im Screen angezeigt wird
+        -- Snapshot the hovered item so the delayed callback ignores Loaded events from other tooltips
+        local capturedID = activeHoverID
+        LibEKL.Events.AddInsecure(function()
+            if not showTooltip or activeHoverID ~= capturedID then return end
+            uiElements.oneBagItemTooltip:SetVisible(UI.Native.Tooltip:GetLoaded())
+        end, inspectTimeReal(), 0.3)
 
-        LibEKL.Events.AddInsecure(function()            
-            uiElements.oneBagItemTooltip:SetVisible(UI.Native.Tooltip:GetLoaded())    
-        end, inspectTimeReal(), 0.3) 
-        
     end, "nkUI.OneBag.Native.Tooltip.Loaded")
 
 end
