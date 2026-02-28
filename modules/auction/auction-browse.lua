@@ -187,113 +187,128 @@ local function toggleRarity(rarity)
     updateRarityBtnVisuals()
 end
 
-local function populateBrowseGrid(rawAuctions)
-    browseRows = {}
-    local newRows = {}
+local function processOneBrowseAuction(auctionID, newRows)
+    local ok, detail = pcall(InspectAuctionDetail, auctionID)
+    if not (ok and detail and detail.itemType and detail.buyout) then return end
 
-    for auctionID in pairs(rawAuctions) do
-        local ok, detail = pcall(InspectAuctionDetail, auctionID)
-        if ok and detail and detail.itemType and detail.buyout then
+    local itemType  = detail.itemType
+    local stack     = detail.itemStack or 1
+    local unitPrice = mathFloor(detail.buyout / stack)
 
-        local itemType = detail.itemType
-        local stack = detail.itemStack or 1
-        local unitPrice = mathFloor(detail.buyout / stack)
-
-        -- Get item details
-        local ok2, itemDetail = pcall(InspectItemDetail, detail.item or itemType)
-        local name, icon, rarity, vendor = "Unknown", nil, 0, 0
-        if ok2 and itemDetail then
-            name   = itemDetail.name or "Unknown"
-            icon   = itemDetail.icon
-            rarity = itemDetail.rarity or 0
-            vendor = itemDetail.sell or 0
-        end
-
-        -- Fallback icon for items without proper icon data
-        if icon == nil then
-            icon = "iconBag.png"  -- Default fallback icon
-        end
-
-        -- Get my price from ownAuctions
-        local myPrice = auction.ownAuctions[itemType]
-
-        -- Get vendor ratio
-        local vendorRatio = nil
-        if vendor and vendor > 0 then
-            vendorRatio = unitPrice / vendor
-        end
-
-        -- Check if buyout is below last known low
-        local buyoutColor = nil
-        local priceSummary = auction.getPriceSummary(itemType)
-        if priceSummary and priceSummary.lastLo and unitPrice < priceSummary.lastLo then
-            buyoutColor = { r = 0, g = 1, b = 0, a = 1 }  -- green
-        end
-
-        -- Format values for display
-        local bidStr = fmtCoins(detail.bid)
-        local buyoutStr = fmtCoins(detail.buyout)
-        local unitStr = fmtCoins(unitPrice)
-        local vendorStr = "-"
-        local vendorColor = nil
-        if vendorRatio then
-            vendorStr = stringFormat("%.1fx", vendorRatio)
-            if vendorRatio > 5 then
-                vendorColor = { r = 1, g = 0.2, b = 0.2, a = 1 }
-            end
-        end
-        local myPriceStr = fmtCoins(myPrice)
-
-        -- Format expiry
-        local expiryTime = detail.timeRemaining or 0
-        local expiryStr = auction.formatExpiry(expiryTime)
-
-        -- Get rarity color using the proper function that handles both numeric and text rarities
-        local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
-
-        -- Format item name with rarity color using HTML (like formatCoins does)
-        local coloredName = name
-
-        if rarityColor then
-            coloredName = string.format('<font color="#%02x%02x%02x">%s</font>', 
-                math.floor(rarityColor.r * 255), 
-                math.floor(rarityColor.g * 255), 
-                math.floor(rarityColor.b * 255), 
-                name)
-        end
-
-        -- Build row with sort keys
-        local row = {
-            icon,                                                          -- 1: texture
-            coloredName,                                                   -- 2: item name, colored by rarity (HTML)
-            detail.seller or "Unknown",                                    -- 3: seller
-            tostring(stack),                                               -- 4: stack
-            bidStr,                                                        -- 5: bid
-            buyoutColor and { value = buyoutStr, color = buyoutColor } or buyoutStr,  -- 6: buyout
-            unitStr,                                                       -- 7: unit price
-            vendorColor and { value = vendorStr, color = vendorColor } or vendorStr,  -- 8: vendor ratio
-            myPriceStr,                                                    -- 9: my price
-            { value = expiryStr, key = auctionID }                         -- 10: expiry + row key
-        }
-
-        -- Store row data with sort keys
-            tableInsert(newRows, {
-                row = row,
-                sortKeys = {
-                    [5] = detail.bid or 0,
-                    [6] = detail.buyout or 0,
-                    [7] = unitPrice,
-                    [8] = vendorRatio or 0,
-                    [9] = myPrice or 0
-                },
-                rarity = getRarityIndex(rarity),  -- Store numeric index for filtering
-                name = name
-            })
-        end
+    local ok2, itemDetail = pcall(InspectItemDetail, detail.item or itemType)
+    local name, icon, rarity, vendor = "Unknown", nil, 0, 0
+    if ok2 and itemDetail then
+        name   = itemDetail.name or "Unknown"
+        icon   = itemDetail.icon
+        rarity = itemDetail.rarity or 0
+        vendor = itemDetail.sell or 0
     end
 
-    browseRows = newRows
-    applyFilterAndSort()
+    if icon == nil then icon = "iconBag.png" end
+
+    local myPrice     = auction.ownAuctions[itemType]
+    local vendorRatio = (vendor and vendor > 0) and (unitPrice / vendor) or nil
+
+    local buyoutColor = nil
+    local priceSummary = auction.getPriceSummary(itemType)
+    if priceSummary and priceSummary.lastLo and unitPrice < priceSummary.lastLo then
+        buyoutColor = { r = 0, g = 1, b = 0, a = 1 }
+    end
+
+    local bidStr    = fmtCoins(detail.bid)
+    local buyoutStr = fmtCoins(detail.buyout)
+    local unitStr   = fmtCoins(unitPrice)
+    local vendorStr = "-"
+    local vendorColor = nil
+    if vendorRatio then
+        vendorStr = stringFormat("%.1fx", vendorRatio)
+        if vendorRatio > 5 then
+            vendorColor = { r = 1, g = 0.2, b = 0.2, a = 1 }
+        end
+    end
+    local myPriceStr = fmtCoins(myPrice)
+    local expiryStr  = auction.formatExpiry(detail.timeRemaining or 0)
+
+    local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
+    local coloredName = name
+    if rarityColor then
+        coloredName = stringFormat('<font color="#%02x%02x%02x">%s</font>',
+            mathFloor(rarityColor.r * 255),
+            mathFloor(rarityColor.g * 255),
+            mathFloor(rarityColor.b * 255),
+            name)
+    end
+
+    local row = {
+        icon,
+        coloredName,
+        detail.seller or "Unknown",
+        tostring(stack),
+        bidStr,
+        buyoutColor and { value = buyoutStr, color = buyoutColor } or buyoutStr,
+        unitStr,
+        vendorColor and { value = vendorStr, color = vendorColor } or vendorStr,
+        myPriceStr,
+        { value = expiryStr, key = auctionID }
+    }
+
+    tableInsert(newRows, {
+        row      = row,
+        sortKeys = {
+            [5] = detail.bid or 0,
+            [6] = detail.buyout or 0,
+            [7] = unitPrice,
+            [8] = vendorRatio or 0,
+            [9] = myPrice or 0,
+        },
+        rarity = getRarityIndex(rarity),
+        name   = name,
+    })
+end
+
+local BROWSE_BATCH = 50
+
+local function populateBrowseGrid(rawAuctions)
+    browseRows = {}
+
+    -- Flatten into batches of BROWSE_BATCH
+    local batches = {}
+    local batch   = {}
+    local total   = 0
+    for auctionID in pairs(rawAuctions) do
+        tableInsert(batch, auctionID)
+        total = total + 1
+        if #batch >= BROWSE_BATCH then
+            tableInsert(batches, batch)
+            batch = {}
+        end
+    end
+    if #batch > 0 then tableInsert(batches, batch) end
+
+    if total == 0 then applyFilterAndSort() return end
+
+    local newRows   = {}
+    local processed = 0
+
+    local co = coroutine.create(function()
+        for b = 1, #batches do
+            for _, auctionID in ipairs(batches[b]) do
+                processOneBrowseAuction(auctionID, newRows)
+            end
+            processed = processed + #batches[b]
+            coroutine.yield(processed)
+        end
+    end)
+
+    LibEKL.Coroutines.Add({
+        func     = co,
+        counter  = total,
+        active   = true,
+        callBack = function()
+            browseRows = newRows
+            applyFilterAndSort()
+        end,
+    })
 end
 
 -- Expose for full-scan hook in auction.lua

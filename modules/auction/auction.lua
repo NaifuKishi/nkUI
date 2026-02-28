@@ -16,6 +16,7 @@ local InspectAuctionDetail  = Inspect.Auction.Detail
 local InspectItemDetail     = Inspect.Item.Detail
 local InspectShard          = Inspect.Shard
 
+local osTime        = os.time
 local stringFormat  = string.format
 local mathFloor     = math.floor
 local mathMax       = math.max
@@ -144,7 +145,7 @@ function auction.getPriceSummary(itemType)
         snapCount = snapCount,
         totalSeen = count,
         lastSeen  = latestTime,
-        daysSince = mathFloor((InspectTimeReal() - latestTime) / 86400),
+        daysSince = mathFloor((osTime() - latestTime) / 86400),
     }
 end
 
@@ -217,7 +218,7 @@ end
 local function runScanProcessing(rawAuctions, onProgress, onComplete)
 
     local shard    = InspectShard().name
-    local scanTime = InspectTimeReal()
+    local scanTime = osTime()
 
     initShard(shard)
 
@@ -302,6 +303,8 @@ local function buildScanDialog()
         if info.type ~= "search" then return end
         if not fullScanPending then return end
         fullScanPending = false
+
+        Command.System.Watchdog.Quiet()
 
         local shard = InspectShard().name
         initShard(shard)
@@ -514,7 +517,7 @@ local function buildWindow()
     function win:UpdateStatus()
         local shard = InspectShard().name
         if nkUIAucData and nkUIAucData[shard] and nkUIAucData[shard].lastScan then
-            local elapsed = InspectTimeReal() - nkUIAucData[shard].lastScan
+            local elapsed = osTime() - nkUIAucData[shard].lastScan
             local hours   = mathFloor(elapsed / 3600)
             local mins    = mathFloor((elapsed % 3600) / 60)
             local timeStr

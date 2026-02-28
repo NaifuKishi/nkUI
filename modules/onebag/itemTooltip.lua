@@ -9,6 +9,7 @@ local oneBag        = privateVars.oneBag
 local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
+local osTime            = os.time
 local inspectTimeReal   = Inspect.Time.Real
 local auction           = privateVars.auction
 
@@ -124,7 +125,7 @@ local function uiItemTooltip ()
 
             if summary then
 
-                local elapsed = summary.lastSeen and (inspectTimeReal() - summary.lastSeen) or nil
+                local elapsed = summary.lastSeen and (osTime() - summary.lastSeen) or nil
 
                 local timeAgoStr = elapsed and formatTimeSince(elapsed) or "?"
 
