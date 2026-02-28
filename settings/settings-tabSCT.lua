@@ -49,7 +49,7 @@ function settingsUI.uiConfigTabSCT (name, parent)
         end)
 
         showCombatCheckbox:SetPoint("TOPLEFT", showLootCheckbox, "BOTTOMLEFT", 0, settingsUI.PADDING.REGULAR)
-        showCombatCheckbox:SetChecked(nkUISetup.modules.sct.showCooldowns, true)
+        showCombatCheckbox:SetChecked(nkUISetup.modules.sct.showCombat, true)
 
         showCooldownsCheckbox = settingsUI.checkbox(name .. ".showCooldownsCheckbox", frame, langTexts.settings.showSCTCooldowns, true, function(newValue)
              nkUISetup.modules.sct.showCooldowns = newValue
