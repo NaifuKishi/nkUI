@@ -8,4 +8,5 @@ nkUI-dev-1.0.rockspec export-ignore
 spec/* export-ignore
 .claude/* export-ignore
 .continue/* export-ignore
-.git* export-ignore
+.gitattributes export-ignore
+.gitmodules export-ignore
