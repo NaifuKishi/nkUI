@@ -162,7 +162,8 @@ function minionManager.buildUI()
 
     mm.sendNowBtn = LibEKL.UICreateFrame("nkButton", name .. ".sendNow", centerPanel)
     mm.sendNowBtn:SetLayer(2)
-    mm.sendNowBtn:SetPoint("TOPCENTER", dropAdvBg, "BOTTOMCENTER", 0, mm.PAD)
+    mm.sendNowBtn:SetPoint("TOPLEFT", dropAdvBg, "BOTTOMLEFT", 0, mm.PAD)
+    mm.sendNowBtn:SetWidth(mathFloor((mm.CENTER_W - mm.PAD) / 2))
     mm.sendNowBtn:SetText(langTexts.minionManager.sendNow)
     mm.sendNowBtn:SetFont(addonInfo.id, "MontserratBold")
     mm.sendNowBtn:SetLabelColor(mm.COL_GOLD)
@@ -170,6 +171,18 @@ function minionManager.buildUI()
     mm.sendNowBtn:SetFillColor({ type = "solid", r = 0.1, g = 0.08, b = 0, a = 0.8 })
     mm.sendNowBtn:SetBorderColor({ r = mm.COL_GOLD.r, g = mm.COL_GOLD.g, b = mm.COL_GOLD.b, a = 0.9, thickness = 1 })
     mm.sendNowBtn:SetScale(0.9)
+
+    mm.autoSendBtn = LibEKL.UICreateFrame("nkButton", name .. ".autoSend", centerPanel)
+    mm.autoSendBtn:SetLayer(2)
+    mm.autoSendBtn:SetPoint("TOPRIGHT", dropAdvBg, "BOTTOMRIGHT", 0, mm.PAD)
+    mm.autoSendBtn:SetWidth(mathFloor((mm.CENTER_W - mm.PAD) / 2))
+    mm.autoSendBtn:SetText(langTexts.minionManager.autoSend)
+    mm.autoSendBtn:SetFont(addonInfo.id, "MontserratBold")
+    mm.autoSendBtn:SetLabelColor({ r = 0.4, g = 0.85, b = 1, a = 1 })
+    mm.autoSendBtn:SetEffectGlow({ strength = 3 })
+    mm.autoSendBtn:SetFillColor({ type = "solid", r = 0, g = 0.06, b = 0.12, a = 0.8 })
+    mm.autoSendBtn:SetBorderColor({ r = 0.4, g = 0.85, b = 1, a = 0.9, thickness = 1 })
+    mm.autoSendBtn:SetScale(0.9)
 
     local dropMinionBg = LibEKL.UICreateFrame("nkCanvas", name .. ".dropMinionBg", centerPanel)
     dropMinionBg:SetPoint("BOTTOMLEFT",  centerPanel, "BOTTOMLEFT",  0, 0)
@@ -202,6 +215,10 @@ function minionManager.buildUI()
         mm.selectedAdvId    = nil
         mm.selectedMinionId = nil
     end, name .. ".sendNow.LeftUp")
+
+    mm.autoSendBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        mm.autoSend()
+    end, name .. ".autoSend.LeftUp")
 
     -- RIGHT: Active missions
     local activePanel = LibEKL.UICreateFrame("nkFrame", name .. ".activePanel", content)

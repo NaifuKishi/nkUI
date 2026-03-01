@@ -128,6 +128,7 @@ RunOnStartup = {
 	"modules/minionManager/ui-card.lua",
 	"modules/minionManager/ui-rows.lua",
 	"modules/minionManager/ui-populate.lua",
+	"modules/minionManager/ui-autosend.lua",
 	"modules/minionManager/ui-build.lua",
 	"settings/settings-tabMinionManager.lua",
 

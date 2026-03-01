@@ -125,6 +125,7 @@ minionManager.minionScroll   = nil
 minionManager.activeContent  = nil
 minionManager.activeScroll   = nil
 minionManager.sendNowBtn     = nil
+minionManager.autoSendBtn    = nil
 minionManager.dropAdvHint    = nil
 minionManager.dropMinionHint = nil
 minionManager.currencyLabel  = nil

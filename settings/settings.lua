@@ -210,7 +210,11 @@ local _defaults = {
                         browse          = { sortCol = 7, sortAsc = true, rarityFilter = {} },
                       },
         wardrobe        = { activate = true },
-        minionManager   = { activate = true, x = 200, y = 200 }
+        minionManager   = { activate = true, x = 200, y = 200,
+                            autoSendDuration = 1,
+                            autoSendPriority = 1,
+                            autoSendMatch    = 1,
+                          }
                         },
     showLogo = true,
     useManager = true
@@ -360,14 +364,14 @@ function settingsUI.combobox (name, parent, text, active, callBack)
     thisCombobox:SetText(text, true)
     thisCombobox:SetActive(active)
     thisCombobox:SetLabelWidth(200)
-	thisCombobox:SetWidth(300)    
+	thisCombobox:SetWidth(400)    
     thisCombobox:SetFont(addonInfo.id, "MontserratSemiBold")
     thisCombobox:SetLabelColor(data.theme.labelColor)
-    thisCombobox:SetColorInner(0, 0, 0, .2)
+    thisCombobox:SetColorInner(0, 0, 0, 1)
     thisCombobox:SetColor(1, 1, 1, 1)
 	thisCombobox:SetColorBorder(0, 0, 0, .2) 
     thisCombobox:SetColorSelected(data.theme.labelColor)
-    thisCombobox:SetEffectGlow({strength = 3})
+    --thisCombobox:SetEffectGlow({strength = 3})
 
     Command.Event.Attach(LibEKL.Events[name].ComboChanged, function (_, newValue)		
         callBack(newValue.value)
