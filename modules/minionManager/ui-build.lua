@@ -186,7 +186,7 @@ function minionManager.buildUI()
     mm.dropMinionHint:SetLayer(2)
     LibEKL.UI.SetFont(mm.dropMinionHint, addonInfo.id, "MontserratMediumItalic")
 
-    Command.Event.Attach(LibEKL.Events[name .. ".sendNow"].Clicked, function()
+    mm.sendNowBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if mm.selectedMinionId == nil then
             Command.Console.Display("general", true,
                 stringFormat('<font color="#FF6A00">%s</font>', langTexts.minionManager.noMinion), true)
@@ -201,10 +201,7 @@ function minionManager.buildUI()
         if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
         mm.selectedAdvId    = nil
         mm.selectedMinionId = nil
-        LibEKL.Events.AddInsecure(function()
-            mm.populate()
-        end, inspectTimeFrame(), 3)
-    end, name .. ".sendNow.Clicked")
+    end, name .. ".sendNow.LeftUp")
 
     -- RIGHT: Active missions
     local activePanel = LibEKL.UICreateFrame("nkFrame", name .. ".activePanel", content)

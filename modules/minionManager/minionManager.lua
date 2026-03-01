@@ -13,6 +13,7 @@ local minionManager = privateVars.minionManager
 
 local inspectSystemSecure   = Inspect.System.Secure
 local inspectTimeReal       = Inspect.Time.Real
+local eventMinionAdvChange  = Event.Minion.Adventure.Change
 
 local isInit        = false
 local _timerUuid    = nil
@@ -40,8 +41,16 @@ function internalFunc.uiMinionManager()
     -- Register the event namespace
     LibEKL.Events.CheckEvents("minionManager", true)
 
+    Command.System.Watchdog.Quiet()
+
     minionManager.buildUI()
     minionManager.populate()
+
+    Command.Event.Attach(eventMinionAdvChange, function()
+        if uiElements.minionManager and uiElements.minionManager:GetVisible() then
+            minionManager.populate()
+        end
+    end, "nkUI.minionManager.Adventure.Change")
 
     isInit = true
 
@@ -54,6 +63,6 @@ function internalFunc.uiMinionManager()
         if uiElements.minionManager and uiElements.minionManager:GetVisible() then
             minionManager.refreshActiveMissions()
         end
-    end, 10)
+    end, 1)
 
 end

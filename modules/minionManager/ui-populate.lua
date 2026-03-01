@@ -11,10 +11,10 @@ local inspectAdventureList   = Inspect.Minion.Adventure.List
 local inspectAdventureDetail = Inspect.Minion.Adventure.Detail
 local inspectCurrencyList    = Inspect.Currency.List
 
-local stringFormat = string.format
-local tableInsert  = table.insert
-local pairs        = pairs
-local pcall        = pcall
+local stringFormat     = string.format
+local tableInsert      = table.insert
+local pairs            = pairs
+local pcall            = pcall
 
 ---------- populate ---------
 
@@ -25,41 +25,38 @@ function minionManager.populate()
     mm.clearRows(mm.minionRows, mm.minionBin)
     mm.clearRows(mm.activeRows, mm.activeBin)
 
-    -- Fetch minions
+    -- Fetch all data upfront
     local ok1, minionIds = pcall(inspectMinionList)
     if not ok1 or minionIds == nil then minionIds = {} end
 
     local ok2, minionDetails = pcall(inspectMinionDetail, minionIds)
     if not ok2 or minionDetails == nil then minionDetails = {} end
 
-    -- Fetch adventures
     local ok3, advIds = pcall(inspectAdventureList)
     if not ok3 or advIds == nil then advIds = {} end
 
     local ok4, advDetails = pcall(inspectAdventureDetail, advIds)
     if not ok4 or advDetails == nil then advDetails = {} end
 
-    -- Split adventures by mode
+    -- Classify adventures and collect idle/busy minions
     local busyMinionIds = {}
     mm.allAdvData = {}
 
     for id, adv in pairs(advDetails) do
-        local mode = adv.mode or "available"
+        local mode = adv.mode or "none"        
         if mode == "available" then
-            mm.allAdvData[id] = adv
+            mm.allAdvData[id] = adv            
         elseif mode == "working" or mode == "finished" then
             if adv.minion then busyMinionIds[adv.minion] = true end
             local mDet = adv.minion and minionDetails[adv.minion] or nil
             local arow = mm.createActiveRow(mm.activeContent)
             arow:Update(id, adv, mDet)
             tableInsert(mm.activeRows, arow)
+        else
+            --dump (adv)
         end
     end
 
-    mm.restackRows(mm.activeRows, mm.activeContent, mm.ACTIVE_ROW_H)
-    if mm.activeScroll then mm.activeScroll:SetContent(mm.activeContent) end
-
-    -- Idle minions
     for id, details in pairs(minionDetails) do
         if not busyMinionIds[id] then
             local mrow = mm.createMinionRow(mm.minionContent)
@@ -67,6 +64,10 @@ function minionManager.populate()
             tableInsert(mm.minionRows, mrow)
         end
     end
+
+    -- Layout + finalize
+    mm.restackRows(mm.activeRows, mm.activeContent, mm.ACTIVE_ROW_H)
+    if mm.activeScroll then mm.activeScroll:SetContent(mm.activeContent) end
 
     mm.restackMinionRows(mm.minionRows, mm.minionContent, mm.MINION_ROW_H, mm.MINION_COL_W, mm.PAD)
     if mm.minionScroll then mm.minionScroll:SetContent(mm.minionContent) end
@@ -83,7 +84,6 @@ function minionManager.populate()
         mm.selectedAdvId = nil
     end
 
-    -- Adventure cards
     mm.refreshCards()
     mm.updateSelectionState()
 

@@ -269,9 +269,6 @@ function minionManager.buildCardSlot(parent, index)
         local currency = (details and (details.costAventurine or 0) > 0) and "aventurine" or "credit"
         local ok, err  = pcall(commandMinionShuffle, _advId, currency)
         if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
-        LibEKL.Events.AddInsecure(function()
-            minionManager.populate()
-        end, inspectTimeFrame(), 3)
     end, base .. ".shuffle.Clicked")
 
     return card
@@ -279,28 +276,31 @@ end
 
 ---------- card categorisation ---------
 -- Slot order (left to right):
---   1 = Experience  (duration <= 60s)
---   2 = Short       (duration <= 1200s, no cost)
---   3 = Long        (duration > 1200s, no cost)
+--   1 = XP/Quick    (duration < 300s, no cost)   — covers 1m (60s) and 3m (180s)
+--   2 = Short       (duration <= 1200s, no cost)  — 5m, 10m, 15m, 20m
+--   3 = Long        (duration > 1200s, no cost)   — 8h, 10h
 --   4 = Premium     (costAventurine > 0 or costCredit > 0)
+-- Within each slot we pick the adventure with the shortest duration.
 
 local function _advCategory(adv)
     local cost = (adv.costAventurine or 0) + (adv.costCredit or 0)
     if cost > 0 then return 4 end
     local dur = adv.duration or 0
-    if dur <= 60   then return 1 end
+    if dur < 300   then return 1 end
     if dur <= 1200 then return 2 end
     return 3
 end
 
 function minionManager.categorizeAdventures()
     local mm    = minionManager
-    local slots = { nil, nil, nil, nil }  -- one id per category slot
+    local slots    = { nil, nil, nil, nil }  -- winning id per slot
+    local slotDurs = { math.huge, math.huge, math.huge, math.huge }
     for id, adv in pairs(mm.allAdvData) do
         local cat = _advCategory(adv)
-        -- keep the first (or only) adventure found for each category
-        if slots[cat] == nil then
-            slots[cat] = id
+        local dur = adv.duration or 0
+        if dur < slotDurs[cat] then
+            slots[cat]    = id
+            slotDurs[cat] = dur
         end
     end
     return slots

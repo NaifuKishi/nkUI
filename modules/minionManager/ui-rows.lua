@@ -4,6 +4,7 @@ local addonInfo, privateVars = ...
 
 local minionManager = privateVars.minionManager
 local langTexts     = privateVars.langTexts
+local internalFunc  = privateVars.internalFunc
 
 local inspectTimeFrame  = Inspect.Time.Frame
 local commandMinionClaim = Command.Minion.Claim
@@ -260,11 +261,13 @@ function minionManager.createActiveRow(parent)
     barFill:SetHeight(5)
     barFill:SetLayer(3)
 
-    local _advId      = nil
-    local _duration   = 1
-    local _completion = 0
-    local _isDone     = false
-    local _hurryCost  = 0
+    local _advId           = nil
+    local _duration        = 1
+    local _completion      = 0
+    local _isDone          = false
+    local _hurryCost       = 0
+    local _hurryAventurine = 0
+    local _hurryCredit     = 0
 
     local function _calcRemaining()
         return mathMax(0, _completion - osTime())
@@ -294,7 +297,9 @@ function minionManager.createActiveRow(parent)
         _advId      = id
         _duration   = mathMax(1, advDetails and advDetails.duration or 1)
         _completion = advDetails and advDetails.completion or 0
-        _hurryCost  = advDetails and (advDetails.hurryAventurine or advDetails.hurryCredit or 0) or 0
+        _hurryAventurine = advDetails and (advDetails.hurryAventurine or 0) or 0
+        _hurryCredit     = advDetails and (advDetails.hurryCredit     or 0) or 0
+        _hurryCost       = _hurryAventurine > 0 or _hurryCredit > 0
 
         nameText:SetText(advDetails and advDetails.name or "?")
         minionNameText:SetText(minionDetails and minionDetails.name or "")
@@ -316,19 +321,30 @@ function minionManager.createActiveRow(parent)
 
     function row:GetAdventureId() return _advId end
 
-    Command.Event.Attach(LibEKL.Events[base .. ".action"].Clicked, function()
+    actionBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if _isDone then
             local ok, err = pcall(commandMinionClaim, _advId)
             if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
         else
-            local currency = _hurryCost > 0 and "aventurine" or "credit"
-            local ok, err  = pcall(commandMinionHurry, _advId, currency)
-            if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
+            local advId = _advId
+            local lt    = langTexts.minionManager
+            local msg   = lt.hurryDialogMsg
+            local dlg = LibEKL.UI.choiceDialog(
+                msg,
+                stringFormat(lt.hurryAventurine, _hurryAventurine),
+                function()
+                    local ok, err = pcall(commandMinionHurry, advId, "aventurine")
+                    if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
+                end,
+                stringFormat(lt.hurryCredit, _hurryCredit),
+                function()
+                    local ok, err = pcall(commandMinionHurry, advId, "credit")
+                    if not ok then LibEKL.Tools.Error.Display("nkUI.minionManager", tostring(err), 2) end
+                end
+            )
+            internalFunc.setupConfirmDialog(dlg)
         end
-        LibEKL.Events.AddInsecure(function()
-            minionManager.populate()
-        end, inspectTimeFrame(), 3)
-    end, base .. ".action.Clicked")
+    end, base .. ".action.LeftUp")
 
     return row
 end

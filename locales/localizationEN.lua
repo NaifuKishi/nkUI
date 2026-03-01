@@ -371,6 +371,10 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 				selectAdventure  = "Select an Adventure",
 				selectMinion     = "Select a Minion",
 				hurry            = "Hurry",
+				hurryDialogMsg   = "Hurry this adventure?",
+				hurryAventurine  = "Aventurine (%d)",
+				hurryCredit      = "Credits (%d)",
+				hurryCancel      = "Cancel",
 				currencyHint     = "%d",
 			},
 		wardrobe = {
