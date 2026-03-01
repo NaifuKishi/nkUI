@@ -17,8 +17,11 @@ local mathRandom    = math.random
 uiElements.lowerBarModules = {}
 data.lowerBarLayout = {
     left = {},               -- modules on far left (away from time)
-    right = {}               -- modules on far right (away from time)
+    right = {}               -- modules on far right (away from time)    
 }
+
+lowerBar.ICON_SPACING = 5
+lowerBar.BORDER_SPACING = 15
 
 lowerBar.contextRestricted = UI.CreateContext("nkUI.lowerbar.restricted")
 lowerBar.contextRestricted :SetStrata('hud')
@@ -43,7 +46,7 @@ function lowerBar.positionLeft(frame)
     table.insert(left, frame)
 end
 
--- Helper: Position a module on right side (away from time)
+-- Helper: Position a module on right side (away from time)lwoerBar.BORDER_SPACING 
 function lowerBar.positionRight(frame)
     local right = data.lowerBarLayout.right
     table.insert(right, frame)
@@ -66,7 +69,7 @@ function lowerBar.redistributeLayout()
         --frame:SetBackgroundColor(color.r, color.g, color.b, 1)
 
         if idx == 1 then
-            frame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", 10, 0)
+            frame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", lowerBar.BORDER_SPACING, 0)
         else
             frame:SetPoint("CENTER", uiElements.lowerBarCanvas, "CENTERLEFT", xOffset, 0)
         end
@@ -85,7 +88,7 @@ function lowerBar.redistributeLayout()
         --frame:SetBackgroundColor(color.r, color.g, color.b, 1)
 
         if idx == 1 then
-            frame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -10, 0)
+            frame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -lowerBar.BORDER_SPACING, 0)
         else
             frame:SetPoint("CENTER", uiElements.lowerBarCanvas, "CENTERRIGHT", xOffset, 0)
         end
@@ -116,10 +119,10 @@ function lowerBar.dataSet(name, texture, align)
 
     if align == "left" then
         icon:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 0, 0)
-        label:SetPoint("CENTERLEFT", icon, "CENTERRIGHT", 21, 0)
+        label:SetPoint("CENTERLEFT", icon, "CENTERRIGHT", lowerBar.ICON_SPACING, 0)
     else
         label:SetPoint("CENTERRIGHT", datasetFrame, "CENTERRIGHT", 0, 0)
-        icon:SetPoint("CENTERRIGHT", label, "CENTERLEFT", -21, 0)
+        icon:SetPoint("CENTERRIGHT", label, "CENTERLEFT", -lowerBar.ICON_SPACING, 0)
     end    
 
     function datasetFrame:SetText(newText)

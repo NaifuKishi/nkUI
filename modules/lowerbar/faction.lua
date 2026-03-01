@@ -77,7 +77,7 @@ function lowerBar.faction()
     datasetFactionName:SetEffectGlow({ strength = 3})
 
     local datasetFactionBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
-    datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -21, 0)
+    datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -lowerBar.ICON_SPACING, 0)
     datasetFactionBarBGIcon:SetHeight(16)
     datasetFactionBarBGIcon:SetWidth(16)
     datasetFactionBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarFaction.png")

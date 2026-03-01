@@ -32,7 +32,7 @@ function lowerBar.experience()
     datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
 
     local datasetExpBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".experienceFrameBG", lowerBar.contextRestricted)
-    datasetExpBarBG:SetPoint("CENTERLEFT", datasetExpBarBGIcon, "CENTERRIGHT", 21, 0)
+    datasetExpBarBG:SetPoint("CENTERLEFT", datasetExpBarBGIcon, "CENTERRIGHT", lowerBar.ICON_SPACING, 0)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
