@@ -19,16 +19,12 @@ local stringFormat      = string.format
 function lowerBar.experience()
 
     local name = "lowerBar.datasetexp"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", width * 3, 0)    
-    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
     datasetFrame:SetLayer(2)
-    
+
     local datasetExpBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".experienceFrameBG", lowerBar.contextRestricted)
     datasetExpBarBG:SetPoint("CENTER", datasetFrame, "CENTER", (21 / 2), 0)
     datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
@@ -110,6 +106,6 @@ function lowerBar.experience()
     
     updateExperience()
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
-    --table.insert(uiElements.lowerBarModules, datasetExp)
+    return datasetFrame
+
 end

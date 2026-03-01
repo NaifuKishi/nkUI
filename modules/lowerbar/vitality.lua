@@ -17,15 +17,12 @@ local stringFormat      = string.format
 function lowerBar.vitality()
 
     local name = "lowerBar.datasetvitality"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -(width*2), 0)    
     --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
-    datasetFrame:SetLayer(2)    
+    datasetFrame:SetLayer(2)
 
     local datasetVitality = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
     datasetVitality:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
@@ -57,5 +54,5 @@ function lowerBar.vitality()
     
     Command.Event.Attach(Event.Unit.Detail.Vitality, vitalityChange, "nkUI.lowerBar.Vitality.Unit.Detail.Vitality")
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+    return datasetFrame
 end

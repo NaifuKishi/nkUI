@@ -21,18 +21,16 @@ local lastTotal, lastFPS, lastIcon
 function lowerBar.fps()
 
     local name = "lowerBar.datasetfps"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
+    local width = 120
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
     datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", width, 0)    
-    --datasetFrame:SetBackgroundColor(1, 0, 1, 1)
     datasetFrame:SetLayer(2)
 
     local datasetFPS = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
-    datasetFPS:SetPoint("CENTER", datasetFrame, "CENTER", -21, 0)
+    datasetFPS:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 31, 0)
     datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
     datasetFPS:SetTextFont(addonInfo.id, "MontserratMedium")
@@ -111,6 +109,7 @@ function lowerBar.fps()
     end
     
     Command.Event.Attach(Event.System.Update.Begin, updateFPS, "nkUI.lowerbar.fps.System.Update.Begin")
-    
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+        
+    return datasetFrame
+
 end

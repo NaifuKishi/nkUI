@@ -175,6 +175,12 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
     for k, v in pairs(cachedItems) do
         local realCategory = oneBag.getRealCategory(v.category, v.rarity)
 
+        -- Check if item belongs to a wardrobe set (overrides normal category)
+        local wardrobeCategory = oneBag.getWardrobeSetForItem(v.id, v.type)
+        if wardrobeCategory then
+            realCategory = wardrobeCategory
+        end
+
         if langTexts and langTexts.itemCategories and realCategory == langTexts.itemCategories.trash then
             hasTrash = true
             trashItems[k] = v
@@ -182,7 +188,7 @@ function oneBag.bagContent(bagUI, name, cachedItems, uiCategories, itemIcons)
             if categories[realCategory] == nil then
                 categories[realCategory] = {}
             end
-            
+
             categories[realCategory][k] = v
         end
     end

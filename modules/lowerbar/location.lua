@@ -23,16 +23,12 @@ function lowerBar.location()
     local buttonShown = false
 
     local name = "lowerBar.datasetloc"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", 0, 0)    
-    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
     datasetFrame:SetLayer(2)
-    
+
     local datasetLocation = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
     datasetLocation:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -10, 0)
     datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
@@ -98,7 +94,7 @@ function lowerBar.location()
         datasetLocation:SetText(loc[playerID])
     end
     
-    local function unitAvailable(_, info)
+    local function unitAvailable(_, info)rightModuleWidth
         for unit, data in pairs(info) do
             if data == "player" then
                 local details = inspectUnitDetail(unit)
@@ -114,5 +110,6 @@ function lowerBar.location()
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")
     Command.Event.Attach(Event.Unit.Availability.Full, unitAvailable, "nkUI.lowerbar.location.Unit.Availability.Full")
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+    return datasetFrame
+
 end

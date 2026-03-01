@@ -210,6 +210,7 @@ local _defaults = {
                         scanDepth       = 3,
                         browse          = { sortCol = 7, sortAsc = true, rarityFilter = {} },
                       },
+        wardrobe    = { activate = true },
     showLogo = true,
     useManager = true
 }

@@ -26,18 +26,14 @@ function lowerBar.social()
     local _friendlist, _guildList = {}, {}
 
     local name = "lowerBar.datasetsocial"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", 0, 0)    
-    --datasetFrame:SetBackgroundColor(1, 1, 0, 1)
     datasetFrame:SetLayer(2)
 
     local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    datasetSocialIcon:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 10, 0)
+    datasetSocialIcon:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
     datasetSocialIcon:SetHeight(16)
     datasetSocialIcon:SetWidth(16)
     datasetSocialIcon:SetTextureAsync("nkUI", "gfx/lowerbarGuild.png")    
@@ -184,5 +180,5 @@ function lowerBar.social()
     loadGuildRoster()
     loadFriendRoster()
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+    return datasetFrame
 end

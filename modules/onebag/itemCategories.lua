@@ -87,3 +87,20 @@ function oneBag.getRealCategory(category, rarity)
 
     return category
 end
+
+-- Gets wardrobe set name for an item, if it belongs to any set
+function oneBag.getWardrobeSetForItem(itemId, itemType)
+    if not nkUIWardrobe or not nkUIWardrobe.sets then return nil end
+    for idx, setData in ipairs(nkUIWardrobe.sets) do
+        if setData.items then
+            for slot, setItemId in pairs(setData.items) do
+                if setItemId == itemId then return setData.name end
+                -- Fallback: check by item type via backup
+                if nkUIWardrobeBackup and nkUIWardrobeBackup[setItemId] == itemType then
+                    return setData.name
+                end
+            end
+        end
+    end
+    return nil
+end

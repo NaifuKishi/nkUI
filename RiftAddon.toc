@@ -63,6 +63,10 @@ RunOnStartup = {
 	"modules/onebag/bagSlots.lua",
 	"modules/onebag/itemTooltip.lua",
 
+	"modules/wardrobe/wardrobe.lua",
+	"modules/wardrobe/wardrobeUI.lua",
+	"modules/lowerbar/wardrobe.lua",
+
 	"modules/unitFrames/buffBar.lua",
 	"modules/unitFrames/buffIcon.lua",
 	"modules/unitFrames/buffManagement.lua",
@@ -136,6 +140,8 @@ Dependencies = {
 SavedVariables = {
    nkUISetup	 	= "account",
    nkUIAucData		= "account",
-   nkUIMapGathering	= "account"
+   nkUIMapGathering	= "account",
+   nkUIWardrobe		= "character",
+   nkUIWardrobeBackup	= "character"
 }
 

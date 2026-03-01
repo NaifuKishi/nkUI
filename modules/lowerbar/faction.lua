@@ -43,21 +43,16 @@ function lowerBar.faction()
     end
 
     local name = "lowerBar.datasetfaction"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -(width*3), 0)    
-    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
-    datasetFrame:SetLayer(2)        
-    
+    datasetFrame:SetLayer(2)
+
     local datasetFactionBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".background", lowerBar.contextRestricted)
     datasetFactionBarBG:SetPoint("CENTER", datasetFrame, "CENTER",  (21 / 2), 0)
     datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
-    --datasetFactionBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
     datasetFactionBarBG:SetLayer(10)
 
     datasetFactionBarBG:SetShape({  {xProportional = 0, yProportional = 0}, 
@@ -158,5 +153,6 @@ function lowerBar.faction()
     updateFaction()
     Command.Event.Attach(Event.Faction.Notoriety, updateFaction, "nkui.lowerBar.faction.Event.Faction.Notoriety")
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+    return datasetFrame
+
 end

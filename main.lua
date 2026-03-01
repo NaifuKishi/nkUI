@@ -235,6 +235,10 @@ local function commandHandler (commandline)
 		end
 	elseif stringFind(commandline, "auction") ~= nil then
 		internalFunc.auctionOpen()
+	elseif stringFind(commandline, "wardrobe") ~= nil then
+		if nkUISetup and nkUISetup.modules and nkUISetup.modules.wardrobe and nkUISetup.modules.wardrobe.activate then
+			wardrobe.showUI()
+		end
 	elseif stringFind(commandline, "logo") then
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	elseif stringFind(commandline, "qlog") then
@@ -330,6 +334,10 @@ local function initializeAddon(_, addon)
 			internalFunc.setupDefaults()
 
 			if nkUISetup and nkUISetup.modules then
+				if nkUISetup.modules.wardrobe and nkUISetup.modules.wardrobe.activate then
+					internalFunc.wardrobeInit()
+				end
+
 				if nkUISetup.modules.tooltip and nkUISetup.modules.tooltip.activate then
 					internalFunc.tooltip()
 				end

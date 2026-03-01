@@ -30,15 +30,11 @@ function lowerBar.currency()
     end
 
     local name = "lowerBar.datasetcurrency"
-    local width = (uiElements.lowerBarCanvas:GetWidth() - uiElements.lowerBarTimeDate:GetWidth()) /8
     local height = uiElements.lowerBarCanvas:GetHeight()
 
     local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
     datasetFrame:SetHeight(height)
-    datasetFrame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -width, 0)    
-    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
-    datasetFrame:SetLayer(2)    
+    datasetFrame:SetLayer(2)
 
     local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
     datasetCurrency:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
@@ -102,5 +98,5 @@ function lowerBar.currency()
     
     updateCoin(_, {coin = true})
     
-    table.insert(uiElements.lowerBarModules, datasetFrame)
+    return datasetFrame
 end
