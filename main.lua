@@ -239,6 +239,11 @@ local function commandHandler (commandline)
 		if nkUISetup and nkUISetup.modules and nkUISetup.modules.wardrobe and nkUISetup.modules.wardrobe.activate then
 			wardrobe.showUI()
 		end
+	elseif stringFind(commandline, "minion") ~= nil then
+		if nkUISetup and nkUISetup.modules and nkUISetup.modules.minionManager
+		   and nkUISetup.modules.minionManager.activate then
+			internalFunc.minionManagerInit()
+		end
 	elseif stringFind(commandline, "logo") then
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	elseif stringFind(commandline, "qlog") then

@@ -123,6 +123,14 @@ RunOnStartup = {
 	"modules/actionbar/macroEditDialog.lua",
 	"modules/actionbar/keybindDialog.lua",
 
+	"modules/minionManager/minionManager.lua",
+	"modules/minionManager/ui-shared.lua",
+	"modules/minionManager/ui-card.lua",
+	"modules/minionManager/ui-rows.lua",
+	"modules/minionManager/ui-populate.lua",
+	"modules/minionManager/ui-build.lua",
+	"settings/settings-tabMinionManager.lua",
+
 }
 
 Embed = {	

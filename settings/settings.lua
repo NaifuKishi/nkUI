@@ -200,8 +200,7 @@ local _defaults = {
                         showUnknown = true,
                         zones = {},
                         userPOI = {},
-                        iconSize = 24 }
-                },
+                        iconSize = 24 },
         auction     = { activate        = true,
                         x               = 300,
                         y               = 200,
@@ -210,7 +209,9 @@ local _defaults = {
                         scanDepth       = 3,
                         browse          = { sortCol = 7, sortAsc = true, rarityFilter = {} },
                       },
-        wardrobe    = { activate = true },
+        wardrobe        = { activate = true },
+        minionManager   = { activate = true, x = 200, y = 200 }
+                        },
     showLogo = true,
     useManager = true
 }
@@ -294,8 +295,8 @@ function internalFunc.setupDefaults()
         nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] = { roles = {} }
 
         scaleUI ()
-    else
-        nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
+    else        
+        nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)        
     end
 
    
@@ -498,6 +499,7 @@ function internalFunc.setupUI ()
     local paneTabUnitFrameBasic = settingsUI.uiConfigTabUFBasic(name .. ".tab.UnitFrameBasic", tabPane)
 
     local paneTabUnitFrames = settingsUI.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
+    local paneTabMinionManager = settingsUI.uiConfigTabMinionManager(name .. ".tab.MinionManager", tabPane)
 
     local versionText = LibEKL.UICreateFrame("nkText", name .. ".versionText", config)
     versionText:SetFontSize(11)
@@ -585,7 +587,8 @@ function internalFunc.setupUI ()
 
     tabPane:AddPane( { label = langTexts.settings.unitframes, effect = { strength = 3 }, frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
 
-    tabPane:AddPane( { label = langTexts.settings.units, effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, true)
+    tabPane:AddPane( { label = langTexts.settings.units, effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.minionManager, effect = { strength = 3 }, frame = paneTabMinionManager, initFunc = function() paneTabMinionManager:build() end}, true)
 
     --if LibEKL.Events.CheckEvents ("nkRadial", true) == false then return nil end
 
