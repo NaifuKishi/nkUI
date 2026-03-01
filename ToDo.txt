@@ -1,21 +1,6 @@
-know bug list
+at my resolution (1920x1080) the tooltip module's extra stuff is pushed off the bottom of the screen
 
-    - Quest Tracker -Quest Objective Update not working properly    
-    - out of range indicator on weapon switch    
+and...i'm having the 4 buttons dropdown under the minimap breaking half the time
+also, the minimap doesnt 'lift' its registration of clicking if the mouse leave the minimap ui.
 
-ToDo
-
-    - background red when got aggro?
-    - indicator on group frames selected target?
-    - filter to only show own buffs
-    - add option to hide player in group frames
-    - add option to hide quest tracker in dungeons and raids
-    - mark unusable items in one bag
-    - add key indicator to action bar (just for visual reference)
-    - onebag add compare tooltip to items
-    - finish cooldown icons
-    - faction update in sct
-    - group update bug on death
-    - Macro for raid / group frames (click healing)
-    - Combined stats event with caching?
-    - add blocked handling? (only works for group members)
+SCT's loot thing pops when you move stuff in your bags, between bags >.> 
