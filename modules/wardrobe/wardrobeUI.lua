@@ -68,10 +68,13 @@ function internalFunc.wardrobeShowUI()
     local setNameField = LibEKL.UICreateFrame("nkTextfield", "nkUI.wardrobeUI.setName", content)
     setNameField:SetPoint("TOPLEFT", setCombo, "BOTTOMLEFT", 0, 15)
     setNameField:SetWidth(350)
-    setNameField:SetFont(addonInfo.id, "MontserratSemiBold")
-    setNameField:SetFontSize(14)
-    setNameField:SetColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    setNameField:SetEffectGlow({strength = 3})
+    setNameField:SetInnerColor({r = 0.13, g = 0.15, b = 0.20, a = 1})
+    setNameField:SetFocusColor({r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1})
+    setNameField:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
+    --setNameField:SetFont(addonInfo.id, "MontserratSemiBold")
+    --setNameField:SetFontSize(14)
+    --setNameField:SetColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
+    --setNameField:SetEffectGlow({strength = 3})
 
     -- Equipment/Inventory display (simplified, stacked vertically)
     local equipHeader = LibEKL.UICreateFrame("nkText", "nkUI.wardrobeUI.equipHeader", content)
@@ -107,6 +110,8 @@ function internalFunc.wardrobeShowUI()
         slot:SetWidth(30)
         slot:SetHeight(30)
         slot:SetTextureAsync("nkUI", "gfx/equipslot_blank.png")
+        
+        slotFrame.slot = slot
 
         equipSlots[idx] = slotFrame
     end
@@ -268,13 +273,15 @@ function internalFunc.wardrobeShowUI()
                 if itemId then
                     local ok, itemDetails = pcall(Inspect.Item.Detail, itemId)
                     if ok and itemDetails then
-                        local tex = slotFrame:GetChild(1) or slotFrame:FindChildByName("nkUI.wardrobeUI.equipSlot" .. idx .. ".tex")
+
+                        local tex = slotFrame.slot
                         if tex then
                             tex:SetTextureAsync("Rift", itemDetails.icon)
                         end
                     end
                 else
-                    local tex = slotFrame:GetChild(1) or slotFrame:FindChildByName("nkUI.wardrobeUI.equipSlot" .. idx .. ".tex")
+                    local tex = slotFrame.slot
+
                     if tex then
                         tex:SetTextureAsync("nkUI", "gfx/equipslot_blank.png")
                     end

@@ -20,33 +20,10 @@ local stringFormat         = string.format
 -- Creates and manages the role selection display
 function lowerBar.lowerBarRoles()
 
-    local name = "lowerBar.datasetroles"
-    local height = uiElements.lowerBarCanvas:GetHeight()
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetroles", "gfx/lowerbarRole.png", "left", true)
 
-    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetHeight(height)
-    --datasetFrame:SetBackgroundColor(1, 0, 0, 1)
-    datasetFrame:SetSecureMode('restricted')
-    datasetFrame:SetLayer(2)
-
-    local datasetRole = LibEKL.UICreateFrame("nkText", name .. ".text", lowerBar.contextRestricted)
-    datasetRole:SetPoint("CENTER", datasetFrame, "CENTER", -21 , 0)
-    datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetRole:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetRole:SetEffectGlow({ strength = 1})
-    datasetRole:SetSecureMode('restricted')
-    datasetRole:SetLayer(5)
-
-    local datasetRoleIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    datasetRoleIcon:SetPoint("CENTERRIGHT", datasetRole, "CENTERLEFT", -5, -2)
-    datasetRoleIcon:SetHeight(16)
-    datasetRoleIcon:SetWidth(16)
-    datasetRoleIcon:SetSecureMode('restricted')
-    datasetRoleIcon:SetTextureAsync("nkUI", "gfx/lowerbarRole.png")
-    
-    local roleSwitch = LibEKL.UICreateFrame("nkFrame", name .. ".switch", datasetRole)
-    roleSwitch:SetPoint("BOTTOMCENTER", datasetRole, "TOPCENTER")
+    local roleSwitch = LibEKL.UICreateFrame("nkFrame", "lowerBar.datasetroles.switch", datasetFrame)
+    roleSwitch:SetPoint("BOTTOMLEFT", datasetFrame, "TOPLEFT")
     roleSwitch:SetSecureMode('restricted')
     roleSwitch:SetHeight(1)
     roleSwitch:SetVisible(false)
@@ -71,10 +48,10 @@ function lowerBar.lowerBarRoles()
             local thisRole
             
             if id == curRole then
-                datasetRole:SetText(stringFormat(langTexts.lowerBar.role, desc), true)
+                datasetFrame:SetText(stringFormat(langTexts.lowerBar.role, desc), true)
             else
                 if roleDisplay[roleID] == nil then
-                    thisRole = LibEKL.UICreateFrame("nkText", name .. ".thisRole." .. id, roleSwitch)
+                    thisRole = LibEKL.UICreateFrame("nkText", "lowerBar.datasetroles.thisRole." .. id, roleSwitch)
                     thisRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
                     thisRole:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
                     thisRole:SetEffectGlow({ strength = 1})
@@ -100,7 +77,7 @@ function lowerBar.lowerBarRoles()
     end
     
     function datasetFrame:Redraw()
-        datasetRole:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
         
         for k, v in pairs(roleDisplay) do
             v:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
@@ -114,7 +91,7 @@ function lowerBar.lowerBarRoles()
         
         buttonShown = not buttonShown
         roleSwitch:SetVisible(buttonShown)
-    end, name .. "_Left_Click")
+    end, "lowerBar.datasetroles._Left_Click")
     
     Command.Event.Attach(Event.TEMPORARY.Role, function(handle, role)
         buttonShown = false

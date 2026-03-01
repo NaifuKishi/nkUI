@@ -24,33 +24,14 @@ function lowerBar.fps()
     local height = uiElements.lowerBarCanvas:GetHeight()
     local width = 120
 
-    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetWidth(width)
-    datasetFrame:SetHeight(height)
-    datasetFrame:SetLayer(2)
-
-    local datasetFPS = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
-    datasetFPS:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 31, 0)
-    datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetFPS:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetFPS:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetFPS:SetEffectGlow({ strength = 1})
-    datasetFPS:SetLayer(5)
-
-    datasetFPS:SetSecureMode('restricted')
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetfps", "gfx/lowerbarFPS.png", "left")
 
     if nkDebug then
-	    datasetFPS:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "/nkd")
+	    datasetFrame:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "/nkd")
     end
 
-    local datasetFPSIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    datasetFPSIcon:SetPoint("CENTERRIGHT", datasetFPS, "CENTERLEFT", -5, 0)
-    datasetFPSIcon:SetHeight(16)
-    datasetFPSIcon:SetWidth(16)
-    datasetFPSIcon:SetTextureAsync("nkUI", "gfx/lowerbarFPS.png")
-    
     function datasetFrame:Redraw()
-        datasetFPS:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
     local fpsUpdateTime, fpsDeltaTime = nil, nil
@@ -94,10 +75,10 @@ function lowerBar.fps()
                 end
 
                 if icon ~= lastIcon then
-                    datasetFPSIcon:SetTextureAsync("nkUI", icon)
+                    datasetFrame:SetTextureAsync(icon)
                 end
 
-                datasetFPS:SetText(stringFormat("<font color='%s'>%d fps</font> | <font color='%s'>%d%% CPU</font>", fpsColor, newFPS, cpuColor, total * 100), true)
+                datasetFrame:SetText(stringFormat("<font color='%s'>%d fps</font> | <font color='%s'>%d%% CPU</font>", fpsColor, newFPS, cpuColor, total * 100), true)
                 frameCount, fpsTimer = 0, 0
                 lastFPS = newFPS
                 lastTotal = total

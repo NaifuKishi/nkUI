@@ -25,29 +25,10 @@ function lowerBar.social()
     local lastGuildUpdate
     local _friendlist, _guildList = {}, {}
 
-    local name = "lowerBar.datasetsocial"
-    local height = uiElements.lowerBarCanvas:GetHeight()
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetsocial", "gfx/lowerbarGuild.png", "left")
 
-    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetHeight(height)
-    datasetFrame:SetLayer(2)
-
-    local datasetSocialIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    datasetSocialIcon:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
-    datasetSocialIcon:SetHeight(16)
-    datasetSocialIcon:SetWidth(16)
-    datasetSocialIcon:SetTextureAsync("nkUI", "gfx/lowerbarGuild.png")    
-
-    local datasetSocial = LibEKL.UICreateFrame("nkText", name .. ".text", datasetFrame)
-    datasetSocial:SetPoint("CENTERLEFT", datasetSocialIcon, "CENTERRIGHT", 5, 0)
-    datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetSocial:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetSocial:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetSocial:SetEffectGlow({ strength = 1})
-    datasetSocial:SetLayer(10)
-   
     function datasetFrame:Redraw()
-        datasetSocial:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
     local function findGuildEntry(name)
@@ -78,7 +59,7 @@ function lowerBar.social()
             end
         end
         
-        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
+        datasetFrame:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
 
         lastGuildUpdate = inspectTimeFrame()
     end
@@ -104,7 +85,7 @@ function lowerBar.social()
             end
         end
 
-        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
+        datasetFrame:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
 
     end
     
@@ -116,7 +97,7 @@ function lowerBar.social()
             if v == "online" then processFriend(k) end
         end
         
-        datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
+        datasetFrame:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
     end
     
     local function guildStatusChange(_, data)
@@ -137,7 +118,7 @@ function lowerBar.social()
                 end
             end
             
-            datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
+            datasetFrame:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
         end
     end
     
@@ -154,7 +135,7 @@ function lowerBar.social()
                 processGuildMember(k)
             end
             
-            datasetSocial:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
+            datasetFrame:SetText(stringFormat(langTexts.lowerBar.social, #_friendlist, #_guildList))
         end
     end
     

@@ -206,6 +206,7 @@ end
 ---------- addon internal function block ---------
 
 function internalFunc.wardrobeInit()
+
     local charData = wardrobe.getCharData()
 
     -- Apply defaults
@@ -214,31 +215,7 @@ function internalFunc.wardrobeInit()
         charData.sets = {{name = "Set 1", items = {}, bag = 1, bank = 0, icon = ""}}
     end
 
-    -- Migrate from nkWardrobe if present
-    if nkWSetup and nkWSetup.sets and #nkWSetup.sets > 0 then
-        if #charData.sets == 1 and next(charData.sets[1].items) == nil then
-            -- Fresh nkUI wardrobe, migrate from nkWardrobe
-            charData.sets = {}
-            for idx, oldSet in ipairs(nkWSetup.sets) do
-                charData.sets[idx] = {
-                    name = oldSet.name,
-                    items = LibEKL.Tools.Table.Copy(oldSet.items),
-                    bag = oldSet.bag or 1,
-                    bank = oldSet.bank or 0,
-                    icon = oldSet.icon or ""
-                }
-            end
-            charData.activeSet = nkWSetup.activeSet or 1
-
-            if nkWBackup then
-                nkUIWardrobeBackup = LibEKL.Tools.Table.Copy(nkWBackup)
-            end
-
-            Command.Console.Display("general", true,
-                '<font color="#0094FF">nkUI:</font> Migrated wardrobe sets from nkWardrobe', true)
-        end
-    end
-
+    
     -- Pre-cache item types
     if nkUIWardrobeBackup == nil then nkUIWardrobeBackup = {} end
 
@@ -256,15 +233,4 @@ function internalFunc.wardrobeInit()
     -- Attach tooltip handler
     Command.Event.Attach(Event.Tooltip, wardrobe.tooltipInfo, "nkUI.wardrobe.Tooltip")
 
-    Command.Console.Display("general", true, langTexts.wardrobe.startUp, true)
 end
-
----------- Startup Events ----------
-
-Command.Event.Attach(Event.Addon.SavedVariables.Load.End, function(_, addon)
-    if addon == addonInfo.identifier then
-        if nkUISetup and nkUISetup.modules and nkUISetup.modules.wardrobe and nkUISetup.modules.wardrobe.activate then
-            internalFunc.wardrobeInit()
-        end
-    end
-end, "nkUI.wardrobe.SavedVariables.Load.End")

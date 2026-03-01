@@ -29,33 +29,14 @@ function lowerBar.currency()
         freeBagCount = #freeBagSlots
     end
 
-    local name = "lowerBar.datasetcurrency"
-    local height = uiElements.lowerBarCanvas:GetHeight()
-
-    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetHeight(height)
-    datasetFrame:SetLayer(2)
-
-    local datasetCurrency = LibEKL.UICreateFrame("nkText", "lowerBar.currency", lowerBar.contextRestricted)
-    datasetCurrency:SetPoint("CENTER", datasetFrame, "CENTER", 21, 0)
-    datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetCurrency:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetCurrency:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetCurrency:SetEffectGlow({ strength = 1})
-    datasetCurrency:SetLayer(10)
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetcurrency", "gfx/questIconCoin.png", "right")
         
-    datasetCurrency:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
         internalFunc.oneBagInit()
     end, "nkUI.lowerbar.currency.Left.Click")
 
-    local datasetCurrencyIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.currency.icon", datasetCurrency)
-    datasetCurrencyIcon:SetPoint("CENTERRIGHT", datasetCurrency, "CENTERLEFT", -5, 0)
-    datasetCurrencyIcon:SetHeight(16)
-    datasetCurrencyIcon:SetWidth(16)
-    datasetCurrencyIcon:SetTextureAsync("nkUI", "gfx/questIconCoin.png")
-    
     function datasetFrame:Redraw()
-        datasetCurrency:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
     
     local function updateCoin(_, currency)
@@ -84,7 +65,7 @@ function lowerBar.currency()
             -- Combine the parts with spaces
             local coinText = table.concat(coinParts, " ")
 
-            datasetCurrency:SetText(stringFormat(currencyText, coinText, freeBagCount), true)
+            datasetFrame:SetText(stringFormat(currencyText, coinText, freeBagCount), true)
         end
     end
     

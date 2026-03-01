@@ -10,6 +10,7 @@ local internalFunc  = privateVars.internalFunc
 local lowerBar      = privateVars.lowerBar
 
 local mathpi        = math.pi
+local mathRandom    = math.random
 
 ---------- init variables ---------
 
@@ -25,6 +26,16 @@ lowerBar.contextRestricted :SetSecureMode("restricted")
 lowerBar.contextRestricted :SetLayer(2)
 
 ---------- local functions ---------
+
+-- Helper: Generate a random background color
+local function getRandomColor()
+    return {
+        r = mathRandom() * 0.5 + 0.25,  -- 0.25-0.75
+        g = mathRandom() * 0.5 + 0.25,
+        b = mathRandom() * 0.5 + 0.25,
+        a = 0.3
+    }
+end
 
 -- Helper: Position a module on left side (away from time)
 function lowerBar.positionLeft(frame)
@@ -49,9 +60,13 @@ function lowerBar.redistributeLayout()
 
         frame:SetWidth(leftModuleWidth)
         local xOffset = (idx - 1) * leftModuleWidth + leftModuleWidth / 2
-        
+
+        -- Apply random background color
+        --local color = getRandomColor()
+        --frame:SetBackgroundColor(color.r, color.g, color.b, 1)
+
         if idx == 1 then
-            frame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", 0, 0)
+            frame:SetPoint("CENTERLEFT", uiElements.lowerBarCanvas, "CENTERLEFT", 10, 0)
         else
             frame:SetPoint("CENTER", uiElements.lowerBarCanvas, "CENTERLEFT", xOffset, 0)
         end
@@ -65,13 +80,62 @@ function lowerBar.redistributeLayout()
         frame:SetWidth(rightModuleWidth)
         local xOffset = -((idx - 1) * rightModuleWidth + rightModuleWidth / 2)
 
+        -- Apply random background color
+        --local color = getRandomColor()
+        --frame:SetBackgroundColor(color.r, color.g, color.b, 1)
+
         if idx == 1 then
-            frame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", 0, 0)
+            frame:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -10, 0)
         else
             frame:SetPoint("CENTER", uiElements.lowerBarCanvas, "CENTERRIGHT", xOffset, 0)
         end
-        
+
     end
+end
+
+function lowerBar.dataSet(name, texture, align)
+
+    local height = uiElements.lowerBarCanvas:GetHeight()
+
+    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
+    datasetFrame:SetHeight(height)
+    datasetFrame:SetLayer(2)
+    datasetFrame:SetSecureMode('restricted')
+
+    local icon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
+    icon:SetHeight(16)
+    icon:SetWidth(16)
+    icon:SetTextureAsync("nkUI", texture)
+
+    local label = LibEKL.UICreateFrame("nkText", name .. ".text", datasetFrame)    
+    label:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+    label:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
+    label:SetTextFont(addonInfo.id, "MontserratMedium")
+    label:SetEffectGlow({ strength = 1})
+    label:SetLayer(10)
+
+    if align == "left" then
+        icon:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 0, 0)
+        label:SetPoint("CENTERLEFT", icon, "CENTERRIGHT", 21, 0)
+    else
+        label:SetPoint("CENTERRIGHT", datasetFrame, "CENTERRIGHT", 0, 0)
+        icon:SetPoint("CENTERRIGHT", label, "CENTERLEFT", -21, 0)
+    end    
+
+    function datasetFrame:SetText(newText)
+        label:SetText(newText, true)
+    end
+
+    function datasetFrame:SetFontSize(newFontSize)
+        label:SetFontSize(newFontSize)
+    end
+
+    function datasetFrame:SetTextureAsync(newTexture)
+        icon:SetTextureAsync("nkUI", newTexture)
+    end
+
+    return datasetFrame
+
 end
 
 -- Initializes the lower bar and loads all modules
@@ -133,7 +197,11 @@ function lowerBar.build()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 
-    local thisDataSet = lowerBar.lowerBarWardrobe()
+    --local thisDataSet = lowerBar.lowerBarWardrobe()
+    --table.insert(uiElements.lowerBarModules, thisDataSet)
+    --lowerBar.positionLeft(thisDataSet)
+
+    local thisDataSet = lowerBar.social()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 
@@ -159,10 +227,6 @@ function lowerBar.build()
     lowerBar.positionRight(thisDataSet)
 
     local thisDataSet = lowerBar.vitality()
-    table.insert(uiElements.lowerBarModules, thisDataSet)
-    lowerBar.positionRight(thisDataSet)
-
-    local thisDataSet = lowerBar.social()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionRight(thisDataSet)
 

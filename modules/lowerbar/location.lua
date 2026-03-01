@@ -22,40 +22,20 @@ function lowerBar.location()
     
     local buttonShown = false
 
-    local name = "lowerBar.datasetloc"
-    local height = uiElements.lowerBarCanvas:GetHeight()
-
-    local datasetFrame = LibEKL.UICreateFrame("nkFrame", name .. ".frame", lowerBar.contextRestricted)
-    datasetFrame:SetHeight(height)
-    datasetFrame:SetLayer(2)
-
-    local datasetLocation = LibEKL.UICreateFrame('nkText', name .. ".text", lowerBar.contextRestricted)
-    datasetLocation:SetPoint("CENTERRIGHT", uiElements.lowerBarCanvas, "CENTERRIGHT", -10, 0)
-    datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
-    datasetLocation:SetFontColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, data.colors.primary.a)
-    datasetLocation:SetTextFont(addonInfo.id, "MontserratMedium")
-    datasetLocation:SetSecureMode('restricted')
-    datasetLocation:SetEffectGlow({ strength = 1})
-    datasetLocation:SetLayer(10)
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetloc", "gfx/lowerbarLocation.png", "right")
     
     function datasetFrame:Redraw()
-        datasetLocation:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
+        datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
     end
-
-    local datasetLocationIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    datasetLocationIcon:SetPoint("CENTERRIGHT", datasetLocation, "CENTERLEFT", -5, 0)
-    datasetLocationIcon:SetHeight(16)
-    datasetLocationIcon:SetWidth(16)
-    datasetLocationIcon:SetTextureAsync("nkUI", "gfx/lowerbarLocation.png")
     
     local buttons = {}
     local abilities = {"A3C5AEC64D3793518", "A665FDAC7EDD37636", "A6B16924B96299E96"}
     local abilityDetails = inspectAbilityNewDetail(abilities)
 
-    local parent = datasetLocation
+    local parent = datasetFrame
     
     for k, v in pairs(abilityDetails) do
-        local datasetLocationButton = LibEKL.UICreateFrame('nkFrame', "lowerBar.location.button" .. k, datasetLocation)
+        local datasetLocationButton = LibEKL.UICreateFrame('nkFrame', "lowerBar.location.button" .. k, parent)
         datasetLocationButton:SetVisible(false)
         datasetLocationButton:SetBackgroundColor(0, 0, 0, 1)
         datasetLocationButton:SetHeight(40)
@@ -91,21 +71,21 @@ function lowerBar.location()
         
         if loc[playerID] == nil or loc[playerID] == false then return end
         
-        datasetLocation:SetText(loc[playerID])
+        datasetFrame:SetText(loc[playerID])
     end
     
-    local function unitAvailable(_, info)rightModuleWidth
+    local function unitAvailable(_, info)
         for unit, data in pairs(info) do
             if data == "player" then
                 local details = inspectUnitDetail(unit)
-                datasetLocation:SetText(details.locationName)
+                datasetFrame:SetText(details.locationName)
                 return
             end
         end
     end
     
     local details = inspectUnitDetail(LibEKL.Unit.GetPlayerDetails().id)
-    datasetLocation:SetText(details.locationName)
+    datasetFrame:SetText(details.locationName)
 
     Command.Event.Attach(Event.Unit.Detail.LocationName, updateLocation, "nkUI.lowerbar.location.Unit.Detail.LocationName")
     Command.Event.Attach(Event.Unit.Availability.Full, unitAvailable, "nkUI.lowerbar.location.Unit.Availability.Full")

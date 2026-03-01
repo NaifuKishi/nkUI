@@ -401,13 +401,9 @@ local function initializeAddon(_, addon)
 				if nkUISetup.modules.map and nkUISetup.modules.map.activate then
 					internalFunc.mapInit()
 				end
-
-				--internalFunc.questLogInit()							
 			end
 
-			--if nkUISetup.modules.map and nkUISetup.modules.map.activate then
-			--	LibEKL.Events.AddInsecure(internalFunc.mapInit, inspectTimeFrame(), 5)
-			--end
+			internalFunc.wardrobeInit()
 
             Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
@@ -438,12 +434,6 @@ local function initializeAddon(_, addon)
 
 			Command.Message.Accept(nil, "nkUI.version")
 
---[[			Command.Event.Attach(Event.Mail, function(a,b,c) 
-				dump(a)
-				dump(b)
-				dump(c)
-			end, "nkUI.Version.Message.Receive")
-]]
 			Command.Event.Attach(Event.Message.Receive, _fctProcessMessage, "nkUI.Version.Message.Receive")
 
 		end, "nkUI.Unit.Availability.Full")				
