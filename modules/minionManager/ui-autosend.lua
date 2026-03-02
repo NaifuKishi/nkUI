@@ -34,7 +34,7 @@ local function _advStats(adv)
     for i = 1, #ADV_STAT_FIELDS do
         local f = ADV_STAT_FIELDS[i]
         local v = adv[f]
-        if v and v ~= false then
+        if v == true or (type(v) == "number" and v > 0) then
             fields[f] = true
         end
     end
@@ -171,20 +171,32 @@ function minionManager.autoSend()
     end
 
     local priority = cfg.autoSendPriority or 1
-    local matchReq = cfg.autoSendMatch    or 1  -- minimum stat matches required
+    local matchReq = cfg.autoSendMatch    or 1
+
+    -- Cap matchReq to the number of stats the adventure actually requires,
+    -- then fall back down to 0 if no minion qualifies at the requested level.
+    local advStatCount = 0
+    for _ in pairs(advStats) do advStatCount = advStatCount + 1 end
+    if matchReq > advStatCount then matchReq = advStatCount end
 
     local bestId    = nil
     local bestScore = nil
 
-    for id, det in pairs(minionDetails) do
-        if not busyIds[id] then
-            local score = _scoreMinion(det, advStats, priority, matchReq)
-            if score ~= nil then
-                if bestScore == nil or score > bestScore then
-                    bestScore = score
-                    bestId    = id
+    while bestId == nil and matchReq >= 0 do
+        for id, det in pairs(minionDetails) do
+            if not busyIds[id] then
+                local score = _scoreMinion(det, advStats, priority, matchReq)
+                if score ~= nil then
+                    if bestScore == nil or score > bestScore then
+                        bestScore = score
+                        bestId    = id
+                    end
                 end
             end
+        end
+        if bestId == nil then
+            matchReq  = matchReq - 1
+            bestScore = nil
         end
     end
 
