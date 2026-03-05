@@ -1,0 +1,425 @@
+{
+  "numStartups": 17,
+  "installMethod": "native",
+  "autoUpdates": false,
+  "tipsHistory": {
+    "new-user-warmup": 7,
+    "plan-mode-for-complex-tasks": 6,
+    "terminal-setup": 11,
+    "memory-command": 16,
+    "theme-command": 1,
+    "status-line": 1,
+    "prompt-queue": 7,
+    "enter-to-steer-in-relatime": 1,
+    "todo-list": 1,
+    "ide-upsell-external-terminal": 10,
+    "install-github-app": 11,
+    "install-slack-app": 11,
+    "drag-and-drop-images": 11,
+    "double-esc-code-restore": 11,
+    "continue": 11,
+    "shift-tab": 11,
+    "image-paste": 2,
+    "web-app": 17,
+    "mobile-app": 17,
+    "custom-agents": 6,
+    "agent-flag": 6,
+    "default-permission-mode-config": 10,
+    "permissions": 11,
+    "rename-conversation": 11,
+    "custom-commands": 11,
+    "shift-enter-setup": 13
+  },
+  "promptQueueUseCount": 8,
+  "cachedGrowthBookFeatures": {
+    "tengu_oboe": true,
+    "tengu_event_sampling_config": {},
+    "tengu_log_segment_events": false,
+    "tengu_log_datadog_events": true,
+    "tengu_penguins_enabled": true,
+    "tengu_mcp_tool_search": true,
+    "tengu_marble_anvil": true,
+    "tengu_tool_pear": false,
+    "tengu_scarf_coffee": false,
+    "tengu_chomp_inflection": false,
+    "tengu_marble_sandcastle": true,
+    "tengu_penguins_off": null,
+    "tengu_streaming_text": false,
+    "tengu_silver_lantern": false,
+    "tengu_birthday_hat": false,
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
+    },
+    "tengu_snippet_save": false,
+    "tengu_pr_status_cli": true,
+    "tengu_ccr_bridge": false,
+    "tengu_mcp_elicitation": false,
+    "tengu_keybinding_customization_release": true,
+    "tengu_post_compact_survey": false,
+    "tengu_copper_lantern": false,
+    "tengu_claudeai_mcp_connectors": true,
+    "tengu_pebble_leaf_prune": false,
+    "tengu_tool_search_unsupported_models": [
+      "haiku"
+    ],
+    "tengu_system_prompt_global_cache": true,
+    "tengu_attribution_header": true,
+    "enhanced_telemetry_beta": false,
+    "tengu_pid_based_version_locking": true,
+    "tengu_immediate_model_command": false,
+    "tengu_birch_mist": true,
+    "tengu_marble_lantern_disabled": false,
+    "tengu_vinteuil_phrase": true,
+    "tengu_mulberry_fog": false,
+    "tengu_coral_fern": false,
+    "tengu_scratch": false,
+    "tengu_moth_copse": false,
+    "tengu_cache_plum_violet": true,
+    "tengu_streaming_tool_execution2": true,
+    "tengu_fgts": false,
+    "tengu_plan_mode_interview_phase": false,
+    "tengu_prompt_cache_1h_config": {
+      "allowlist": [
+        "repl_main_thread*",
+        "sdk"
+      ]
+    },
+    "tengu_session_memory": false,
+    "tengu_bergotte_lantern": false,
+    "tengu_swann_brevity": "focused",
+    "tengu_tool_input_aliasing": false,
+    "tengu_oak_drum": false,
+    "tengu_coral_whistle": false,
+    "tengu_permission_explainer": true,
+    "tengu_destructive_command_warning": false,
+    "tengu_1p_event_batch_config": {
+      "scheduledDelayMillis": 5000,
+      "maxExportBatchSize": 200,
+      "maxQueueSize": 8192
+    },
+    "tengu_slate_nexus": true,
+    "tengu_thinkback": false,
+    "tengu_auto_background_agents": false,
+    "tengu_vscode_review_upsell": false,
+    "tengu_vscode_onboarding": false,
+    "tengu_quiet_fern": true,
+    "tengu_tst_kx7": false,
+    "tengu_sm_compact": false,
+    "tengu_compact_cache_prefix": true,
+    "tengu_compact_streaming_retry": false,
+    "tengu_amber_prism": false,
+    "tengu_amber_quartz": false,
+    "tengu_slate_ridge": false,
+    "tengu_summarize_tool_results": true,
+    "tengu_plum_vx3": true,
+    "tengu_disable_streaming_to_non_streaming_fallback": false
+  },
+  "firstStartTime": "2026-02-24T12:35:15.363Z",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "userID": "936596816c4f0ee8aea9444ec65aa158ec29ab20ce58f8ba4c4cb352701b99f6",
+  "cachedChromeExtensionInstalled": false,
+  "changelogLastFetched": 1772350691843,
+  "autoUpdatesProtectedForNative": true,
+  "clientDataCache": {
+    "data": {},
+    "timestamp": 1772292574677
+  },
+  "claudeCodeFirstTokenDate": "2026-02-24T12:35:42.132710Z",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.52",
+  "projects": {
+    "/home/naifu/Games/Heroic/Prefixes/default/Glpyh/pfx/drive_c/users/steamuser/Documents/RIFT/Interface/Addons/nkUI": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [
+        "auction-browse.lua",
+        "keybindDialog.lua",
+        "actionicon.lua",
+        "auction.lua",
+        "experience.lua"
+      ],
+      "exampleFilesGeneratedAt": 1772739340609,
+      "hasCompletedProjectOnboarding": true,
+      "lastCost": 0.8797579999999998,
+      "lastAPIDuration": 137912,
+      "lastAPIDurationWithoutRetries": 137906,
+      "lastToolDuration": 785,
+      "lastDuration": 484946,
+      "lastLinesAdded": 8,
+      "lastLinesRemoved": 4,
+      "lastTotalInputTokens": 20,
+      "lastTotalOutputTokens": 5597,
+      "lastTotalCacheCreationInputTokens": 54602,
+      "lastTotalCacheReadInputTokens": 796941,
+      "lastTotalWebSearchRequests": 0,
+      "lastFpsAverage": 5.31,
+      "lastFpsLow1Pct": 104.39,
+      "lastModelUsage": {
+        "claude-sonnet-4-6": {
+          "inputTokens": 20,
+          "outputTokens": 5597,
+          "cacheReadInputTokens": 796941,
+          "cacheCreationInputTokens": 54602,
+          "webSearchRequests": 0,
+          "costUSD": 0.8797579999999998
+        }
+      },
+      "lastSessionId": "4f1ac0ec-80a4-49dd-9397-8bced733cebf",
+      "lastSessionMetrics": {
+        "frame_duration_ms_count": 2572,
+        "frame_duration_ms_min": 0.19342300004791468,
+        "frame_duration_ms_max": 30.181582000048365,
+        "frame_duration_ms_avg": 1.021975784992548,
+        "frame_duration_ms_p50": 0.7590100000088569,
+        "frame_duration_ms_p95": 1.3477388999948743,
+        "frame_duration_ms_p99": 9.409548500044608,
+        "pre_tool_hook_duration_ms_count": 20,
+        "pre_tool_hook_duration_ms_min": 0,
+        "pre_tool_hook_duration_ms_max": 2,
+        "pre_tool_hook_duration_ms_avg": 0.55,
+        "pre_tool_hook_duration_ms_p50": 0.5,
+        "pre_tool_hook_duration_ms_p95": 1.0500000000000007,
+        "pre_tool_hook_duration_ms_p99": 1.8099999999999987,
+        "hook_duration_ms_count": 17,
+        "hook_duration_ms_min": 0,
+        "hook_duration_ms_max": 1,
+        "hook_duration_ms_avg": 0.29411764705882354,
+        "hook_duration_ms_p50": 0,
+        "hook_duration_ms_p95": 1,
+        "hook_duration_ms_p99": 1
+      }
+    },
+    "/home/naifu": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "lastCost": 0.00413935,
+      "lastAPIDuration": 2992,
+      "lastAPIDurationWithoutRetries": 2991,
+      "lastToolDuration": 0,
+      "lastDuration": 9477,
+      "lastLinesAdded": 0,
+      "lastLinesRemoved": 0,
+      "lastTotalInputTokens": 3,
+      "lastTotalOutputTokens": 165,
+      "lastTotalCacheCreationInputTokens": 1147,
+      "lastTotalCacheReadInputTokens": 18776,
+      "lastTotalWebSearchRequests": 0,
+      "lastFpsAverage": 8.27,
+      "lastFpsLow1Pct": 222.07,
+      "lastModelUsage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 3,
+          "outputTokens": 165,
+          "cacheReadInputTokens": 18776,
+          "cacheCreationInputTokens": 1147,
+          "webSearchRequests": 0,
+          "costUSD": 0.00413935
+        }
+      },
+      "lastSessionId": "a5e51e0f-3b03-4e02-8627-f2fb474d40f3",
+      "lastSessionMetrics": {
+        "frame_duration_ms_count": 71,
+        "frame_duration_ms_min": 0.3353589999996984,
+        "frame_duration_ms_max": 4.502997999999934,
+        "frame_duration_ms_avg": 0.7402158732393963,
+        "frame_duration_ms_p50": 0.4524409999994532,
+        "frame_duration_ms_p95": 2.6855445000001055,
+        "frame_duration_ms_p99": 4.355542299999706
+      }
+    },
+    "/home/naifu/Games/Heroic/Prefixes/default/Glpyh/pfx/drive_c/users/steamuser/Documents/RIFT/Interface/Addons/nkDebug": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true,
+      "projectOnboardingSeenCount": 8,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "lastCost": 0.8524675000000002,
+      "lastAPIDuration": 111880,
+      "lastAPIDurationWithoutRetries": 111870,
+      "lastToolDuration": 396,
+      "lastDuration": 26297567,
+      "lastLinesAdded": 71,
+      "lastLinesRemoved": 30,
+      "lastTotalInputTokens": 1675,
+      "lastTotalOutputTokens": 5852,
+      "lastTotalCacheCreationInputTokens": 32292,
+      "lastTotalCacheReadInputTokens": 994055,
+      "lastTotalWebSearchRequests": 0,
+      "lastFpsAverage": 0.12,
+      "lastFpsLow1Pct": 59.9,
+      "lastModelUsage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 170,
+          "outputTokens": 19,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.00026500000000000004
+        },
+        "claude-sonnet-4-6": {
+          "inputTokens": 1505,
+          "outputTokens": 5833,
+          "cacheReadInputTokens": 994055,
+          "cacheCreationInputTokens": 32292,
+          "webSearchRequests": 0,
+          "costUSD": 0.8522025000000002
+        }
+      },
+      "lastSessionId": "17719023-5bf5-4b41-ac5d-444b33bf57d5",
+      "lastSessionMetrics": {
+        "frame_duration_ms_count": 3160,
+        "frame_duration_ms_min": 0.13702399999601766,
+        "frame_duration_ms_max": 30.612496000016108,
+        "frame_duration_ms_avg": 0.9682962566480023,
+        "frame_duration_ms_p50": 0.5383165000093868,
+        "frame_duration_ms_p95": 0.8458453999948687,
+        "frame_duration_ms_p99": 16.399204980036007,
+        "pre_tool_hook_duration_ms_count": 16,
+        "pre_tool_hook_duration_ms_min": 0,
+        "pre_tool_hook_duration_ms_max": 1,
+        "pre_tool_hook_duration_ms_avg": 0.3125,
+        "pre_tool_hook_duration_ms_p50": 0,
+        "pre_tool_hook_duration_ms_p95": 1,
+        "pre_tool_hook_duration_ms_p99": 1,
+        "hook_duration_ms_count": 13,
+        "hook_duration_ms_min": 0,
+        "hook_duration_ms_max": 1,
+        "hook_duration_ms_avg": 0.15384615384615385,
+        "hook_duration_ms_p50": 0,
+        "hook_duration_ms_p95": 1,
+        "hook_duration_ms_p99": 1
+      }
+    }
+  },
+  "githubRepoPaths": {
+    "naifukishi/nkui": [
+      "/home/naifu/Games/Heroic/Prefixes/default/Glpyh/pfx/drive_c/users/steamuser/Documents/RIFT/Interface/Addons/nkUI"
+    ],
+    "naifukishi/nkdebug": [
+      "/home/naifu/Games/Heroic/Prefixes/default/Glpyh/pfx/drive_c/users/steamuser/Documents/RIFT/Interface/Addons/nkDebug"
+    ]
+  },
+  "lastReleaseNotesSeen": "2.1.63",
+  "hasShownOpus46Notice": {
+    "d25a1200-5b55-40e9-945b-a27aee8ede8f": true,
+    "bbaeda92-39af-4904-a430-06337f2835f9": true
+  },
+  "penguinModeOrgEnabled": false,
+  "cachedExtraUsageDisabledReason": "org_level_disabled",
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true,
+  "toolUsage": {
+    "Bash": {
+      "usageCount": 390,
+      "lastUsedAt": 1772131472300
+    },
+    "Read": {
+      "usageCount": 380,
+      "lastUsedAt": 1772131467261
+    },
+    "Write": {
+      "usageCount": 37,
+      "lastUsedAt": 1772131354337
+    },
+    "Edit": {
+      "usageCount": 219,
+      "lastUsedAt": 1772131313944
+    },
+    "Glob": {
+      "usageCount": 10,
+      "lastUsedAt": 1772128118518
+    },
+    "Task": {
+      "usageCount": 9,
+      "lastUsedAt": 1772128325585
+    },
+    "Grep": {
+      "usageCount": 48,
+      "lastUsedAt": 1772130540433
+    },
+    "TaskCreate": {
+      "usageCount": 1,
+      "lastUsedAt": 1771963250142
+    },
+    "TaskUpdate": {
+      "usageCount": 3,
+      "lastUsedAt": 1771963709085
+    },
+    "TaskList": {
+      "usageCount": 1,
+      "lastUsedAt": 1772044064975
+    },
+    "EnterPlanMode": {
+      "usageCount": 3,
+      "lastUsedAt": 1772128050092
+    },
+    "Skill": {
+      "usageCount": 1,
+      "lastUsedAt": 1772045556161
+    },
+    "WebFetch": {
+      "usageCount": 9,
+      "lastUsedAt": 1772047320646
+    },
+    "AskUserQuestion": {
+      "usageCount": 1,
+      "lastUsedAt": 1772126967764
+    }
+  },
+  "showSpinnerTree": false,
+  "skillUsage": {
+    "rift-api": {
+      "usageCount": 5,
+      "lastUsedAt": 1772388622375
+    }
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1772360032903
+  },
+  "anonymousId": "claudecode.v1.779fb443-4810-4967-893e-f503726bfd32",
+  "groveConfigCache": {
+    "1e1da583-39ce-46fc-80cd-48ff9125ba2d": {
+      "grove_enabled": true,
+      "timestamp": 1772739339578
+    }
+  },
+  "ideHintShownCount": 3,
+  "lastPlanModeUse": 1772291667568,
+  "hasIdeOnboardingBeenShown": {
+    "vscode": true
+  },
+  "oauthAccount": {
+    "accountUuid": "1e1da583-39ce-46fc-80cd-48ff9125ba2d",
+    "emailAddress": "claude.ai.unmatched181@passmail.net",
+    "organizationUuid": "bbaeda92-39af-4904-a430-06337f2835f9",
+    "hasExtraUsageEnabled": false,
+    "billingType": "stripe_subscription",
+    "accountCreatedAt": "2026-02-21T10:21:01.165322Z",
+    "subscriptionCreatedAt": "2026-02-21T18:51:41.401803Z",
+    "displayName": "NaifuKishi",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "claude.ai.unmatched181@passmail.net's Organization"
+  }
+}
