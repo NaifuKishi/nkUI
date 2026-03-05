@@ -13,6 +13,7 @@ local minionManager = privateVars.minionManager
 
 local inspectSystemSecure   = Inspect.System.Secure
 local inspectTimeReal       = Inspect.Time.Real
+local inspectTimeFrame      = Inspect.Time.Frame
 local eventMinionAdvChange  = Event.Minion.Adventure.Change
 
 local isInit        = false
@@ -47,9 +48,12 @@ function internalFunc.uiMinionManager()
     minionManager.populate()
 
     Command.Event.Attach(eventMinionAdvChange, function()
-        if uiElements.minionManager and uiElements.minionManager:GetVisible() then
+        if not (uiElements.minionManager and uiElements.minionManager:GetVisible()) then return end
+        -- Small delay so the RIFT API has time to update adventure data
+        -- (e.g. after a hurry the mode/completion may not reflect immediately)
+        LibEKL.Events.AddInsecure(function()
             minionManager.populate()
-        end
+        end, inspectTimeFrame(), 0.5)
     end, "nkUI.minionManager.Adventure.Change")
 
     isInit = true
