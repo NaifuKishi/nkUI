@@ -28,6 +28,10 @@ lowerBar.contextRestricted :SetStrata('hud')
 lowerBar.contextRestricted :SetSecureMode("restricted")
 lowerBar.contextRestricted :SetLayer(2)
 
+lowerBar.contextInsecure = UI.CreateContext("nkUI.lowerbar.insecure")
+lowerBar.contextInsecure:SetStrata('hud')
+lowerBar.contextInsecure:SetLayer(3)
+
 ---------- local functions ---------
 
 -- Helper: Generate a random background color
@@ -197,6 +201,10 @@ function lowerBar.build()
     -- Left side (towards time): social, wardrobe, roles, experience
 
     local thisDataSet = lowerBar.fps()
+    table.insert(uiElements.lowerBarModules, thisDataSet)
+    lowerBar.positionLeft(thisDataSet)
+
+    local thisDataSet = lowerBar.minion()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 

@@ -65,17 +65,33 @@ end
 
 ---------- adventure selection ---------
 
+-- Fetches available adventures directly from the API (does not rely on allAdvData).
+local function _fetchAvailableAdventures()
+    local ok1, advIds = pcall(inspectAdventureList)
+    if not ok1 or advIds == nil then return {} end
+
+    local ok2, advDetails = pcall(inspectAdventureDetail, advIds)
+    if not ok2 or advDetails == nil then return {} end
+
+    local available = {}
+    for id, adv in pairs(advDetails) do
+        if (adv.mode or "none") == "available" then
+            available[id] = adv
+        end
+    end
+    return available
+end
+
 -- Picks the best adventure id for the configured duration tier.
 -- autoSendDuration: 1=quick (<300s), 2=short (<=1200s), 3=long (>1200s), 4=premium (any cost)
-local function _pickAdventure()
-    local mm       = minionManager
+local function _pickAdventure(availableAdvs)
     local cfg      = nkUISetup.modules.minionManager
     local wantTier = cfg.autoSendDuration or 1
 
     local bestId  = nil
     local bestDur = math.huge
 
-    for id, adv in pairs(mm.allAdvData) do
+    for id, adv in pairs(availableAdvs) do
         local cost = (adv.costAventurine or 0) + (adv.costCredit or 0)
         local dur  = adv.duration or 0
         local tier
@@ -137,8 +153,17 @@ function minionManager.autoSend()
     local cfg = nkUISetup.modules.minionManager
     local lt  = langTexts.minionManager
 
+    -- Fetch available adventures directly (works even if UI is not open)
+    local availableAdvs = _fetchAvailableAdventures()
+
+    -- Also update allAdvData so the UI stays consistent if it gets opened later
+    mm.allAdvData = mm.allAdvData or {}
+    for id, adv in pairs(availableAdvs) do
+        mm.allAdvData[id] = adv
+    end
+
     -- Pick adventure
-    local advId = _pickAdventure()
+    local advId = _pickAdventure(availableAdvs)
     if advId == nil then
         Command.Console.Display("general", true,
             stringFormat('<font color="#FF6A00">%s</font>', lt.autoSendNoAdventure), true)
