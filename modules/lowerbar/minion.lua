@@ -61,23 +61,11 @@ function lowerBar.minion()
         datasetFrame:SetText(text)
     end
 
-    -- Insecure overlay frame for hardware event commands (Claim/Send require insecure context)
-    local clickOverlay = UI.CreateFrame("Frame", "lowerBar.datasetMinion.clickOverlay", lowerBar.contextInsecure)
-    clickOverlay:SetLayer(10)
-    clickOverlay:SetVisible(true)
-
-    -- Keep overlay aligned to datasetFrame once layout is done
-    LibEKL.Events.AddInsecure(function()
-        clickOverlay:SetPoint("TOPLEFT",     datasetFrame, "TOPLEFT",     0, 0)
-        clickOverlay:SetPoint("BOTTOMRIGHT", datasetFrame, "BOTTOMRIGHT", 0, 0)
-    end, nil, 5)
-
-    -- Left-click: claim finished missions, or auto-send ready minions
-    -- Uses frame.Event:LeftClick (native Rift API) to preserve hardware event context
-    function clickOverlay.Event:LeftClick()
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Left.Up, function ()
         if #cachedFinishedIds > 0 then
             for i = 1, #cachedFinishedIds do
                 Command.Minion.Claim(cachedFinishedIds[i])
+                break
             end
         else
             local mm = privateVars.minionManager
@@ -85,7 +73,11 @@ function lowerBar.minion()
                 mm.autoSend()
             end
         end
-    end
+    end, "nkUI.lowerbar.minion.Left.Up")
+
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Right.Up, function()
+        internalFunc.minionManagerInit()
+    end, "nkUI.lowerbar.minion.Right.Up")
 
     -- Update on adventure change events
     Command.Event.Attach(eventMinionAdvChange, function()
