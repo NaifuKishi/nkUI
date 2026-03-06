@@ -1,6 +1,0 @@
-at my resolution (1920x1080) the tooltip module's extra stuff is pushed off the bottom of the screen
-
-and...i'm having the 4 buttons dropdown under the minimap breaking half the time
-also, the minimap doesnt 'lift' its registration of clicking if the mouse leave the minimap ui.
-
-SCT's loot thing pops when you move stuff in your bags, between bags >.> 
