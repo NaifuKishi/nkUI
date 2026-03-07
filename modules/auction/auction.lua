@@ -441,6 +441,44 @@ local FILTER_STATS_OPTIONS = {
     { label = "Endurance",      value = "end"         },
 }
 
+---------- sidebar category tree ----------
+
+local CATEGORY_TREE = {
+    { id = "all",        label = "ALL",         value = nil,          children = nil },
+    { id = "rex",        label = "REX",         value = "currency",   children = nil },
+    { id = "armor",      label = "ARMOR",       value = "armor",      children = {
+        { id = "armor.head",     label = "Head",      value = "armor.head"     },
+        { id = "armor.shoulder", label = "Shoulder",  value = "armor.shoulder" },
+        { id = "armor.chest",    label = "Chest",     value = "armor.chest"    },
+        { id = "armor.hands",    label = "Hands",     value = "armor.hands"    },
+        { id = "armor.legs",     label = "Legs",      value = "armor.legs"     },
+        { id = "armor.feet",     label = "Feet",      value = "armor.feet"     },
+        { id = "armor.back",     label = "Back",      value = "armor.back"     },
+        { id = "armor.neck",     label = "Neck",      value = "armor.neck"     },
+        { id = "armor.waist",    label = "Waist",     value = "armor.waist"    },
+        { id = "armor.finger",   label = "Ring",      value = "armor.finger"   },
+        { id = "armor.ear",      label = "Earring",   value = "armor.ear"      },
+        { id = "armor.trinket",  label = "Trinket",   value = "armor.trinket"  },
+    }},
+    { id = "weapon",     label = "WEAPON",      value = "weapon",     children = {
+        { id = "weapon.1h",     label = "1-Hand",    value = "weapon.onehand" },
+        { id = "weapon.2h",     label = "2-Hand",    value = "weapon.twohand" },
+        { id = "weapon.off",    label = "Off-Hand",  value = "weapon.offhand" },
+        { id = "weapon.shield", label = "Shield",    value = "weapon.shield"  },
+        { id = "weapon.ranged", label = "Ranged",    value = "weapon.ranged"  },
+    }},
+    { id = "planar",     label = "PLANAR",      value = "planar",     children = {
+        { id = "planar.sigil",  label = "Sigil",     value = "sigil"          },
+        { id = "planar.ess",    label = "Essence",   value = "planarEssence"  },
+    }},
+    { id = "consumable", label = "CONSUMABLES", value = "consumable",    children = nil },
+    { id = "container",  label = "CONTAINERS",  value = "container",     children = nil },
+    { id = "crafting",   label = "CRAFTING",    value = "recipe",        children = nil },
+    { id = "misc",       label = "MISC",        value = "miscellaneous", children = nil },
+    { id = "dimension",  label = "DIMENSION",   value = "dimension",     children = nil },
+    { id = "artifact",   label = "ARTIFACTS",   value = "artifact",      children = nil },
+}
+
 local function buildWindow()
     local name = "nkUI.auction"
 
@@ -608,17 +646,154 @@ local function buildWindow()
     filterBar.priceMax  = filterPriceMax
 
     -- ===== SIDEBAR (links) =====
+    local HEADER_H         = 30   -- nkWindow title bar height
+    local SIDEBAR_SCROLL_H = WIN_H - HEADER_H - FILTER_H - BOTTOM_H  -- 578
+
     local sidebar = LibEKL.UICreateFrame("nkFrame", name .. ".sidebar", body)
     sidebar:SetPoint("TOPLEFT",    body, "TOPLEFT",    0,  FILTER_H)
     sidebar:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", 0, -BOTTOM_H)
     sidebar:SetWidth(SIDEBAR_W)
 
-    local sidebarPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".sidebar.placeholder", sidebar)
-    sidebarPlaceholder:SetPoint("TOPCENTER", sidebar, "TOPCENTER", 0, 10)
-    sidebarPlaceholder:SetFontSize(11)
-    LibEKL.UI.SetFont(sidebarPlaceholder, addonInfo.id, "MontserratMedium")
-    sidebarPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
-    sidebarPlaceholder:SetText("[Sidebar\nSchritt 3]")
+    -- Separator line on the right edge
+    local sidebarSep = LibEKL.UICreateFrame("nkFrame", name .. ".sidebar.sep", sidebar)
+    sidebarSep:SetPoint("TOPRIGHT",    sidebar, "TOPRIGHT",    0, 0)
+    sidebarSep:SetPoint("BOTTOMRIGHT", sidebar, "BOTTOMRIGHT", 0, 0)
+    sidebarSep:SetWidth(1)
+    sidebarSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    local sidebarScroll = LibEKL.UICreateFrame("nkScrollPane", name .. ".sidebar.scroll", sidebar)
+    sidebarScroll:SetPoint("TOPLEFT", sidebar, "TOPLEFT", 0, 0)
+    sidebarScroll:SetWidth(SIDEBAR_W - 1)
+    sidebarScroll:SetHeight(SIDEBAR_SCROLL_H)
+    sidebarScroll:SetAdjust(22)
+
+    -- Container for all category rows (reparented into scrollPane via SetContent)
+    local sbContainer = LibEKL.UICreateFrame("nkFrame", name .. ".sidebar.container", sidebar)
+    sbContainer:SetWidth(SIDEBAR_W - 2)
+
+    -- State
+    local sbExpanded = {}   -- { [categoryId] = true }
+    local sbSelected = nil  -- selected category value (nil = ALL)
+    local sbRows     = {}
+    local sbRowCount = 0
+
+    local SB_ROW_H  = 22
+    local SB_INDENT = 10
+    local SB_CLR_HEAD = data.theme.labelColor
+    local SB_CLR_SUB  = { r = 0.60, g = 0.60, b = 0.60, a = 1 }
+    local SB_CLR_SEL  = { r = 0.18, g = 0.22, b = 0.30, a = 0.9 }
+
+    local function sbRelayout()
+        local y = 0
+        for i = 1, sbRowCount do
+            local info = sbRows[i]
+            local row  = info.frame
+            local show = (info.parentId == nil) or (sbExpanded[info.parentId] == true)
+            row:SetVisible(show)
+            if show then
+                row:SetPoint("TOPLEFT", sbContainer, "TOPLEFT", 0, y)
+                row:SetWidth(SIDEBAR_W - 2)
+                y = y + SB_ROW_H
+            end
+            info.selBg:SetVisible(sbSelected == info.catData.value)
+            if info.arrow then
+                info.arrow:SetText(sbExpanded[info.catData.id] and "v" or ">")
+            end
+        end
+        sbContainer:SetHeight(math.max(y, 1))
+        sidebarScroll:SetContent(sbContainer)
+    end
+
+    local function sbSelect(value)
+        sbSelected = value
+        sbRelayout()
+        if sidebar.onSelect then sidebar.onSelect(value) end
+    end
+
+    local function sbToggle(catId)
+        sbExpanded[catId] = not sbExpanded[catId]
+        sbRelayout()
+    end
+
+    -- Build all rows from CATEGORY_TREE
+    for i = 1, #CATEGORY_TREE do
+        local cat     = CATEGORY_TREE[i]
+        local rowName = name .. ".sb.r." .. i
+
+        local row = LibEKL.UICreateFrame("nkFrame", rowName, sbContainer)
+        row:SetHeight(SB_ROW_H)
+        row:SetVisible(false)
+
+        local selBg = LibEKL.UICreateFrame("nkFrame", rowName .. ".bg", row)
+        selBg:SetPoint("TOPLEFT",     row, "TOPLEFT",     0, 0)
+        selBg:SetPoint("BOTTOMRIGHT", row, "BOTTOMRIGHT", 0, 0)
+        selBg:SetBackgroundColor(SB_CLR_SEL.r, SB_CLR_SEL.g, SB_CLR_SEL.b, SB_CLR_SEL.a)
+        selBg:SetVisible(false)
+
+        local lbl = LibEKL.UICreateFrame("nkText", rowName .. ".lbl", row)
+        lbl:SetPoint("CENTERLEFT", row, "CENTERLEFT", 6, 0)
+        lbl:SetFontSize(11)
+        LibEKL.UI.SetFont(lbl, addonInfo.id, "MontserratSemiBold")
+        lbl:SetFontColor(SB_CLR_HEAD.r, SB_CLR_HEAD.g, SB_CLR_HEAD.b, SB_CLR_HEAD.a)
+        lbl:SetText(cat.label)
+
+        local arrow = nil
+        if cat.children then
+            arrow = LibEKL.UICreateFrame("nkText", rowName .. ".arr", row)
+            arrow:SetPoint("CENTERRIGHT", row, "CENTERRIGHT", -4, 0)
+            arrow:SetFontSize(10)
+            LibEKL.UI.SetFont(arrow, addonInfo.id, "MontserratMedium")
+            arrow:SetFontColor(0.45, 0.45, 0.45, 1)
+            arrow:SetText(">")
+        end
+
+        sbRowCount = sbRowCount + 1
+        sbRows[sbRowCount] = { frame = row, parentId = nil, catData = cat, selBg = selBg, arrow = arrow }
+
+        local thisCat = cat
+        row:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+            if thisCat.children then sbToggle(thisCat.id) end
+            sbSelect(thisCat.value)
+        end, rowName .. ".Click")
+
+        if cat.children then
+            for j = 1, #cat.children do
+                local sub     = cat.children[j]
+                local subName = name .. ".sb.r." .. i .. "." .. j
+
+                local subRow = LibEKL.UICreateFrame("nkFrame", subName, sbContainer)
+                subRow:SetHeight(SB_ROW_H)
+                subRow:SetVisible(false)
+
+                local subBg = LibEKL.UICreateFrame("nkFrame", subName .. ".bg", subRow)
+                subBg:SetPoint("TOPLEFT",     subRow, "TOPLEFT",     0, 0)
+                subBg:SetPoint("BOTTOMRIGHT", subRow, "BOTTOMRIGHT", 0, 0)
+                subBg:SetBackgroundColor(SB_CLR_SEL.r, SB_CLR_SEL.g, SB_CLR_SEL.b, SB_CLR_SEL.a)
+                subBg:SetVisible(false)
+
+                local subLbl = LibEKL.UICreateFrame("nkText", subName .. ".lbl", subRow)
+                subLbl:SetPoint("CENTERLEFT", subRow, "CENTERLEFT", SB_INDENT, 0)
+                subLbl:SetFontSize(11)
+                LibEKL.UI.SetFont(subLbl, addonInfo.id, "MontserratMedium")
+                subLbl:SetFontColor(SB_CLR_SUB.r, SB_CLR_SUB.g, SB_CLR_SUB.b, SB_CLR_SUB.a)
+                subLbl:SetText(sub.label)
+
+                sbRowCount = sbRowCount + 1
+                sbRows[sbRowCount] = { frame = subRow, parentId = cat.id, catData = sub, selBg = subBg, arrow = nil }
+
+                local thisSub = sub
+                subRow:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+                    sbSelect(thisSub.value)
+                end, subName .. ".Click")
+            end
+        end
+    end
+
+    sbRelayout()
+
+    sidebar.onSelect       = nil
+    sidebar.getSelected    = function() return sbSelected end
+    sidebar.selectCategory = sbSelect
 
     -- ===== RECHTES PANEL =====
     local rightPanel = LibEKL.UICreateFrame("nkFrame", name .. ".rightPanel", body)
