@@ -374,14 +374,9 @@ end
 
 ---------- interaction state ----------
 
-local atAuctionHouse = false   -- tracked via Event.Interaction; Inspect.Interaction() is unreliable when polled
-
-Command.Event.Attach(Event.Interaction, function(_, interaction)
-    atAuctionHouse = (interaction == "auction")
-end, "nkUI.Auction.InteractionState")
-
 function auction.isAtAH()
-    return atAuctionHouse
+    local ok, result = pcall(Inspect.Interaction, "auction")
+    return ok and result == true
 end
 
 ---------- phase 0: placeholder for browse tab ----------
@@ -644,6 +639,13 @@ local function buildWindow()
     filterBar.buyouts   = filterBuyouts
     filterBar.priceMin  = filterPriceMin
     filterBar.priceMax  = filterPriceMax
+
+    -- SEARCH and CLEAR buttons (filter row 2, in the gap between buyouts and price fields)
+    local filterSearchBtn = auction.makeBtn(name .. ".filter.btnSearch", filterBar, "SEARCH", 80, 24)
+    filterSearchBtn:SetPoint("TOPLEFT", filterBar, "TOPLEFT", 878, CTRL_Y)
+
+    local filterClearBtn = auction.makeBtn(name .. ".filter.btnClear", filterBar, "CLEAR", 64, 24)
+    filterClearBtn:SetPoint("TOPLEFT", filterBar, "TOPLEFT", 966, CTRL_Y)
 
     -- ===== SIDEBAR (links) =====
     local HEADER_H         = 30   -- nkWindow title bar height
@@ -1038,6 +1040,29 @@ local function buildWindow()
 
     mainGrid:Layout(MAIN_COLS, GRID_ROWS)
 
+    -- Scan feedback overlay (covers main grid while searching/loading)
+    local scanOverlay = LibEKL.UICreateFrame("nkFrame", name .. ".main.overlay", mainContent)
+    scanOverlay:SetPoint("TOPLEFT",     mainContent, "TOPLEFT",     0, 0)
+    scanOverlay:SetPoint("BOTTOMRIGHT", mainContent, "BOTTOMRIGHT", 0, 0)
+    scanOverlay:SetBackgroundColor(0, 0, 0, 0.55)
+    scanOverlay:SetVisible(false)
+    scanOverlay:SetLayer(10)
+
+    local scanOverlayMsg = LibEKL.UICreateFrame("nkText", name .. ".main.overlay.msg", scanOverlay)
+    scanOverlayMsg:SetPoint("CENTER", scanOverlay, "CENTER", 0, 0)
+    scanOverlayMsg:SetFontSize(16)
+    LibEKL.UI.SetFont(scanOverlayMsg, addonInfo.id, "MontserratBold")
+    scanOverlayMsg:SetFontColor(0.9, 0.9, 0.9, 1)
+    scanOverlayMsg:SetText("")
+
+    local function showScanOverlay(msg)
+        scanOverlayMsg:SetText(msg or "")
+        scanOverlay:SetVisible(true)
+    end
+    local function hideScanOverlay()
+        scanOverlay:SetVisible(false)
+    end
+
     -- Row click: store auction ID for bottom bar buttons
     Command.Event.Attach(LibEKL.Events[MAIN_GRID_NAME].LeftClick, function(_, rowNo)
         auction.selectedAuctionId = mainGrid:GetKey(rowNo)
@@ -1126,6 +1151,7 @@ local function buildWindow()
                 local gridData = {}
                 for i = 1, #mainGridRows do gridData[i] = mainGridRows[i].row end
                 mainGrid:SetCellValues(gridData)
+                hideScanOverlay()
             end,
         })
     end
@@ -1232,22 +1258,22 @@ local function buildWindow()
 
     -- BUYOUT: bid at full buyout price
     btnBuyout:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-        if not bbButtonsActive or auction.selectedAuctionId == nil then return end
+        if not bbButtonsActive or not auction.isAtAH() or auction.selectedAuctionId == nil then return end
         local ok, detail = pcall(InspectAuctionDetail, auction.selectedAuctionId)
         if not ok or detail == nil or not detail.buyout then return end
-        Command.Auction.Bid(auction.selectedAuctionId, detail.buyout)
-        refreshCurrency()
+        local ok2 = pcall(Command.Auction.Bid, auction.selectedAuctionId, detail.buyout)
+        if ok2 then refreshCurrency() end
     end, name .. ".bb.buyout.LeftUp")
 
     -- BID: bid at current bid price (or buyout if no separate bid)
     btnBid:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-        if not bbButtonsActive or auction.selectedAuctionId == nil then return end
+        if not bbButtonsActive or not auction.isAtAH() or auction.selectedAuctionId == nil then return end
         local ok, detail = pcall(InspectAuctionDetail, auction.selectedAuctionId)
         if not ok or detail == nil then return end
         local bidAmount = detail.bid or detail.buyout
         if not bidAmount then return end
-        Command.Auction.Bid(auction.selectedAuctionId, bidAmount)
-        refreshCurrency()
+        local ok2 = pcall(Command.Auction.Bid, auction.selectedAuctionId, bidAmount)
+        if ok2 then refreshCurrency() end
     end, name .. ".bb.bid.LeftUp")
 
     -- Wire mainContent.onSelect: update right panel + action buttons
@@ -1255,6 +1281,106 @@ local function buildWindow()
         rightPanel.updateContent(auctionID)
         updateActionButtons()
     end
+
+    -- ===== SCAN LOGIC (Schritt 9) =====
+
+    local ahSearchPending = false
+
+    local function getFilterParams()
+        local params = { type = "search" }
+
+        local txt = filterSearch:GetText()
+        if txt and txt ~= "" then params.text = txt end
+
+        local lvMin = tonumber(filterLevelMin:GetText())
+        local lvMax = tonumber(filterLevelMax:GetText())
+        if lvMin then params.minLevel = lvMin end
+        if lvMax then params.maxLevel = lvMax end
+
+        local callingVal = filterCalling:GetSelectedValue()
+        if callingVal then params.calling = callingVal end
+
+        local rarityVal = filterRarity:GetSelectedValue()
+        if rarityVal then params.rarity = rarityVal end
+
+        if filterBuyouts:GetChecked() then params.buyoutOnly = true end
+
+        local priceMinRaw = tonumber(filterPriceMin:GetText())
+        local priceMaxRaw = tonumber(filterPriceMax:GetText())
+        if priceMinRaw then params.priceMin = priceMinRaw end
+        if priceMaxRaw then params.priceMax = priceMaxRaw end
+
+        local cat = sidebar.getSelected()
+        if cat then params.category = cat end
+
+        return params
+    end
+
+    local function doAhSearch()
+        if not auction.isAtAH() then return end
+        auction.setBrowseSearchPending(false)
+        ahSearchPending = true
+        mainGrid:SetCellValues({})
+        showScanOverlay("SEARCHING...")
+        local ok, err = pcall(Command.Auction.Scan, getFilterParams())
+        if not ok then
+            ahSearchPending = false
+            hideScanOverlay()
+            LibEKL.Tools.Error.Display("nkUI.auction", tostring(err), 2)
+        end
+    end
+
+    local function doClearFilters()
+        filterSearch:SetText("")
+        filterLevelMin:SetText("")
+        filterLevelMax:SetText("")
+        filterStats:SetSelectedValue(FILTER_STATS_OPTIONS[1].value)
+        filterCalling:SetSelectedValue(FILTER_CALLING_OPTIONS[1].value)
+        filterRarity:SetSelectedValue(FILTER_RARITY_OPTIONS[1].value)
+        filterUsable:SetChecked(false, true)
+        filterBuyouts:SetChecked(false, true)
+        filterPriceMin:SetText("")
+        filterPriceMax:SetText("")
+        sidebar.selectCategory(nil)
+        mainGrid:SetCellValues({})
+        auction.selectedAuctionId = nil
+        mainContent.onSelect(nil)
+    end
+
+    -- SEARCH button
+    filterSearchBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        doAhSearch()
+    end, name .. ".filter.btnSearch.LeftUp")
+
+    -- CLEAR button
+    filterClearBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        doClearFilters()
+    end, name .. ".filter.btnClear.LeftUp")
+
+    -- Return key in search field
+    Command.Event.Attach(LibEKL.Events[name .. ".filter.search"].KeyDown, function(_, key)
+        if key == "Return" then doAhSearch() end
+    end, name .. ".filter.search.KeyDown")
+
+    -- Sidebar category selection triggers new search
+    sidebar.onSelect = function()
+        doAhSearch()
+    end
+
+    -- Event.Auction.Scan handler for main grid
+    Command.Event.Attach(Event.Auction.Scan, function(_, info, auctions)
+        if info.type ~= "search" then return end
+        if not ahSearchPending then return end
+        ahSearchPending = false
+        local count = 0
+        if auctions then for _ in pairs(auctions) do count = count + 1 end end
+        if count == 0 then
+            hideScanOverlay()
+        else
+            showScanOverlay(stringFormat("LOADING %d ITEMS...", count))
+        end
+        auction.populateMainGrid(auctions or {})
+    end, name .. ".Auction.Main.Scan")
 
     -- Position speichern beim Verschieben
     win:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
@@ -1306,18 +1432,12 @@ end
 
 ---------- auto-open with AH (optional) ----------
 
-Command.Event.Attach(Event.Interaction, function(_, interaction)
+UI.Native.Auction:EventAttach(Event.UI.Native.Loaded, function()
     if not nkUISetup or not nkUISetup.modules.auction then return end
     if not nkUISetup.modules.auction.autoOpenWithAH then return end
 
-    if interaction == "auction" then
-        if uiElements.auctionWindow == nil then
-            uiElements.auctionWindow = buildWindow()
-        end
-        uiElements.auctionWindow:SetVisible(true)
-    elseif interaction == nil then
-        if uiElements.auctionWindow and uiElements.auctionWindow:GetVisible() then
-            uiElements.auctionWindow:SetVisible(false)
-        end
+    if uiElements.auctionWindow == nil then
+        uiElements.auctionWindow = buildWindow()
     end
-end, "nkUI.Auction.Interaction")
+    uiElements.auctionWindow:SetVisible(UI.Native.Auction:GetLoaded())
+end, "nkUI.Auction.Native.Loaded")
