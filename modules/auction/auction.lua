@@ -365,11 +365,12 @@ function auction.makeBtn(name, parent, label, w, h)
 end
 
 function auction.formatExpiry(seconds)
-    if not seconds then return "?" end
+    if not seconds or seconds <= 0 then return "?" end
     local h = mathFloor(seconds / 3600)
-    local m = mathFloor((seconds % 3600) / 60)
-    if h > 0 then return stringFormat("%dh%dm", h, m) end
-    return stringFormat("%dm", m)
+    if h > 0 then return stringFormat("%dh", h) end
+    local m = mathFloor(seconds / 60)
+    if m > 0 then return stringFormat("%dm", m) end
+    return stringFormat("%ds", seconds)
 end
 
 ---------- interaction state ----------
@@ -500,6 +501,11 @@ local function buildWindow()
 
     local cfg = nkUISetup.modules.auction
     win:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cfg.x, cfg.y)
+
+    Command.Event.Attach(LibEKL.Events[name]["Moved"], function(_, left, top)
+        nkUISetup.modules.auction.x = left - UIParent:GetLeft()
+        nkUISetup.modules.auction.y = top  - UIParent:GetTop()
+    end, name .. ".Moved")
 
     local body = win:GetContent()
 
@@ -951,11 +957,11 @@ local function buildWindow()
                 mathFloor((rarColor.r or 1) * 255),
                 mathFloor((rarColor.g or 1) * 255),
                 mathFloor((rarColor.b or 1) * 255))
-            piName:SetText(stringFormat('<font color="#%s">%s</font>', nameHex, idet.name or "?"))
+            piName:SetText(stringFormat('<font color="#%s">%s</font>', nameHex, idet.name or "?"), true)
         end
         if detail.seller then piSeller:SetText(detail.seller) end
         if detail.buyout and detail.buyout > 0 then
-            piPrice:SetText(internalFunc.formatCoins(detail.buyout))
+            piPrice:SetText(internalFunc.formatCoins(detail.buyout), true)
         end
 
         -- Price history
@@ -966,9 +972,9 @@ local function buildWindow()
 
         local summary = auction.getPriceSummary(itemType)
         if summary then
-            phStatValues[1]:SetText(internalFunc.formatCoins(summary.lo))
-            phStatValues[2]:SetText(internalFunc.formatCoins(summary.hi))
-            phStatValues[3]:SetText(internalFunc.formatCoins(summary.avg))
+            phStatValues[1]:SetText(internalFunc.formatCoins(summary.lo), true)
+            phStatValues[2]:SetText(internalFunc.formatCoins(summary.hi), true)
+            phStatValues[3]:SetText(internalFunc.formatCoins(summary.avg), true)
             local dStr = (summary.daysSince == 0) and "today" or (summary.daysSince .. "d ago")
             phStatValues[4]:SetText(dStr)
         end
@@ -983,7 +989,7 @@ local function buildWindow()
             if snap and snap.t and snap.t > 0 then
                 shown = shown + 1
                 local ageStr = LibEKL.Tools.DateTime.SecondsToText(osTime() - snap.t) .. " ago"
-                phSnapRows[shown]:SetText(internalFunc.formatCoins(snap.lo) .. "  " .. ageStr)
+                phSnapRows[shown]:SetText(internalFunc.formatCoins(snap.lo) .. "  " .. ageStr, true)
                 phSnapRows[shown]:SetVisible(true)
             end
         end
@@ -1023,9 +1029,9 @@ local function buildWindow()
         { width = 22,  header = "",            texture = true, textureType = "Rift", texturePath = "" },
         { width = 280, header = "NAME",         align = "left"  },
         { width = 120, header = "SELLER",       align = "left"  },
-        { width = 50,  header = "STACKS",       align = "right" },
-        { width = 80,  header = "TIME",         align = "right" },
-        { width = 45,  header = "LEVEL",        align = "right" },
+        { width = 50,  header = "STACKS",       align = "center" },
+        { width = 80,  header = "TIME",         align = "center" },
+        { width = 45,  header = "LEVEL",        align = "center" },
         { width = 125, header = "UNIT PRICE",   align = "right" },
         { width = 190, header = "BUYOUT",       align = "right" },
     }
@@ -1083,7 +1089,7 @@ local function buildWindow()
             itemName  = itemDetail.name  or "Unknown"
             icon      = itemDetail.icon
             rarity    = itemDetail.rarity or 0
-            itemLevel = itemDetail.level  or 0
+            itemLevel = itemDetail.requiredLevel or 0
         end
 
         local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
@@ -1106,7 +1112,7 @@ local function buildWindow()
                 coloredName,
                 detail.seller or "?",
                 tostring(stack),
-                auction.formatExpiry(detail.timeRemaining or 0),
+                auction.formatExpiry(detail.remaining or 0),
                 (itemLevel > 0) and tostring(itemLevel) or "-",
                 unitStr,
                 { value = buyoutStr, key = auctionID },
@@ -1241,7 +1247,7 @@ local function buildWindow()
     local function refreshCurrency()
         local ok, coinDetail = pcall(Inspect.Currency.Detail, "coin")
         if ok and coinDetail and coinDetail.amount then
-            bbCurrValue:SetText(internalFunc.formatCoins(coinDetail.amount))
+            bbCurrValue:SetText(internalFunc.formatCoins(coinDetail.amount), true)
         else
             bbCurrValue:SetText("-")
         end
@@ -1430,14 +1436,9 @@ function internalFunc.auctionOpen()
     win:SetVisible(not win:GetVisible())
 end
 
----------- auto-open with AH (optional) ----------
-
-UI.Native.Auction:EventAttach(Event.UI.Native.Loaded, function()
-    if not nkUISetup or not nkUISetup.modules.auction then return end
-    if not nkUISetup.modules.auction.autoOpenWithAH then return end
-
+function internalFunc.auctionSetVisible(visible)
     if uiElements.auctionWindow == nil then
         uiElements.auctionWindow = buildWindow()
     end
-    uiElements.auctionWindow:SetVisible(UI.Native.Auction:GetLoaded())
-end, "nkUI.Auction.Native.Loaded")
+    uiElements.auctionWindow:SetVisible(visible)
+end

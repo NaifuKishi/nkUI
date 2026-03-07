@@ -124,8 +124,8 @@ local function applyFilterAndSort()
     local sortAsc = not cfg or cfg.sortAsc ~= false
 
     -- Determine sort key based on column
-    -- For numeric columns (bid, buyout, unit, vs vendor, myPrice), sort numerically
-    local numCols = { [5] = true, [6] = true, [7] = true, [8] = true, [9] = true }
+    -- Numeric columns: TIME(5), LEVEL(6), UNIT PRICE(7), BUYOUT(8)
+    local numCols = { [5] = true, [6] = true, [7] = true, [8] = true }
 
     if numCols[sortCol] then
         tableSort(filtered, function(a, b)
@@ -215,19 +215,11 @@ local function processOneBrowseAuction(auctionID, newRows)
         buyoutColor = { r = 0, g = 1, b = 0, a = 1 }
     end
 
-    local bidStr    = fmtCoins(detail.bid)
-    local buyoutStr = fmtCoins(detail.buyout)
-    local unitStr   = fmtCoins(unitPrice)
-    local vendorStr = "-"
-    local vendorColor = nil
-    if vendorRatio then
-        vendorStr = stringFormat("%.1fx", vendorRatio)
-        if vendorRatio > 5 then
-            vendorColor = { r = 1, g = 0.2, b = 0.2, a = 1 }
-        end
-    end
-    local myPriceStr = fmtCoins(myPrice)
-    local expiryStr  = auction.formatExpiry(detail.timeRemaining or 0)
+    local unitStr    = fmtCoins(unitPrice)
+    local buyoutStr  = fmtCoins(detail.buyout)
+    local expiryStr  = auction.formatExpiry(detail.remaining or 0)
+    local reqLevel   = (ok2 and itemDetail and itemDetail.requiredLevel and itemDetail.requiredLevel > 0)
+                       and tostring(itemDetail.requiredLevel) or "-"
 
     local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
     local coloredName = name
@@ -239,27 +231,26 @@ local function processOneBrowseAuction(auctionID, newRows)
             name)
     end
 
+    -- Row matches MAIN_COLS: icon | NAME | SELLER | STACKS | TIME | LEVEL | UNIT PRICE | BUYOUT
     local row = {
         icon,
         coloredName,
         detail.seller or "Unknown",
         tostring(stack),
-        bidStr,
-        buyoutColor and { value = buyoutStr, color = buyoutColor } or buyoutStr,
+        expiryStr,
+        reqLevel,
         unitStr,
-        vendorColor and { value = vendorStr, color = vendorColor } or vendorStr,
-        myPriceStr,
-        { value = expiryStr, key = auctionID }
+        buyoutColor and { value = buyoutStr, color = buyoutColor, key = auctionID }
+                   or  { value = buyoutStr, key = auctionID },
     }
 
     tableInsert(newRows, {
         row      = row,
         sortKeys = {
-            [5] = detail.bid or 0,
-            [6] = detail.buyout or 0,
+            [5] = detail.remaining or 0,
+            [6] = (ok2 and itemDetail and itemDetail.requiredLevel) or 0,
             [7] = unitPrice,
-            [8] = vendorRatio or 0,
-            [9] = myPrice or 0,
+            [8] = detail.buyout or 0,
         },
         rarity = getRarityIndex(rarity),
         name   = name,
