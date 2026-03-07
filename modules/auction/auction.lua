@@ -801,12 +801,193 @@ local function buildWindow()
     rightPanel:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", 0, -BOTTOM_H)
     rightPanel:SetWidth(RIGHT_W)
 
-    local rightPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".rightPanel.placeholder", rightPanel)
-    rightPlaceholder:SetPoint("TOPCENTER", rightPanel, "TOPCENTER", 0, 10)
-    rightPlaceholder:SetFontSize(11)
-    LibEKL.UI.SetFont(rightPlaceholder, addonInfo.id, "MontserratMedium")
-    rightPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
-    rightPlaceholder:SetText("[Price History\n+ Preview\nSchritt 6/7]")
+    -- left border separator
+    local rpLeftSep = LibEKL.UICreateFrame("nkFrame", name .. ".rp.lsep", rightPanel)
+    rpLeftSep:SetPoint("TOPLEFT",    rightPanel, "TOPLEFT",    0, 0)
+    rpLeftSep:SetPoint("BOTTOMLEFT", rightPanel, "BOTTOMLEFT", 0, 0)
+    rpLeftSep:SetWidth(1)
+    rpLeftSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    -- ---- PRICE HISTORY (upper half) ----
+    local PH_H   = 290
+    local RP_PAD = 8
+
+    local phTitle = LibEKL.UICreateFrame("nkText", name .. ".rp.ph.title", rightPanel)
+    phTitle:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", RP_PAD, 6)
+    phTitle:SetFontSize(10)
+    LibEKL.UI.SetFont(phTitle, addonInfo.id, "MontserratBold")
+    phTitle:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, 1)
+    phTitle:SetText("PRICE HISTORY")
+
+    local phSep = LibEKL.UICreateFrame("nkFrame", name .. ".rp.ph.sep", rightPanel)
+    phSep:SetPoint("TOPLEFT",  rightPanel, "TOPLEFT",  1,  24)
+    phSep:SetWidth(RIGHT_W - 1)
+    phSep:SetHeight(1)
+    phSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    -- 4 stat rows: Lowest / Highest / Average / Last seen
+    local PH_STAT_LABELS = { "Lowest:", "Highest:", "Average:", "Last seen:" }
+    local phStatValues   = {}
+    for i = 1, 4 do
+        local lbl = LibEKL.UICreateFrame("nkText", name .. ".rp.ph.sl" .. i, rightPanel)
+        lbl:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", RP_PAD, 30 + (i - 1) * 20)
+        lbl:SetFontSize(10)
+        LibEKL.UI.SetFont(lbl, addonInfo.id, "MontserratMedium")
+        lbl:SetFontColor(0.50, 0.53, 0.58, 1)
+        lbl:SetText(PH_STAT_LABELS[i])
+
+        local val = LibEKL.UICreateFrame("nkText", name .. ".rp.ph.sv" .. i, rightPanel)
+        val:SetPoint("TOPRIGHT", rightPanel, "TOPRIGHT", -4, 30 + (i - 1) * 20)
+        val:SetFontSize(10)
+        LibEKL.UI.SetFont(val, addonInfo.id, "MontserratMedium")
+        val:SetFontColor(0.82, 0.85, 0.90, 1)
+        val:SetText("-")
+        phStatValues[i] = val
+    end
+
+    local phSnapSep = LibEKL.UICreateFrame("nkFrame", name .. ".rp.ph.ssep", rightPanel)
+    phSnapSep:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 1, 114)
+    phSnapSep:SetWidth(RIGHT_W - 1)
+    phSnapSep:SetHeight(1)
+    phSnapSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    -- up to 9 snapshot history rows
+    local PH_SNAP_ROWS = 9
+    local PH_SNAP_ROW_H = 19
+    local phSnapRows = {}
+    for i = 1, PH_SNAP_ROWS do
+        local row = LibEKL.UICreateFrame("nkText", name .. ".rp.ph.sr" .. i, rightPanel)
+        row:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", RP_PAD, 118 + (i - 1) * PH_SNAP_ROW_H)
+        row:SetFontSize(9)
+        LibEKL.UI.SetFont(row, addonInfo.id, "FiraMono")
+        row:SetFontColor(0.55, 0.58, 0.62, 1)
+        row:SetText("")
+        row:SetVisible(false)
+        phSnapRows[i] = row
+    end
+
+    -- ---- PREVIEWED ITEM (lower half) ----
+    local PI_TOP = PH_H
+
+    local piSep = LibEKL.UICreateFrame("nkFrame", name .. ".rp.pi.sep", rightPanel)
+    piSep:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 1, PI_TOP)
+    piSep:SetWidth(RIGHT_W - 1)
+    piSep:SetHeight(1)
+    piSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    local piTitle = LibEKL.UICreateFrame("nkText", name .. ".rp.pi.title", rightPanel)
+    piTitle:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", RP_PAD, PI_TOP + 6)
+    piTitle:SetFontSize(10)
+    LibEKL.UI.SetFont(piTitle, addonInfo.id, "MontserratBold")
+    piTitle:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, 1)
+    piTitle:SetText("PREVIEWED ITEM")
+
+    local piSep2 = LibEKL.UICreateFrame("nkFrame", name .. ".rp.pi.sep2", rightPanel)
+    piSep2:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", 1, PI_TOP + 24)
+    piSep2:SetWidth(RIGHT_W - 1)
+    piSep2:SetHeight(1)
+    piSep2:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    local ICON_SIZE = 56
+    local piIconBg = LibEKL.UICreateFrame("nkFrame", name .. ".rp.pi.iconbg", rightPanel)
+    piIconBg:SetPoint("TOPLEFT", rightPanel, "TOPLEFT", (RIGHT_W - ICON_SIZE) / 2, PI_TOP + 30)
+    piIconBg:SetWidth(ICON_SIZE)
+    piIconBg:SetHeight(ICON_SIZE)
+    piIconBg:SetBackgroundColor(0.08, 0.09, 0.13, 1)
+
+    local piIcon = LibEKL.UICreateFrame("nkTexture", name .. ".rp.pi.icon", rightPanel)
+    piIcon:SetPoint("TOPLEFT",     piIconBg, "TOPLEFT",     2, 2)
+    piIcon:SetPoint("BOTTOMRIGHT", piIconBg, "BOTTOMRIGHT", -2, -2)
+    piIcon:SetVisible(false)
+
+    local piName = LibEKL.UICreateFrame("nkText", name .. ".rp.pi.name", rightPanel)
+    piName:SetPoint("TOPCENTER", rightPanel, "TOPCENTER", 0, PI_TOP + 94)
+    piName:SetFontSize(10)
+    LibEKL.UI.SetFont(piName, addonInfo.id, "MontserratBold")
+    piName:SetFontColor(0.82, 0.85, 0.90, 1)
+    piName:SetText("")
+
+    local piSeller = LibEKL.UICreateFrame("nkText", name .. ".rp.pi.seller", rightPanel)
+    piSeller:SetPoint("TOPCENTER", rightPanel, "TOPCENTER", 0, PI_TOP + 112)
+    piSeller:SetFontSize(9)
+    LibEKL.UI.SetFont(piSeller, addonInfo.id, "MontserratMedium")
+    piSeller:SetFontColor(0.45, 0.48, 0.52, 1)
+    piSeller:SetText("")
+
+    local piPrice = LibEKL.UICreateFrame("nkText", name .. ".rp.pi.price", rightPanel)
+    piPrice:SetPoint("TOPCENTER", rightPanel, "TOPCENTER", 0, PI_TOP + 130)
+    piPrice:SetFontSize(10)
+    LibEKL.UI.SetFont(piPrice, addonInfo.id, "MontserratMedium")
+    piPrice:SetFontColor(0.82, 0.85, 0.90, 1)
+    piPrice:SetText("")
+
+    -- Update right panel for a selected auction ID
+    local function updateRightPanel(auctionID)
+        for i = 1, PH_SNAP_ROWS do phSnapRows[i]:SetText("") phSnapRows[i]:SetVisible(false) end
+        for i = 1, 4 do phStatValues[i]:SetText("-") end
+        piIcon:SetVisible(false)
+        piName:SetText("")
+        piSeller:SetText("")
+        piPrice:SetText("")
+
+        if auctionID == nil then return end
+        local ok, detail = pcall(InspectAuctionDetail, auctionID)
+        if not ok or detail == nil then return end
+
+        local itemType = detail.item or detail.itemType
+        if itemType == nil then return end
+
+        -- Item preview
+        local ok2, idet = pcall(InspectItemDetail, itemType)
+        if ok2 and idet then
+            if idet.icon then
+                piIcon:SetTextureAsync("Rift", idet.icon)
+                piIcon:SetVisible(true)
+            end
+            local rarColor  = LibEKL.Inventory.GetItemColor(idet.rarity or "common")
+            local nameHex   = LibEKL.Tools.Color.RGBToHex(
+                mathFloor((rarColor.r or 1) * 255),
+                mathFloor((rarColor.g or 1) * 255),
+                mathFloor((rarColor.b or 1) * 255))
+            piName:SetText(stringFormat('<font color="#%s">%s</font>', nameHex, idet.name or "?"))
+        end
+        if detail.seller then piSeller:SetText(detail.seller) end
+        if detail.buyout and detail.buyout > 0 then
+            piPrice:SetText(internalFunc.formatCoins(detail.buyout))
+        end
+
+        -- Price history
+        local shardName = InspectShard().name
+        if not nkUIAucData or not nkUIAucData[shardName] then return end
+        local item = nkUIAucData[shardName].items[itemType]
+        if item == nil then return end
+
+        local summary = auction.getPriceSummary(itemType)
+        if summary then
+            phStatValues[1]:SetText(internalFunc.formatCoins(summary.lo))
+            phStatValues[2]:SetText(internalFunc.formatCoins(summary.hi))
+            phStatValues[3]:SetText(internalFunc.formatCoins(summary.avg))
+            local dStr = (summary.daysSince == 0) and "today" or (summary.daysSince .. "d ago")
+            phStatValues[4]:SetText(dStr)
+        end
+
+        local head = item.snapshotHead or 0
+        if head == 0 then return end
+        local shown = 0
+        for i = 0, SNAPSHOT_CAPACITY - 1 do
+            if shown >= PH_SNAP_ROWS then break end
+            local idx  = (head - 1 - i) % SNAPSHOT_CAPACITY + 1
+            local snap = item.snapshots[idx]
+            if snap and snap.t and snap.t > 0 then
+                shown = shown + 1
+                local ageStr = LibEKL.Tools.DateTime.SecondsToText(osTime() - snap.t) .. " ago"
+                phSnapRows[shown]:SetText(internalFunc.formatCoins(snap.lo) .. "  " .. ageStr)
+                phSnapRows[shown]:SetVisible(true)
+            end
+        end
+    end
+
+    rightPanel.updateContent = updateRightPanel
 
     -- ===== HAUPT-INHALT (Mitte) =====
     local mainContent = LibEKL.UICreateFrame("nkFrame", name .. ".main", body)
@@ -950,7 +1131,7 @@ local function buildWindow()
     end
 
     mainContent.grid     = mainGrid
-    mainContent.onSelect = nil   -- hook: function(auctionID) – filled in Step 6/7
+    -- onSelect wired below after bottomBar is built
 
     -- ===== BOTTOM BAR =====
     local bottomBar = LibEKL.UICreateFrame("nkFrame", name .. ".bottom", body)
@@ -958,12 +1139,122 @@ local function buildWindow()
     bottomBar:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", 0, 0)
     bottomBar:SetHeight(BOTTOM_H)
 
-    local bottomPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".bottom.placeholder", bottomBar)
-    bottomPlaceholder:SetPoint("CENTER", bottomBar, "CENTER", 0, 0)
-    bottomPlaceholder:SetFontSize(11)
-    LibEKL.UI.SetFont(bottomPlaceholder, addonInfo.id, "MontserratMedium")
-    bottomPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
-    bottomPlaceholder:SetText("[Bottom Bar – Schritt 8]")
+    bottomBar:SetBackgroundColor(0.05, 0.06, 0.09, 1)
+
+    local bbTopSep = LibEKL.UICreateFrame("nkFrame", name .. ".bb.topsep", bottomBar)
+    bbTopSep:SetPoint("TOPLEFT",  bottomBar, "TOPLEFT",  0, 0)
+    bbTopSep:SetPoint("TOPRIGHT", bottomBar, "TOPRIGHT", 0, 0)
+    bbTopSep:SetHeight(1)
+    bbTopSep:SetBackgroundColor(0.22, 0.22, 0.28, 1)
+
+    -- Left: currency display
+    local BB_PAD = 10
+    local bbCurrLabel = LibEKL.UICreateFrame("nkText", name .. ".bb.currlabel", bottomBar)
+    bbCurrLabel:SetPoint("CENTERLEFT", bottomBar, "CENTERLEFT", BB_PAD, 0)
+    bbCurrLabel:SetFontSize(10)
+    LibEKL.UI.SetFont(bbCurrLabel, addonInfo.id, "MontserratMedium")
+    bbCurrLabel:SetFontColor(0.50, 0.53, 0.58, 1)
+    bbCurrLabel:SetText("Balance:")
+
+    local bbCurrValue = LibEKL.UICreateFrame("nkText", name .. ".bb.currvalue", bottomBar)
+    bbCurrValue:SetPoint("CENTERLEFT", bbCurrLabel, "CENTERRIGHT", 6, 0)
+    bbCurrValue:SetFontSize(10)
+    LibEKL.UI.SetFont(bbCurrValue, addonInfo.id, "MontserratMedium")
+    bbCurrValue:SetFontColor(0.82, 0.85, 0.90, 1)
+    bbCurrValue:SetText("-")
+
+    -- Right: BUYOUT button
+    local BB_BTN_W = 90
+    local BB_BTN_H = 28
+
+    local BB_BTN_FILL   = { type = "solid", r = 0.08, g = 0.10, b = 0.18, a = 0.85 }
+    local BB_BTN_BORDER = { r = 0.25, g = 0.30, b = 0.45, a = 0.9, thickness = 1 }
+
+    local btnBuyout = LibEKL.UICreateFrame("nkButton", name .. ".bb.buyout", bottomBar)
+    btnBuyout:SetPoint("CENTERRIGHT", bottomBar, "CENTERRIGHT", -BB_PAD, 0)
+    btnBuyout:SetWidth(BB_BTN_W)
+    btnBuyout:SetHeight(BB_BTN_H)
+    btnBuyout:SetFillColor(BB_BTN_FILL)
+    btnBuyout:SetBorderColor(BB_BTN_BORDER)
+    btnBuyout:SetLabelColor(data.theme.labelColor)
+    btnBuyout:SetFont(addonInfo.id, "MontserratBold")
+    btnBuyout:SetFontSize(10)
+    btnBuyout:SetText("BUYOUT")
+    btnBuyout:SetAlpha(0.35)
+
+    -- BID button
+    local btnBid = LibEKL.UICreateFrame("nkButton", name .. ".bb.bid", bottomBar)
+    btnBid:SetPoint("CENTERRIGHT", btnBuyout, "CENTERLEFT", -6, 0)
+    btnBid:SetWidth(BB_BTN_W)
+    btnBid:SetHeight(BB_BTN_H)
+    btnBid:SetFillColor(BB_BTN_FILL)
+    btnBid:SetBorderColor(BB_BTN_BORDER)
+    btnBid:SetLabelColor(data.theme.labelColor)
+    btnBid:SetFont(addonInfo.id, "MontserratBold")
+    btnBid:SetFontSize(10)
+    btnBid:SetText("BID")
+    btnBid:SetAlpha(0.35)
+
+    local bbButtonsActive = false
+
+    -- Qty label + field
+    local bbQtyLabel = LibEKL.UICreateFrame("nkText", name .. ".bb.qtylbl", bottomBar)
+    bbQtyLabel:SetPoint("CENTERRIGHT", btnBid, "CENTERLEFT", -8, 0)
+    bbQtyLabel:SetFontSize(10)
+    LibEKL.UI.SetFont(bbQtyLabel, addonInfo.id, "MontserratMedium")
+    bbQtyLabel:SetFontColor(0.50, 0.53, 0.58, 1)
+    bbQtyLabel:SetText("Qty:")
+
+    local bbQtyField = LibEKL.UICreateFrame("nkTextField", name .. ".bb.qty", bottomBar)
+    bbQtyField:SetPoint("CENTERRIGHT", bbQtyLabel, "CENTERLEFT", -4, 0)
+    bbQtyField:SetWidth(40)
+    bbQtyField:SetHeight(24)
+    bbQtyField:SetText("1")
+
+    -- Refresh player currency display
+    local function refreshCurrency()
+        local ok, coinDetail = pcall(Inspect.Currency.Detail, "coin")
+        if ok and coinDetail and coinDetail.amount then
+            bbCurrValue:SetText(internalFunc.formatCoins(coinDetail.amount))
+        else
+            bbCurrValue:SetText("-")
+        end
+    end
+    refreshCurrency()
+
+    -- Toggle action buttons based on selection state
+    local function updateActionButtons()
+        bbButtonsActive = auction.selectedAuctionId ~= nil
+        local alpha = bbButtonsActive and 1.0 or 0.35
+        btnBid:SetAlpha(alpha)
+        btnBuyout:SetAlpha(alpha)
+    end
+
+    -- BUYOUT: bid at full buyout price
+    btnBuyout:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        if not bbButtonsActive or auction.selectedAuctionId == nil then return end
+        local ok, detail = pcall(InspectAuctionDetail, auction.selectedAuctionId)
+        if not ok or detail == nil or not detail.buyout then return end
+        Command.Auction.Bid(auction.selectedAuctionId, detail.buyout)
+        refreshCurrency()
+    end, name .. ".bb.buyout.LeftUp")
+
+    -- BID: bid at current bid price (or buyout if no separate bid)
+    btnBid:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
+        if not bbButtonsActive or auction.selectedAuctionId == nil then return end
+        local ok, detail = pcall(InspectAuctionDetail, auction.selectedAuctionId)
+        if not ok or detail == nil then return end
+        local bidAmount = detail.bid or detail.buyout
+        if not bidAmount then return end
+        Command.Auction.Bid(auction.selectedAuctionId, bidAmount)
+        refreshCurrency()
+    end, name .. ".bb.bid.LeftUp")
+
+    -- Wire mainContent.onSelect: update right panel + action buttons
+    mainContent.onSelect = function(auctionID)
+        rightPanel.updateContent(auctionID)
+        updateActionButtons()
+    end
 
     -- Position speichern beim Verschieben
     win:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
