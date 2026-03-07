@@ -813,12 +813,144 @@ local function buildWindow()
     mainContent:SetPoint("TOPLEFT",     sidebar,    "TOPRIGHT",   0, 0)
     mainContent:SetPoint("BOTTOMRIGHT", rightPanel, "BOTTOMLEFT", 0, 0)
 
-    local mainPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".main.placeholder", mainContent)
-    mainPlaceholder:SetPoint("CENTER", mainContent, "CENTER", 0, 0)
-    mainPlaceholder:SetFontSize(14)
-    LibEKL.UI.SetFont(mainPlaceholder, addonInfo.id, "MontserratMedium")
-    mainPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
-    mainPlaceholder:SetText("[Haupt-Grid – Schritt 4]")
+    -- HEADER_H (30) is in scope from the sidebar section above
+    local MAIN_CONTENT_H = WIN_H - HEADER_H - FILTER_H - BOTTOM_H  -- 578
+    local GRID_FONT_SIZE = 12
+    local GRID_CELL_H    = GRID_FONT_SIZE + 6   -- 18
+    local GRID_HDR_H     = 13 + 6               -- 19 (default headerFontSize + pad)
+    local GRID_ROWS      = mathFloor((MAIN_CONTENT_H - GRID_HDR_H - 1) / GRID_CELL_H)  -- 30
+
+    local MAIN_GRID_NAME = name .. ".main.grid"
+    local mainGrid = LibEKL.UICreateFrame("nkGrid", MAIN_GRID_NAME, mainContent)
+    mainGrid:SetPoint("TOPLEFT", mainContent, "TOPLEFT", 0, 0)
+
+    mainGrid:SetFont(addonInfo.id, "MontserratMedium")
+    mainGrid:SetFontSize(GRID_FONT_SIZE)
+    mainGrid:SetBodyColor(0.06, 0.07, 0.10, 1)
+    mainGrid:SetBodyHighlightColor(0.12, 0.14, 0.20, 1)
+    mainGrid:SetBodySelectedColor(0.18, 0.22, 0.32, 1)
+    mainGrid:SetBorderColor(0.18, 0.18, 0.22, 1)
+    mainGrid:SetHeaderLabelColor(data.theme.labelColor)
+    mainGrid:SetLabelHighlightColor(data.theme.labelColor)
+    mainGrid:SetLabelSelectedColor(data.theme.labelColor)
+    mainGrid:SetSortable(true)
+    mainGrid:SetSelectable(true)
+
+    local MAIN_COLS = {
+        { width = 22,  header = "",            texture = true, textureType = "Rift", texturePath = "" },
+        { width = 280, header = "NAME",         align = "left"  },
+        { width = 120, header = "SELLER",       align = "left"  },
+        { width = 50,  header = "STACKS",       align = "right" },
+        { width = 80,  header = "TIME",         align = "right" },
+        { width = 45,  header = "LEVEL",        align = "right" },
+        { width = 125, header = "UNIT PRICE",   align = "right" },
+        { width = 190, header = "BUYOUT",       align = "right" },
+    }
+
+    local mainGridRows = {}
+    auction.selectedAuctionId = nil
+
+    -- Init grid empty after cells are built
+    Command.Event.Attach(LibEKL.Events[MAIN_GRID_NAME].GridFinished, function()
+        mainGrid:SetCellValues({})
+    end, MAIN_GRID_NAME .. ".GridFinished")
+
+    mainGrid:Layout(MAIN_COLS, GRID_ROWS)
+
+    -- Row click: store auction ID for bottom bar buttons
+    Command.Event.Attach(LibEKL.Events[MAIN_GRID_NAME].LeftClick, function(_, rowNo)
+        auction.selectedAuctionId = mainGrid:GetKey(rowNo)
+        if mainContent.onSelect then mainContent.onSelect(auction.selectedAuctionId) end
+    end, MAIN_GRID_NAME .. ".LeftClick")
+
+    -- Process one auction entry into a grid row
+    local function processOneMainRow(auctionID, destRows)
+        local ok, detail = pcall(InspectAuctionDetail, auctionID)
+        if not (ok and detail and detail.itemType and detail.buyout) then return end
+
+        local stack     = detail.itemStack or 1
+        local unitPrice = mathFloor(detail.buyout / stack)
+
+        local ok2, itemDetail = pcall(InspectItemDetail, detail.item or detail.itemType)
+        local itemName, icon, rarity, itemLevel = "Unknown", nil, 0, 0
+        if ok2 and itemDetail then
+            itemName  = itemDetail.name  or "Unknown"
+            icon      = itemDetail.icon
+            rarity    = itemDetail.rarity or 0
+            itemLevel = itemDetail.level  or 0
+        end
+
+        local rarityColor = LibEKL.Inventory.GetItemColor(rarity)
+        local coloredName = itemName
+        if rarityColor then
+            coloredName = stringFormat('<font color="#%02x%02x%02x">%s</font>',
+                mathFloor(rarityColor.r * 255),
+                mathFloor(rarityColor.g * 255),
+                mathFloor(rarityColor.b * 255),
+                itemName)
+        end
+
+        local fmtC      = internalFunc.formatCoins
+        local unitStr   = (unitPrice > 0)     and fmtC(unitPrice)      or "-"
+        local buyoutStr = (detail.buyout > 0) and fmtC(detail.buyout)  or "-"
+
+        destRows[#destRows + 1] = {
+            row = {
+                icon or "",
+                coloredName,
+                detail.seller or "?",
+                tostring(stack),
+                auction.formatExpiry(detail.timeRemaining or 0),
+                (itemLevel > 0) and tostring(itemLevel) or "-",
+                unitStr,
+                { value = buyoutStr, key = auctionID },
+            },
+            sortKeys = { [7] = unitPrice, [8] = detail.buyout },
+            name     = itemName,
+        }
+    end
+
+    -- Populate grid from raw scan results (called in Step 9)
+    function auction.populateMainGrid(rawAuctions)
+        mainGridRows = {}
+        local list = {}
+        for aID in pairs(rawAuctions) do list[#list + 1] = aID end
+
+        if #list == 0 then mainGrid:SetCellValues({}) return end
+
+        local newRows = {}
+        local BATCH   = 50
+        local batches, batch = {}, {}
+        for i = 1, #list do
+            batch[#batch + 1] = list[i]
+            if #batch >= BATCH then batches[#batches + 1] = batch; batch = {} end
+        end
+        if #batch > 0 then batches[#batches + 1] = batch end
+
+        local processed = 0
+        local co = coroutine.create(function()
+            for b = 1, #batches do
+                for _, aID in ipairs(batches[b]) do processOneMainRow(aID, newRows) end
+                processed = processed + #batches[b]
+                coroutine.yield(processed)
+            end
+        end)
+
+        LibEKL.Coroutines.Add({
+            func     = co,
+            counter  = #list,
+            active   = true,
+            callBack = function()
+                mainGridRows = newRows
+                local gridData = {}
+                for i = 1, #mainGridRows do gridData[i] = mainGridRows[i].row end
+                mainGrid:SetCellValues(gridData)
+            end,
+        })
+    end
+
+    mainContent.grid     = mainGrid
+    mainContent.onSelect = nil   -- hook: function(auctionID) – filled in Step 6/7
 
     -- ===== BOTTOM BAR =====
     local bottomBar = LibEKL.UICreateFrame("nkFrame", name .. ".bottom", body)
