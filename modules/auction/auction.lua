@@ -402,19 +402,56 @@ function auction.setBrowseSearchPending(flag)
     browseSearchPending = flag
 end
 
----------- main window skeleton ----------
+---------- main window (neues Design – Schritt 2: Filter-Leiste) ----------
 
-local WIN_W, WIN_H = 900, 600
+local WIN_W     = 1280
+local WIN_H     = 720
+local FILTER_H  = 68
+local SIDEBAR_W = 148
+local RIGHT_W   = 220
+local BOTTOM_H  = 44
+
+---------- filter bar option tables ----------
+
+local FILTER_RARITY_OPTIONS = {
+    { label = "All Rarities",   value = nil           },
+    { label = "Common",         value = "sellable"    },
+    { label = "Uncommon",       value = "uncommon"    },
+    { label = "Rare",           value = "rare"        },
+    { label = "Epic",           value = "epic"        },
+    { label = "Relic",          value = "relic"       },
+    { label = "Transcendent",   value = "transcendent"},
+}
+
+local FILTER_CALLING_OPTIONS = {
+    { label = "All Callings",   value = nil           },
+    { label = "Warrior",        value = "warrior"     },
+    { label = "Cleric",         value = "cleric"      },
+    { label = "Rogue",          value = "rogue"       },
+    { label = "Mage",           value = "mage"        },
+    { label = "Primalist",      value = "primalist"   },
+}
+
+local FILTER_STATS_OPTIONS = {
+    { label = "All Stats",      value = nil           },
+    { label = "Strength",       value = "str"         },
+    { label = "Dexterity",      value = "dex"         },
+    { label = "Intelligence",   value = "int"         },
+    { label = "Wisdom",         value = "wis"         },
+    { label = "Endurance",      value = "end"         },
+}
 
 local function buildWindow()
     local name = "nkUI.auction"
 
     local win = LibEKL.UICreateFrame("nkWindow", name, context)
-    win:SetTitle(langTexts.auction.windowTitle)
-    win:SetTitleFont(addonInfo.id, "MontserratSemiBold")
-    win:SetTitleFontSize(16)
-    win:SetTitleEffect({ strength = 3 })
+    win:SetTitle("AUCTION HOUSE")
+    win:SetTitleAlign('center')
+    win:SetTitleFont(addonInfo.id, "MontserratBold")
+    win:SetTitleFontSize(18)
+    win:SetTitleEffect({ strength = 4 })
     win:SetTitleFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    win:SetCloseable(true)
     win:SetWidth(WIN_W)
     win:SetHeight(WIN_H)
     win:SetLayer(2)
@@ -431,81 +468,197 @@ local function buildWindow()
     local cfg = nkUISetup.modules.auction
     win:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cfg.x, cfg.y)
 
-    -- Tab pane fills the top portion of the content area
-    local tabs = LibEKL.UICreateFrame("nkTabPane", name .. ".tabs", win:GetContent())
-    tabs:SetPoint("TOPLEFT",     win:GetContent(), "TOPLEFT",     0,    0)
-    tabs:SetPoint("BOTTOMRIGHT", win:GetContent(), "BOTTOMRIGHT", 0, -30)
+    local body = win:GetContent()
 
-    -- Create content frames that live inside the tab pane's body
-    local bodyFrame = tabs:GetBodyFrame()
+    -- ===== FILTER-LEISTE =====
+    local filterBar = LibEKL.UICreateFrame("nkFrame", name .. ".filter", body)
+    filterBar:SetPoint("TOPLEFT",  body, "TOPLEFT",  0, 0)
+    filterBar:SetPoint("TOPRIGHT", body, "TOPRIGHT", 0, 0)
+    filterBar:SetHeight(FILTER_H)
 
-    local browseFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.browse", bodyFrame)
-    browseFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
-    browseFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
-    browseFrame:SetVisible(false)
+    -- Hilfsfunktionen für wiederkehrende Elemente
+    local function mkLabel(fname, parent, text, xOff, yOff)
+        local lbl = LibEKL.UICreateFrame("nkText", fname, parent)
+        lbl:SetPoint("TOPLEFT", parent, "TOPLEFT", xOff, yOff)
+        lbl:SetFontSize(10)
+        LibEKL.UI.SetFont(lbl, addonInfo.id, "MontserratMedium")
+        lbl:SetFontColor(0.55, 0.55, 0.55, 1)
+        lbl:SetText(text)
+        return lbl
+    end
 
-    local postFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.post", bodyFrame)
-    postFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
-    postFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
-    postFrame:SetVisible(false)
+    local function mkInput(fname, parent, xOff, yOff, w)
+        local tf = LibEKL.UICreateFrame("nkTextField", fname, parent)
+        tf:SetPoint("TOPLEFT", parent, "TOPLEFT", xOff, yOff)
+        tf:SetWidth(w or 160)
+        tf:SetHeight(24)
+        tf:SetInnerColor({r = 0.05, g = 0.06, b = 0.09, a = 1})
+        tf:SetFocusColor(data.theme.labelColor)
+        tf:SetBorderColor({r = 0.25, g = 0.25, b = 0.30, a = 1})
+        return tf
+    end
 
-    local mineFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.mine", bodyFrame)
-    mineFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
-    mineFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
-    mineFrame:SetVisible(false)
+    local function mkCombo(fname, parent, options, xOff, yOff, w)
+        local cb = LibEKL.UICreateFrame("nkCombobox", fname, parent)
+        cb:SetPoint("TOPLEFT", parent, "TOPLEFT", xOff, yOff)
+        cb:SetWidth(w or 120)
+        cb:SetHeight(24)
+        cb:SetLabelWidth(0)
+        cb:SetFont(addonInfo.id, "MontserratMedium")
+        cb:SetLabelColor(data.theme.labelColor)
+        cb:SetColorInner(0.05, 0.06, 0.09, 1)
+        cb:SetColor(0.18, 0.20, 0.26, 1)
+        cb:SetColorSelected(data.theme.labelColor)
+        cb:SetColorBorder(0.25, 0.25, 0.30, 1)
+        cb:SetSelection(options, false)
+        cb:SetSelectedValue(options[1].value)
+        return cb
+    end
 
-    local pricesFrame = LibEKL.UICreateFrame("nkFrame", name .. ".tab.prices", bodyFrame)
-    pricesFrame:SetPoint("TOPLEFT",     bodyFrame, "TOPLEFT",     0, 0)
-    pricesFrame:SetPoint("BOTTOMRIGHT", bodyFrame, "BOTTOMRIGHT", 0, 0)
-    pricesFrame:SetVisible(false)
+    local function mkCheck(fname, parent, text, xOff, yOff)
+        local ck = LibEKL.UICreateFrame("nkCheckbox", fname, parent)
+        ck:SetPoint("TOPLEFT", parent, "TOPLEFT", xOff, yOff)
+        ck:SetText(text)
+        ck:SetFontSize(11)
+        ck:SetTextFont(addonInfo.id, "MontserratMedium")
+        ck:SetLabelColor(data.theme.labelColor)
+        ck:SetColor(data.theme.labelColor)
+        ck:SetColorInner(0.05, 0.06, 0.09, 1)
+        ck:SetLabelInFront(false)
+        ck:SetLabelWidth(90)
+        ck:SetChecked(false, true)
+        return ck
+    end
 
-    local tabStroke = { r = 0x66/255, g = 0x56/255, b = 0x2e/255, a = 1, thickness = 1 }
-    local tabFill   = { type = "solid", r = 0.13, g = 0.15, b = 0.20, a = 1 }
-    tabs:SetColor(tabStroke, tabFill, data.theme.labelColor, { r = 1, g = 1, b = 1, a = 1 })
-    tabs:SetFont(addonInfo.id, "MontserratSemiBold")
+    -- Zeilen-Offsets: Zeile 1 = Labels (y=6), Zeile 2 = Controls (y=22)
+    local LBL_Y  = 6
+    local CTRL_Y = 22
 
-    tabs:AddPane({ label = langTexts.auction.tabBrowse,  frame = browseFrame,  effect = { strength = 3 },
-        initFunc = function()
-            if auction.buildBrowseTab then
-                auction.buildBrowseTab(browseFrame)
-            end
-        end }, false)
-    tabs:AddPane({ label = langTexts.auction.tabPost,    frame = postFrame,    effect = { strength = 3 },
-        initFunc = function() -- Phase 3: post tab builder goes here
-        end }, false)
-    tabs:AddPane({ label = langTexts.auction.tabMine,    frame = mineFrame,    effect = { strength = 3 },
-        initFunc = function() -- Phase 1B: my auctions tab builder goes here
-        end }, false)
-    tabs:AddPane({ label = langTexts.auction.tabPrices,  frame = pricesFrame,  effect = { strength = 3 },
-        initFunc = function() -- Phase 2: prices tab builder goes here
-        end }, false)
+    -- SEARCH
+    mkLabel(name .. ".filter.lSearch", filterBar, "SEARCH", 8, LBL_Y)
+    local filterSearch = mkInput(name .. ".filter.search", filterBar, 8, CTRL_Y, 160)
 
-    tabs:UpdatePanes()
+    -- LEVEL
+    mkLabel(name .. ".filter.lLevel", filterBar, "LEVEL", 176, LBL_Y)
+    local filterLevelMin = mkInput(name .. ".filter.levelMin", filterBar, 176, CTRL_Y, 38)
+    local filterLevelSep = LibEKL.UICreateFrame("nkText", name .. ".filter.levelSep", filterBar)
+    filterLevelSep:SetPoint("TOPLEFT", filterBar, "TOPLEFT", 218, CTRL_Y + 5)
+    filterLevelSep:SetFontSize(11)
+    LibEKL.UI.SetFont(filterLevelSep, addonInfo.id, "MontserratMedium")
+    filterLevelSep:SetFontColor(0.5, 0.5, 0.5, 1)
+    filterLevelSep:SetText("–")
+    local filterLevelMax = mkInput(name .. ".filter.levelMax", filterBar, 228, CTRL_Y, 38)
 
-    -- Status strip at the bottom: "Last scan: X" + [Scan Now] button
-    local strip = LibEKL.UICreateFrame("nkFrame", name .. ".strip", win:GetContent())
-    strip:SetPoint("BOTTOMLEFT",  win:GetContent(), "BOTTOMLEFT",  0, 0)
-    strip:SetPoint("BOTTOMRIGHT", win:GetContent(), "BOTTOMRIGHT", 0, 0)
-    strip:SetHeight(30)
+    -- STATS
+    mkLabel(name .. ".filter.lStats", filterBar, "STATS", 274, LBL_Y)
+    local filterStats = mkCombo(name .. ".filter.stats", filterBar, FILTER_STATS_OPTIONS, 274, CTRL_Y, 118)
 
-    local statusLabel = LibEKL.UICreateFrame("nkText", name .. ".strip.status", strip)
-    statusLabel:SetPoint("CENTERLEFT", strip, "CENTERLEFT", 10, 0)
-    statusLabel:SetFontSize(13)
-    statusLabel:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
-    LibEKL.UI.SetFont(statusLabel, addonInfo.id, "MontserratSemiBold")
+    -- CALLING
+    mkLabel(name .. ".filter.lCalling", filterBar, "CALLING", 400, LBL_Y)
+    local filterCalling = mkCombo(name .. ".filter.calling", filterBar, FILTER_CALLING_OPTIONS, 400, CTRL_Y, 128)
 
-    local scanBtn = auction.makeBtn(name .. ".strip.scan", strip, langTexts.auction.btnScan, 100, 22)
-    scanBtn:SetPoint("CENTERRIGHT", strip, "CENTERRIGHT", -10, 0)
+    -- RARITY
+    mkLabel(name .. ".filter.lRarity", filterBar, "RARITY", 536, LBL_Y)
+    local filterRarity = mkCombo(name .. ".filter.rarity", filterBar, FILTER_RARITY_OPTIONS, 536, CTRL_Y, 128)
 
-    scanBtn:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-        if not atAuctionHouse then
-            Command.Console.Display("general", true, langTexts.auction.notAtAH, true)
-            return
-        end
-        internalFunc.ahScanDialog()
-    end, name .. ".strip.scan.Up")
+    -- USABLE ONLY
+    local filterUsable  = mkCheck(name .. ".filter.usable",  filterBar, "Usable Only",  672, CTRL_Y - 2)
 
-    -- Save position on move
+    -- BUYOUTS ONLY
+    local filterBuyouts = mkCheck(name .. ".filter.buyouts", filterBar, "Buyouts Only", 774, CTRL_Y - 2)
+
+    -- BUYOUT PRICE – TOTAL (rechts verankert)
+    -- Layout (von rechts): [8] [Max 65px] [4] [Min 65px]
+    -- Header-Label (rechts ausgerichtet, Zeile 1)
+    local bpLabel = LibEKL.UICreateFrame("nkText", name .. ".filter.lBuyout", filterBar)
+    bpLabel:SetPoint("TOPRIGHT", filterBar, "TOPRIGHT", -8, LBL_Y)
+    bpLabel:SetFontSize(10)
+    LibEKL.UI.SetFont(bpLabel, addonInfo.id, "MontserratMedium")
+    bpLabel:SetFontColor(0.55, 0.55, 0.55, 1)
+    bpLabel:SetText("BUYOUT PRICE – TOTAL")
+
+    -- Max-Feld (Zeile 2, rechtsbündig)
+    local filterPriceMax = LibEKL.UICreateFrame("nkTextField", name .. ".filter.priceMax", filterBar)
+    filterPriceMax:SetPoint("TOPRIGHT", filterBar, "TOPRIGHT", -8, CTRL_Y)
+    filterPriceMax:SetWidth(65)
+    filterPriceMax:SetHeight(24)
+    filterPriceMax:SetInnerColor({r = 0.05, g = 0.06, b = 0.09, a = 1})
+    filterPriceMax:SetFocusColor(data.theme.labelColor)
+    filterPriceMax:SetBorderColor({r = 0.25, g = 0.25, b = 0.30, a = 1})
+
+    -- Min-Feld (Zeile 2, links von Max)
+    local filterPriceMin = LibEKL.UICreateFrame("nkTextField", name .. ".filter.priceMin", filterBar)
+    filterPriceMin:SetPoint("TOPRIGHT", filterBar, "TOPRIGHT", -(8 + 65 + 4), CTRL_Y)
+    filterPriceMin:SetWidth(65)
+    filterPriceMin:SetHeight(24)
+    filterPriceMin:SetInnerColor({r = 0.05, g = 0.06, b = 0.09, a = 1})
+    filterPriceMin:SetFocusColor(data.theme.labelColor)
+    filterPriceMin:SetBorderColor({r = 0.25, g = 0.25, b = 0.30, a = 1})
+
+    -- Filter-Controls am filterBar-Objekt speichern (für Schritt 9)
+    filterBar.search    = filterSearch
+    filterBar.levelMin  = filterLevelMin
+    filterBar.levelMax  = filterLevelMax
+    filterBar.stats     = filterStats
+    filterBar.calling   = filterCalling
+    filterBar.rarity    = filterRarity
+    filterBar.usable    = filterUsable
+    filterBar.buyouts   = filterBuyouts
+    filterBar.priceMin  = filterPriceMin
+    filterBar.priceMax  = filterPriceMax
+
+    -- ===== SIDEBAR (links) =====
+    local sidebar = LibEKL.UICreateFrame("nkFrame", name .. ".sidebar", body)
+    sidebar:SetPoint("TOPLEFT",    body, "TOPLEFT",    0,  FILTER_H)
+    sidebar:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", 0, -BOTTOM_H)
+    sidebar:SetWidth(SIDEBAR_W)
+
+    local sidebarPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".sidebar.placeholder", sidebar)
+    sidebarPlaceholder:SetPoint("TOPCENTER", sidebar, "TOPCENTER", 0, 10)
+    sidebarPlaceholder:SetFontSize(11)
+    LibEKL.UI.SetFont(sidebarPlaceholder, addonInfo.id, "MontserratMedium")
+    sidebarPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
+    sidebarPlaceholder:SetText("[Sidebar\nSchritt 3]")
+
+    -- ===== RECHTES PANEL =====
+    local rightPanel = LibEKL.UICreateFrame("nkFrame", name .. ".rightPanel", body)
+    rightPanel:SetPoint("TOPRIGHT",    body, "TOPRIGHT",    0,  FILTER_H)
+    rightPanel:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", 0, -BOTTOM_H)
+    rightPanel:SetWidth(RIGHT_W)
+
+    local rightPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".rightPanel.placeholder", rightPanel)
+    rightPlaceholder:SetPoint("TOPCENTER", rightPanel, "TOPCENTER", 0, 10)
+    rightPlaceholder:SetFontSize(11)
+    LibEKL.UI.SetFont(rightPlaceholder, addonInfo.id, "MontserratMedium")
+    rightPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
+    rightPlaceholder:SetText("[Price History\n+ Preview\nSchritt 6/7]")
+
+    -- ===== HAUPT-INHALT (Mitte) =====
+    local mainContent = LibEKL.UICreateFrame("nkFrame", name .. ".main", body)
+    mainContent:SetPoint("TOPLEFT",     sidebar,    "TOPRIGHT",   0, 0)
+    mainContent:SetPoint("BOTTOMRIGHT", rightPanel, "BOTTOMLEFT", 0, 0)
+
+    local mainPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".main.placeholder", mainContent)
+    mainPlaceholder:SetPoint("CENTER", mainContent, "CENTER", 0, 0)
+    mainPlaceholder:SetFontSize(14)
+    LibEKL.UI.SetFont(mainPlaceholder, addonInfo.id, "MontserratMedium")
+    mainPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
+    mainPlaceholder:SetText("[Haupt-Grid – Schritt 4]")
+
+    -- ===== BOTTOM BAR =====
+    local bottomBar = LibEKL.UICreateFrame("nkFrame", name .. ".bottom", body)
+    bottomBar:SetPoint("BOTTOMLEFT",  body, "BOTTOMLEFT",  0, 0)
+    bottomBar:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", 0, 0)
+    bottomBar:SetHeight(BOTTOM_H)
+
+    local bottomPlaceholder = LibEKL.UICreateFrame("nkText", name .. ".bottom.placeholder", bottomBar)
+    bottomPlaceholder:SetPoint("CENTER", bottomBar, "CENTER", 0, 0)
+    bottomPlaceholder:SetFontSize(11)
+    LibEKL.UI.SetFont(bottomPlaceholder, addonInfo.id, "MontserratMedium")
+    bottomPlaceholder:SetFontColor(0.4, 0.4, 0.4, 1)
+    bottomPlaceholder:SetText("[Bottom Bar – Schritt 8]")
+
+    -- Position speichern beim Verschieben
     win:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
         if win:GetLeft() ~= nil then
             nkUISetup.modules.auction.x = win:GetLeft()
@@ -513,48 +666,34 @@ local function buildWindow()
         end
     end, name .. ".Moved")
 
-    -- Helper: update the status strip text
-    function win:UpdateStatus()
-        local shard = InspectShard().name
-        if nkUIAucData and nkUIAucData[shard] and nkUIAucData[shard].lastScan then
-            local elapsed = osTime() - nkUIAucData[shard].lastScan
-            local hours   = mathFloor(elapsed / 3600)
-            local mins    = mathFloor((elapsed % 3600) / 60)
-            local timeStr
-            if hours > 0 then
-                timeStr = stringFormat("%dh %dm", hours, mins)
-            else
-                timeStr = stringFormat("%dm", mins)
-            end
-            statusLabel:SetText(stringFormat(langTexts.auction.lastScan, timeStr))
-        else
-            statusLabel:SetText(langTexts.auction.neverScanned)
-        end
-    end
+    -- Sub-Frames für spätere Schritte zugänglich machen
+    win.filterBar   = filterBar
+    win.sidebar     = sidebar
+    win.mainContent = mainContent
+    win.rightPanel  = rightPanel
+    win.bottomBar   = bottomBar
 
-    win:UpdateStatus()
+    -- Stub: Kompatibilität mit Scan-Engine
+    function win:UpdateStatus() end
+
     win:SetVisible(false)
-
     return win
 end
 
--- Called by other sub-modules (browse, post, mine, prices) to refresh the strip.
+-- Stub: wird von der Scan-Engine aufgerufen
 function auction.refreshStatusStrip()
-    if uiElements.auctionWindow then
-        uiElements.auctionWindow:UpdateStatus()
-    end
+    -- no-op in neuem Design
 end
 
 ---------- public entry point ----------
 
 function internalFunc.auctionOpen()
 
-    -- bootstrap settings if the auction block is missing from an older save
+    -- bootstrap: Settings falls fehlend
     if nkUISetup and nkUISetup.modules and nkUISetup.modules.auction == nil then
-        nkUISetup.modules.auction = { activate = true, x = 300, y = 200,
+        nkUISetup.modules.auction = { activate = true, x = 100, y = 50,
                                       autoOpenWithAH = false, showInTooltip = true, scanDepth = 3 }
     end
-    -- bootstrap browse sub-table if missing
     if nkUISetup and nkUISetup.modules and nkUISetup.modules.auction and nkUISetup.modules.auction.browse == nil then
         nkUISetup.modules.auction.browse = { sortCol = 7, sortAsc = true, rarityFilter = {} }
     end
@@ -565,9 +704,6 @@ function internalFunc.auctionOpen()
 
     local win = uiElements.auctionWindow
     win:SetVisible(not win:GetVisible())
-    if win:GetVisible() then
-        win:UpdateStatus()
-    end
 end
 
 ---------- auto-open with AH (optional) ----------
@@ -581,7 +717,6 @@ Command.Event.Attach(Event.Interaction, function(_, interaction)
             uiElements.auctionWindow = buildWindow()
         end
         uiElements.auctionWindow:SetVisible(true)
-        uiElements.auctionWindow:UpdateStatus()
     elseif interaction == nil then
         if uiElements.auctionWindow and uiElements.auctionWindow:GetVisible() then
             uiElements.auctionWindow:SetVisible(false)
