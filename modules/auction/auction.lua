@@ -1300,16 +1300,14 @@ local function buildWindow()
 
         local lvMin = tonumber(filterLevelMin:GetText())
         local lvMax = tonumber(filterLevelMax:GetText())
-        if lvMin then params.minLevel = lvMin end
-        if lvMax then params.maxLevel = lvMax end
+        if lvMin then params.levelMin = lvMin end
+        if lvMax then params.levelMax = lvMax end
 
         local callingVal = filterCalling:GetSelectedValue()
-        if callingVal then params.calling = callingVal end
+        if callingVal then params.role = callingVal end
 
         local rarityVal = filterRarity:GetSelectedValue()
         if rarityVal then params.rarity = rarityVal end
-
-        if filterBuyouts:GetChecked() then params.buyoutOnly = true end
 
         local priceMinRaw = tonumber(filterPriceMin:GetText())
         local priceMaxRaw = tonumber(filterPriceMax:GetText())
