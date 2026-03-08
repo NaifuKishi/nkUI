@@ -50,6 +50,54 @@ local mathAtan2				= math.atan2
 
 ---------- addon internal function block ---------
 
+function map.DebugLogUnknown (details, source, extraInfo)
+
+	if not nkDebug then return end
+
+	local logData = {
+		source    = source,
+		zone      = mapData.lastZone,
+		world     = mapData.currentWorld,
+		details   = details,
+	}
+
+	if details ~= nil and details.id ~= nil then
+		local ok, unitInfo = pcall(InspectUnitDetail, details.id)
+		if ok and unitInfo ~= nil then
+			logData.unitDetail = {
+				name        = unitInfo.name,
+				level       = unitInfo.level,
+				relation    = unitInfo.relation,
+				type        = unitInfo.type,
+				taggedBy    = unitInfo.taggedBy,
+				health      = unitInfo.health,
+				healthMax   = unitInfo.healthMax,
+				mana        = unitInfo.mana,
+				manaMax     = unitInfo.manaMax,
+				role        = unitInfo.role,
+				ready       = unitInfo.ready,
+				guild       = unitInfo.guild,
+				zone        = unitInfo.zone,
+				coordX      = unitInfo.coordX,
+				coordY      = unitInfo.coordY,
+				coordZ      = unitInfo.coordZ,
+			}
+		end
+	end
+
+	if extraInfo ~= nil then
+		logData.extra = extraInfo
+	end
+
+	if mapData.unknownLog == nil then mapData.unknownLog = {} end
+	local logKey = (details and details.id) or (details and details.name) or "nil"
+	if mapData.unknownLog[logKey] then return end
+	mapData.unknownLog[logKey] = true
+
+	nkDebug.debugLog(addonInfo.identifier, logData)
+
+end
+
 function map.initMap ()
 
 	if mapInit then return end
@@ -255,10 +303,12 @@ local function mapAdd (key, details)
 			if InspectSystemWatchdog() < 0.1 then
 				mapData.postponedAdds[key] = details
 			else
+				map.DebugLogUnknown(details, "mapAdd.initial")
 				if map.IsKnownMinimapQuest (details.id) == false then
 					if nkUISetup.modules.map.showUnknown == true then
 						local retValue = map.CheckUnknownForQuest(details)
 						if not retValue then
+							map.DebugLogUnknown(details, "mapAdd.unidentified", { questCheckResult = false })
 							uiElements.mapUI:AddElement(details)
 							--[[if uiElements.tiledMapUI then
 								uiElements.tiledMapUI:AddElement(details)

@@ -327,7 +327,10 @@ local function checkUnknown(npcName, thisData)
 	if _npcCache[npcName] == nil then
 		_npcCache[npcName] = questNPCByName (npcName)
 
-		if _npcCache[npcName] == nil then return retFlag end
+		if _npcCache[npcName] == nil then
+			map.DebugLogUnknown(thisData, "checkUnknown.npcNotInDB", { npcName = npcName, questDBInit = questIsInit() })
+			return retFlag
+		end
 
 		for idx = 1, #_npcCache[npcName], 1 do
 			local npcQuestList = questNPCQuests(_npcCache[npcName][idx])

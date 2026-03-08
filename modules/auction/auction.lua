@@ -477,6 +477,7 @@ function internalFunc.auctionSetVisible(visible)
             auction.refreshSellList()
         else
             auction.clearSessionAuctions()
+            auction.hideTooltip()
         end
     end
 end

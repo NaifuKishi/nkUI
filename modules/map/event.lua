@@ -163,6 +163,7 @@ function mapEvents.UnitCoordChange (_, x, y, z)
 			hasUpdates = true
 		elseif _units[unit] == nil then
 			adds[unit] = {id = unit, type = "UNKNOWN", coordX = x[unit], coordY = y[unit], coordZ = z[unit]}
+			map.DebugLogUnknown(adds[unit], "UnitCoordChange.newUnit")
 			_units[unit] = true
 			hasAdds = true
 		else    
