@@ -91,27 +91,30 @@ function internalFunc.wardrobeShowUI()
         local col = (idx - 1) % 4
         local row = math.floor((idx - 1) / 4)
         local slotFrame = LibEKL.UICreateFrame("nkFrame", "nkUI.wardrobeUI.equipSlot" .. idx, content)
-        slotFrame:SetWidth(35)
-        slotFrame:SetHeight(35)
+        slotFrame:SetWidth(40)
+        slotFrame:SetHeight(40)
+        slotFrame:SetBackgroundColor(0, 0, 0, 0.35)
 
         if idx == 1 then
             slotFrame:SetPoint("TOPLEFT", equipHeader, "BOTTOMLEFT", 0, 10)
         else
             if col == 0 then
-                local prevRow = equipSlots[(row - 1) * 4 + 4]
-                slotFrame:SetPoint("TOPLEFT", prevRow, "BOTTOMLEFT", 0, 5)
+                local firstOfPrevRow = equipSlots[(row - 1) * 4 + 1]
+                slotFrame:SetPoint("TOPLEFT", firstOfPrevRow, "BOTTOMLEFT", 0, 5)
             else
                 slotFrame:SetPoint("TOPLEFT", equipSlots[idx - 1], "TOPRIGHT", 5, 0)
             end
         end
 
+        local slotName = data.wardrobeSlots[idx]
         local slot = LibEKL.UICreateFrame("nkTexture", "nkUI.wardrobeUI.equipSlot" .. idx .. ".tex", slotFrame)
         slot:SetPoint("CENTER", slotFrame, "CENTER", 0, 0)
-        slot:SetWidth(30)
-        slot:SetHeight(30)
-        slot:SetTextureAsync("nkUI", "gfx/equipslot_blank.png")
-        
+        slot:SetWidth(34)
+        slot:SetHeight(34)
+        slot:SetTextureAsync("nkUI", "gfx/equipslot_" .. slotName .. ".png")
+
         slotFrame.slot = slot
+        slotFrame.slotName = slotName
 
         equipSlots[idx] = slotFrame
     end
@@ -129,7 +132,7 @@ function internalFunc.wardrobeShowUI()
 
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.equipBtn"].Clicked, function()
         local charData = wardrobe.getCharData()
-        local selectedIdx = setCombo:GetSelectedIndex()
+        local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 then
             LibEKL.Events.AddInsecure(function()
                 wardrobe.wearEquip(selectedIdx)
@@ -171,7 +174,7 @@ function internalFunc.wardrobeShowUI()
 
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.copyBtn"].Clicked, function()
         local charData = wardrobe.getCharData()
-        local selectedIdx = setCombo:GetSelectedIndex()
+        local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 and charData.sets[selectedIdx] then
             tableInsert(charData.sets, {
                 name = charData.sets[selectedIdx].name .. " " .. stringFormat(langTexts.wardrobe.txtCopiedSet, ""),
@@ -200,7 +203,7 @@ function internalFunc.wardrobeShowUI()
             LibEKL.UI.confirmDialog(langTexts.wardrobe.errLastSet, function() end, function() end)
             return
         end
-        local selectedIdx = setCombo:GetSelectedIndex()
+        local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 then
             LibEKL.UI.confirmDialog(langTexts.wardrobe.msgRemoveSetConfirm,
                 function()
@@ -228,24 +231,38 @@ function internalFunc.wardrobeShowUI()
         LibEKL.UI.confirmDialog(langTexts.wardrobe.msgLoadCurrentEquip,
             function()
                 local charData = wardrobe.getCharData()
-                local selectedIdx = setCombo:GetSelectedIndex()
-                if selectedIdx and selectedIdx > 0 and charData.sets[selectedIdx] then
-                    charData.sets[selectedIdx].items = {}
-                    for idx, slot in ipairs(data.wardrobeSlots) do
-                        local ok, itemId = pcall(function()
-                            local items = Inspect.Item.List(Utility.Item.Slot.Equipment(slot))
-                            if items then
-                                for k, v in pairs(items) do
-                                    return v
-                                end
-                            end
-                        end)
-                        if ok and itemId then
-                            charData.sets[selectedIdx].items[slot] = itemId
+                local selectedIdx = setCombo:GetSelectedValue()
+                if not selectedIdx or selectedIdx <= 0 or not charData.sets[selectedIdx] then return end
+
+                LibEKL.Events.AddInsecure(function()
+                    -- Build reverse lookup: seqp slot key → slot name
+                    local slotKeyToName = {}
+                    for _, slotName in ipairs(data.wardrobeSlots) do
+                        local ok, slotKey = pcall(Utility.Item.Slot.Equipment, slotName)
+                        if ok and slotKey then
+                            slotKeyToName[slotKey] = slotName
                         end
                     end
+
+                    local ok, equipped = pcall(Inspect.Item.List, Utility.Item.Slot.Equipment())
+                    if not ok or not equipped then return end
+
+                    charData.sets[selectedIdx].items = {}
+                    for slotKey, itemId in pairs(equipped) do
+                        if itemId then
+                            local mappedSlot = slotKeyToName[slotKey]
+                            if mappedSlot then
+                                charData.sets[selectedIdx].items[mappedSlot] = itemId
+                                local ok2, details = pcall(Inspect.Item.Detail, itemId)
+                                if ok2 and details and details.type and nkUIWardrobeBackup then
+                                    nkUIWardrobeBackup[itemId] = details.type
+                                end
+                            end
+                        end
+                    end
+
                     window:onSetChange(selectedIdx)
-                end
+                end)
             end,
             function() end)
     end, "nkUI.wardrobeUI.currentEquipBtn.Clicked")
@@ -257,7 +274,7 @@ function internalFunc.wardrobeShowUI()
         for idx, setData in ipairs(charData.sets) do
             tableInsert(items, {label = setData.name, value = idx})
         end
-        setCombo:SetSelection(items)
+        setCombo:SetSelection(items, false)
         if charData.activeSet and charData.activeSet <= #charData.sets then
             setCombo:SetSelectedValue(charData.activeSet)
         end
@@ -281,9 +298,8 @@ function internalFunc.wardrobeShowUI()
                     end
                 else
                     local tex = slotFrame.slot
-
                     if tex then
-                        tex:SetTextureAsync("nkUI", "gfx/equipslot_blank.png")
+                        tex:SetTextureAsync("nkUI", "gfx/equipslot_" .. slot .. ".png")
                     end
                 end
             end
@@ -300,7 +316,7 @@ function internalFunc.wardrobeShowUI()
     -- Update name field changes
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.setName"].TextfieldChanged, function(_, newValue)
         local charData = wardrobe.getCharData()
-        local selectedIdx = setCombo:GetSelectedIndex()
+        local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 and charData.sets[selectedIdx] then
             charData.sets[selectedIdx].name = newValue
         end

@@ -204,13 +204,9 @@ function lowerBar.build()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 
-    local thisDataSet = lowerBar.minion()
+    local thisDataSet = lowerBar.lowerBarWardrobe()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
-
-    --local thisDataSet = lowerBar.lowerBarWardrobe()
-    --table.insert(uiElements.lowerBarModules, thisDataSet)
-    --lowerBar.positionLeft(thisDataSet)
 
     local thisDataSet = lowerBar.social()
     table.insert(uiElements.lowerBarModules, thisDataSet)
@@ -232,6 +228,10 @@ function lowerBar.build()
     local thisDataSet = lowerBar.location()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionRight(thisDataSet)
+
+    local thisDataSet = lowerBar.minion()
+    table.insert(uiElements.lowerBarModules, thisDataSet)
+    lowerBar.positionRight(thisDataSet)    
 
     local thisDataSet = lowerBar.currency()
     table.insert(uiElements.lowerBarModules, thisDataSet)

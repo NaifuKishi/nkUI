@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/dirk/.claude/projects/-home-dirk-Dokumente-RIFT-Interface-Addons-nkUI/memory/**)",
+      "Read(//home/naifu/**)"
+    ]
+  }
+}

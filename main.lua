@@ -403,9 +403,7 @@ local function initializeAddon(_, addon)
 				end
 			end
 
-			internalFunc.wardrobeInit()
-
-            Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
+	            Command.Event.Detach(Event.Unit.Availability.Full, nil, "nkUI.Unit.Availability.Full")
 
 			if nkUISetup.showLogo then 
 				LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame(), 5)

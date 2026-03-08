@@ -33,7 +33,7 @@ local _errorList = {}
 
 local function _fctEquipMoverCoRoutine (thisList, errorFlag)
     for idx = 1, #thisList, 1 do
-        local sourceSlot = LibEKL.Inventory.querySlotById(thisList[idx].item)
+        local sourceSlot = LibEKL.Inventory.GetSlotByItemId(thisList[idx].item)
 
         if not sourceSlot then
             if nkUIWardrobeBackup and nkUIWardrobeBackup[thisList[idx].item] ~= nil then

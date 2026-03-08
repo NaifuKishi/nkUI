@@ -24,7 +24,7 @@ local tostring      = tostring
 
 function lowerBar.minion()
 
-    local datasetFrame = lowerBar.dataSet("lowerBar.datasetMinion", "gfx/lowerbarMinion.png", "left")
+    local datasetFrame = lowerBar.dataSet("lowerBar.datasetMinion", "gfx/lowerbarMinion.png", "right")
 
     function datasetFrame:Redraw()
         datasetFrame:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
