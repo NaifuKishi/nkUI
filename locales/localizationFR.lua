@@ -49,7 +49,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     colItem = "OBJET",
                                     colPrice = "PRIX",
                                     btnScan = "Scanner",
-                                    btnAppraise = "Tout évaluer",
                                     neverScanned = "Pas encore scanné",
                                     notAtAH = "Ouvrez d'abord l'hôtel des ventes.",
                                     settingsScanHeader = "Scan",

@@ -149,7 +149,7 @@ end
 
 ---------- snapshot write (daily aggregation) ----------
 
-local function writeSnapshot(item, lo, hi, count)
+local function writeSnapshot(item, lo, hi, total, count)
     local today = getTodayInt()
     local head  = item.hh or 0
 
@@ -157,7 +157,7 @@ local function writeSnapshot(item, lo, hi, count)
     if head > 0 and item.h[head] and item.h[head].d == today then
         local snap = item.h[head]
         local oldTotal = snap.avg * snap.cnt
-        local newTotal = oldTotal + (lo * count)
+        local newTotal = oldTotal + total
         snap.lo  = mathMin(snap.lo, lo)
         snap.hi  = mathMax(snap.hi, hi)
         snap.cnt = snap.cnt + count
@@ -169,7 +169,7 @@ local function writeSnapshot(item, lo, hi, count)
             d   = today,
             lo  = lo,
             hi  = hi,
-            avg = lo,
+            avg = mathFloor(total / count),
             cnt = count,
         }
         item.hh = head
@@ -188,7 +188,7 @@ local function flushAccumulator(shardData)
     for itemType, acc in pairs(accumulator) do
         local item = shardData.items[itemType]
         if item then
-            writeSnapshot(item, acc.lo, acc.hi, acc.count)
+            writeSnapshot(item, acc.lo, acc.hi, acc.total, acc.count)
         end
     end
     resetAccumulator()

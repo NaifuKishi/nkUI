@@ -14,6 +14,7 @@ local inspectTimeFrame      = Inspect.Time.Frame
 local inspectTimeReal       = Inspect.Time.Real
 local inspectItemDetail     = Inspect.Item.Detail
 local inspectItemFind       = Inspect.Item.Find
+local inspectItemList       = Inspect.Item.List
 local inspectSystemSecure   = Inspect.System.Secure
 
 local commandItemMove       = Command.Item.Move
@@ -33,6 +34,7 @@ local _errorList = {}
 
 local function _fctEquipMoverCoRoutine (thisList, errorFlag)
     for idx = 1, #thisList, 1 do
+
         local sourceSlot = LibEKL.Inventory.GetSlotByItemId(thisList[idx].item)
 
         if not sourceSlot then
@@ -96,6 +98,7 @@ local function _fctEquipMoverCoRoutine (thisList, errorFlag)
         end
 
         coroutine.yield(idx)
+
     end
 end
 
@@ -124,14 +127,32 @@ function wardrobe.wearEquip(setNo)
         Command.Console.Display("general", true, stringFormat(langTexts.wardrobe.loadSet, tostring(setNo)), true)
     end
 
-    local moveList = LibEKL.Tools.Table.Copy(charData.sets[setNo].items)
+    local setItems = charData.sets[setNo].items
 
+    -- Build equip list
     local realMoveList = {}
-    for slot, key in pairs(moveList) do
+    for slot, key in pairs(LibEKL.Tools.Table.Copy(setItems)) do
         tableInsert(realMoveList, {to = utilityItemSlotEquipment(slot), item = key})
     end
 
-    wardrobe.equipMover(realMoveList)
+    -- Snapshot which slots need to be cleared (no item defined in this set)
+    local slotsToUnequip = {}
+    local okEquipped, currentEquipped = pcall(inspectItemList, utilityItemSlotEquipment())
+    if okEquipped and currentEquipped then
+        for _, slotName in ipairs(data.wardrobeSlots) do
+            if not setItems[slotName] then
+                local okSlot, slotKey = pcall(utilityItemSlotEquipment, slotName)
+                if okSlot and slotKey and currentEquipped[slotKey] then
+                    tableInsert(slotsToUnequip, slotKey)
+                end
+            end
+        end
+    end
+
+    -- After equip coroutine finishes, start the unequip phase
+    wardrobe.equipMover(realMoveList, function()
+        wardrobe.unequipSlots(slotsToUnequip, charData.sets[setNo].bag or 1)
+    end)
 
     if uiElements.wardrobeUI and uiElements.wardrobeUI:GetVisible() then
         if uiElements.wardrobeUI.onSetChange then
@@ -140,11 +161,68 @@ function wardrobe.wearEquip(setNo)
     end
 end
 
-function wardrobe.equipMover(moveList)
+function wardrobe.unequipSlots(slotsToUnequip, bagNo)
+    if #slotsToUnequip == 0 then return end
+
+    -- Re-verify at runtime which slots still have items (equip phase may have changed things)
+    local stillEquipped = {}
+    local okEquipped, currentEquipped = pcall(inspectItemList, utilityItemSlotEquipment())
+    if okEquipped and currentEquipped then
+        for _, slotKey in ipairs(slotsToUnequip) do
+            if currentEquipped[slotKey] then
+                tableInsert(stillEquipped, slotKey)
+            end
+        end
+    end
+
+    if #stillEquipped == 0 then return end
+
+    -- Pre-allocate one unique bag slot per item to avoid reusing the same
+    -- slot before the previous move is server-confirmed
+    local assignedSlots = {}
+    local usedSlots = {}
+    for idx = 1, #stillEquipped do
+        local freeSlot = nil
+        for bag = bagNo, 8 do
+            local okBag, bagContents = pcall(inspectItemList, Utility.Item.Slot.Inventory(bag))
+            if okBag and bagContents then
+                for slotKey, item in pairs(bagContents) do
+                    if item == false and not usedSlots[slotKey] then
+                        freeSlot = slotKey
+                        break
+                    end
+                end
+            end
+            if freeSlot then break end
+        end
+        if freeSlot then
+            usedSlots[freeSlot] = true
+            tableInsert(assignedSlots, {from = stillEquipped[idx], to = freeSlot})
+        end
+    end
+
+    if #assignedSlots == 0 then return end
+
+    local unequipCoRoutine = coroutine.create(function()
+        for idx = 1, #assignedSlots do
+            pcall(commandItemMove, assignedSlots[idx].from, assignedSlots[idx].to)
+            coroutine.yield(idx)
+        end
+    end)
+
+    LibEKL.Coroutines.Add({func = unequipCoRoutine, counter = #assignedSlots, active = true})
+end
+
+function wardrobe.equipMover(moveList, afterEquipCallback)
     local callBack = function()
         if #_errorList > 0 then
             wardrobe.errorMover()
         end
+        if afterEquipCallback then afterEquipCallback() end
+    end
+
+    if #moveList == 0 then
+        callBack()
         return
     end
 

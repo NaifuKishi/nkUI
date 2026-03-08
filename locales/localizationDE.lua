@@ -49,7 +49,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									colItem = "GEGENSTAND",
 									colPrice = "PREIS",
 									btnScan = "Scannen",
-									btnAppraise = "Alle bewerten",
 									neverScanned = "Noch nie gescannt",
 									notAtAH = "Nicht am Auktionshaus",
 								settingsScanHeader = "Scan",

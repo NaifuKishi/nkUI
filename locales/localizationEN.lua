@@ -52,7 +52,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  ~= "German") and ( LibEKL.Tools.Lang.GetLa
 									colItem = "ITEM",
 									colPrice = "PRICE",
 									btnScan = "Scan",
-									btnAppraise = "Appraise all",
 									neverScanned = "Not yet scanned",
 									notAtAH = "Open the Auction House first.",
 								settingsScanHeader = "Scan",

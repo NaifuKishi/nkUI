@@ -118,14 +118,14 @@ function lowerBar.lowerBarWardrobe()
         wardrobeSwitch:SetVisible(buttonShown)
     end, name .. "_Left_Click")
 
-    -- Middle-click to open config dialog
-    datasetFrame:EventAttach(Event.UI.Input.Mouse.Middle.Click, function()
+    -- Right-click to open config dialog
+    datasetFrame:EventAttach(Event.UI.Input.Mouse.Right.Click, function()
         if inspectSystemSecure() then return end
 
         LibEKL.Events.AddInsecure(function()
             wardrobe.showUI()
         end)
-    end, name .. "_Middle_Click")
+    end, name .. "_Right_Click")
 
     return datasetFrame
 end

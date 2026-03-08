@@ -11,11 +11,12 @@ local langTexts     = privateVars.langTexts
 local stringFormat  = string.format
 local tableInsert   = table.insert
 local tableRemove   = table.remove
+local mathFloor     = math.floor
 
 ---------- Wardrobe Config Dialog ---------
 
 function internalFunc.wardrobeShowUI()
-    
+
     if uiElements.wardrobeUI then
         uiElements.wardrobeUI:SetVisible(true)
         return
@@ -24,8 +25,8 @@ function internalFunc.wardrobeShowUI()
     local charData = wardrobe.getCharData()
 
     local window = LibEKL.UICreateFrame("nkWindow", "nkUI.wardrobeUI", uiElements.settingsContext)
-    window:SetWidth(750)
-    window:SetHeight(600)
+    window:SetWidth(450)
+    window:SetHeight(400)
     window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (LibEKL.UI.getBoundRight() / 2) - (window:GetWidth() / 2), 200)
     window:SetTitle(langTexts.wardrobe.windowTitle)
     window:SetTitleFont(addonInfo.id, "MontserratBold")
@@ -56,82 +57,113 @@ function internalFunc.wardrobeShowUI()
     -- Set selection combobox
     local setCombo = LibEKL.UICreateFrame("nkCombobox", "nkUI.wardrobeUI.setCombo", content)
     setCombo:SetPoint("TOPLEFT", content, "TOPLEFT", 10, 10)
-    setCombo:SetText(langTexts.wardrobe.setLabel, true)
+    setCombo:SetText(langTexts.wardrobe.setLabel)
     setCombo:SetFont(addonInfo.id, "MontserratSemiBold")
     setCombo:SetLabelColor(data.theme.labelColor)
-    setCombo:SetWidth(400)
+    setCombo:SetWidth(290)
     setCombo:SetColorInner(0, 0, 0, .2)
     setCombo:SetColorBorder(0, 0, 0, .2)
+    setCombo:SetColorSelected({r = 0.25, g = 0.35, b = 0.55, a = 0.85})
     setCombo:SetEffectGlow({strength = 3})
+    setCombo:SetLayer(10)
 
-    -- Set name edit field (with pencil icon)
+    -- "Name:" label beside the rename field
+    local nameLabel = LibEKL.UICreateFrame("nkText", "nkUI.wardrobeUI.nameLabel", content)
+    nameLabel:SetPoint("TOPLEFT", setCombo, "BOTTOMLEFT", 0, 12)
+    nameLabel:SetWidth(52)
+    nameLabel:SetHeight(22)
+    nameLabel:SetText("Name:")
+    nameLabel:SetFontSize(13)
+    nameLabel:SetTextFont(addonInfo.id, "MontserratSemiBold")
+    nameLabel:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
+    nameLabel:SetEffectGlow({strength = 2})
+
+    -- Set name edit field
     local setNameField = LibEKL.UICreateFrame("nkTextfield", "nkUI.wardrobeUI.setName", content)
-    setNameField:SetPoint("TOPLEFT", setCombo, "BOTTOMLEFT", 0, 15)
-    setNameField:SetWidth(350)
+    setNameField:SetPoint("TOPLEFT", setCombo, "BOTTOMLEFT", 57, 12)
+    setNameField:SetWidth(233)
     setNameField:SetInnerColor({r = 0.13, g = 0.15, b = 0.20, a = 1})
     setNameField:SetFocusColor({r = 0x66 / 255, g = 0x56 / 255, b = 0x2e / 255, a = 1})
     setNameField:SetBorderColor({r = 0, g = 0, b = 0, a = 1})
-    --setNameField:SetFont(addonInfo.id, "MontserratSemiBold")
-    --setNameField:SetFontSize(14)
-    --setNameField:SetColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    --setNameField:SetEffectGlow({strength = 3})
 
-    -- Equipment/Inventory display (simplified, stacked vertically)
+    -- Equipment header
     local equipHeader = LibEKL.UICreateFrame("nkText", "nkUI.wardrobeUI.equipHeader", content)
-    equipHeader:SetPoint("TOPLEFT", setNameField, "BOTTOMLEFT", 0, 20)
+    equipHeader:SetPoint("TOPLEFT", nameLabel, "BOTTOMLEFT", 0, 12)
     equipHeader:SetText(langTexts.wardrobe.txtEquipSlotsUIHeader)
-    equipHeader:SetFontSize(14)
+    equipHeader:SetFontSize(13)
     equipHeader:SetTextFont(addonInfo.id, "MontserratSemiBold")
     equipHeader:SetFontColor(data.theme.labelColor.r, data.theme.labelColor.g, data.theme.labelColor.b, data.theme.labelColor.a)
     equipHeader:SetEffectGlow({strength = 3})
 
-    -- Equipment slots display (20 slots, 4x5 grid)
+    -- Equipment slots (4x5 grid, 44px slots, 5px gap)
+    local SLOT_SIZE = 44
+    local SLOT_GAP  = 5
+
     local equipSlots = {}
     for idx = 1, 20 do
         local col = (idx - 1) % 4
-        local row = math.floor((idx - 1) / 4)
+        local row = mathFloor((idx - 1) / 4)
+
         local slotFrame = LibEKL.UICreateFrame("nkFrame", "nkUI.wardrobeUI.equipSlot" .. idx, content)
-        slotFrame:SetWidth(40)
-        slotFrame:SetHeight(40)
+        slotFrame:SetWidth(SLOT_SIZE)
+        slotFrame:SetHeight(SLOT_SIZE)
         slotFrame:SetBackgroundColor(0, 0, 0, 0.35)
 
         if idx == 1 then
-            slotFrame:SetPoint("TOPLEFT", equipHeader, "BOTTOMLEFT", 0, 10)
+            slotFrame:SetPoint("TOPLEFT", equipHeader, "BOTTOMLEFT", 0, 8)
         else
             if col == 0 then
                 local firstOfPrevRow = equipSlots[(row - 1) * 4 + 1]
-                slotFrame:SetPoint("TOPLEFT", firstOfPrevRow, "BOTTOMLEFT", 0, 5)
+                slotFrame:SetPoint("TOPLEFT", firstOfPrevRow, "BOTTOMLEFT", 0, SLOT_GAP)
             else
-                slotFrame:SetPoint("TOPLEFT", equipSlots[idx - 1], "TOPRIGHT", 5, 0)
+                slotFrame:SetPoint("TOPLEFT", equipSlots[idx - 1], "TOPRIGHT", SLOT_GAP, 0)
             end
         end
 
         local slotName = data.wardrobeSlots[idx]
         local slot = LibEKL.UICreateFrame("nkTexture", "nkUI.wardrobeUI.equipSlot" .. idx .. ".tex", slotFrame)
         slot:SetPoint("CENTER", slotFrame, "CENTER", 0, 0)
-        slot:SetWidth(34)
-        slot:SetHeight(34)
+        slot:SetWidth(38)
+        slot:SetHeight(38)
         slot:SetTextureAsync("nkUI", "gfx/equipslot_" .. slotName .. ".png")
 
-        slotFrame.slot = slot
+        slotFrame.slot     = slot
         slotFrame.slotName = slotName
 
         equipSlots[idx] = slotFrame
     end
 
-    -- Buttons
-    local equipButton = LibEKL.UICreateFrame("nkButton", "nkUI.wardrobeUI.equipBtn", content)
-    equipButton:SetPoint("TOPLEFT", setCombo, "TOPRIGHT", 20, 0)
-    equipButton:SetText(langTexts.wardrobe.btWearTitle)
-    equipButton:SetScale(.9)
-    equipButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    equipButton:SetLabelColor(data.theme.labelColor)
-    equipButton:SetEffectGlow({strength = 3})
-    equipButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    equipButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
+    -- Button column (right of equipment grid)
+    local BTN_WIDTH = 185
+    local BTN_GAP   = 8
+
+    local function makeButton(btnName, text, anchor)
+        local btn = LibEKL.UICreateFrame("nkButton", btnName, content)
+        if anchor == nil then
+            btn:SetPoint("TOPLEFT", equipSlots[4], "TOPRIGHT", 15, 0)
+        else
+            btn:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, BTN_GAP)
+        end
+        btn:SetText(text)
+        btn:SetWidth(BTN_WIDTH)
+        btn:SetScale(.9)
+        btn:SetFont(addonInfo.id, "MontserratSemiBold")
+        btn:SetLabelColor(data.theme.labelColor)
+        btn:SetEffectGlow({strength = 3})
+        btn:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
+        btn:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
+        return btn
+    end
+
+    local equipButton        = makeButton("nkUI.wardrobeUI.equipBtn",        langTexts.wardrobe.btWearTitle,    nil)
+    local newButton          = makeButton("nkUI.wardrobeUI.newBtn",          langTexts.wardrobe.btNewSetTitle,  equipButton)
+    local copyButton         = makeButton("nkUI.wardrobeUI.copyBtn",         langTexts.wardrobe.btCopySetTitle, newButton)
+    local deleteButton       = makeButton("nkUI.wardrobeUI.deleteBtn",       langTexts.wardrobe.btDeleteSetTitle, copyButton)
+    local currentEquipButton = makeButton("nkUI.wardrobeUI.currentEquipBtn", langTexts.wardrobe.btLoadGear,    deleteButton)
+
+    -- Button event handlers
 
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.equipBtn"].Clicked, function()
-        local charData = wardrobe.getCharData()
         local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 then
             LibEKL.Events.AddInsecure(function()
@@ -140,119 +172,89 @@ function internalFunc.wardrobeShowUI()
         end
     end, "nkUI.wardrobeUI.equipBtn.Clicked")
 
-    local newButton = LibEKL.UICreateFrame("nkButton", "nkUI.wardrobeUI.newBtn", content)
-    newButton:SetPoint("TOPLEFT", equipButton, "BOTTOMLEFT", 0, 10)
-    newButton:SetText(langTexts.wardrobe.btNewSetTitle)
-    newButton:SetScale(.9)
-    newButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    newButton:SetLabelColor(data.theme.labelColor)
-    newButton:SetEffectGlow({strength = 3})
-    newButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    newButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
-
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.newBtn"].Clicked, function()
-        local charData = wardrobe.getCharData()
-        tableInsert(charData.sets, {
-            name = stringFormat(langTexts.wardrobe.txtEquipment, #charData.sets + 1),
+        local cd = wardrobe.getCharData()
+        tableInsert(cd.sets, {
+            name  = stringFormat(langTexts.wardrobe.txtEquipment, #cd.sets + 1),
             items = {},
-            bag = 1,
-            bank = 0,
-            icon = ""
+            bag   = 1,
+            bank  = 0,
+            icon  = ""
         })
+        local newIdx = #cd.sets
+        cd.activeSet = newIdx
         window.updateComboBox()
+        window:onSetChange(newIdx)
     end, "nkUI.wardrobeUI.newBtn.Clicked")
 
-    local copyButton = LibEKL.UICreateFrame("nkButton", "nkUI.wardrobeUI.copyBtn", content)
-    copyButton:SetPoint("TOPLEFT", newButton, "BOTTOMLEFT", 0, 5)
-    copyButton:SetText(langTexts.wardrobe.btCopySetTitle)
-    copyButton:SetScale(.9)
-    copyButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    copyButton:SetLabelColor(data.theme.labelColor)
-    copyButton:SetEffectGlow({strength = 3})
-    copyButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    copyButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
-
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.copyBtn"].Clicked, function()
-        local charData = wardrobe.getCharData()
+        local cd = wardrobe.getCharData()
         local selectedIdx = setCombo:GetSelectedValue()
-        if selectedIdx and selectedIdx > 0 and charData.sets[selectedIdx] then
-            tableInsert(charData.sets, {
-                name = charData.sets[selectedIdx].name .. " " .. stringFormat(langTexts.wardrobe.txtCopiedSet, ""),
-                items = LibEKL.Tools.Table.Copy(charData.sets[selectedIdx].items),
-                bag = charData.sets[selectedIdx].bag,
-                bank = charData.sets[selectedIdx].bank,
-                icon = charData.sets[selectedIdx].icon
+        if selectedIdx and selectedIdx > 0 and cd.sets[selectedIdx] then
+            tableInsert(cd.sets, {
+                name  = stringFormat(langTexts.wardrobe.txtCopiedSet, cd.sets[selectedIdx].name),
+                items = LibEKL.Tools.Table.Copy(cd.sets[selectedIdx].items),
+                bag   = cd.sets[selectedIdx].bag,
+                bank  = cd.sets[selectedIdx].bank,
+                icon  = cd.sets[selectedIdx].icon
             })
+            local newIdx = #cd.sets
+            cd.activeSet = newIdx
             window.updateComboBox()
+            window:onSetChange(newIdx)
         end
     end, "nkUI.wardrobeUI.copyBtn.Clicked")
 
-    local deleteButton = LibEKL.UICreateFrame("nkButton", "nkUI.wardrobeUI.deleteBtn", content)
-    deleteButton:SetPoint("TOPLEFT", copyButton, "BOTTOMLEFT", 0, 5)
-    deleteButton:SetText(langTexts.wardrobe.btDeleteSetTitle)
-    deleteButton:SetScale(.9)
-    deleteButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    deleteButton:SetLabelColor(data.theme.labelColor)
-    deleteButton:SetEffectGlow({strength = 3})
-    deleteButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    deleteButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
-
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.deleteBtn"].Clicked, function()
-        local charData = wardrobe.getCharData()
-        if #charData.sets <= 1 then
-            LibEKL.UI.confirmDialog(langTexts.wardrobe.errLastSet, function() end, function() end)
+        local cd = wardrobe.getCharData()
+        if #cd.sets <= 1 then
+            LibEKL.UI.infoDialog(langTexts.wardrobe.errLastSet)
             return
         end
         local selectedIdx = setCombo:GetSelectedValue()
         if selectedIdx and selectedIdx > 0 then
             LibEKL.UI.confirmDialog(langTexts.wardrobe.msgRemoveSetConfirm,
                 function()
-                    tableRemove(charData.sets, selectedIdx)
-                    if charData.activeSet > #charData.sets then
-                        charData.activeSet = #charData.sets
-                    end
+                    tableRemove(cd.sets, selectedIdx)
+                    if cd.activeSet > #cd.sets then cd.activeSet = #cd.sets end
                     window.updateComboBox()
+                    if #cd.sets > 0 then
+                        window:onSetChange(cd.activeSet)
+                    else
+                        for idx, slotFrame in ipairs(equipSlots) do
+                            if slotFrame.slot then
+                                slotFrame.slot:SetTextureAsync("nkUI", "gfx/equipslot_" .. data.wardrobeSlots[idx] .. ".png")
+                            end
+                        end
+                    end
                 end,
                 function() end)
         end
     end, "nkUI.wardrobeUI.deleteBtn.Clicked")
 
-    local currentEquipButton = LibEKL.UICreateFrame("nkButton", "nkUI.wardrobeUI.currentEquipBtn", content)
-    currentEquipButton:SetPoint("TOPLEFT", deleteButton, "BOTTOMLEFT", 0, 5)
-    currentEquipButton:SetText(langTexts.wardrobe.btLoadGear)
-    currentEquipButton:SetScale(.9)
-    currentEquipButton:SetFont(addonInfo.id, "MontserratSemiBold")
-    currentEquipButton:SetLabelColor(data.theme.labelColor)
-    currentEquipButton:SetEffectGlow({strength = 3})
-    currentEquipButton:SetFillColor({type = "solid", r = 0, g = 0, b = 0, a = .4})
-    currentEquipButton:SetBorderColor({r = 0, g = 0, b = 0, a = .7, thickness = 1})
-
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.currentEquipBtn"].Clicked, function()
         LibEKL.UI.confirmDialog(langTexts.wardrobe.msgLoadCurrentEquip,
             function()
-                local charData = wardrobe.getCharData()
+                local cd = wardrobe.getCharData()
                 local selectedIdx = setCombo:GetSelectedValue()
-                if not selectedIdx or selectedIdx <= 0 or not charData.sets[selectedIdx] then return end
+                if not selectedIdx or selectedIdx <= 0 or not cd.sets[selectedIdx] then return end
 
                 LibEKL.Events.AddInsecure(function()
-                    -- Build reverse lookup: seqp slot key → slot name
                     local slotKeyToName = {}
                     for _, slotName in ipairs(data.wardrobeSlots) do
                         local ok, slotKey = pcall(Utility.Item.Slot.Equipment, slotName)
-                        if ok and slotKey then
-                            slotKeyToName[slotKey] = slotName
-                        end
+                        if ok and slotKey then slotKeyToName[slotKey] = slotName end
                     end
 
                     local ok, equipped = pcall(Inspect.Item.List, Utility.Item.Slot.Equipment())
                     if not ok or not equipped then return end
 
-                    charData.sets[selectedIdx].items = {}
+                    cd.sets[selectedIdx].items = {}
                     for slotKey, itemId in pairs(equipped) do
                         if itemId then
                             local mappedSlot = slotKeyToName[slotKey]
                             if mappedSlot then
-                                charData.sets[selectedIdx].items[mappedSlot] = itemId
+                                cd.sets[selectedIdx].items[mappedSlot] = itemId
                                 local ok2, details = pcall(Inspect.Item.Detail, itemId)
                                 if ok2 and details and details.type and nkUIWardrobeBackup then
                                     nkUIWardrobeBackup[itemId] = details.type
@@ -267,66 +269,63 @@ function internalFunc.wardrobeShowUI()
             function() end)
     end, "nkUI.wardrobeUI.currentEquipBtn.Clicked")
 
-    -- Update function
-    function window.updateComboBox()
-        local charData = wardrobe.getCharData()
-        local items = {}
-        for idx, setData in ipairs(charData.sets) do
-            tableInsert(items, {label = setData.name, value = idx})
-        end
-        setCombo:SetSelection(items, false)
-        if charData.activeSet and charData.activeSet <= #charData.sets then
-            setCombo:SetSelectedValue(charData.activeSet)
-        end
-    end
-
-    function window:onSetChange(setIdx)
-        local charData = wardrobe.getCharData()
-        if charData.sets[setIdx] then
-            setNameField:SetText(charData.sets[setIdx].name)
-            for idx, slotFrame in ipairs(equipSlots) do
-                local slot = data.wardrobeSlots[idx]
-                local itemId = charData.sets[setIdx].items[slot]
-                if itemId then
-                    local ok, itemDetails = pcall(Inspect.Item.Detail, itemId)
-                    if ok and itemDetails then
-
-                        local tex = slotFrame.slot
-                        if tex then
-                            tex:SetTextureAsync("Rift", itemDetails.icon)
-                        end
-                    end
-                else
-                    local tex = slotFrame.slot
-                    if tex then
-                        tex:SetTextureAsync("nkUI", "gfx/equipslot_" .. slot .. ".png")
-                    end
-                end
-            end
-        end
-    end
-
-    -- Setup combo change event
+    -- Combo changed
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.setCombo"].ComboChanged, function(_, newValue)
         if newValue and newValue.value then
             window:onSetChange(newValue.value)
         end
     end, "nkUI.wardrobeUI.setCombo.ComboChanged")
 
-    -- Update name field changes
+    -- Name field: live rename
     Command.Event.Attach(LibEKL.Events["nkUI.wardrobeUI.setName"].TextfieldChanged, function(_, newValue)
-        local charData = wardrobe.getCharData()
+        local cd = wardrobe.getCharData()
         local selectedIdx = setCombo:GetSelectedValue()
-        if selectedIdx and selectedIdx > 0 and charData.sets[selectedIdx] then
-            charData.sets[selectedIdx].name = newValue
+        if selectedIdx and selectedIdx > 0 and cd.sets[selectedIdx] then
+            cd.sets[selectedIdx].name = newValue
         end
     end, "nkUI.wardrobeUI.setName.TextfieldChanged")
 
-    -- Initialize UI
+    -- Update helpers
+    function window.updateComboBox()
+        local cd = wardrobe.getCharData()
+        local items = {}
+        for idx, setData in ipairs(cd.sets) do
+            tableInsert(items, {label = setData.name, value = idx})
+        end
+        setCombo:SetSelection(items, false)
+        if cd.activeSet and cd.activeSet <= #cd.sets then
+            setCombo:SetSelectedValue(cd.activeSet)
+        end
+    end
+
+    function window:onSetChange(setIdx)
+        local cd = wardrobe.getCharData()
+        if not cd.sets[setIdx] then return end
+
+        setNameField:SetText(cd.sets[setIdx].name)
+
+        for idx, slotFrame in ipairs(equipSlots) do
+            local slot   = data.wardrobeSlots[idx]
+            local itemId = cd.sets[setIdx].items[slot]
+            local tex    = slotFrame.slot
+            if tex then
+                if itemId then
+                    local ok, itemDetails = pcall(Inspect.Item.Detail, itemId)
+                    if ok and itemDetails then
+                        tex:SetTextureAsync("Rift", itemDetails.icon)
+                    end
+                else
+                    tex:SetTextureAsync("nkUI", "gfx/equipslot_" .. slot .. ".png")
+                end
+            end
+        end
+    end
+
+    -- Initialize
     window.updateComboBox()
-    local charData = wardrobe.getCharData()
-    if charData.activeSet and charData.activeSet <= #charData.sets then
-        window:onSetChange(charData.activeSet)
+    local cd = wardrobe.getCharData()
+    if cd.activeSet and cd.activeSet <= #cd.sets then
+        window:onSetChange(cd.activeSet)
     end
 
     window:SetVisible(true)

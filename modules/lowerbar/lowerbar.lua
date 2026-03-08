@@ -204,11 +204,11 @@ function lowerBar.build()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 
-    local thisDataSet = lowerBar.lowerBarWardrobe()
+    local thisDataSet = lowerBar.social()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 
-    local thisDataSet = lowerBar.social()
+    local thisDataSet = lowerBar.lowerBarWardrobe()
     table.insert(uiElements.lowerBarModules, thisDataSet)
     lowerBar.positionLeft(thisDataSet)
 

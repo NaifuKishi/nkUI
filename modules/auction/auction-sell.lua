@@ -106,6 +106,31 @@ local function createRow(parent, name, idx)
         auction.hideTooltip()
     end, rowName .. ".CursorOut")
 
+    -- Right-click to post item on AH at suggested price (48h, buyout only)
+    row:EventAttach(Event.UI.Input.Mouse.Right.Up, function()
+        local item = row._item
+        if not item then return end
+        if not item.itemKey then
+            Command.Console.Display("general", true,
+                '<font color="#FF6A00">nkUI AH: no itemKey for ' .. tostring(item.name) .. '</font>', true)
+            return
+        end
+        if not item._suggestedPrice or item._suggestedPrice <= 0 then return end
+        local ok, err = pcall(Command.Auction.Post, item.itemKey, 48, nil, item._suggestedPrice, false,
+            function(h, status, errMsg)
+                if status == "failed" then
+                    Command.Console.Display("general", true,
+                        '<font color="#FF6A00">nkUI AH Post failed: ' .. tostring(errMsg) .. '</font>', true)
+                else
+                    auction.refreshSellList()
+                end
+            end)
+        if not ok then
+            Command.Console.Display("general", true,
+                '<font color="#FF6A00">nkUI AH Post error: ' .. tostring(err) .. '</font>', true)
+        end
+    end, rowName .. ".Right.Up")
+
     return row
 end
 
@@ -189,8 +214,8 @@ local function getInventoryItems()
                     local iType = detail.type or detail.id
                     -- rarity is a number: 0=sellable, 1=uncommon, 2=rare, 3=epic,
                     --                     4=relic, 5=transcendent, 6=quest
-                    -- Show all non-quest items (rarity ~= 6)
-                    if detail.rarity ~= 6 and iType then
+                    -- Show all non-quest, non-bag items (bags have detail.slots set)
+                    if detail.rarity ~= 6 and iType and not detail.slots then
                         if not grouped[iType] then
                             grouped[iType] = {
                                 name     = detail.name,
@@ -199,6 +224,7 @@ local function getInventoryItems()
                                 stack    = detail.stack or 1,
                                 vendor   = detail.sell,
                                 itemType = iType,
+                                itemKey  = itemKey,  -- instance key for Command.Auction.Post
                             }
                         else
                             grouped[iType].stack = grouped[iType].stack + (detail.stack or 1)
@@ -436,18 +462,6 @@ function auction.buildSellWindow()
     btnScan:SetFontSize(10)
     btnScan:SetText(langTexts.auction.btnScan or "Scan")
 
-    -- Appraise all button
-    local btnAppraise = LibEKL.UICreateFrame("nkButton", name .. ".btnAppraise", bottomBar)
-    btnAppraise:SetPoint("CENTERLEFT", bottomBar, "CENTERLEFT", PAD, -8)
-    btnAppraise:SetWidth(90)
-    btnAppraise:SetHeight(24)
-    btnAppraise:SetFillColor({ type = "solid", r = 0.15, g = 0.15, b = 0.20, a = 1 })
-    btnAppraise:SetBorderColor(data.theme.STROKE_BORDER)
-    btnAppraise:SetLabelColor(data.theme.labelColor)
-    btnAppraise:SetFont(addonInfo.id, "MontserratBold")
-    btnAppraise:SetFontSize(10)
-    btnAppraise:SetText(langTexts.auction.btnAppraise or "Appraise all")
-
     -- Status text (scanning progress)
     local statusText = LibEKL.UICreateFrame("nkText", name .. ".status", bottomBar)
     statusText:SetPoint("BOTTOMLEFT", bottomBar, "BOTTOMLEFT", PAD, -4)
@@ -470,7 +484,6 @@ function auction.buildSellWindow()
     win._statusText    = statusText
     win._lastUpdated   = lastUpdatedText
     win._btnScan       = btnScan
-    win._btnAppraise   = btnAppraise
 
     -- Scan button handler
     btnScan:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
@@ -509,11 +522,6 @@ function auction.buildSellWindow()
             end
         )
     end, name .. ".btnScan.LeftUp")
-
-    -- Appraise all: same as scan for now
-    btnAppraise:EventAttach(Event.UI.Input.Mouse.Left.Up, function()
-        auction.refreshSellList()
-    end, name .. ".btnAppraise.LeftUp")
 
     -- Inventory change events: refresh list
     Command.Event.Attach(Event.Item.Slot, function()
