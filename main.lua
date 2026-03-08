@@ -233,8 +233,6 @@ local function commandHandler (commandline)
 		if nkUISetup and nkUISetup.modules and nkUISetup.modules.oneBag and nkUISetup.modules.oneBag.activate then
 			internalFunc.oneBagInit()
 		end
-	elseif stringFind(commandline, "auction") ~= nil then
-		internalFunc.auctionOpen()
 	elseif stringFind(commandline, "wardrobe") ~= nil then
 		if nkUISetup and nkUISetup.modules and nkUISetup.modules.wardrobe and nkUISetup.modules.wardrobe.activate then
 			wardrobe.showUI()
@@ -444,7 +442,6 @@ local function initializeAddon(_, addon)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline1, true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline2, true)
 		Command.Console.Display("general", true, privateVars.langTexts.commandline3, true)
-		Command.Console.Display("general", true, privateVars.langTexts.commandline4, true)
 	end  
 end
 

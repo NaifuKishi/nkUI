@@ -10,7 +10,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 		commandline1            = '/nkui pour ouvrir les paramètres',
         commandline2            = "/nkui qlog pour ouvrir le journal des quêtes",
         commandline3            = "/nkui bag pour ouvrir l'inventaire",
-		commandline4            = "/nkui auction pour ouvrir l'hôtel des ventes",
 		questGiver			    = 'Donneur de quête: <font color="#0094FF">%s</font>',
 		scene				    = 'Lieu de la quête: <font color="#0094FF">%s</font>',
 		zoneFilter			    = "Cliquez ici pour filtrer la liste par la zone actuelle",
@@ -39,44 +38,33 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 										lastSeenPrice = "Dernier: %s",
                                     noAuction = "pas de prix d'enchère connu",
 																		noLastPrice = "Pas de dernier prix",
-                                    auctionPrice = "%s (il y a %s)",
-                                    youOwn  = "Vous possédez: %d"},
-        auction                 = { scanStarted = "Scan en cours. Veuillez patienter!",
-                                    scanProgress = "Scan %d%% terminé",
-                                    newAuctions = "<font color=\"#0094FF\">nkUI:</font> %d nouvelles enchères",
-                                    removedAuctions = "<font color=\"#0094FF\">nkUI:</font> %d anciennes enchères supprimées",
-                                    windowTitle = "Enchères",
-                                    tabBrowse = "Parcourir",
-                                    tabPost = "Poster",
-                                    tabMine = "Mes enchères",
-                                    tabPrices = "Prix",
-                                    colItem = "Objet",
-                                    colSeller = "Vendeur",
-                                    colStack = "Qté",
-                                    colBid = "Mise",
-                                    colBuyout = "Prix fixe",
-                                    colUnit = "Unité",
-                                    colVendorRatio = "vs. Vendeur",
-                                    colMyPrice = "Mon Prix",
-                                    colExpires = "Expire",
-                                    colScans = "Scans",
-                                    colLowest = "Min. absolu",
-                                    colHighest = "Max. absolu",
-                                    colLastLo = "Dernier min.",
-                                    colLastScan = "Dernier scan",
-                                    btnPost = "Poster",
-                                    btnCancel = "Annuler l'enchère",
+                                    auctionPrice = "%s (%s)",
+                                    
+								today = "aujourd'hui",
+								yesterday = "il y a 1 jour",
+								daysAgo = "il y a %d jours"},
+        auction                 = { scanStarted = "SCAN: Toutes les enchères (initialisation)....",
+                                    scanProgress = "SCAN: %d%%...",
+                                    sellTitle = "Vendre",
+                                    colItem = "OBJET",
+                                    colPrice = "PRIX",
                                     btnScan = "Scanner",
-                                    btnSearch = "Rechercher",
-                                    browseHint = "Rechercher par nom...",
-                                    btnClearItem = "Effacer l'objet",
-                                    btnClearAll = "Effacer tout",
-                                    lastScan = "Dernier scan: il y a %s",
+                                    btnAppraise = "Tout évaluer",
                                     neverScanned = "Pas encore scanné",
-                                    confirmCancel = "Annuler cette enchère?",
-                                    confirmClearAll = "Effacer tous les prix stockés?",
                                     notAtAH = "Ouvrez d'abord l'hôtel des ventes.",
-                                    vendorRatio = "%.1fx vendeur",
+                                    settingsScanHeader = "Scan",
+                                    settingsScanDepth = "Profondeur d'historique <font color='#3399FF'>%d jours</font>",
+                                    settingsTrendThreshold = "Seuil de tendance <font color='#3399FF'>%d%%</font>",
+                                    settingsPriceHeader = "Tarification",
+                                    settingsPriceFloor = "Prix plancher <font color='#3399FF'>%d%% de la moy.</font>",
+                                    settingsUndercut = "Sous-enchère de <font color='#3399FF'>%d cuivre</font>",
+								tooltipSuggest = "Suggestion",
+								tooltipLastLo = "Dernier min",
+								tooltipAvg = "Moy. (jours)",
+								tooltipHi = "Maximum",
+								tooltipSeen = "Enchères vues",
+								tooltipChartLabel = "HISTORIQUE",
+								tooltipNoData = "Données insuffisantes",
                                 },
 		showCategoryCheckbox	= { battlepass = "Passe de Combat",
                                     crafting = "Artisanat", 
@@ -195,6 +183,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
                                     oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>",
                                     buffBarGrowRight = "Croître vers la droite",
 												minionManager = "Minion Manager",
+                                    auction = "Hôtel des ventes",
                                     iconSize = "Taille de l'élément <font color='#3399FF'>%d</font>",
                                 },
             manual = {
@@ -203,11 +192,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 					sections = {
 						{
 							title = "Bienvenue",
-							body = string.format("Bienvenue dans nkUI Version %s\n\nMerci d'utiliser nkUI, une suite d'interface complète pour RIFT.\n\nCe manuel vous guide à travers tous les modules et fonctionnalités de nkUI.\n\nDerniers changements (v1.3.1):\n- Étiquettes de raccourci clavier pour les icônes de barre d'action\n- Affichage amélioré du suivi des temps de recharge\n- Meilleur filtrage de rareté dans la navigation de l'hôtel des ventes\n- Corrections de bugs dans le rendu des cadres d'unité\n\nCliquez sur les sections à gauche pour explorer chaque module.\n\nPour un accès rapide: /nkui (paramètres) | /nkui qlog (journal des quêtes) | /nkui bag (inventaire) | /nkui auction (hôtel des ventes)", addonInfo.toc.Version)
+							body = string.format("Bienvenue dans nkUI Version %s\n\nMerci d'utiliser nkUI, une suite d'interface complète pour RIFT.\n\nCe manuel vous guide à travers tous les modules et fonctionnalités de nkUI.\n\nDerniers changements (v1.3.1):\n- Étiquettes de raccourci clavier pour les icônes de barre d'action\n- Affichage amélioré du suivi des temps de recharge\n- Meilleur filtrage de rareté dans la navigation de l'hôtel des ventes\n- Corrections de bugs dans le rendu des cadres d'unité\n\nCliquez sur les sections à gauche pour explorer chaque module.\n\nPour un accès rapide: /nkui (paramètres) | /nkui qlog (journal des quêtes) | /nkui bag (inventaire)", addonInfo.toc.Version)
 						},
 						{
 							title = "Aperçu",
-							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag, et l'hôtel des ventes avec /nkui auction."
+							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag."
 						},
 						{
 							title = "Configuration de l'interface par défaut",
@@ -223,7 +212,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 						},
 						{
 							title = "Aperçu",
-							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag, et l'hôtel des ventes avec /nkui auction."
+							body = "Bienvenue dans le Manuel nkUI.\n\nnkUI est une suite d'interface complète pour RIFT, remplaçant ou améliorant la plupart des éléments d'interface par défaut avec un design moderne et cohérent.\n\nUtilisez la liste à gauche pour accéder à n'importe quel module. Chaque section explique ce que fait le module et comment l'utiliser.\n\nVous pouvez ouvrir les paramètres avec /nkui, le journal des quêtes avec /nkui qlog, l'inventaire avec /nkui bag."
 						},
 						{
 							title = "Carte",
@@ -253,10 +242,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "French") then
 							title = "OneBag",
 							body = "Le module OneBag remplace le système de sacs par défaut avec une fenêtre d'inventaire unifiée.\n\nOuvrir avec: /nkui bag\n\nConseil: Créez un macro avec '/nkui bag', placez-le sur un emplacement de barre d'action par défaut caché et liez la touche B.\n\nFonctionnalités:\n- Tous les emplacements de sac affichés dans une seule fenêtre\n- Fenêtre de banque également disponible (s'ouvre au banquier)\n- Objets colorés par catégorie\n- Affiche la valeur de l'objet (prix vendeur) et le dernier prix d'enchère connu\n- Taille configurable dans les Paramètres\n\nRemarque: Définissez vos sacs par défaut dans le jeu sur une mise à l'échelle de 50% pour minimiser le désordre visuel."
 						},
-						--[[{
-							title = "Hôtel des Ventes",
-							body = "Le module Hôtel des Ventes ajoute le suivi des prix et la navigation à l'Hôtel des Ventes RIFT.\n\nOuvrir avec: /nkui auction (ou s'ouvre automatiquement quand vous visitez l'HV)\n\nOnglets:\n- Parcourir: Rechercher les enchères actuelles par nom, filtrer par rareté, trier par n'importe quelle colonne\n- Mes Enchères: Afficher et annuler vos enchères\n- Poster: Mettre des objets en vente depuis l'inventaire\n- Prix: Afficher les données historiques des prix\n\nFonctionnalités:\n- Scanner l'hôtel des ventes pour construire une base de données de prix\n- Dernier prix d'enchère connu affiché dans les infobulles d'objets (OneBag, survol)\n- Suit les prix minimum absolu, maximum absolu et dernier scan minimum\n- Profondeur de scan configurable (combien de pages scanner par objet)\n- Cliquez sur l'icône de scan bleue pour démarrer un scan"
-						},]]
 						{
 							title = "Barre de Buffs",
 							body = "Le module Barre de Buffs affiche vos buffs et débuffs actifs sous forme de rangées d'icônes près du bord de l'écran.\n\nFonctionnalités:\n- Rangées séparées pour les buffs et débuffs\n- Chaque icône montre la durée restante et le nombre de charges\n- Taille des icônes, police du timer et des charges configurables\n- La barre peut croître vers la droite ou la gauche\n- Position réglable via Paramètres > Déplacer l'Interface"

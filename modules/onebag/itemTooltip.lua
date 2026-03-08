@@ -9,7 +9,6 @@ local oneBag        = privateVars.oneBag
 local langTexts     = privateVars.langTexts
 
 local inspectItemDetail = Inspect.Item.Detail
-local osTime            = os.time
 local inspectTimeReal   = Inspect.Time.Real
 local auction           = privateVars.auction
 
@@ -18,19 +17,6 @@ local mathFloor     = math.floor
 
 local showTooltip    = false
 local activeHoverID  = nil
-
-local function formatTimeSince(seconds)
-
-    if seconds > 86400 then
-        return stringFormat("%dd", mathFloor(seconds / 86400))
-    elseif seconds > 3600 then
-        return stringFormat("%dh", mathFloor(seconds / 3600))
-    elseif seconds > 60 then
-        return stringFormat("%dm", mathFloor(seconds / 60))
-    else
-        return stringFormat("%ds", mathFloor(seconds))
-    end
-end
 
 ---------- local functions ---------
 
@@ -125,9 +111,15 @@ local function uiItemTooltip ()
 
             if summary then
 
-                local elapsed = summary.lastSeen and (osTime() - summary.lastSeen) or nil
-
-                local timeAgoStr = elapsed and formatTimeSince(elapsed) or "?"
+                local days = summary.daysSince or 0
+                local timeAgoStr
+                if days == 0 then
+                    timeAgoStr = langTexts.oneBag.today or "today"
+                elseif days == 1 then
+                    timeAgoStr = langTexts.oneBag.yesterday or "1 day ago"
+                else
+                    timeAgoStr = stringFormat(langTexts.oneBag.daysAgo or "%dd ago", days)
+                end
 
                 local avgCoinText = internalFunc.formatCoins(summary.avg)
 

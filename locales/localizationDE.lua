@@ -10,7 +10,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 		commandline1            = '/nkui um die Einstellungen zu öffnen',
 		commandline2            = '/nkui qlog um das Questlog zu öffnen',
 		commandline3            = '/nkui bag um das Inventar zu öffnen',
-		commandline4            = '/nkui auction um das Auktionshaus zu öffnen',
 		questGiver				= 'Questgeber: <font color="#0094FF">%s</font>',
 		scene					= 'Questort: <font color="#0094FF">%s</font>',
 		zoneFilter				= "Klicke hier um die Liste auf die aktuelle Zone zu filtern",
@@ -39,44 +38,33 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 										lastSeenPrice = "Letzter: %s",
 									noAuction = "Kein Auktionspreis bekannt",
 																		noLastPrice = "Kein letzter Preis",
-									auctionPrice = "%s (vor %s)",
-									youOwn	= "Du besitzt: %d"},
-		auction					= { scanStarted = "Analyse gestartet. Bitte warten!",
-									scanProgress = "Analyse %d%% abgeschlossen",
-									newAuctions = "<font color=\"#0094FF\">nkUI:</font> %d neue Auktion(en)",
-									removedAuctions = "<font color=\"#0094FF\">nkUI:</font> %d alte Auktion(en) entfernt",
-									windowTitle = "Auktionshaus",
-									tabBrowse = "Suchen",
-									tabPost = "Einstellen",
-									tabMine = "Meine Auktionen",
-									tabPrices = "Preise",
-									colItem = "Gegenstand",
-									colSeller = "Verkäufer",
-									colStack = "Stapel",
-									colBid = "Gebot",
-									colBuyout = "Sofortkauf",
-									colUnit = "Stückpreis",
-									colVendorRatio = "Händler x",
-									colMyPrice = "Mein Preis",
-									colExpires = "Läuft ab",
-									colScans = "Scans",
-									colLowest = "Tiefst",
-									colHighest = "Höchst",
-									colLastLo = "Letzter Tief",
-									colLastScan = "Letzter Scan",
-									btnPost = "Einstellen",
-									btnCancel = "Abbrechen",
-									btnScan = "Jetzt Scannen",
-									btnSearch = "Suchen",
-									browseHint = "Nach Namen suchen...",
-									btnClearItem = "Gegenstand löschen",
-									btnClearAll = "Alle löschen",
-									lastScan = "Letzter Scan: vor %s",
+									auctionPrice = "%s (%s)",
+									
+								today = "heute",
+								yesterday = "vor 1 Tag",
+								daysAgo = "vor %d Tagen"},
+		auction					= { scanStarted = "SCANNEN: Alle Auktionen werden geladen....",
+									scanProgress = "SCANNEN: %d%%...",
+									sellTitle = "Verkaufen",
+									colItem = "GEGENSTAND",
+									colPrice = "PREIS",
+									btnScan = "Scannen",
+									btnAppraise = "Alle bewerten",
 									neverScanned = "Noch nie gescannt",
-									confirmCancel = "Möchtest du diese Auktion wirklich abbrechen?",
-									confirmClearAll = "Alle Preisdaten wirklich löschen?",
 									notAtAH = "Nicht am Auktionshaus",
-									vendorRatio = "Händler-Verhältnis"
+								settingsScanHeader = "Scan",
+								settingsScanDepth = "Historien-Tiefe <font color='#3399FF'>%d Tage</font>",
+								settingsTrendThreshold = "Trend-Schwelle <font color='#3399FF'>%d%%</font>",
+								settingsPriceHeader = "Preisgestaltung",
+								settingsPriceFloor = "Preisuntergrenze <font color='#3399FF'>%d%% des Ø</font>",
+								settingsUndercut = "Unterbieten um <font color='#3399FF'>%d Kupfer</font>",
+								tooltipSuggest = "Vorschlag",
+								tooltipLastLo = "Letztes Min",
+								tooltipAvg = "Ø (Tage)",
+								tooltipHi = "Höchstwert",
+								tooltipSeen = "Auktionen gesehen",
+								tooltipChartLabel = "PREISHISTORIE",
+								tooltipNoData = "Nicht genug Daten",
 								},
 		showCategoryCheckbox	= {	battlepass = "Battle Pass",
 									area = "Gebiet", 
@@ -195,6 +183,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 									oneBagScale = "OneBag Grösse <font color='#3399FF'>%d%%</font>",
 									buffBarGrowRight = "Nach Rechts wachsen",
 									minionManager = "Minion Manager",
+								auction = "Auktionshaus",
 								},
 		map = {	tabHeaderSettings    			= 'Einstellungen',
 				tabHeaderAbout		 			= 'Über',
@@ -240,11 +229,11 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 					sections = {
 						{
 							title = "Willkommen",
-							body = string.format("Willkommen bei nkUI Version %s\n\nVielen Dank für die Nutzung von nkUI, einer umfassenden UI-Suite für RIFT.\n\nDieses Handbuch führt dich durch alle nkUI-Module und Funktionen.\n\nNeueste Änderungen (v1.3.1):\n- Tastenbelegungs-Labels für Aktionsleisten-Icons\n- Verbessertes Cooldown-Tracking-Display\n- Bessere Seltenheitsfilterung im Auktionshaus-Suchen\n- Fehlerkorrektionen beim Einheitenrahmen-Rendering\n\nKlicke auf die Abschnitte links um jedes Modul zu erkunden.\n\nFür schnellen Zugriff: /nkui (Einstellungen) | /nkui qlog (Questlog) | /nkui bag (Inventar) | /nkui auction (Auktionshaus)", addonInfo.toc.Version)
+							body = string.format("Willkommen bei nkUI Version %s\n\nVielen Dank für die Nutzung von nkUI, einer umfassenden UI-Suite für RIFT.\n\nDieses Handbuch führt dich durch alle nkUI-Module und Funktionen.\n\nNeueste Änderungen (v1.3.1):\n- Tastenbelegungs-Labels für Aktionsleisten-Icons\n- Verbessertes Cooldown-Tracking-Display\n- Bessere Seltenheitsfilterung im Auktionshaus-Suchen\n- Fehlerkorrektionen beim Einheitenrahmen-Rendering\n\nKlicke auf die Abschnitte links um jedes Modul zu erkunden.\n\nFür schnellen Zugriff: /nkui (Einstellungen) | /nkui qlog (Questlog) | /nkui bag (Inventar)", addonInfo.toc.Version)
 						},
 						{
 							title = "Übersicht",
-							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine umfassende UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag und das Auktionshaus mit /nkui auction."
+							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine umfassende UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag."
 						},
 						{
 							title = "Standard-UI-Setup",
@@ -260,7 +249,7 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 						},						
 						{
 							title = "Übersicht",
-							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine vollständige UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag und das Auktionshaus mit /nkui auction."
+							body = "Willkommen im nkUI Handbuch.\n\nnkUI ist eine vollständige UI-Suite für RIFT, die die meisten Standard-UI-Elemente durch ein modernes, stimmiges Design ersetzt oder verbessert.\n\nVerwende die Liste links, um zu einem beliebigen Modul zu springen. Jeder Abschnitt erklärt, was das Modul macht und wie es verwendet wird.\n\nDu kannst die Einstellungen jederzeit mit /nkui öffnen, das Questlog mit /nkui qlog, die Taschen mit /nkui bag."
 						},
 						{
 							title = "Karte",
@@ -290,10 +279,6 @@ if ( LibEKL.Tools.Lang.GetLanguage()  == "German") then
 							title = "OneBag",
 							body = "Das OneBag-Modul ersetzt das Standard-Taschenssystem durch ein einzelnes, einheitliches Inventarfenster.\n\nÖffnen mit: /nkui bag\n\nTipp: Erstelle ein Makro mit '/nkui bag', lege es auf einen versteckten Standard-Aktionsleistenslot und weise die Taste B zu.\n\nFunktionen:\n- Alle Taschenslots in einem Fenster angezeigt\n- Bankfenster ebenfalls verfügbar (wird beim Bankier geöffnet)\n- Gegenstände farblich nach Kategorie markiert\n- Zeigt Gegenstandswert (Verkäufpreis) und letzten bekannten Auktionspreis\n- Größe in den Einstellungen konfigurierbar\n\nHinweis: Stelle deine Standard-Taschen im Spiel auf 50% Skalierung ein um visuellen Unordnung zu minimieren."
 						},
-						--[[{
-							title = "Auktionshaus",
-							body = "Das Auktionshaus-Modul fügt Preisverfolgung und Suche zum RIFT-Auktionshaus hinzu.\n\nÖffnen mit: /nkui auction (oder öffnet sich automatisch wenn du das AH besuchst)\n\nReiter:\n- Suchen: Aktuelle Auktionen nach Name durchsuchen, nach Seltenheit filtern, nach jeder Spalte sortieren\n- Meine Auktionen: Eigene Auktionen anzeigen und abbrechen\n- Einstellen: Gegenstände direkt aus dem Inventar einstellen\n- Preise: Historische Preisdaten für jeden Gegenstand anzeigen\n\nFunktionen:\n- Auktionshaus scannen um eine Preisdatenbank aufzubauen\n- Letzter bekannter Auktionspreis wird in Gegenstand-Tooltips angezeigt (OneBag, Hover)\n- Verfolgt All-Zeit-Tief, All-Zeit-Hoch und letzten Scan-Tief Preise\n- Scantierfe ist konfigurierbar (wie viele Seiten pro Gegenstand gescannt werden)\n- Klicke auf das blaue Scan-Symbol um einen Scan zu starten"
-						},]]
 						{
 							title = "Buff-Leiste",
 							body = "Das Buff-Leisten-Modul zeigt deine aktiven Buffs und Debuffs als Symbolreihen am Bildschirmrand an.\n\nFunktionen:\n- Separate Reihen für Buffs und Debuffs\n- Jedes Symbol zeigt verbleibende Dauer und Stapelanzahl\n- Symbolgröße, Timer-Schriftgröße und Stapel-Schriftgröße konfigurierbar\n- Leiste kann nach rechts oder links wachsen\n- Position über Einstellungen > UI verschieben anpassbar"

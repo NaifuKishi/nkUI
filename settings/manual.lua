@@ -57,16 +57,35 @@ local function _createManualWindow()
     sidebar:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 8, -50)
     sidebar:SetWidth(sidebarWidth)
 
-    -- ---- Right content pane ----
+    -- ---- Right content pane (scrollable) ----
 
-    local contentPane = UI.CreateFrame("Frame", name .. ".contentPane", content)
-    contentPane:SetPoint("TOPLEFT", sidebar, "TOPRIGHT", 10, 0)
-    contentPane:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -10, -50)
+    -- Explicit dimensions required: anchor-only sizing gives GetHeight()=0 at init,
+    -- which breaks SetContent's scrollbar range calculation.
+    -- Window=700, titlebar~30, bottom area=50 → scroll height ≈ 580
+    local SCROLL_W = 472
+    local SCROLL_H = 580
+
+    local scrollPane = LibEKL.UICreateFrame("nkScrollPane", name .. ".scroll", content)
+    scrollPane:SetPoint("TOPLEFT", sidebar, "TOPRIGHT", 10, 0)
+    scrollPane:SetWidth(SCROLL_W)
+    scrollPane:SetHeight(SCROLL_H)
+    scrollPane:SetAdjust(100)
+    scrollPane:SetColor(0, 0, 0, 0.2)
+    scrollPane:SetColorInner({ r = 0, g = 0, b = 0, a = 0.4 })
+    scrollPane:SetColorHighlight(data.theme.formElementColorMain)
+
+    -- Inner content container with fixed height (allows scrollbar to work)
+    local scrollContent = UI.CreateFrame("Frame", name .. ".scrollContent", scrollPane)
+    scrollContent:SetWidth(SCROLL_W - 12)   -- -12 for scrollbar width
+    scrollContent:SetHeight(1200)
 
     -- ---- Content text/image elements ----
 
-    local sectionTitle = LibEKL.UICreateFrame("nkText", name .. ".sectionTitle", contentPane)
-    sectionTitle:SetPoint("TOPLEFT", contentPane, "TOPLEFT", 10, 10)
+    -- Content area width: scrollContent width minus horizontal padding
+    local contentTextWidth = SCROLL_W - 12 - 20
+
+    local sectionTitle = LibEKL.UICreateFrame("nkText", name .. ".sectionTitle", scrollContent)
+    sectionTitle:SetPoint("TOPLEFT", scrollContent, "TOPLEFT", 10, 10)
     sectionTitle:SetFontSize(18)
     sectionTitle:SetTextFont(addonInfo.id, "MontserratBold")
     sectionTitle:SetFontColor(
@@ -74,7 +93,7 @@ local function _createManualWindow()
         data.theme.labelColor.b, data.theme.labelColor.a)
     sectionTitle:SetEffectGlow({strength = 3})
 
-    local sectionBody = LibEKL.UICreateFrame("nkText", name .. ".sectionBody", contentPane)
+    local sectionBody = LibEKL.UICreateFrame("nkText", name .. ".sectionBody", scrollContent)
     sectionBody:SetPoint("TOPLEFT", sectionTitle, "BOTTOMLEFT", 0, 12)
     sectionBody:SetFontSize(14)
     sectionBody:SetTextFont(addonInfo.id, "MontserratSemiBold")
@@ -84,7 +103,8 @@ local function _createManualWindow()
     sectionBody:SetWordwrap(true)
     sectionBody:SetEffectGlow({strength = 2})
 
-    local logoImage = LibEKL.UICreateFrame("nkTexture", name .. ".logo", contentPane)
+    -- Logo stays outside the scroll content so it doesn't scroll
+    local logoImage = LibEKL.UICreateFrame("nkTexture", name .. ".logo", content)
     logoImage:SetVisible(false)
 
     -- ---- Section buttons ----
@@ -94,9 +114,6 @@ local function _createManualWindow()
     local sectionButtons = {}
     local currentSection = 1
 
-    -- Content area width: window(700) - sidebar(180) - margins(~50)
-    local contentTextWidth = 440
-
     sectionTitle:SetWidth(contentTextWidth)
     sectionBody:SetWidth(contentTextWidth)
 
@@ -105,11 +122,14 @@ local function _createManualWindow()
         local sec = sections[idx]
         sectionTitle:SetText(sec.title)
         sectionBody:SetText(sec.body)
+        scrollContent:SetHeight(1200)
+        scrollPane:SetContent(scrollContent)
+        scrollPane:SetLanePosition(0)
 
         -- Show/hide logo based on section
         if idx == 1 then
             logoImage:SetVisible(true)
-            logoImage:SetPoint("CENTER", contentPane, "CENTER", 0, -30)
+            logoImage:SetPoint("CENTER", scrollPane, "CENTER", -6, -30)
             logoImage:SetWidth(200)
             logoImage:SetHeight(197)
             logoImage:SetTextureAsync(addonInfo.identifier, "gfx/nkUILogo.png")

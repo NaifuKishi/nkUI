@@ -207,6 +207,9 @@ local _defaults = {
                         autoOpenWithAH  = false,
                         showInTooltip   = true,
                         scanDepth       = 3,
+                        trendThreshold  = 0.15,
+                        priceFloor      = 0.85,
+                        undercutAmount  = 1,
                         browse          = { sortCol = 7, sortAsc = true, rarityFilter = {} },
                       },
         wardrobe        = { activate = true },
@@ -504,6 +507,7 @@ function internalFunc.setupUI ()
 
     local paneTabUnitFrames = settingsUI.uiConfigTabUnitFrames(name .. ".tab.UnitFrames", tabPane)
     local paneTabMinionManager = settingsUI.uiConfigTabMinionManager(name .. ".tab.MinionManager", tabPane)
+    local paneTabAuction = settingsUI.uiConfigTabAuction(name .. ".tab.Auction", tabPane)
 
     local versionText = LibEKL.UICreateFrame("nkText", name .. ".versionText", config)
     versionText:SetFontSize(11)
@@ -592,7 +596,8 @@ function internalFunc.setupUI ()
     tabPane:AddPane( { label = langTexts.settings.unitframes, effect = { strength = 3 }, frame = paneTabUnitFrameBasic, initFunc = function() paneTabUnitFrameBasic:build() end}, false)
 
     tabPane:AddPane( { label = langTexts.settings.units, effect = { strength = 3 }, frame = paneTabUnitFrames, initFunc = function() paneTabUnitFrames:build() end}, false)
-    tabPane:AddPane( { label = langTexts.settings.minionManager, effect = { strength = 3 }, frame = paneTabMinionManager, initFunc = function() paneTabMinionManager:build() end}, true)
+    tabPane:AddPane( { label = langTexts.settings.minionManager, effect = { strength = 3 }, frame = paneTabMinionManager, initFunc = function() paneTabMinionManager:build() end}, false)
+    tabPane:AddPane( { label = langTexts.settings.auction,       effect = { strength = 3 }, frame = paneTabAuction,       initFunc = function() paneTabAuction:build()       end}, true)
 
     --if LibEKL.Events.CheckEvents ("nkRadial", true) == false then return nil end
 
