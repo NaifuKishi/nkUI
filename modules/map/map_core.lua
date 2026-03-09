@@ -94,7 +94,7 @@ function map.DebugLogUnknown (details, source, extraInfo)
 	if mapData.unknownLog[logKey] then return end
 	mapData.unknownLog[logKey] = true
 
-	nkDebug.debugLog(addonInfo.identifier, logData)
+	if nkDebug then nkDebug.debugLog(addonInfo.identifier, logData) end
 
 end
 
