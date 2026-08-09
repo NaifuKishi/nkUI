@@ -27,13 +27,11 @@ function lowerBar.experience()
     
     local datasetExpBarBGIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
     datasetExpBarBGIcon:SetPoint("CENTERLEFT", datasetFrame, "CENTERLEFT", 0, 0)
-    datasetExpBarBGIcon:SetHeight(16)
-    datasetExpBarBGIcon:SetWidth(16)
-    datasetExpBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarExperience.png")
+    lowerBar.setIcon(datasetExpBarBGIcon, "gfx/lowerbarExperience.png")
 
     local datasetExpBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".experienceFrameBG", lowerBar.contextRestricted)
     datasetExpBarBG:SetPoint("CENTERLEFT", datasetExpBarBGIcon, "CENTERRIGHT", lowerBar.ICON_SPACING, 0)
-    datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+    datasetExpBarBG:SetWidth(lowerBar.fittedBarWidth("left"))
     datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetExpBarBG:SetBackgroundColor(data.colors.primary.r, data.colors.primary.g, data.colors.primary.b, .25)
     datasetExpBarBG:SetLayer(10)
@@ -66,7 +64,7 @@ function lowerBar.experience()
     end, datasetFrame:GetName() .. ".Left.Down")  
 
     function datasetFrame:Redraw()
-        datasetExpBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+        datasetExpBarBG:SetWidth(lowerBar.fittedBarWidth("left"))
         datasetExpBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         datasetExpBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         datasetExpLabel:SetFontSize(nkUISetup.modules.lowerBar.barText)
@@ -86,7 +84,7 @@ function lowerBar.experience()
             percentText = stringFormat("%d%%", percent)
         end
         
-        datasetExpBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))        
+        datasetExpBar:SetWidth(lowerBar.fittedBarWidth("left") * (percent/100))        
 
         datasetExpLabel:SetText(stringFormat("Level %d (%s)", LibEKL.Unit.GetPlayerDetails().level, percentText))
 

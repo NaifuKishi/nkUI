@@ -51,7 +51,7 @@ function lowerBar.faction()
 
     local datasetFactionBarBG = LibEKL.UICreateFrame('nkCanvas', name .. ".background", lowerBar.contextRestricted)
     datasetFactionBarBG:SetPoint("CENTERRIGHT", datasetFrame, "CENTERRIGHT",  0, 0)
-    datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+    datasetFactionBarBG:SetWidth(lowerBar.fittedBarWidth("right"))
     datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
     datasetFactionBarBG:SetLayer(10)
 
@@ -78,12 +78,10 @@ function lowerBar.faction()
 
     local datasetFactionBarBGIcon = LibEKL.UICreateFrame("nkTexture", "lowerBar.factionFrameBG.icon", datasetFactionBarBG)
     datasetFactionBarBGIcon:SetPoint("CENTERRIGHT", datasetFactionBarBG, "CENTERLEFT", -lowerBar.ICON_SPACING, 0)
-    datasetFactionBarBGIcon:SetHeight(16)
-    datasetFactionBarBGIcon:SetWidth(16)
-    datasetFactionBarBGIcon:SetTextureAsync("nkUI", "gfx/lowerbarFaction.png")
+    lowerBar.setIcon(datasetFactionBarBGIcon, "gfx/lowerbarFaction.png")
     
     function datasetFrame:Redraw()
-        datasetFactionBarBG:SetWidth(nkUISetup.modules.lowerBar.barWidth)
+        datasetFactionBarBG:SetWidth(lowerBar.fittedBarWidth("right"))
         datasetFactionBarBG:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         datasetFactionBar:SetHeight(nkUISetup.modules.lowerBar.barHeight)
         --datasetFaction:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
@@ -138,7 +136,7 @@ function lowerBar.faction()
                 
                 datasetFactionName:SetText(stringFormat("%s (%d%%) %s", faction.name, percent, level))
                 --datasetFaction:SetText(stringFormat("%d%%", percent))
-                datasetFactionBar:SetWidth(nkUISetup.modules.lowerBar.barWidth * (percent/100))
+                datasetFactionBar:SetWidth(lowerBar.fittedBarWidth("right") * (percent/100))
             end
         end
     end

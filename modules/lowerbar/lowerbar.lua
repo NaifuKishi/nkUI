@@ -11,6 +11,9 @@ local lowerBar      = privateVars.lowerBar
 
 local mathpi        = math.pi
 local mathRandom    = math.random
+local mathFloor     = math.floor
+local mathMax       = math.max
+local mathMin       = math.min
 
 ---------- init variables ---------
 
@@ -22,6 +25,92 @@ data.lowerBarLayout = {
 
 lowerBar.ICON_SPACING = 5
 lowerBar.BORDER_SPACING = 15
+
+-- Icon edge length in the lower bar, in the 3440x1440 design space.
+lowerBar.ICON_SIZE = 16
+
+--[[
+   iconSize
+    Description:
+        Icon edge length in the lower bar, scaled with the UI.
+    Parameters:
+        None
+    Returns:
+        number
+    Notes:
+        - Without this the icons stay at 16 px while text and bars shrink,
+          which makes them look oversized.
+        - Use lowerBar.setIcon() to apply a texture: SetTextureAsync resets
+          the frame size on load. No transformation matrix is needed here,
+          unlike the canvas fills (see modules/unitFrames/buffIcon.lua).
+]]
+function lowerBar.iconSize ()
+
+    return mathMax(10, mathFloor(lowerBar.ICON_SIZE * (data.uiScale or 1) + 0.5))
+
+end
+
+--[[
+   setIcon
+    Description:
+        Applies a texture to a lower bar icon and keeps the scaled size.
+    Parameters:
+        frame   (frame)  - nkTexture frame
+        texture (string) - path inside nkUI
+    Returns:
+        None
+    Notes:
+        - SetTextureAsync resets the frame to the *native* size of the
+          texture once it has loaded, so a SetWidth before it is lost.
+          LibAsyncTextures calls a callback after loading, which is where
+          the size gets set again.
+]]
+function lowerBar.setIcon (frame, texture)
+
+    local size = lowerBar.iconSize()
+
+    frame:SetWidth(size)
+    frame:SetHeight(size)
+
+    frame:SetTextureAsync("nkUI", texture, function (self)
+        self:SetWidth(size)
+        self:SetHeight(size)
+    end)
+
+end
+
+--[[
+   fittedBarWidth
+    Description:
+        Width of a progress bar in the lower bar, capped to the slot its
+        module actually gets.
+    Parameters:
+        side (string) - "left" or "right", the side the module sits on
+    Returns:
+        number
+    Notes:
+        - The slots are divided up from the screen width while the
+          configured bar width is independent of it. Without this cap the
+          bars run out of their slot on narrow resolutions: the experience
+          bar towards the right, the faction bar towards the left, both
+          ending up underneath the clock in the middle.
+        - Icon, icon spacing and border are subtracted.
+]]
+function lowerBar.fittedBarWidth (side)
+
+    local wanted = nkUISetup.modules.lowerBar.barWidth
+
+    if data.lowerBar == nil then return wanted end
+
+    local slot = data.lowerBar.moduleWidthLeft
+
+    if side == "right" then slot = data.lowerBar.moduleWidthRight end
+
+    if type(slot) ~= "number" then return wanted end
+
+    return mathMax(40, mathMin(wanted, slot - lowerBar.iconSize() - lowerBar.ICON_SPACING - lowerBar.BORDER_SPACING))
+
+end
 
 lowerBar.contextRestricted = UI.CreateContext("nkUI.lowerbar.restricted")
 lowerBar.contextRestricted :SetStrata('hud')
@@ -63,6 +152,9 @@ function lowerBar.redistributeLayout()
 
     -- Position left modules (far left, away from time)
     local leftModuleWidth = #left > 0 and (data.lowerBar.availablePerSide / #left) or 0
+
+    data.lowerBar.moduleWidthLeft = leftModuleWidth
+
     for idx, frame in ipairs(left) do
 
         frame:SetWidth(leftModuleWidth)
@@ -81,6 +173,8 @@ function lowerBar.redistributeLayout()
 
     -- Position right modules (far right, away from time)
     local rightModuleWidth = #right > 0 and (data.lowerBar.availablePerSide / #right) or 0
+
+    data.lowerBar.moduleWidthRight = rightModuleWidth
 
     for idx, frame in ipairs(right) do
 
@@ -110,9 +204,7 @@ function lowerBar.dataSet(name, texture, align)
     datasetFrame:SetSecureMode('restricted')
 
     local icon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
-    icon:SetHeight(16)
-    icon:SetWidth(16)
-    icon:SetTextureAsync("nkUI", texture)
+    lowerBar.setIcon(icon, texture)
 
     local label = LibEKL.UICreateFrame("nkText", name .. ".text", datasetFrame)    
     label:SetFontSize(nkUISetup.modules.lowerBar.fontSize)
@@ -138,7 +230,7 @@ function lowerBar.dataSet(name, texture, align)
     end
 
     function datasetFrame:SetTextureAsync(newTexture)
-        icon:SetTextureAsync("nkUI", newTexture)
+        lowerBar.setIcon(icon, newTexture)
     end
 
     return datasetFrame
@@ -189,13 +281,19 @@ function lowerBar.build()
 
     -- Calculate available width for left/right sections
     local canvasWidth = uiElements.lowerBarCanvas:GetWidth()
-    local timeWidth = 120  -- estimated width of time display
+    local timeWidth = 120 * data.uiScale  -- estimated width of time display
     local availablePerSide = (canvasWidth - timeWidth) / 2
 
     -- Store layout info for modules to use
     data.lowerBar = data.lowerBar or {}
     data.lowerBar.availablePerSide = availablePerSide
     data.lowerBar.canvasWidth = canvasWidth
+
+    -- Slot widths. redistributeLayout() sets them exactly a moment later,
+    -- but the experience and faction bars need them while being built, and
+    -- that happens first. Five modules per side, see below.
+    data.lowerBar.moduleWidthLeft  = availablePerSide / 5
+    data.lowerBar.moduleWidthRight = availablePerSide / 5
 
     -- Load all modules in order
     -- Left side (towards time): social, wardrobe, roles, experience
