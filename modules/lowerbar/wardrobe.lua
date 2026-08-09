@@ -37,10 +37,8 @@ function lowerBar.lowerBarWardrobe()
 
     local datasetWardrobeIcon = LibEKL.UICreateFrame("nkTexture", name .. ".icon", datasetFrame)
     datasetWardrobeIcon:SetPoint("CENTERRIGHT", datasetWardrobe, "CENTERLEFT", -5, -2)
-    datasetWardrobeIcon:SetHeight(16)
-    datasetWardrobeIcon:SetWidth(16)
     datasetWardrobeIcon:SetSecureMode('restricted')
-    datasetWardrobeIcon:SetTextureAsync("nkUI", "gfx/equipslot_chest.png")
+    lowerBar.setIcon(datasetWardrobeIcon, "gfx/equipslot_chest.png")
 
     local wardrobeSwitch = LibEKL.UICreateFrame("nkFrame", name .. ".switch", datasetWardrobe)
     wardrobeSwitch:SetPoint("BOTTOMCENTER", datasetWardrobe, "TOPCENTER")

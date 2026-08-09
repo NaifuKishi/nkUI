@@ -223,59 +223,46 @@ local _defaults = {
     useManager = true
 }
 
-local function scaleUI ()
-       
-    local parentWidth = UIParent:GetWidth()
+--[[
+   applyScreenLayout
+    Description:
+        Lays out positions and sizes of all modules for the current screen
+        size. The calculation itself lives in settings/resolution.lua.
+    Parameters:
+        force (boolean) - true recalculates even when the screen size has
+                          not changed
+    Returns:
+        boolean - true when the layout was rebuilt
+    Notes:
+        - UIParent decides, not the screen resolution. RIFT's global UI scale
+          (Settings -> Interface -> Display) therefore counts automatically:
+          it changes the size of UIParent, which triggers a rebuild here.
+        - Without force nothing happens while UIParent stays the same, so
+          elements moved by hand are kept.
+]]
+function internalFunc.applyScreenLayout (force)
 
-    if parentWidth == 3440 then return end
+    if nkUISetup == nil then return false end
 
-    nkUISetup.modules.oneBag.x = nkUISetup.modules.oneBag.x * data.uiScale
-    nkUISetup.modules.oneBag.y = nkUISetup.modules.oneBag.y * data.uiScale
+    -- Should settings/resolution.lua drop out of the RunOnStartup list, keep
+    -- nkUI usable instead of failing to load.
+    if type(internalFunc.layoutForScreen) ~= "function" then return false end
 
-    nkUISetup.modules.map.x = nkUISetup.modules.map.x * data.uiScale
-    nkUISetup.modules.map.y = nkUISetup.modules.map.y * data.uiScale
+    local width, height = UIParent:GetWidth(), UIParent:GetHeight()
 
-    nkUISetup.modules.questtracker.x = nkUISetup.modules.questtracker.x * data.uiScale
-    nkUISetup.modules.questtracker.y = nkUISetup.modules.questtracker.y * data.uiScale
+    data.uiScale = internalFunc.screenScale(height)
 
-    nkUISetup.modules.actionBars.x = nkUISetup.modules.actionBars.x * data.uiScale
-    nkUISetup.modules.actionBars.y = nkUISetup.modules.actionBars.y * data.uiScale
+    local last = nkUISetup.layoutFor
 
-    nkUISetup.modules.actionBars.rightBarX = nkUISetup.modules.actionBars.rightBarX * data.uiScale
-    nkUISetup.modules.actionBars.rightBarY = nkUISetup.modules.actionBars.rightBarY * data.uiScale
+    if force ~= true and last ~= nil and last.width == width and last.height == height then
+        return false
+    end
 
-    nkUISetup.modules.buffBar.x = nkUISetup.modules.buffBar.x * data.uiScale
-    nkUISetup.modules.buffBar.y = nkUISetup.modules.buffBar.y * data.uiScale
+    internalFunc.layoutForScreen (nkUISetup, _defaults, width, height)
 
-    nkUISetup.modules.unitFrames.frames.player.x = nkUISetup.modules.unitFrames.frames.player.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.player.y = nkUISetup.modules.unitFrames.frames.player.y * data.uiScale
+    nkUISetup.layoutFor = { width = width, height = height }
 
-    nkUISetup.modules.unitFrames.frames.target.x = nkUISetup.modules.unitFrames.frames.target.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.target.y = nkUISetup.modules.unitFrames.frames.target.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.targetOfTarget.x = nkUISetup.modules.unitFrames.frames.targetOfTarget.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.targetOfTarget.y = nkUISetup.modules.unitFrames.frames.targetOfTarget.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.playerPet.x = nkUISetup.modules.unitFrames.frames.playerPet.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.playerPet.y = nkUISetup.modules.unitFrames.frames.playerPet.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.focus.x = nkUISetup.modules.unitFrames.frames.focus.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.focus.y = nkUISetup.modules.unitFrames.frames.focus.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.ressourceBar.x = nkUISetup.modules.unitFrames.frames.ressourceBar.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.ressourceBar.y = nkUISetup.modules.unitFrames.frames.ressourceBar.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.group.x = nkUISetup.modules.unitFrames.frames.group.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.group.y = nkUISetup.modules.unitFrames.frames.group.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.raid.x = nkUISetup.modules.unitFrames.frames.raid.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.raid.y = nkUISetup.modules.unitFrames.frames.raid.y * data.uiScale
-
-    nkUISetup.modules.unitFrames.frames.playerCastBar.x = nkUISetup.modules.unitFrames.frames.playerCastBar.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.playerCastBar.y = nkUISetup.modules.unitFrames.frames.playerCastBar.y * data.uiScale  
-
-    nkUISetup.modules.unitFrames.frames.targetCastBar.x = nkUISetup.modules.unitFrames.frames.targetCastBar.x * data.uiScale
-    nkUISetup.modules.unitFrames.frames.targetCastBar.x = nkUISetup.modules.unitFrames.frames.targetCastBar.x * data.uiScale
+    return true
 
 end
 
@@ -293,20 +280,34 @@ end
 ]]
 function internalFunc.setupDefaults()
 
-    local parentWidth = UIParent:GetWidth()
-    data.uiScale = parentWidth / 3440
-
     if nkUISetup == nil then
-        nkUISetup = _defaults
+        nkUISetup = LibEKL.Tools.Table.Copy (_defaults)
         nkUISetup.modules.actionBars.bars = {}
         nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] = { roles = {} }
-
-        scaleUI ()
-    else        
-        nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)        
+    else
+        nkUISetup = LibEKL.Tools.Settings.UpdateSettings (_defaults, nkUISetup)
     end
 
-   
+    -- First start, resolution change or altered UI scale: lay the interface
+    -- out for the current screen size.
+    internalFunc.applyScreenLayout (false)
+
+    -- Recalculate right away when UIParent changes while playing -- either
+    -- resolution or the global UI scale (Settings -> Interface -> Display).
+    -- Frames already built are not moved, hence the hint towards /reloadui.
+    if data.screenSizeWatch ~= true then
+        data.screenSizeWatch = true
+
+        UIParent:EventAttach(Event.UI.Layout.Size, function ()
+            if internalFunc.applyScreenLayout (false) == true then
+                Command.Console.Display("general", true, stringFormat(
+                    "nkUI: screen size is now %dx%d. Layout recalculated, apply it with /reloadui.",
+                    UIParent:GetWidth(), UIParent:GetHeight()), true)
+            end
+        end, "nkUI.settings.UIParent.Size")
+    end
+
+
     -- check for new char
 
     if nkUISetup.modules.actionBars.bars[LibEKL.Unit.GetPlayerDetails().name] == nil then

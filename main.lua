@@ -80,6 +80,24 @@ data.colors = {
 				
 data.uiScale = 1
 
+--[[
+	Reference sizes for texture fills on canvas frames.
+
+	Measured in the client: a fill of type "texture" is drawn at source size
+	times matrix scale, anchored at the top left corner. The canvas only
+	clips it, it does not fit it in. A factor of 2 draws the texture twice as
+	large no matter how big the frame is, so the factor has to *grow* with
+	the frame size.
+
+	The previous formulas did the opposite (1 / width * 32): shrinking the
+	frame from 40 to 30 raised the factor from 0.8 to 1.07, so the icon grew
+	instead of shrinking and only a magnified crop of it remained visible.
+	At the default size of 40 the factors 0.8 (x) and 0.85 (y) produced the
+	intended look; hence these reference sizes, which yield exactly those
+	factors at 40 and scale proportionally above and below it.
+]]
+data.textureRef = { x = 50, y = 47 }
+
 
 -- Generate UI context
 
@@ -242,6 +260,15 @@ local function commandHandler (commandline)
 		   and nkUISetup.modules.minionManager.activate then
 			internalFunc.minionManagerInit()
 		end
+	elseif stringFind(commandline, "layout") ~= nil then
+		-- Lay the interface out for the current screen size again. Elements
+		-- moved by hand fall back to the default; the result is applied on
+		-- the next UI load, an addon cannot trigger /reloadui itself.
+		internalFunc.applyScreenLayout(true)
+
+		Command.Console.Display("general", true, stringFormat(
+			"nkUI: layout recalculated for %dx%d. Apply it with /reloadui.",
+			UIParent:GetWidth(), UIParent:GetHeight()), true)
 	elseif stringFind(commandline, "logo") then
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	elseif stringFind(commandline, "qlog") then

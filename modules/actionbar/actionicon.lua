@@ -398,7 +398,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 			
 		if err and thisDetails ~= nil and thisDetails.icon ~= nil then
 			local width = frame:GetWidth()
-			fill = { type = "texture", source = "Rift", texture = thisDetails.icon, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 32, 0, 0, 0) }			
+			fill = { type = "texture", source = "Rift", texture = thisDetails.icon, transform = Utility.Matrix.Create(width / data.textureRef.x, width / data.textureRef.x, 0, 0, 0) }			
 		else
 			fill = defaultFill
 		end
@@ -475,7 +475,7 @@ function uiElements.actionIcon(name, parent, barIndex, buttonIndex)
 		frame:SetHeight(newSize)
 
 		if thisItemKey then
-			fill = { type = "texture", source = "Rift", texture = thisDetails.icon, transform = Utility.Matrix.Create(1 / newSize * 32, 1 / newSize * 32, 0, 0, 0) }
+			fill = { type = "texture", source = "Rift", texture = thisDetails.icon, transform = Utility.Matrix.Create(newSize / data.textureRef.x, newSize / data.textureRef.x, 0, 0, 0) }
 		end
 
 		frame:SetShape(path, fill, stroke)

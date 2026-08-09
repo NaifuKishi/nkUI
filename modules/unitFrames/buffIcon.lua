@@ -83,8 +83,8 @@ function uiElements.icon (name, parent)
 	function icon:SetTexture(textureType, texturePath)
 		thisTexture = texturePath
 		--texture:SetTextureAsync(textureType, texturePath)
-		local width = icon:GetWidth()
-		fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+		local width, height = icon:GetWidth(), icon:GetHeight()
+		fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(width / data.textureRef.x, height / data.textureRef.y, 0, 0, 0) }
         icon:SetShape(path, fill, stroke)
 	end
 	
@@ -120,8 +120,8 @@ function uiElements.icon (name, parent)
 		end
 
 		if sizeUpdate and thisTexture then
-			local width = icon:GetWidth()
-			fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(1 / width * 32, 1 / width * 34, 0, 0, 0) }
+			local width, height = icon:GetWidth(), icon:GetHeight()
+			fill = { type = "texture", source = "Rift", texture = thisTexture, transform = Utility.Matrix.Create(width / data.textureRef.x, height / data.textureRef.y, 0, 0, 0) }
         	icon:SetShape(path, fill, stroke)
 		end
 		
