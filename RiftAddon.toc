@@ -95,6 +95,7 @@ RunOnStartup = {
 	"modules/map/map_utils.lua",
 	"modules/map/mapLegend.lua",
 
+	"settings/resolution.lua",
 	"settings/settings.lua",
 	"settings/settings-tabTheme.lua",
 	"settings/settings-tabMap.lua",

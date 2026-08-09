@@ -242,6 +242,15 @@ local function commandHandler (commandline)
 		   and nkUISetup.modules.minionManager.activate then
 			internalFunc.minionManagerInit()
 		end
+	elseif stringFind(commandline, "layout") ~= nil then
+		-- Lay the interface out for the current screen size again. Elements
+		-- moved by hand fall back to the default; the result is applied on
+		-- the next UI load, an addon cannot trigger /reloadui itself.
+		internalFunc.applyScreenLayout(true)
+
+		Command.Console.Display("general", true, stringFormat(
+			"nkUI: layout recalculated for %dx%d. Apply it with /reloadui.",
+			UIParent:GetWidth(), UIParent:GetHeight()), true)
 	elseif stringFind(commandline, "logo") then
 		LibEKL.Events.AddInsecure(animateLogo, inspectTimeFrame())
 	elseif stringFind(commandline, "qlog") then
